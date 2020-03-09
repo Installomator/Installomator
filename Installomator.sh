@@ -31,6 +31,9 @@ fi
 #
 #   the team ID is the ten-digit ID at the end of the line starting with 'origin='
 
+# target directory (remember to _omit_ last / )
+targetDir="/Applications"
+# this can be overridden below if you want a different location for a specific identifier
 
 case $identifier in
 
@@ -44,10 +47,20 @@ case $identifier in
         appName="Spotify.app"
         expectedTeamID="2FNC3A47ZF"
         ;;
-    brokenChrome)
-        downloadURL="https://dl.google.com/chromeglechrome.dmg"
+    brokenDownloadURL)
+        downloadURL="https://broken.com/broken.dmg"
         appName="Google Chrome.app"
         expectedTeamID="EQHXZ8M8AV"
+        ;;
+    brokenAppName)
+        downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+        appName="broken.app"
+        expectedTeamID="EQHXZ8M8AV"
+        ;;
+    brokenTeamID)
+        downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+        appName="Google Chrome.app"
+        expectedTeamID="broken"
         ;;
     *)
         # unknown identifier
@@ -56,12 +69,9 @@ case $identifier in
         ;;
 esac
 
-# target directory (remember to _omit_ last / )
-targetDir="/Applications"
-
 dmgname="${downloadURL##*/}"
 
-cleanupBeforeExit() { # $1 = exit code
+cleanupAndExit() { # $1 = exit code
     if [ "$DEBUG" -eq 0 ]; then
         # remove the temporary working directory when done
         echo "Deleting $tmpDir"
@@ -75,6 +85,7 @@ cleanupBeforeExit() { # $1 = exit code
         echo "Unmounting $dmgmount"
         hdiutil detach "$dmgmount"
     fi
+    exit $1
 }
 
 # create temporary working directory
@@ -89,8 +100,7 @@ echo "Changing directory to $tmpDir"
 if ! cd "$tmpDir"; then
     echo "error changing directory $tmpDir"
     #rm -Rf "$tmpDir"
-    cleanupBeforeExit
-    exit 1
+    cleanupAndExit 1
 fi
 
 # TODO: when user is logged in, and app is running, prompt user to quit app
@@ -100,10 +110,9 @@ if [ -f "$dmgname" ] && [ "$DEBUG" -eq 1 ]; then
 else
     # download the dmg
     echo "Downloading $downloadURL"
-    if ! curl --location --silent "$downloadURL" -o "$dmgname"; then
+    if ! curl --location --fail --silent "$downloadURL" -o "$dmgname"; then
         echo "error downloading $downloadURL"
-        cleanupBeforeExit
-        exit 2
+        cleanupAndExit 2
     fi
 fi
 
@@ -112,25 +121,28 @@ echo "Mounting $tmpDir/$dmgname"
 # set -o pipefail
 if ! dmgmount=$(hdiutil attach "$tmpDir/$dmgname" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
     echo "Error mounting $tmpDir/$dmgname"
-    cleanupBeforeExit
-    exit 3
+    cleanupAndExit 3
 fi
 echo "Mounted: $dmgmount"
+
+# check if app exists
+if [ ! -e "$dmgmount/$appName" ]; then
+    echo "could not find: $dmgmount/$appName"
+    cleanupAndExit 8
+fi
 
 # verify with spctl
 echo "Verifying: $dmgmount/$appName"
 if ! teamID=$(spctl -a -vv "$dmgmount/$appName" 2>&1 | awk '/origin=/ {print $NF }' ); then
     echo "Error verifying $dmgmount/$appName"
-    cleanupBeforeExit
-    exit 4
+    cleanupAndExit 4
 fi
 
 echo "Comparing Team IDs: ($expectedTeamID) $teamID"
 
 if [ "($expectedTeamID)" != "$teamID" ]; then
     echo "Team IDs do not match!"
-    cleanupBeforeExit
-    exit 5
+    cleanupAndExit 5
 fi
 
 # check for root
@@ -138,13 +150,11 @@ if [ "$(whoami)" != "root" ]; then
     # not running as root
     if [ "$DEBUG" -eq 0 ]; then
         echo "not running as root, exiting"
-        cleanupBeforeExit
-        exit 6
+        cleanupAndExit 6
     fi
     
     echo "DEBUG enabled, skipping copy and chown steps"
-    cleanupBeforeExit
-    exit 0
+    cleanupAndExit 0
 fi
 
 # remove existing application
@@ -157,9 +167,9 @@ fi
 echo "Copy $dmgmount/$appName to $targetDir"
 if ! cp -R "$dmgmount/$appName" "$targetDir"; then
     echo "Error while copying!"
-    cleanupBeforeExit
-    exit 7
+    cleanupAndExit 7
 fi
+
 
 # set ownership to current users
 currentUser=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
@@ -170,6 +180,7 @@ else
     echo "No user logged in, not changing user"
 fi
 
+# TODO: notify when done
+
 # all done!
-cleanupBeforeExit
-exit 0
+cleanupAndExit 0
