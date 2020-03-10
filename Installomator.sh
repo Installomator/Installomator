@@ -55,6 +55,8 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 }
 
+# add identifiers in this case statement
+
 case $identifier in
 
     GoogleChrome)
@@ -71,6 +73,12 @@ case $identifier in
         downloadURL=$(curl -s https://versioncheck.barebones.com/BBEdit.xml | grep dmg | sort | tail -n1 | cut -d">" -f2 | cut -d"<" -f1)
         appName="BBEdit.app"
         expectedTeamID="W52GZAXT98"
+        ;;
+    Firefox)
+        downloadURL="https://download.mozilla.org/?product=firefox-latest&amp;os=osx&amp;lang=en-US"
+        dmgName="Firefox.dmg"
+        appName="Firefox.app"
+        expectedTeamID="43AQ936H96"
         ;;
     brokenDownloadURL)
         downloadURL="https://broken.com/broken.dmg"
@@ -94,7 +102,9 @@ case $identifier in
         ;;
 esac
 
-dmgname="${downloadURL##*/}"
+if [ -z "$dmgName" ]; then
+    dmgName="${downloadURL##*/}"
+fi
 
 cleanupAndExit() { # $1 = exit code
     if [ "$DEBUG" -eq 0 ]; then
@@ -130,22 +140,22 @@ fi
 
 # TODO: when user is logged in, and app is running, prompt user to quit app
 
-if [ -f "$dmgname" ] && [ "$DEBUG" -eq 1 ]; then
-    echo "$dmgname exists and DEBUG enabled, skipping download"
+if [ -f "$dmgName" ] && [ "$DEBUG" -eq 1 ]; then
+    echo "$dmgName exists and DEBUG enabled, skipping download"
 else
     # download the dmg
-    echo "Downloading $downloadURL"
-    if ! curl --location --fail --silent "$downloadURL" -o "$dmgname"; then
+    echo "Downloading $downloadURL to $dmgName"
+    if ! curl --location --fail --silent "$downloadURL" -o "$dmgName"; then
         echo "error downloading $downloadURL"
         cleanupAndExit 2
     fi
 fi
 
 # mount the dmg
-echo "Mounting $tmpDir/$dmgname"
+echo "Mounting $tmpDir/$dmgName"
 # set -o pipefail
-if ! dmgmount=$(hdiutil attach "$tmpDir/$dmgname" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
-    echo "Error mounting $tmpDir/$dmgname"
+if ! dmgmount=$(hdiutil attach "$tmpDir/$dmgName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+    echo "Error mounting $tmpDir/$dmgName"
     cleanupAndExit 3
 fi
 echo "Mounted: $dmgmount"
@@ -190,13 +200,13 @@ fi
 
 # copy app to /Applications
 echo "Copy $dmgmount/$appName to $targetDir"
-if ! cp -R "$dmgmount/$appName" "$targetDir"; then
+if ! ditto "$dmgmount/$appName" "$targetDir"; then
     echo "Error while copying!"
     cleanupAndExit 7
 fi
 
 
-# set ownership to current users
+# set ownership to current user
 currentUser=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
 if [ -n "$currentUser" ]; then
     echo "Changing owner to $currentUser"
