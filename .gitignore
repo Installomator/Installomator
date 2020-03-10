@@ -4,4 +4,7 @@ SamplePkgs/
 scratch/
 *.pkg
 *.mpkg
+*.dmg
+*.zip
+
 
