@@ -1,6 +1,10 @@
 #!/bin/sh
 
-# Downloads and installs the  app
+# Installomator
+
+# Downloads and installs an Applications
+
+# inspired by the download scripts from William Smith and Sander Schram
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -12,7 +16,6 @@ if [ "$JAMF" -eq 0 ]; then
 else
     identifier=${4:?"argument $4 required"}
 fi
-
 
 # each identifier needs to be listed in the case statement below
 # for each identifier these three variables must be set:
@@ -34,6 +37,23 @@ fi
 # target directory (remember to _omit_ last / )
 targetDir="/Applications"
 # this can be overridden below if you want a different location for a specific identifier
+
+
+# functions to help with getting info
+
+downloadURLFromGit() { # $1 git user name, $2 git repo name
+    gitusername=${1?:"no git user name"}
+    gitreponame=${2?:"no git repo name"}
+    
+    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' '/browser_download_url/ { print $4 }')
+    if [ -z "$downloadURL" ]; then
+        echo "could not retrieve download URL for $gitusername/$gitreponame"
+        cleanupAndExit 9
+    else
+        echo "$downloadURL"
+        return 0
+    fi
+}
 
 case $identifier in
 
