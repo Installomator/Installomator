@@ -174,6 +174,25 @@ case $identifier in
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
         expectedTeamID="UBF8T346G9"
         ;;
+    microsoftautoupdate)
+        name="MicrosoftAutoUpdate§"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=830196"
+        teamID="UBF8T346G9"
+        ;;
+    microsoftedgeenterprisestable)
+        name="MicrosoftEdgeEnterpriseStable"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=2093438"
+        teamID="UBF8T346G9"
+        ;;
+    microsoftsharepointplugin)
+        name="MicrosoftSharePointPlugin"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=800050"
+        teamID="UBF8T346G9"
+        ;;
+
     # note: there are more available MS downloads to add
     # 525133 - Office 2019 for Mac SKUless download (aka Office 365)
     # 2009112 - Office 2019 for Mac BusinessPro SKUless download (aka Office 365 with Teams)
