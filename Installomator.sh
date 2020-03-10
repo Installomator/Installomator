@@ -27,7 +27,7 @@ fi
 #   10-digit developer team ID
 #   obtain this by running 
 #
-#   spctl -a -vv Google\ Chrome.app
+#   spctl -a -vv /Applications/BBEdit.app
 #
 #   the team ID is the ten-digit ID at the end of the line starting with 'origin='
 
@@ -46,6 +46,11 @@ case $identifier in
         downloadURL="https://download.scdn.co/Spotify.dmg"
         appName="Spotify.app"
         expectedTeamID="2FNC3A47ZF"
+        ;;
+    BBEdit)
+        downloadURL=$(curl -s https://versioncheck.barebones.com/BBEdit.xml | grep dmg | sort | tail -n1 | cut -d">" -f2 | cut -d"<" -f1)
+        appName="BBEdit.app"
+        expectedTeamID="W52GZAXT98"
         ;;
     brokenDownloadURL)
         downloadURL="https://broken.com/broken.dmg"
@@ -85,7 +90,7 @@ cleanupAndExit() { # $1 = exit code
         echo "Unmounting $dmgmount"
         hdiutil detach "$dmgmount"
     fi
-    exit $1
+    exit "$1"
 }
 
 # create temporary working directory
@@ -138,7 +143,7 @@ if ! teamID=$(spctl -a -vv "$dmgmount/$appName" 2>&1 | awk '/origin=/ {print $NF
     cleanupAndExit 4
 fi
 
-echo "Comparing Team IDs: ($expectedTeamID) $teamID"
+echo "Team ID: $teamID (expected: $expectedTeamID )"
 
 if [ "($expectedTeamID)" != "$teamID" ]; then
     echo "Team IDs do not match!"
