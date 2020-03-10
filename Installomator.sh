@@ -22,6 +22,14 @@ fi
 #
 # - downloadURL: 
 #   URL to download the dmg
+#
+# - expectedTeamID:
+#   10-digit developer team ID
+#   obtain this by running 
+#
+#   spctl -a -vv /Applications/BBEdit.app
+#
+#   the team ID is the ten-digit ID at the end of the line starting with 'origin='
 # 
 # - dmgName: (optional)
 #   The name of the downloaded dmg
@@ -32,18 +40,19 @@ fi
 #   When not given, the App name is derived from the dmgName by removing the extension
 #   and adding .app
 #
-# - expectedTeamID:
-#   10-digit developer team ID
-#   obtain this by running 
-#
-#   spctl -a -vv /Applications/BBEdit.app
-#
-#   the team ID is the ten-digit ID at the end of the line starting with 'origin='
+# - targetDir: (optional)
+#   Applications will be copied to this directory, remember to omit trailing '/'
+#   default value is '/Applications'
 
-# target directory (remember to _omit_ last / )
 targetDir="/Applications"
-# this can be overridden below if you want a different location for a specific identifier
 
+
+# todos:
+
+# TODO: add pkg support
+# TODO: check for running processes and either abort or prompt user
+# TODO: log version of installed software
+# TODO: notification when done
 
 # functions to help with getting info
 
@@ -61,7 +70,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 }
 
-# add identifiers in this case statement
+# identifiers in case statement
 
 case $identifier in
 
@@ -87,6 +96,8 @@ case $identifier in
         downloadURL="https://web.whatsapp.com/desktop/mac/files/WhatsApp.dmg"
         expectedTeamID="57T9237FN3"
         ;;
+    
+    # these identifiers exist for testing
     brokenDownloadURL)
         downloadURL="https://broken.com/broken.dmg"
         appName="Google Chrome.app"
