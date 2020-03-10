@@ -23,8 +23,14 @@ fi
 # - downloadURL: 
 #   URL to download the dmg
 # 
-# - appName:
+# - dmgName: (optional)
+#   The name of the downloaded dmg
+#   When not given the dmgName is derived from the last part of the downloadURL
+#
+# - appName: (optional)
 #   file name of the app bundle in the dmg to verify and copy (include .app)
+#   When not given, the App name is derived from the dmgName by removing the extension
+#   and adding .app
 #
 # - expectedTeamID:
 #   10-digit developer team ID
@@ -66,19 +72,20 @@ case $identifier in
         ;;
     Spotify)
         downloadURL="https://download.scdn.co/Spotify.dmg"
-        appName="Spotify.app"
         expectedTeamID="2FNC3A47ZF"
         ;;
     BBEdit)
         downloadURL=$(curl -s https://versioncheck.barebones.com/BBEdit.xml | grep dmg | sort | tail -n1 | cut -d">" -f2 | cut -d"<" -f1)
-        appName="BBEdit.app"
         expectedTeamID="W52GZAXT98"
         ;;
     Firefox)
         downloadURL="https://download.mozilla.org/?product=firefox-latest&amp;os=osx&amp;lang=en-US"
         dmgName="Firefox.dmg"
-        appName="Firefox.app"
         expectedTeamID="43AQ936H96"
+        ;;
+    WhatsApp)
+        downloadURL="https://web.whatsapp.com/desktop/mac/files/WhatsApp.dmg"
+        expectedTeamID="57T9237FN3"
         ;;
     brokenDownloadURL)
         downloadURL="https://broken.com/broken.dmg"
@@ -104,6 +111,10 @@ esac
 
 if [ -z "$dmgName" ]; then
     dmgName="${downloadURL##*/}"
+fi
+
+if [ -z "$appName" ]; then
+    appName="${dmgName%%.*}.app"
 fi
 
 cleanupAndExit() { # $1 = exit code
