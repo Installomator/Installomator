@@ -17,9 +17,24 @@ else
     identifier=${4:?"argument $4 required"}
 fi
 
+# lowercase the identifier
+identifier=$(echo "$identifier" |  tr '[:upper:]' '[:lower:]' )
+
 # each identifier needs to be listed in the case statement below
 # for each identifier these three variables must be set:
 #
+# - name:
+#   Name of the installed app.
+#   This is used to derive many of the other variables.
+#
+# - type:
+#   The type of the installation. Possible values:
+#     - dmg
+#     - pkg
+#     - zip (not yet implemented)
+#     - pkgInDmg (not yet implemented)
+#     - pkgInZip (not yet implemented)
+# 
 # - downloadURL: 
 #   URL to download the dmg
 #
@@ -47,7 +62,7 @@ fi
 # - targetDir: (optional)
 #   Applications will be copied to this directory, remember to omit trailing '/'
 #   default value is '/Applications' for dmg and zip installations
-#   for pkgs default targetDir is "/"
+#   With a pkg the targetDir is used as the install-location. Default is "/"
 
 
 # todos:
@@ -57,8 +72,8 @@ fi
 # TODO: check for running processes and either abort or prompt user
 # TODO: print version of installed software
 # TODO: notification when done
-# TODO: refactor variables to use a generic "Name"
-# TODO: make argument case-insensitive
+# TODO: build helper tool to build case statement from a URL
+# TODO: add remaining MS pkgs
 
 # functions to help with getting info
 
@@ -81,66 +96,82 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
 case $identifier in
 
-    GoogleChrome)
+    googlechrome)
+        name="Google Chrome"
+        type="dmg"
         downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-        appName="Google Chrome.app"
         expectedTeamID="EQHXZ8M8AV"
         ;;
-    Spotify)
+    spotify)
+        name="Spotify"
+        type="dmg"
         downloadURL="https://download.scdn.co/Spotify.dmg"
         expectedTeamID="2FNC3A47ZF"
         ;;
-    BBEdit)
+    bbedit)
+        name="BBEdit"
+        type="dmg"
         downloadURL=$(curl -s https://versioncheck.barebones.com/BBEdit.xml | grep dmg | sort | tail -n1 | cut -d">" -f2 | cut -d"<" -f1)
-        appName="BBEdit.app"
         expectedTeamID="W52GZAXT98"
         ;;
-    Firefox)
+    firefox)
+        name="Firefox"
+        type="dmg"
         downloadURL="https://download.mozilla.org/?product=firefox-latest&amp;os=osx&amp;lang=en-US"
-        archiveName="Firefox.dmg"
         expectedTeamID="43AQ936H96"
         ;;
-    WhatsApp)
+    whatsapp)
+        name="WhatsApp"
+        type="dmg"
         downloadURL="https://web.whatsapp.com/desktop/mac/files/WhatsApp.dmg"
         expectedTeamID="57T9237FN3"
         ;;
     desktoppr)
+        name="desktoppr"
+        type="pkg"
         downloadURL=$(downloadURLFromGit "scriptingosx" "desktoppr")
         expectedTeamID="JME5BW3F3R"
         ;;
-    Malwarebytes)
+    malwarebytes)
+        name="Malwarebytes"
+        type="pkg"
         downloadURL="https://downloads.malwarebytes.com/file/mb3-mac"
-        archiveName="Malwarebytes.pkg"
         expectedTeamID="GVZRY6KDKR"
         ;;
-    MicrosoftOffice365)
+    microsoftoffice365)
+        name="MicrosoftOffice365"
+        type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=525133"
-        archiveName="MSOffice365.pkg"
         expectedTeamID="UBF8T346G9"
         ;;   
-    MicrosoftEdge)
+    microsoftedgeconsumerstable)
+        name="MicrosoftEdgeConsumerStable"
+        type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2069148"
-        archiveName="MSEdge.pkg"
         expectedTeamID="UBF8T346G9"
         ;;
-    MicrosoftCompanyPortal)  
+    microsoftcompanyportal)  
+        name="MicrosoftCompanyPortal"
+        type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869655"
-        archiveName="MSCompanyPortal.pkg"
         expectedTeamID="UBF8T346G9"
         ;;
-    MicrosoftSkypeBusiness)  
+    microsoftskypeforbusiness)  
+        name="MicrosoftSkypeForBusiness"
+        type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=832978"
-        archiveName="MSSkypeBusiness.pkg"
         expectedTeamID="UBF8T346G9"
         ;;
-    MicrosoftRemoteDesktop)  
+    microsoftremotedesktop)  
+        name="MicrosoftRemoteDesktop"
+        type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
-        archiveName="MSRemoteDesktop.pkg"
         expectedTeamID="UBF8T346G9"
         ;;
-    MicrosoftTeams)  
+    microsoftteams)  
+        name="MicrosoftTeams"
+        type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
-        archiveName="MSTeams.pkg"
         expectedTeamID="UBF8T346G9"
         ;;
     # note: there are more available MS downloads to add
@@ -317,26 +348,34 @@ installFromPKG() {
 
 # extract info from data
 if [ -z "$archiveName" ]; then
-    # when not given use last element of URL
-    archiveName="${downloadURL##*/}"
-fi
-
-if [ -z "$type" ]; then
-    # when not given use extension of archiveName
-    type="${archiveName##*.}"
+    case $type in
+        dmg|pkg|zip)
+            archiveName="${name}.$type"
+            ;;
+        pkgInDmg)
+            archiveName="${name}.dmg"
+            ;;
+        pkgInZip)
+            archiveName="${name}.zip"
+            ;;
+        *)
+            echo "Cannot handle type $type"
+            cleanupAndExit 99
+            ;;
+    esac
 fi
 
 if [ -z "$appName" ]; then
-    # when not given derive from archiveName
-    appName="${archiveName%.*}.app"
+    # when not given derive from name
+    appName="$name.app"
 fi
 
 if [ -z "$targetDir" ]; then
     case $type in
-        dmg)
+        dmg|zip)
             targetDir="/Applications"
             ;;
-        pkg)
+        pkg*)
             targetDir="/"
             ;;
         *)
