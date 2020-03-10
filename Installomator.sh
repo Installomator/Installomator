@@ -49,14 +49,16 @@ fi
 #   default value is '/Applications' for dmg and zip installations
 #   for pkgs default targetDir is "/"
 
+
 # todos:
 
-# TODO: add pkg support
 # TODO: add zip support
 # TODO: handle pkgs in dmg or zip
 # TODO: check for running processes and either abort or prompt user
-# TODO: log version of installed software
+# TODO: print version of installed software
 # TODO: notification when done
+# TODO: refactor variables to use a generic "Name"
+# TODO: make argument case-insensitive
 
 # functions to help with getting info
 
