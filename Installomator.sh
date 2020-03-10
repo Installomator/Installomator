@@ -101,7 +101,65 @@ case $identifier in
         downloadURL=$(downloadURLFromGit "scriptingosx" "desktoppr")
         expectedTeamID="JME5BW3F3R"
         ;;
-    
+    MicrosoftOffice365)
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=525133"
+        archiveName="MSOffice365.pkg"
+        expectedTeamID="UBF8T346G9"
+        ;;   
+    MicrosoftEdge)
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=2069148"
+        archiveName="MSEdge.pkg"
+        expectedTeamID="UBF8T346G9"
+        ;;
+    MicrosoftCompanyPortal)  
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=869655"
+        archiveName="MSCompanyPortal.pkg"
+        expectedTeamID="UBF8T346G9"
+        ;;
+    MicrosoftSkypeBusiness)  
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=832978"
+        archiveName="MSSkypeBusiness.pkg"
+        expectedTeamID="UBF8T346G9"
+        ;;
+    MicrosoftRemoteDesktop)  
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
+        archiveName="MSRemoteDesktop.pkg"
+        expectedTeamID="UBF8T346G9"
+        ;;
+    MicrosoftTeams)  
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
+        archiveName="MSTeams.pkg"
+        expectedTeamID="UBF8T346G9"
+        ;;
+    # note: there are more available MS downloads to add
+    # 525133 - Office 2019 for Mac SKUless download (aka Office 365)
+    # 2009112 - Office 2019 for Mac BusinessPro SKUless download (aka Office 365 with Teams)
+    # 871743 - Office 2016 for Mac SKUless download
+    # 830196 - AutoUpdate download
+    # 2069148 - Edge (Consumer Stable)
+    # 2069439 - Edge (Consumer Beta)
+    # 2069340 - Edge (Consumer Dev)
+    # 2069147 - Edge (Consumer Canary)
+    # 2093438 - Edge (Enterprise Stable)
+    # 2093294 - Edge (Enterprise Beta)
+    # 2093292 - Edge (Enterprise Dev)
+    # 525135 - Excel 2019 SKUless download
+    # 871750 - Excel 2016 SKUless download
+    # 869655 - InTune Company Portal download
+    # 823060 - OneDrive download
+    # 820886 - OneNote download
+    # 525137 - Outlook 2019 SKUless download
+    # 871753 - Outlook 2016 SKUless download
+    # 525136 - PowerPoint 2019 SKUless download
+    # 871751 - PowerPoint 2016 SKUless download
+    # 868963 - Remote Desktop
+    # 800050 - SharePoint Plugin download
+    # 832978 - Skype for Business download
+    # 869428 - Teams
+    # 525134 - Word 2019 SKUless download
+    # 871748 - Word 2016 SKUless download
+
+        
     # these identifiers exist for testing
     brokenDownloadURL)
         downloadURL="https://broken.com/broken.dmg"
@@ -224,16 +282,17 @@ installFromPKG() {
         cleanupAndExit 5
     fi
     
+    # skip install for DEBUG
+    if [ "$DEBUG" -ne 0 ]; then
+        echo "DEBUG enabled, skipping installation"
+        return 0
+    fi
+    
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
-        if [ "$DEBUG" -eq 0 ]; then
-            echo "not running as root, exiting"
-            cleanupAndExit 6
-        fi
-    
-        echo "DEBUG enabled, skipping installation"
-        return 0
+        echo "not running as root, exiting"
+        cleanupAndExit 6    
     fi
 
     # install pkg
@@ -277,11 +336,13 @@ if [ -z "$targetDir" ]; then
     esac
 fi
 
-# create temporary working directory
-tmpDir=$(mktemp -d )
+# determine tmp dir
 if [ "$DEBUG" -eq 1 ]; then
     # for debugging use script dir as working directory
     tmpDir=$(dirname "$0")
+else
+    # create temporary working directory
+    tmpDir=$(mktemp -d )
 fi
 
 # change directory to temporary working directory
