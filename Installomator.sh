@@ -27,7 +27,11 @@ fi
 #   10-digit developer team ID
 #   obtain this by running 
 #
+#   Applications (in dmgs or zips)
 #   spctl -a -vv /Applications/BBEdit.app
+#
+#   Pkgs
+#   spctl -a -vv -t install /Applications/BBEdit.app
 #
 #   the team ID is the ten-digit ID at the end of the line starting with 'origin='
 # 
@@ -49,6 +53,7 @@ fi
 
 # TODO: add pkg support
 # TODO: add zip support
+# TODO: handle pkgs in dmg or zip
 # TODO: check for running processes and either abort or prompt user
 # TODO: log version of installed software
 # TODO: notification when done
@@ -100,6 +105,11 @@ case $identifier in
     desktoppr)
         downloadURL=$(downloadURLFromGit "scriptingosx" "desktoppr")
         expectedTeamID="JME5BW3F3R"
+        ;;
+    Malwarebytes)
+        downloadURL="https://downloads.malwarebytes.com/file/mb3-mac"
+        archiveName="Malwarebytes.pkg"
+        expectedTeamID="GVZRY6KDKR"
         ;;
     MicrosoftOffice365)
         downloadURL="https://go.microsoft.com/fwlink/?linkid=525133"
@@ -189,8 +199,6 @@ cleanupAndExit() { # $1 = exit code
         # remove the temporary working directory when done
         echo "Deleting $tmpDir"
         rm -Rf "$tmpDir"
-    else
-        open "$tmpDir"
     fi
     
     if [ -n "$dmgmount" ]; then
