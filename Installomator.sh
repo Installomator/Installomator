@@ -85,6 +85,7 @@ case $identifier in
         ;;
     BBEdit)
         downloadURL=$(curl -s https://versioncheck.barebones.com/BBEdit.xml | grep dmg | sort | tail -n1 | cut -d">" -f2 | cut -d"<" -f1)
+        appName="BBEdit.app"
         expectedTeamID="W52GZAXT98"
         ;;
     Firefox)
@@ -192,7 +193,7 @@ installFromDMG() {
 
     # copy app to /Applications
     echo "Copy $dmgmount/$appName to $targetDir"
-    if ! ditto "$dmgmount/$appName" "$targetDir"; then
+    if ! ditto "$dmgmount/$appName" "$targetDir/$appName"; then
         echo "Error while copying!"
         cleanupAndExit 7
     fi
