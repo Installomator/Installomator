@@ -44,6 +44,7 @@ elif [ "$archiveExt" = "dmg" ]; then
     # check if app exists
     
     appPath=$(find "$dmgmount" -name "*.app" -maxdepth 1 -print )
+    appName=${appPath##*/}
 
     # verify with spctl
     echo "Verifying: $appPath"
@@ -53,6 +54,20 @@ elif [ "$archiveExt" = "dmg" ]; then
     fi
     
     hdiutil detach "$dmgmount"
+elif [ "$archiveExt" = "zip" ]; then
+    # unzip the archive
+    unzip -qq "$archiveName"
+    
+    # check if app exists
+    appPath=$(find "$tmpDir" -name "*.app" -maxdepth 2 -print )
+    appName=${appPath##*/}
+    # verify with spctl
+    echo "Verifying: $appPath"
+    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' ); then
+        echo "Error verifying $appPath"
+        exit 4
+    fi
+
 fi
 
 echo
@@ -60,7 +75,10 @@ echo "    $identifier)"
 echo "        name=\"$name\""
 echo "        type=\"$archiveExt\""
 echo "        downloadURL=\"$downloadURL\""
-echo "        teamID=\"$teamID\""
+echo "        expectedTeamID=\"$teamID\""
+if [ -n "$appName" ] && [ "$appName" != "${name}.app" ]; then
+echo "        appName=\"$appName\""
+fi
 echo "        ;;"
 echo 
 
