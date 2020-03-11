@@ -188,12 +188,13 @@ case $identifier in
         downloadURL="https://downloads.malwarebytes.com/file/mb3-mac"
         expectedTeamID="GVZRY6KDKR"
         ;;
-    suspiciouspackage) # thanks Mischa van der Bent
-        name="Suspicious Package"
-        type="dmg"
-        downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
-        expectedTeamID="936EB786NH"
-        ;;
+    suspiciouspackage)
+        # thanks to Mischa van der Bent
+        name="Suspicious Package"
+        type="dmg"
+        downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
+        expectedTeamID="936EB786NH"
+        ;;
     atom)
         name="Atom"
         type="zip"
@@ -257,6 +258,14 @@ case $identifier in
         downloadURL="https://go.microsoft.com/fwlink/?linkid=800050"
         teamID="UBF8T346G9"
         # TODO: determine blockingProcesses for SharePointPlugin
+        ;;
+    visualstudiocode)
+        name="Visual Studio Code"
+        type="zip"
+        downloadURL="https://go.microsoft.com/fwlink/?LinkID=620882"
+        expectedTeamID="UBF8T346G9"
+        appName="Visual Studio Code.app"
+        blockingProcesses=( Electron )
         ;;
 
     # note: there are more available MS downloads to add
