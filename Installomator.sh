@@ -52,16 +52,15 @@ identifier=$(echo "$identifier" |  tr '[:upper:]' '[:lower:]' )
 # 
 # - archiveName: (optional)
 #   The name of the downloaded dmg
-#   When not given the archiveName is derived from the last part of the downloadURL
+#   When not given the archiveName is derived from the name
 #
 # - appName: (optional)
 #   file name of the app bundle in the dmg to verify and copy (include .app)
-#   When not given, the App name is derived from the archiveName by removing the extension
-#   and adding .app
+#   When not given, the App name is derived from the name
 #
 # - targetDir: (optional)
-#   Applications will be copied to this directory, remember to omit trailing '/'
-#   default value is '/Applications' for dmg and zip installations
+#   Applications will be copied to this directory
+#   Default value is '/Applications' for dmg and zip installations
 #   With a pkg the targetDir is used as the install-location. Default is "/"
 
 
@@ -72,7 +71,6 @@ identifier=$(echo "$identifier" |  tr '[:upper:]' '[:lower:]' )
 # TODO: check for running processes and either abort or prompt user
 # TODO: print version of installed software
 # TODO: notification when done
-# TODO: build helper tool to build case statement from a URL
 # TODO: add remaining MS pkgs
 
 # functions to help with getting info
