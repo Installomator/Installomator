@@ -105,7 +105,11 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
     
+    if [ -n "$archiveName" ]; then
+    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
+    else
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$type/ { print \$4 }")
+    fi
     if [ -z "$downloadURL" ]; then
         echo "could not retrieve download URL for $gitusername/$gitreponame"
         cleanupAndExit 9
@@ -190,6 +194,14 @@ case $identifier in
         downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
         expectedTeamID="936EB786NH"
         ;;
+    atom)
+        name="Atom"
+        type="zip"
+        archiveName="atom-mac.zip"
+        downloadURL=$(downloadURLFromGit atom atom )
+        expectedTeamID="VEKTX9H2N7"
+        ;;
+
     microsoftoffice365)
         name="MicrosoftOffice365"
         type="pkg"
@@ -385,6 +397,65 @@ checkRunningProcesses() {
     echo "no more blocking processes, continue with update"
 }
 
+installAppWithPath() { # $1: path to app to install in $targetDir
+    appPath=${1?:"no path to app"}
+    
+    # check if app exists
+    if [ ! -e "$appPath" ]; then
+        echo "could not find: $appPath"
+        cleanupAndExit 8
+    fi
+
+    # verify with spctl
+    echo "Verifying: $appPath"
+    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
+        echo "Error verifying $appPath"
+        cleanupAndExit 4
+    fi
+
+    echo "Team ID: $teamID (expected: $expectedTeamID )"
+
+    if [ "$expectedTeamID" != "$teamID" ]; then
+        echo "Team IDs do not match!"
+        cleanupAndExit 5
+    fi
+
+    # check for root
+    if [ "$(whoami)" != "root" ]; then
+        # not running as root
+        if [ "$DEBUG" -eq 0 ]; then
+            echo "not running as root, exiting"
+            cleanupAndExit 6
+        fi
+    
+        echo "DEBUG enabled, skipping copy and chown steps"
+        return 0
+    fi
+
+    # remove existing application
+    if [ -e "$targetDir/$appName" ]; then
+        echo "Removing existing $targetDir/$appName"
+        rm -Rf "$targetDir/$appName"
+    fi
+
+    # copy app to /Applications
+    echo "Copy $appPath to $targetDir"
+    if ! ditto "$appPath" "$targetDir/$appName"; then
+        echo "Error while copying!"
+        cleanupAndExit 7
+    fi
+
+
+    # set ownership to current user
+    if [ -n "$currentUser" ]; then
+        echo "Changing owner to $currentUser"
+        chown -R "$currentUser" "$targetDir/$appName" 
+    else
+        echo "No user logged in, not changing user"
+    fi
+
+}
+
 installFromDMG() {
     # mount the dmg
     echo "Mounting $tmpDir/$archiveName"
@@ -486,6 +557,14 @@ installFromPKG() {
     fi
 }
 
+installFromZIP() {
+    # unzip the archive
+    echo "Unzipping $archiveName"
+    unzip -o -qq "$archiveName"
+    
+    installAppWithPath "$tmpDir/$appName"
+}
+
 
 
 ### main code starts here
@@ -569,6 +648,8 @@ else
     fi
 fi
 
+# download the archive
+
 if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
     echo "$archiveName exists and DEBUG enabled, skipping download"
 else
@@ -586,6 +667,9 @@ case $type in
         ;;
     pkg)
         installFromPKG
+        ;;
+    zip)
+        installFromZIP
         ;;
     *)
         echo "Cannot handle type $type"
