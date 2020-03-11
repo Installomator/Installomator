@@ -106,9 +106,11 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitreponame=${2?:"no git repo name"}
     
     if [ -n "$archiveName" ]; then
-    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
+    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
+    | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
     else
-    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$type/ { print \$4 }")
+    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
+    | awk -F '"' "/browser_download_url/ && /$type/ { print \$4 }")
     fi
     if [ -z "$downloadURL" ]; then
         echo "could not retrieve download URL for $gitusername/$gitreponame"
@@ -201,6 +203,12 @@ case $identifier in
         archiveName="atom-mac.zip"
         downloadURL=$(downloadURLFromGit atom atom )
         expectedTeamID="VEKTX9H2N7"
+        ;;
+    eraseinstall)
+        name="EraseInstall"
+        type="pkg"
+        downloadURL="https://bitbucket.org"$(curl -s https://bitbucket.org/prowarehouse-nl/erase-install/downloads/ | grep pkg | cut -d'"' -f2 | head -n 1)
+        expectedTeamID="R55HK5K86Y"
         ;;
 
     microsoftoffice365)
