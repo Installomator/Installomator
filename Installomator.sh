@@ -129,6 +129,7 @@ case $identifier in
         type="dmg"
         downloadURL="https://download.mozilla.org/?product=firefox-latest&amp;os=osx&amp;lang=en-US"
         expectedTeamID="43AQ936H96"
+        blockingProcesses=( firefox )
         ;;
     whatsapp)
         name="WhatsApp"
@@ -291,6 +292,42 @@ displaydialog() { # $1: message
     runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
 }
 
+checkRunningProcesses() {
+    # try at most 3 times
+    for i in {1..3}; do
+        countedProcesses=0
+        for x in ${blockingProcesses}; do
+            if pgrep -xq "$x"; then
+                echo "process $x is running"
+                # pkill $x
+                button=$(displaydialog "The application $x needs to be updated. Quit $x to continue updating?")
+                if [[ $button = "Not Now" ]]; then
+                    echo "user aborted update"
+                    cleanupAndExit 10
+                else
+                    runAsUser osascript -e "tell app \"$x\" to quit"
+                fi
+                countedProcesses=$((countedProcesses + 1))
+                countedErrors=$((countedErrors + 1))
+            fi
+        done
+
+        if [[ $countedProcesses -eq 0 ]]; then
+            # no blocking processes, exit the loop early
+            break
+        else
+            # give the user a bit of time to quit apps
+            sleep 20
+        fi
+    done
+
+    if [[ $countedProcesses -ne 0 ]]; then
+        echo "could not quit all processes, aborting..."
+        cleanupAndExit 11
+    fi
+
+    echo "no more blocking processes, continue with update"
+}
 
 installFromDMG() {
     # mount the dmg
@@ -349,7 +386,6 @@ installFromDMG() {
 
 
     # set ownership to current user
-    currentUser=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
     if [ -n "$currentUser" ]; then
         echo "Changing owner to $currentUser"
         chown -R "$currentUser" "$targetDir/$appName" 
@@ -394,7 +430,11 @@ installFromPKG() {
     fi
 }
 
-# main
+
+
+### main code starts here
+
+
 
 # extract info from data
 if [ -z "$archiveName" ]; then
@@ -435,6 +475,13 @@ if [ -z "$targetDir" ]; then
     esac
 fi
 
+if [[ -z $blockingProcesses ]]; then
+    echo "no blocking processes defined, using $name as default"
+    blockingProcesses=( $name )
+fi
+
+currentUser=$(consoleUser)
+
 # determine tmp dir
 if [ "$DEBUG" -eq 1 ]; then
     # for debugging use script dir as working directory
@@ -452,7 +499,13 @@ if ! cd "$tmpDir"; then
     cleanupAndExit 1
 fi
 
-# TODO: when user is logged in, and app is running, prompt user to quit app
+# when user is logged in, and app is running, prompt user to quit app
+
+if [[ $currentUser != "loginwindow" ]]; then
+    if [[ ${#blockingProcesses} -gt 0 ]]; then
+        checkRunningProcesses
+    fi
+fi
 
 if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
     echo "$archiveName exists and DEBUG enabled, skipping download"

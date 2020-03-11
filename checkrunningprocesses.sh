@@ -56,7 +56,7 @@ if [[ $countedProcesses -ne 0 ]]; then
     exit 1
 fi
 
-echo "everything is quit, continue with update"
+echo "no more blocking processes, continue with update"
 
 exit 0
 
