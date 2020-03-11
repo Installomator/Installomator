@@ -221,19 +221,22 @@ case $identifier in
 
         
     # these identifiers exist for testing
-    brokenDownloadURL)
+    brokendownloadurl)
+        name="Google Chrome"
+        type="dmg"
         downloadURL="https://broken.com/broken.dmg"
-        appName="Google Chrome.app"
         expectedTeamID="EQHXZ8M8AV"
         ;;
-    brokenAppName)
+    brokenappname)
+        name="brokenapp"
+        type="dmg"
         downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-        appName="broken.app"
         expectedTeamID="EQHXZ8M8AV"
         ;;
-    brokenTeamID)
+    brokenteamid)
+        name="Google Chrome"
+        type="dmg"
         downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-        appName="Google Chrome.app"
         expectedTeamID="broken"
         ;;
     *)
