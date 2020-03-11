@@ -90,13 +90,12 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 # todos:
 
-# TODO: add zip support
 # TODO: handle pkgs in dmg or zip
 # TODO: print version of installed software
 # TODO: notification when done
 # TODO: add remaining MS pkgs
 # TODO: determine blockingProcesses for SharePointPlugin
-
+# TODO: use Sparkle to get latest download 
 
 # functions to help with getting info
 
