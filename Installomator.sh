@@ -7,15 +7,117 @@
 #
 # inspired by the download scripts from William Smith and Sander Schram
 
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin
-
 VERSION='20200311'
 
-# (set to 0 for production, 1 for debugging)
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# adjust these variables:
+
+# set to 0 for production, 1 for debugging
+# while debugging, items will be downloaded to the parent directory of this script
+# also no actual installation will be performed
 DEBUG=1 
 
 # if this is set to 1, the argument will be picked up at $4 instead of $1
-JAMF=0 
+JAMF=0
+
+# behavior when blocking processes are found
+BLOCKING_PROCESS_ACTION=prompt_user
+# options:
+#   - ignore       continue even when blocking processes are found
+#   - silent_fail  exit script without prompt or installation
+#   - prompt_user  show a user dialog for each blocking process found
+#                  abort after three attempts to quit
+#   - kill         kill process without prompting or giving the user a chance to save
+
+
+
+# Each workflow identifier needs to be listed in the case statement below.
+# for each identifier these variables can be set:
+#
+# - name: (required)
+#   Name of the installed app.
+#   This is used to derive many of the other variables.
+#
+# - type: (required)
+#   The type of the installation. Possible values:
+#     - dmg
+#     - pkg
+#     - zip (not yet implemented)
+#     - pkgInDmg (not yet implemented)
+#     - pkgInZip (not yet implemented)
+# 
+# - downloadURL: (required)
+#   URL to download the dmg.
+#   Can be generated with a series of commands (see BBEdit for an example).
+#
+# - expectedTeamID: (required)
+#   10-digit developer team ID.
+#   Obtain the team ID by running:
+#
+#   - Applications (in dmgs or zips)
+#     spctl -a -vv /Applications/BBEdit.app
+#
+#   - Pkgs
+#     spctl -a -vv -t install ~/Downloads/desktoppr-0.2.pkg
+#
+#   The team ID is the ten-digit ID at the end of the line starting with 'origin='
+# 
+# - archiveName: (optional)
+#   The name of the downloaded file.
+#   When not given the archiveName is derived from the $name.
+#
+# - appName: (optional)
+#   File name of the app bundle in the dmg to verify and copy (include .app).
+#   When not given, the appName is derived from the $name.
+#
+# - targetDir: (optional)
+#   dmg or zip:
+#     Applications will be copied to this directory.
+#     Default value is '/Applications' for dmg and zip installations.
+#   pkg: 
+#     targetDir is used as the install-location. Default is '/'.
+#
+# - blockingProcesses: (optional)
+#   Array of process names that will block the installation or update.
+#   If no blockingProcesses array is given the default will be:
+#     blockingProcesses=( $name )
+#   When a package contains multiple applications, _all_ should be listed, e.g:
+#     blockingProcesses=( "Keynote" "Pages" "Numbers" )
+#   When a workflow has no blocking processes, use
+#     blockingProcesses=( NONE )
+# 
+
+# todos:
+
+# TODO: add zip support
+# TODO: handle pkgs in dmg or zip
+# TODO: print version of installed software
+# TODO: notification when done
+# TODO: add remaining MS pkgs
+# TODO: determine blockingProcesses for SharePointPlugin
+
+
+# functions to help with getting info
+
+# will get the latest release download from a github repo
+downloadURLFromGit() { # $1 git user name, $2 git repo name
+    gitusername=${1?:"no git user name"}
+    gitreponame=${2?:"no git repo name"}
+    
+    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$type/ { print \$4 }")
+    if [ -z "$downloadURL" ]; then
+        echo "could not retrieve download URL for $gitusername/$gitreponame"
+        cleanupAndExit 9
+    else
+        echo "$downloadURL"
+        return 0
+    fi
+}
+
+
+
+# get the identifier from the argument
 
 if [ "$JAMF" -eq 0 ]; then
     identifier=${1:?"no identifier provided"}
@@ -26,75 +128,7 @@ fi
 # lowercase the identifier
 identifier=$(echo "$identifier" |  tr '[:upper:]' '[:lower:]' )
 
-# each identifier needs to be listed in the case statement below
-# for each identifier these three variables must be set:
-#
-# - name:
-#   Name of the installed app.
-#   This is used to derive many of the other variables.
-#
-# - type:
-#   The type of the installation. Possible values:
-#     - dmg
-#     - pkg
-#     - zip (not yet implemented)
-#     - pkgInDmg (not yet implemented)
-#     - pkgInZip (not yet implemented)
-# 
-# - downloadURL: 
-#   URL to download the dmg
-#
-# - expectedTeamID:
-#   10-digit developer team ID
-#   obtain this by running 
-#
-#   Applications (in dmgs or zips)
-#   spctl -a -vv /Applications/BBEdit.app
-#
-#   Pkgs
-#   spctl -a -vv -t install ~/Downloads/desktoppr-0.2.pkg
-#
-#   The team ID is the ten-digit ID at the end of the line starting with 'origin='
-# 
-# - archiveName: (optional)
-#   The name of the downloaded file
-#   When not given the archiveName is derived from the name
-#
-# - appName: (optional)
-#   file name of the app bundle in the dmg to verify and copy (include .app)
-#   When not given, the App name is derived from the name
-#
-# - targetDir: (optional)
-#   Applications will be copied to this directory
-#   Default value is '/Applications' for dmg and zip installations
-#   With a pkg the targetDir is used as the install-location. Default is "/"
 
-
-# todos:
-
-# TODO: add zip support
-# TODO: handle pkgs in dmg or zip
-# TODO: check for running processes and either abort or prompt user
-# TODO: print version of installed software
-# TODO: notification when done
-# TODO: add remaining MS pkgs
-
-# functions to help with getting info
-
-# will get the latest release download from a github repo
-downloadURLFromGit() { # $1 git user name, $2 git repo name
-    gitusername=${1?:"no git user name"}
-    gitreponame=${2?:"no git repo name"}
-    
-    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' '/browser_download_url/ { print $4 }')
-    if [ -z "$downloadURL" ]; then
-        echo "could not retrieve download URL for $gitusername/$gitreponame"
-        cleanupAndExit 9
-    else
-        echo "$downloadURL"
-        return 0
-    fi
-}
 
 # identifiers in case statement
 
@@ -142,6 +176,7 @@ case $identifier in
         type="pkg"
         downloadURL=$(downloadURLFromGit "scriptingosx" "desktoppr")
         expectedTeamID="JME5BW3F3R"
+        blockingProcesses=( NONE )
         ;;
     malwarebytes)
         name="Malwarebytes"
@@ -154,45 +189,46 @@ case $identifier in
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=525133"
         expectedTeamID="UBF8T346G9"
+        blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" )
         ;;   
     microsoftedgeconsumerstable)
-        name="MicrosoftEdgeConsumerStable"
+        name="Microsoft Edge"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2069148"
         expectedTeamID="UBF8T346G9"
         ;;
     microsoftcompanyportal)  
-        name="MicrosoftCompanyPortal"
+        name="Company Portal"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869655"
         expectedTeamID="UBF8T346G9"
         ;;
     microsoftskypeforbusiness)  
-        name="MicrosoftSkypeForBusiness"
+        name="Skype for Business"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=832978"
         expectedTeamID="UBF8T346G9"
         ;;
     microsoftremotedesktop)  
-        name="MicrosoftRemoteDesktop"
+        name="Microsoft Remote Desktop"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
         expectedTeamID="UBF8T346G9"
         ;;
     microsoftteams)  
-        name="MicrosoftTeams"
+        name="Teams"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
         expectedTeamID="UBF8T346G9"
         ;;
     microsoftautoupdate)
-        name="MicrosoftAutoUpdate§"
+        name="Microsoft AutoUpdate"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=830196"
         teamID="UBF8T346G9"
         ;;
     microsoftedgeenterprisestable)
-        name="MicrosoftEdgeEnterpriseStable"
+        name="Microsoft Edge"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2093438"
         teamID="UBF8T346G9"
@@ -202,6 +238,7 @@ case $identifier in
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=800050"
         teamID="UBF8T346G9"
+        # TODO: determine blockingProcesses for SharePointPlugin
         ;;
 
     # note: there are more available MS downloads to add
@@ -298,17 +335,29 @@ checkRunningProcesses() {
         countedProcesses=0
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
-                echo "process $x is running"
-                # pkill $x
-                button=$(displaydialog "The application $x needs to be updated. Quit $x to continue updating?")
-                if [[ $button = "Not Now" ]]; then
-                    echo "user aborted update"
-                    cleanupAndExit 10
-                else
-                    runAsUser osascript -e "tell app \"$x\" to quit"
-                fi
+                echo "found blocking process $x"
+                
+                case $BLOCKING_PROCESS_ACTION in
+                    kill)
+                      echo "killing process $x"
+                      pkill $x
+                      ;;
+                    prompt_user)
+                      button=$(displaydialog "The application $x needs to be updated. Quit $x to continue updating?")
+                      if [[ $button = "Not Now" ]]; then
+                        echo "user aborted update"
+                        cleanupAndExit 10
+                      else
+                        runAsUser osascript -e "tell app \"$x\" to quit"
+                      fi
+                      ;;
+                    silent_fail)
+                      echo "aborting"
+                      cleanupAndExit 12
+                      ;;
+                esac
+                
                 countedProcesses=$((countedProcesses + 1))
-                countedErrors=$((countedErrors + 1))
             fi
         done
 
@@ -317,7 +366,8 @@ checkRunningProcesses() {
             break
         else
             # give the user a bit of time to quit apps
-            sleep 20
+            echo "waiting 30 seconds for processes to quit"
+            sleep 30
         fi
     done
 
@@ -501,9 +551,15 @@ fi
 
 # when user is logged in, and app is running, prompt user to quit app
 
-if [[ $currentUser != "loginwindow" ]]; then
-    if [[ ${#blockingProcesses} -gt 0 ]]; then
-        checkRunningProcesses
+if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
+    echo "ignoring blocking processes"
+else
+    if [[ $currentUser != "loginwindow" ]]; then
+        if [[ ${#blockingProcesses} -gt 0 ]]; then
+            if [[ ${blockingProcesses[1]} != "NONE" ]]; then
+                checkRunningProcesses
+            fi
+        fi
     fi
 fi
 
