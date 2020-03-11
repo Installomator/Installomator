@@ -1,15 +1,21 @@
 #!/bin/zsh
 
 # Installomator
-
+#
 # Downloads and installs an Applications
-
+# 2020 Armin Briegel - Scripting OS X
+#
 # inspired by the download scripts from William Smith and Sander Schram
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-DEBUG=1 # (set to 0 for production, 1 for debugging)
-JAMF=0 # if this is set to 1, the argument will be picked up at $4 instead of $1
+VERSION='20200311'
+
+# (set to 0 for production, 1 for debugging)
+DEBUG=1 
+
+# if this is set to 1, the argument will be picked up at $4 instead of $1
+JAMF=0 
 
 if [ "$JAMF" -eq 0 ]; then
     identifier=${1:?"no identifier provided"}
@@ -46,12 +52,12 @@ identifier=$(echo "$identifier" |  tr '[:upper:]' '[:lower:]' )
 #   spctl -a -vv /Applications/BBEdit.app
 #
 #   Pkgs
-#   spctl -a -vv -t install /Applications/BBEdit.app
+#   spctl -a -vv -t install ~/Downloads/desktoppr-0.2.pkg
 #
-#   the team ID is the ten-digit ID at the end of the line starting with 'origin='
+#   The team ID is the ten-digit ID at the end of the line starting with 'origin='
 # 
 # - archiveName: (optional)
-#   The name of the downloaded dmg
+#   The name of the downloaded file
 #   When not given the archiveName is derived from the name
 #
 # - appName: (optional)
@@ -93,7 +99,13 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 # identifiers in case statement
 
 case $identifier in
-
+    version)
+        # print the script version
+        echo "Installomater: version $VERSION"
+        exit 0
+        ;;
+    
+    # app descriptions start here
     googlechrome)
         name="Google Chrome"
         type="dmg"
@@ -220,7 +232,7 @@ case $identifier in
     # 871748 - Word 2016 SKUless download
 
         
-    # these identifiers exist for testing
+    # these description exist for testing and are intentionally broken
     brokendownloadurl)
         name="Google Chrome"
         type="dmg"
@@ -261,6 +273,24 @@ cleanupAndExit() { # $1 = exit code
     fi
     exit "$1"
 }
+
+consoleUser() {
+    scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }'
+}
+
+runAsUser() {  
+    cuser=$(consoleUser)
+    if [[ $cuser != "loginwindow" ]]; then
+        uid=$(id -u "$cuser")
+        launchctl asuser $uid sudo -u $cuser "$@"
+    fi
+}
+
+displaydialog() { # $1: message
+    message=${1:-"Message"}
+    runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
+}
+
 
 installFromDMG() {
     # mount the dmg
