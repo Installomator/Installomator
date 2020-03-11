@@ -184,6 +184,12 @@ case $identifier in
         downloadURL="https://downloads.malwarebytes.com/file/mb3-mac"
         expectedTeamID="GVZRY6KDKR"
         ;;
+    suspiciouspackage)
+        name="Suspicious Package"
+        type="dmg"
+        downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
+        expectedTeamID="936EB786NH"
+        ;;
     microsoftoffice365)
         name="MicrosoftOffice365"
         type="pkg"
