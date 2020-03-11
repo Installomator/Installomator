@@ -36,7 +36,7 @@ if [ "$archiveExt" = "pkg" ]; then
 elif [ "$archiveExt" = "dmg" ]; then
     # mount the dmg
     echo "Mounting $archiveName"
-    if ! dmgmount=$(hdiutil attach "$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+    if ! dmgmount=$(echo "Y"$'\n' | hdiutil attach "$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
         echo "Error mounting $archiveName"
         exit 3
     fi
