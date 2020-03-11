@@ -184,7 +184,7 @@ case $identifier in
         downloadURL="https://downloads.malwarebytes.com/file/mb3-mac"
         expectedTeamID="GVZRY6KDKR"
         ;;
-    suspiciouspackage)
+    suspiciouspackage) # thanks Mischa van der Bent
         name="Suspicious Package"
         type="dmg"
         downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
@@ -403,14 +403,14 @@ installFromDMG() {
 
     # verify with spctl
     echo "Verifying: $dmgmount/$appName"
-    if ! teamID=$(spctl -a -vv "$dmgmount/$appName" 2>&1 | awk '/origin=/ {print $NF }' ); then
+    if ! teamID=$(spctl -a -vv "$dmgmount/$appName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
         echo "Error verifying $dmgmount/$appName"
         cleanupAndExit 4
     fi
 
     echo "Team ID: $teamID (expected: $expectedTeamID )"
 
-    if [ "($expectedTeamID)" != "$teamID" ]; then
+    if [ "$expectedTeamID" != "$teamID" ]; then
         echo "Team IDs do not match!"
         cleanupAndExit 5
     fi
@@ -453,14 +453,14 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     echo "Verifying: $archiveName"
-    if ! teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' ); then
+    if ! teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
         echo "Error verifying $archiveName"
         cleanupAndExit 4
     fi
 
     echo "Team ID: $teamID (expected: $expectedTeamID )"
 
-    if [ "($expectedTeamID)" != "$teamID" ]; then
+    if [ "$expectedTeamID" != "$teamID" ]; then
         echo "Team IDs do not match!"
         cleanupAndExit 5
     fi
