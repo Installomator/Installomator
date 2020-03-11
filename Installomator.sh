@@ -465,60 +465,8 @@ installFromDMG() {
         cleanupAndExit 3
     fi
     echo "Mounted: $dmgmount"
-
-    # check if app exists
-    if [ ! -e "$dmgmount/$appName" ]; then
-        echo "could not find: $dmgmount/$appName"
-        cleanupAndExit 8
-    fi
-
-    # verify with spctl
-    echo "Verifying: $dmgmount/$appName"
-    if ! teamID=$(spctl -a -vv "$dmgmount/$appName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
-        echo "Error verifying $dmgmount/$appName"
-        cleanupAndExit 4
-    fi
-
-    echo "Team ID: $teamID (expected: $expectedTeamID )"
-
-    if [ "$expectedTeamID" != "$teamID" ]; then
-        echo "Team IDs do not match!"
-        cleanupAndExit 5
-    fi
-
-    # check for root
-    if [ "$(whoami)" != "root" ]; then
-        # not running as root
-        if [ "$DEBUG" -eq 0 ]; then
-            echo "not running as root, exiting"
-            cleanupAndExit 6
-        fi
     
-        echo "DEBUG enabled, skipping copy and chown steps"
-        return 0
-    fi
-
-    # remove existing application
-    if [ -e "$targetDir/$appName" ]; then
-        echo "Removing existing $targetDir/$appName"
-        rm -Rf "$targetDir/$appName"
-    fi
-
-    # copy app to /Applications
-    echo "Copy $dmgmount/$appName to $targetDir"
-    if ! ditto "$dmgmount/$appName" "$targetDir/$appName"; then
-        echo "Error while copying!"
-        cleanupAndExit 7
-    fi
-
-
-    # set ownership to current user
-    if [ -n "$currentUser" ]; then
-        echo "Changing owner to $currentUser"
-        chown -R "$currentUser" "$targetDir/$appName" 
-    else
-        echo "No user logged in, not changing user"
-    fi
+    installAppWithPath "$dmgmount/$appName"
 }
 
 installFromPKG() {
