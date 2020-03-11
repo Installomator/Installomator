@@ -6,5 +6,6 @@ scratch/
 *.mpkg
 *.dmg
 *.zip
+*.app
 
 
