@@ -223,6 +223,12 @@ case $identifier in
             | xpath '//rss/channel/item/enclosure[1]/@url' 2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="34YW5XSRB7"
         ;;
+    vlc)
+        name="VLC"
+        type="dmg"
+        downloadURL="http://get.videolan.org/vlc/3.0.8/macosx/vlc-3.0.8.dmg"
+        expectedTeamID="75GAHG3SZQ"
+        ;;
 
 
     microsoftoffice365)
