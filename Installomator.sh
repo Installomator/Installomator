@@ -43,7 +43,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   The type of the installation. Possible values:
 #     - dmg
 #     - pkg
-#     - zip (not yet implemented)
+#     - zip
 #     - pkgInDmg (not yet implemented)
 #     - pkgInZip (not yet implemented)
 # 
@@ -209,6 +209,21 @@ case $identifier in
         downloadURL="https://bitbucket.org"$(curl -s https://bitbucket.org/prowarehouse-nl/erase-install/downloads/ | grep pkg | cut -d'"' -f2 | head -n 1)
         expectedTeamID="R55HK5K86Y"
         ;;
+    omnigraffle7)
+        name="OmniGraffle"
+        type="dmg"
+        downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniGraffle7" \
+            | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | cut -d '"' -f 2)
+        expectedTeamID="34YW5XSRB7"
+        ;;
+    omnifocus3)
+        name="OmniFocus"
+        type="dmg"
+        downloadURL=$(curl -fs https://update.omnigroup.com/appcast/com.omnigroup.OmniFocus3 \
+            | xpath '//rss/channel/item/enclosure[1]/@url' 2>/dev/null | cut -d '"' -f 2)
+        expectedTeamID="34YW5XSRB7"
+        ;;
+
 
     microsoftoffice365)
         name="MicrosoftOffice365"
@@ -475,8 +490,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 installFromDMG() {
     # mount the dmg
     echo "Mounting $tmpDir/$archiveName"
-    # set -o pipefail
-    if ! dmgmount=$(hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+    # always pipe 'Y\n' in case the dmg requires an agreement
+    if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
         echo "Error mounting $tmpDir/$archiveName"
         cleanupAndExit 3
     fi
