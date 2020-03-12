@@ -229,6 +229,12 @@ case $identifier in
         downloadURL="http://get.videolan.org/vlc/3.0.8/macosx/vlc-3.0.8.dmg"
         expectedTeamID="75GAHG3SZQ"
         ;;
+    textmate)
+        name="TextMate"
+        type="tbz"
+        downloadURL="https://api.textmate.org/downloads/release?os=10.12"
+        expectedTeamID="45TL96F76G"
+        ;;
 
 
     microsoftoffice365)
@@ -545,7 +551,7 @@ installFromPKG() {
 installFromZIP() {
     # unzip the archive
     echo "Unzipping $archiveName"
-    unzip -o -qq "$archiveName"
+    tar -xf "$archiveName"
     
     installAppWithPath "$tmpDir/$appName"
 }
@@ -559,7 +565,7 @@ installFromZIP() {
 # extract info from data
 if [ -z "$archiveName" ]; then
     case $type in
-        dmg|pkg|zip)
+        dmg|pkg|zip|tbz)
             archiveName="${name}.$type"
             ;;
         pkgInDmg)
@@ -582,7 +588,7 @@ fi
 
 if [ -z "$targetDir" ]; then
     case $type in
-        dmg|zip)
+        dmg|zip|tbz)
             targetDir="/Applications"
             ;;
         pkg*)
@@ -653,7 +659,7 @@ case $type in
     pkg)
         installFromPKG
         ;;
-    zip)
+    zip|tbz)
         installFromZIP
         ;;
     *)

@@ -54,9 +54,9 @@ elif [ "$archiveExt" = "dmg" ]; then
     fi
     
     hdiutil detach "$dmgmount"
-elif [ "$archiveExt" = "zip" ]; then
+elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
     # unzip the archive
-    unzip -qq "$archiveName"
+    tar -xf "$archiveName"
     
     # check if app exists
     appPath=$(find "$tmpDir" -name "*.app" -maxdepth 2 -print )
