@@ -235,6 +235,13 @@ case $identifier in
         downloadURL="https://api.textmate.org/downloads/release?os=10.12"
         expectedTeamID="45TL96F76G"
         ;;
+    depnotify)
+        name="DEPNotify"
+        type="zip"
+        downloadURL="https://files.nomad.menu/DEPNotify.zip"
+        expectedTeamID="VRPY9KHGX6"
+        ;;
+
 
 
     microsoftoffice365)
@@ -243,6 +250,13 @@ case $identifier in
         downloadURL="https://go.microsoft.com/fwlink/?linkid=525133"
         expectedTeamID="UBF8T346G9"
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" )
+        ;;   
+    microsoftofficeBusinessPro)
+        name="MicrosoftOfficeBusinessPro"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=2009112"
+        expectedTeamID="UBF8T346G9"
+        blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" "Teams")
         ;;   
     microsoftedgeconsumerstable)
         name="Microsoft Edge"
