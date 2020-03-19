@@ -7,7 +7,7 @@
 #
 # inspired by the download scripts from William Smith and Sander Schram
 
-VERSION='20200311'
+VERSION='20200318'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -240,6 +240,7 @@ case $identifier in
         type="zip"
         downloadURL="https://files.nomad.menu/DEPNotify.zip"
         expectedTeamID="VRPY9KHGX6"
+        targetDir="/Applications/Utilities"
         ;;
 
 
@@ -251,7 +252,7 @@ case $identifier in
         expectedTeamID="UBF8T346G9"
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" )
         ;;   
-    microsoftofficeBusinessPro)
+    microsoftofficebusinesspro)
         name="MicrosoftOfficeBusinessPro"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2009112"
