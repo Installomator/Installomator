@@ -96,6 +96,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 # TODO: add remaining MS pkgs
 # TODO: determine blockingProcesses for SharePointPlugin
 # TODO: use Sparkle to get latest download 
+# TODO: notify user of errors
 
 # functions to help with getting info
 
@@ -112,8 +113,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     | awk -F '"' "/browser_download_url/ && /$type/ { print \$4 }")
     fi
     if [ -z "$downloadURL" ]; then
-        echo "could not retrieve download URL for $gitusername/$gitreponame"
-        cleanupAndExit 9
+        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame"
     else
         echo "$downloadURL"
         return 0
@@ -241,6 +241,12 @@ case $identifier in
         downloadURL="https://files.nomad.menu/DEPNotify.zip"
         expectedTeamID="VRPY9KHGX6"
         targetDir="/Applications/Utilities"
+        ;;
+    tunnelbear)
+        name="TunnelBear"
+        type="zip"
+        downloadURL="https://s3.amazonaws.com/tunnelbear/downloads/mac/TunnelBear.zip"
+        expectedTeamID="P2PHZ9K5JJ"
         ;;
 
 
@@ -373,7 +379,10 @@ case $identifier in
 esac
 
 # functions
-cleanupAndExit() { # $1 = exit code
+cleanupAndExit() { # $1 = exit code, $2 message
+    if [[ -n $2 && $1 -ne 0 ]]; then
+        echo "ERROR: $2"
+    fi
     if [ "$DEBUG" -eq 0 ]; then
         # remove the temporary working directory when done
         echo "Deleting $tmpDir"
@@ -421,15 +430,13 @@ checkRunningProcesses() {
                     prompt_user)
                       button=$(displaydialog "The application $x needs to be updated. Quit $x to continue updating?")
                       if [[ $button = "Not Now" ]]; then
-                        echo "user aborted update"
-                        cleanupAndExit 10
+                        cleanupAndExit 10 "user aborted update"
                       else
                         runAsUser osascript -e "tell app \"$x\" to quit"
                       fi
                       ;;
                     silent_fail)
-                      echo "aborting"
-                      cleanupAndExit 12
+                      cleanupAndExit 12 "blocking process '$x' found, aborting"
                       ;;
                 esac
                 
@@ -448,8 +455,7 @@ checkRunningProcesses() {
     done
 
     if [[ $countedProcesses -ne 0 ]]; then
-        echo "could not quit all processes, aborting..."
-        cleanupAndExit 11
+        cleanupAndExit 11 "could not quit all processes, aborting..."
     fi
 
     echo "no more blocking processes, continue with update"
@@ -460,30 +466,26 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     
     # check if app exists
     if [ ! -e "$appPath" ]; then
-        echo "could not find: $appPath"
-        cleanupAndExit 8
+        cleanupAndExit 8 "could not find: $appPath"
     fi
 
     # verify with spctl
     echo "Verifying: $appPath"
     if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
-        echo "Error verifying $appPath"
-        cleanupAndExit 4
+        cleanupAndExit 4 "Error verifying $appPath"
     fi
 
     echo "Team ID: $teamID (expected: $expectedTeamID )"
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        echo "Team IDs do not match!"
-        cleanupAndExit 5
+        cleanupAndExit 5 "Team IDs do not match"
     fi
 
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
         if [ "$DEBUG" -eq 0 ]; then
-            echo "not running as root, exiting"
-            cleanupAndExit 6
+            cleanupAndExit 6 "not running as root, exiting"
         fi
     
         echo "DEBUG enabled, skipping copy and chown steps"
@@ -499,8 +501,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     # copy app to /Applications
     echo "Copy $appPath to $targetDir"
     if ! ditto "$appPath" "$targetDir/$appName"; then
-        echo "Error while copying!"
-        cleanupAndExit 7
+        cleanupAndExit 7 "Error while copying"
     fi
 
 
@@ -519,8 +520,7 @@ installFromDMG() {
     echo "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
     if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
-        echo "Error mounting $tmpDir/$archiveName"
-        cleanupAndExit 3
+        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
     fi
     
     if [[ ! -e $dmgmount ]]; then
