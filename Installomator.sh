@@ -7,7 +7,7 @@
 #
 # inspired by the download scripts from William Smith and Sander Schram
 
-VERSION='20200318'
+VERSION='20200325'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -522,6 +522,12 @@ installFromDMG() {
         echo "Error mounting $tmpDir/$archiveName"
         cleanupAndExit 3
     fi
+    
+    if [[ ! -e $dmgmount ]]; then
+        echo "Error mounting $tmpDir/$archiveName"
+        cleanupAndExit 3
+    fi
+    
     echo "Mounted: $dmgmount"
     
     installAppWithPath "$dmgmount/$appName"
