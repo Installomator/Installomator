@@ -151,6 +151,12 @@ case $identifier in
         downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
         expectedTeamID="EQHXZ8M8AV"
         ;;
+    googlechromepkg)
+        name="GoogleChrome"
+        type="pkg"
+        downloadURL="https://dl.google.com/chrome/mac/stable/gcem/GoogleChrome.pkg"
+        expectedTeamID="EQHXZ8M8AV"
+        ;;
     spotify)
         name="Spotify"
         type="dmg"
