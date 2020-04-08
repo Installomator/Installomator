@@ -254,6 +254,14 @@ case $identifier in
         downloadURL="https://s3.amazonaws.com/tunnelbear/downloads/mac/TunnelBear.zip"
         expectedTeamID="P2PHZ9K5JJ"
         ;;
+    sourcetree)
+        name="Sourcetree"
+        type="zip"
+        downloadURL=$(curl -fs https://product-downloads.atlassian.com/software/sourcetree/Appcast/SparkleAppcastAlpha.xml \
+            | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null \
+            | cut -d '"' -f 2 )
+        expectedTeamID="UPXU4CQZ5P"
+        ;;
 
 
 
