@@ -133,6 +133,8 @@ fi
 # lowercase the identifier
 identifier=$(echo "$identifier" |  tr '[:upper:]' '[:lower:]' )
 
+# get current user
+currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
 
 # identifiers in case statement
@@ -156,6 +158,9 @@ case $identifier in
         type="pkg"
         downloadURL="https://dl.google.com/chrome/mac/stable/gcem/GoogleChrome.pkg"
         expectedTeamID="EQHXZ8M8AV"
+        updateTool="/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/GoogleSoftwareUpdateAgent.app/Contents/MacOS/GoogleSoftwareUpdateAgent"
+        updateToolArguments=( -runMode oneshot -userInitiated YES )
+        updateToolRunAsCurrentUser=1
         ;;
     spotify)
         name="Spotify"
@@ -304,10 +309,13 @@ case $identifier in
         expectedTeamID="UBF8T346G9"
         ;;
     microsoftteams)  
-        name="Teams"
+        name="Microsoft Teams"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
         expectedTeamID="UBF8T346G9"
+        blockingProcesses=( Teams "Microsoft Teams Helper" )
+        updateTool="/Library/Application\ Support/Microsoft/MAU2.0/Microsoft\ AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps TEAM01 )
         ;;
     microsoftautoupdate)
         name="Microsoft AutoUpdate"
@@ -320,6 +328,14 @@ case $identifier in
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2093438"
         teamID="UBF8T346G9"
+        ;;
+    microsoftword)
+        name="Microsoft Word"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=525134"
+        teamID="UBF8T346G9"
+        updateTool="/Library/Application\ Support/Microsoft/MAU2.0/Microsoft\ AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps MSWD2019 )
         ;;
     microsoftsharepointplugin)
         name="MicrosoftSharePointPlugin"
@@ -411,15 +427,10 @@ cleanupAndExit() { # $1 = exit code, $2 message
     exit "$1"
 }
 
-consoleUser() {
-    scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }'
-}
-
 runAsUser() {  
-    cuser=$(consoleUser)
-    if [[ $cuser != "loginwindow" ]]; then
-        uid=$(id -u "$cuser")
-        launchctl asuser $uid sudo -u $cuser "$@"
+    if [[ $currentUser != "loginwindow" ]]; then
+        uid=$(id -u "$currentUser")
+        launchctl asuser $uid sudo -u $currentUser "$@"
     fi
 }
 
@@ -591,6 +602,22 @@ installFromZIP() {
     installAppWithPath "$tmpDir/$appName"
 }
 
+runUpdateTool() {
+    if [[ -x $updateTool ]]; then
+        echo "running $updateTool $updateToolArguments"
+        if [[ -n $updateToolRunAsCurrentUser ]]; then
+            runAsUser $updateTool "${updateToolArguments}"
+        else
+            $updateTool "${updateToolArguments}"
+        fi
+        if [[ $? -ne 0 ]]; then
+            cleanupAndExit 15 "Error running $updateTool"
+        fi
+    else
+        cleanupAndExit 16 "couldn't find $updateTool"
+    fi
+}
+
 
 
 ### main code starts here
@@ -641,8 +668,6 @@ if [[ -z $blockingProcesses ]]; then
     blockingProcesses=( $name )
 fi
 
-currentUser=$(consoleUser)
-
 # determine tmp dir
 if [ "$DEBUG" -eq 1 ]; then
     # for debugging use script dir as working directory
@@ -658,6 +683,30 @@ if ! cd "$tmpDir"; then
     echo "error changing directory $tmpDir"
     #rm -Rf "$tmpDir"
     cleanupAndExit 1
+fi
+
+# check if this is an Update
+if [[ $(mdfind -count -name "$appName") -gt 0 ]]; then
+    # get all apps matching name
+    applist=$(mdfind "kMDItemFSName == '$appName' && kMDItemKind == 'Application'")
+    appPathArray=( ${(f)applist} )
+    filteredAppPaths=( ${(M)appPathArray:#${targetDir}*} )
+    echo $filteredAppPaths
+    if [[ ${#filteredAppPaths} -eq 1 ]]; then
+        installedAppPath=$filteredAppPaths[1]
+        appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
+        echo "found app at $installedAppPath, version $appversion"
+        if [[ $DEBUG == 0 ]]; then
+            runUpdateTool
+        else
+            echo "DEBUG mode enabled, not running update tool"
+        fi
+        cleanupAndExit 0
+    else
+        echo "could not determine location of $appName"
+    fi
+else
+    echo "could not find $appName"s
 fi
 
 # when user is logged in, and app is running, prompt user to quit app
@@ -702,6 +751,7 @@ case $type in
         cleanupAndExit 99
         ;;
 esac
+
 
 
 # TODO: notify when done
