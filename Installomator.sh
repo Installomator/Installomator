@@ -268,6 +268,12 @@ case $identifier in
             | cut -d '"' -f 2 )
         expectedTeamID="UPXU4CQZ5P"
         ;;
+     boxdrive)
+        name="Box"
+        type="pkg"
+        downloadURL="https://e3.boxcdn.net/box-installers/desktop/releases/mac/Box.pkg"
+        expectedTeamID="M683GB7CPW"
+        ;;
 
 
 
