@@ -323,7 +323,35 @@ case $identifier in
         downloadURL="https://app-updates.agilebits.com/download/OPM7"
         expectedTeamID="2BUA8C4S2C"
         ;;
-
+    webexmeetings)
+        # credit: Erik Stam
+        name="Cisco Webex Meetings"
+        type="pkgInDmg"
+        downloadURL="https://akamaicdn.webex.com/client/webexapp.dmg"
+        expectedTeamID="DE8Y96K9QP"
+        ;;
+    webexteams)
+        # credit: Erik Stam
+        name="Webex Teams"
+        type="pkgInDmg"
+        downloadURL="https://binaries.webex.com/WebexTeamsDesktop-MACOS-Gold/WebexTeams.dmg"
+        expectedTeamID="DE8Y96K9QP"
+        ;;
+    citrixworkspace)
+        # credit: Erik Stam
+        name="Citrix Workspace"
+        type="pkgInDmg"
+        downloadURL="https://downloads.citrix.com/17596/CitrixWorkspaceApp.dmg?__gda__=1588183500_fc68033aef7d6d163d8b8309b964f1de"
+        expectedTeamID="S272Y5R93J"
+        ;;
+    privileges)
+        # credit: Erik Stam
+        name="Privileges"
+        type="zip"
+        downloadURL=$(downloadURLFromGit sap macOS-enterprise-privileges )
+        expectedTeamID="7R5ZEU67FQ"
+        ;;
+        
 
     microsoftoffice365)
         name="MicrosoftOffice365"
@@ -430,12 +458,6 @@ case $identifier in
         expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps WDAV00 )
-        ;;
-    webexmeetings)
-        name="Cisco Webex Meetings"
-        type="pkgInDmg"
-        downloadURL="https://akamaicdn.webex.com/client/webexapp.dmg"
-        expectedTeamID="DE8Y96K9QP"
         ;;
 
     # msupdate codes from:
