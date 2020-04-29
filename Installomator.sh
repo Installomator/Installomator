@@ -202,7 +202,7 @@ case $identifier in
         expectedTeamID="GVZRY6KDKR"
         ;;
     suspiciouspackage)
-        # thanks to Mischa van der Bent
+        # credit: Mischa van der Bent
         name="Suspicious Package"
         type="dmg"
         downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
@@ -268,19 +268,49 @@ case $identifier in
             | cut -d '"' -f 2 )
         expectedTeamID="UPXU4CQZ5P"
         ;;
-     boxdrive)
+    boxdrive) 
+        # credit: Isaac Ordonez, Mann consulting
         name="Box"
         type="pkg"
         downloadURL="https://e3.boxcdn.net/box-installers/desktop/releases/mac/Box.pkg"
         expectedTeamID="M683GB7CPW"
         ;;
     aviatrix)
+        # credit: Isaac Ordonez, Mann consulting
         name="Aviatrix VPN Client"
         type="pkg"
         downloadURL="https://s3-us-west-2.amazonaws.com/aviatrix-download/AviatrixVPNClient/AVPNC_mac.pkg"
         expectedTeamID="32953Z7NBN"
         ;;
-
+    zoom)
+        # credit: Isaac Ordonez, Mann consulting
+        name="Zoom.us"
+        type="pkg"
+        downloadURL="https://zoom.us/client/latest/ZoomInstallerIT.pkg"
+        expectedTeamID="BJ4HAAB9B3"        
+        blockingProcesses=( zoom.us )
+        ;;
+    sonos)
+        # credit: Erik Stam
+        name="Sonos"
+        type="dmg"
+        downloadURL="https://www.sonos.com/redir/controller_software_mac"
+        expectedTeamID="2G4LW83Q3E"
+        ;;
+    coderunner)
+        # credit: Erik Stam
+        name="CodeRunner"
+        type="dmg"
+        downloadURL="https://coderunnerapp.com/download"
+        expectedTeamID="R4GD98AJF9"
+        ;;
+    openvpnconnect)
+        # credit: Erik Stam
+        name="OpenVPN Connect"
+        type="dmg"
+        downloadURL="https://openvpn.net/downloads/openvpn-connect-v2-macos.dmg"
+        expectedTeamID="ACV7L3WCD8"
+        ;;
 
 
     microsoftoffice365)
@@ -346,7 +376,7 @@ case $identifier in
         name="Microsoft AutoUpdate"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=830196"
-        teamID="UBF8T346G9"
+        expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSau04 )
         ;;
@@ -354,7 +384,7 @@ case $identifier in
         name="Microsoft Edge"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2093438"
-        teamID="UBF8T346G9"
+        expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps EDGE01 )
         ;;
@@ -362,7 +392,7 @@ case $identifier in
         name="Microsoft Word"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=525134"
-        teamID="UBF8T346G9"
+        expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSWD2019 )
         ;;
@@ -370,7 +400,7 @@ case $identifier in
         name="MicrosoftSharePointPlugin"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=800050"
-        teamID="UBF8T346G9"
+        expectedTeamID="UBF8T346G9"
         # TODO: determine blockingProcesses for SharePointPlugin
         ;;
     visualstudiocode)
