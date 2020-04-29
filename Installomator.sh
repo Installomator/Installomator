@@ -351,7 +351,13 @@ case $identifier in
         downloadURL=$(downloadURLFromGit sap macOS-enterprise-privileges )
         expectedTeamID="7R5ZEU67FQ"
         ;;
-        
+    googledrivefilestream)
+        # credit: Isaac Ordonez, Mann consulting
+        name="Google Drive File Stream"
+        type="pkgInDmg"
+        downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg"
+        expectedTeamID="EQHXZ8M8AV"
+        ;;        
 
     microsoftoffice365)
         name="MicrosoftOffice365"
