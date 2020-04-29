@@ -431,6 +431,12 @@ case $identifier in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps WDAV00 )
         ;;
+    webexmeetings)
+        name="Cisco Webex Meetings"
+        type="pkgInDmg"
+        downloadURL="https://akamaicdn.webex.com/client/webexapp.dmg"
+        expectedTeamID="DE8Y96K9QP"
+        ;;
 
     # msupdate codes from:
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
@@ -596,7 +602,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
 }
 
-installFromDMG() {
+mountDMG() {
     # mount the dmg
     echo "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
@@ -610,6 +616,10 @@ installFromDMG() {
     fi
     
     echo "Mounted: $dmgmount"
+}
+
+installFromDMG() {
+    mountDMG
     
     installAppWithPath "$dmgmount/$appName"
 }
@@ -656,6 +666,20 @@ installFromZIP() {
     tar -xf "$archiveName"
     
     installAppWithPath "$tmpDir/$appName"
+}
+
+installPkgInDmg() {
+    mountDMG
+    # locate pkg in dmg
+    if [[ -z $pkgName ]]; then
+        pkgName="$name.pkg"
+    fi
+    
+    # it is now safe to overwrite archiveName for installFromPKG
+    archiveName="$dmgmount/$pkgName"
+    
+    # installFromPkgs
+    installFromPKG
 }
 
 runUpdateTool() {
@@ -804,6 +828,9 @@ case $type in
         ;;
     zip|tbz)
         installFromZIP
+        ;;
+    pkgInDmg)
+        installPkgInDmg
         ;;
     *)
         echo "Cannot handle type $type"
