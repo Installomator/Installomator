@@ -311,6 +311,18 @@ case $identifier in
         downloadURL="https://openvpn.net/downloads/openvpn-connect-v2-macos.dmg"
         expectedTeamID="ACV7L3WCD8"
         ;;
+    pacifist)
+        name="Pacifist"
+        type="dmg"
+        downloadURL="https://charlessoft.com/cgi-bin/pacifist_download.cgi?type=dmg"
+        expectedTeamID="HRLUCP7QP4"
+        ;;
+    1password7)
+        name="1Password 7"
+        type="pkg"
+        downloadURL="https://app-updates.agilebits.com/download/OPM7"
+        expectedTeamID="2BUA8C4S2C"
+        ;;
 
 
     microsoftoffice365)
