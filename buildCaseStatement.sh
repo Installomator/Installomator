@@ -8,7 +8,7 @@ downloadURL=${1?:"need to provide a download URL"}
 
 
 # create temporary working directory
-tmpDir=$(mktemp -d )
+tmpDir=$(dirname $0 )
 
 # change directory to temporary working directory
 echo "Changing directory to $tmpDir"
@@ -82,9 +82,9 @@ fi
 echo "        ;;"
 echo 
 
-if [ -e "${tmpDir}" ]; then
-    #echo "deleting tmp dir"
-    rm -rf "${tmpDir}"
-fi
+#if [ -e "${tmpDir}" ]; then
+#    #echo "deleting tmp dir"
+#    rm -rf "${tmpDir}"
+#fi
 
 exit 0
