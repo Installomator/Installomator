@@ -277,24 +277,32 @@ case $identifier in
         expectedTeamID="UBF8T346G9"
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" )
         ;;   
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install )
     microsoftofficebusinesspro)
         name="MicrosoftOfficeBusinessPro"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2009112"
         expectedTeamID="UBF8T346G9"
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" "Teams")
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install )
         ;;   
     microsoftedgeconsumerstable)
         name="Microsoft Edge"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2069148"
         expectedTeamID="UBF8T346G9"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps EDGE01 )
         ;;
     microsoftcompanyportal)  
         name="Company Portal"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869655"
         expectedTeamID="UBF8T346G9"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps IMCP01 )
         ;;
     microsoftskypeforbusiness)  
         name="Skype for Business"
@@ -314,7 +322,7 @@ case $identifier in
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
         expectedTeamID="UBF8T346G9"
         blockingProcesses=( Teams "Microsoft Teams Helper" )
-        updateTool="/Library/Application\ Support/Microsoft/MAU2.0/Microsoft\ AutoUpdate.app/Contents/MacOS/msupdate"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps TEAM01 )
         ;;
     microsoftautoupdate)
@@ -334,7 +342,7 @@ case $identifier in
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=525134"
         teamID="UBF8T346G9"
-        updateTool="/Library/Application\ Support/Microsoft/MAU2.0/Microsoft\ AutoUpdate.app/Contents/MacOS/msupdate"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSWD2019 )
         ;;
     microsoftsharepointplugin)
@@ -606,9 +614,9 @@ runUpdateTool() {
     if [[ -x $updateTool ]]; then
         echo "running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
-            runAsUser $updateTool "${updateToolArguments}"
+            runAsUser $updateTool ${updateToolArguments}
         else
-            $updateTool "${updateToolArguments}"
+            $updateTool ${updateToolArguments}
         fi
         if [[ $? -ne 0 ]]; then
             cleanupAndExit 15 "Error running $updateTool"
@@ -686,7 +694,7 @@ if ! cd "$tmpDir"; then
 fi
 
 # check if this is an Update
-if [[ $(mdfind -count -name "$appName") -gt 0 ]]; then
+if [[ $(mdfind -count "kMDItemFSName == '$appName' && kMDItemKind == 'Application'") -gt 0 ]]; then
     # get all apps matching name
     applist=$(mdfind "kMDItemFSName == '$appName' && kMDItemKind == 'Application'")
     appPathArray=( ${(f)applist} )
@@ -706,7 +714,7 @@ if [[ $(mdfind -count -name "$appName") -gt 0 ]]; then
         echo "could not determine location of $appName"
     fi
 else
-    echo "could not find $appName"s
+    echo "could not find $appName"
 fi
 
 # when user is logged in, and app is running, prompt user to quit app
