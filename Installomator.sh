@@ -274,6 +274,12 @@ case $identifier in
         downloadURL="https://e3.boxcdn.net/box-installers/desktop/releases/mac/Box.pkg"
         expectedTeamID="M683GB7CPW"
         ;;
+    aviatrix)
+        name="Aviatrix VPN Client"
+        type="pkg"
+        downloadURL="https://s3-us-west-2.amazonaws.com/aviatrix-download/AviatrixVPNClient/AVPNC_mac.pkg"
+        expectedTeamID="32953Z7NBN"
+        ;;
 
 
 
