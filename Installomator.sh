@@ -419,6 +419,22 @@ case $identifier in
             | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ { print \$4 }")
         expectedTeamID="5X9DE89KYV"
         ;;
+    netnewswire)
+        name="NetNewsWire"
+        type="zip"
+        downloadURL=$(curl -fs https://ranchero.com/downloads/netnewswire-release.xml \
+            | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2)
+        expectedTeamID="M8L2WTLA8W"
+        ;;
+
+#    Note: Packages is signed but _not_ notarized, so spctl will reject it
+#    packages)
+#        name="Packages"
+#        type="pkgInDmg"
+#        pkgName="Install Packages.pkg"
+#        downloadURL="http://s.sudre.free.fr/Software/files/Packages.dmg"
+#        expectedTeamID="NL5M9E394P"
+#        ;;
 
     # msupdate codes from:
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
@@ -432,7 +448,7 @@ case $identifier in
         expectedTeamID="UBF8T346G9"
         # using MS PowerPoint as the 'stand-in' for the entire suite
         appName="Microsoft PowerPoint.app"
-        blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" )
+        blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "OneDrive" )
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install )
         ;;   
@@ -443,7 +459,7 @@ case $identifier in
         expectedTeamID="UBF8T346G9"
         # using MS PowerPoint as the 'stand-in' for the entire suite
         appName="Microsoft PowerPoint.app"
-        blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" "Teams")
+        blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "OneDrive" "Teams")
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install )
         ;;   
@@ -547,7 +563,7 @@ case $identifier in
         updateToolArguments=( --install --apps ONMC2019 )
         ;;
     microsoftonedrive)
-        name="Microsoft OneDrive"
+        name="OneDrive"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=823060"
         expectedTeamID="UBF8T346G9"
