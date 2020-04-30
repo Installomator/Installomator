@@ -426,6 +426,18 @@ case $identifier in
             | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="M8L2WTLA8W"
         ;;
+    resiliosynchome)
+        name="Resilio Sync"
+        type="dmg"
+        downloadURL="https://download-cdn.resilio.com/stable/osx/Resilio-Sync.dmg"
+        expectedTeamID="2953Z5SZSK"
+        ;;
+    cyberduck)
+        name="Cyberduck"
+        type="zip"
+        downloadURL=$(curl -fs https://version.cyberduck.io/changelog.rss | xpath '//rss/channel/item/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
+        expectedTeamID="G69SCX94XU"
+        ;;
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
