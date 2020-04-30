@@ -45,7 +45,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #     - dmg
 #     - pkg
 #     - zip
-#     - pkgInDmg (not yet implemented)
+#     - pkgInDmg
 #     - pkgInZip (not yet implemented)
 # 
 # - downloadURL: (required)
@@ -88,16 +88,35 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   When a workflow has no blocking processes, use
 #     blockingProcesses=( NONE )
 # 
+# - pkgName: (optional, only used for dmgInPkg and dmgInZip)
+#   File name of the pkg file _inside_ the dmg or zip
+#   When not given the pkgName is derived from the $name
+#
+# - updateTool:
+# - updateToolArguments:
+#   When Installomator detects an existing installation of the application,
+#   and the updateTool variable is set
+#      $updateTool $updateArguments
+#   Will be run instead of of downloading and installing a complete new version.
+#   Use this when the updateTool does differential and optimized downloads.citrix.com
+#   e.g. msupdate
+#
+# - updateToolRunAsCurrentUser:
+#   When this variable is set (any value), $updateTool will be run as the current user.
+#
 
 # todos:
 
-# TODO: handle pkgs in dmg or zip
+# TODO: handle pkgs in zip
 # TODO: print version of installed software
 # TODO: notification when done
 # TODO: add remaining MS pkgs
 # TODO: determine blockingProcesses for SharePointPlugin
-# TODO: use Sparkle to get latest download 
-# TODO: notify user of errors
+# TODO: generic function Sparkle to get latest download
+# TODO: ?generic function to initiate a SparkleProcess
+# TODO: ?notify user of errors
+
+
 
 # functions to help with getting info
 
