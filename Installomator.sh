@@ -106,14 +106,11 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 # TODO: cleanup code
 # TODO: add remaining Microsoft pkgs
-# TODO: determine blockingProcesses for SharePointPlugin
+# TODO: ?blockingProcesses for SharePointPlugin
 # TODO: generic function Sparkle to get latest download
 # TODO: ?notify user of errors
 # TODO: ?generic function to initiate a SparkleProcess
 
-# apps:
-# - slack
-# - Github Desktop
 
 # functions to help with getting info
 
@@ -393,6 +390,19 @@ case $identifier in
         downloadURL="https://slack.com/ssb/download-osx"
         expectedTeamID="BQR82RBBHL"
         ;;
+    githubdesktop)
+        name="GitHub Desktop"
+        type="zip"
+        downloadURL="https://central.github.com/deployments/desktop/desktop/latest/darwin"
+        expectedTeamID="VEKTX9H2N7"
+        ;;
+    things)
+        name="Things"
+        type="zip"
+        downloadURL="https://culturedcode.com/things/download/"
+        expectedTeamsID="JLMPQHK86H"
+        ;;
+        
 
     # msupdate codes from:
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
