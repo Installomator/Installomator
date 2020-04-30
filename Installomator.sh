@@ -104,20 +104,16 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 # todos:
 
-# TODO: print version of installed software
-# TODO: notification when done
 # TODO: cleanup code
 # TODO: add remaining Microsoft pkgs
 # TODO: determine blockingProcesses for SharePointPlugin
 # TODO: generic function Sparkle to get latest download
-# TODO: handle pkgs in zip (?are there any?)
 # TODO: ?notify user of errors
 # TODO: ?generic function to initiate a SparkleProcess
 
 # apps:
-# - fix vlc
 # - slack
-# - PlistEdit Pro
+# - Github Desktop
 
 # functions to help with getting info
 
@@ -384,7 +380,13 @@ case $identifier in
         type="pkgInDmg"
         downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg"
         expectedTeamID="EQHXZ8M8AV"
-        ;;        
+        ;;
+    plisteditpro)
+        name="PlistEdit Pro"
+        type="zip"
+        downloadURL="https://www.fatcatsoftware.com/plisteditpro/PlistEditPro.zip"
+        expectedTeamID="8NQ43ND65V"
+        ;;    
 
 
     # msupdate codes from:
@@ -397,6 +399,8 @@ case $identifier in
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=525133"
         expectedTeamID="UBF8T346G9"
+        # using MS PowerPoint as the 'stand-in' for the entire suite
+        appName="Microsoft PowerPoint.app"
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" )
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install )
@@ -406,6 +410,8 @@ case $identifier in
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2009112"
         expectedTeamID="UBF8T346G9"
+        # using MS PowerPoint as the 'stand-in' for the entire suite
+        appName="Microsoft PowerPoint.app"
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "Microsoft OneDrive" "Teams")
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install )
@@ -559,6 +565,19 @@ displaydialog() { # $1: message
     message=${1:-"Message"}
     runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
 }
+
+displaynotification() { # $1: message $2: title
+    message=${1:-"Message"}
+    title=${2:-"Notification"}
+    manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
+    
+    if [[ -x "$manageaction" ]]; then
+         "$manageaction" -message "$message" -title "$title"
+    else
+        runAsUser osascript -e "display notification \"$message\" with title \"$title\""
+    fi
+}
+
 
 getAppVersion() {
     # get all apps matching name
@@ -927,6 +946,10 @@ esac
 getAppVersion
 
 # TODO: notify when done
+if [[ $currentUser != "loginwindow" ]]; then
+    echo "notifying"
+    displaynotification "Installed $name, version $appversion" "Installation complete!"
+fi
 
 # all done!
 cleanupAndExit 0
