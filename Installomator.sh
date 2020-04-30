@@ -387,7 +387,12 @@ case $identifier in
         downloadURL="https://www.fatcatsoftware.com/plisteditpro/PlistEditPro.zip"
         expectedTeamID="8NQ43ND65V"
         ;;    
-
+    slack)
+        name="Slack"
+        type="dmg"
+        downloadURL="https://slack.com/ssb/download-osx"
+        expectedTeamID="BQR82RBBHL"
+        ;;
 
     # msupdate codes from:
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
