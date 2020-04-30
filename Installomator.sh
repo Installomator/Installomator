@@ -104,8 +104,6 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 # todos:
 
-# TODO: cleanup code
-# TODO: add remaining Microsoft pkgs
 # TODO: ?blockingProcesses for SharePointPlugin
 # TODO: generic function Sparkle to get latest download
 # TODO: ?notify user of errors
@@ -414,6 +412,13 @@ case $identifier in
         downloadURL="https://sourceforge.net/projects/grandperspectiv/files/latest/download"
         expectedTeamID="3Z75QZGN66"
         ;;
+    handbrake)
+        name="HandBrake"
+        type="dmg"
+        downloadURL=$(curl --silent --fail "https://api.github.com/repos/HandBrake/HandBrake/releases/latest" \
+            | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ { print \$4 }")
+        expectedTeamID="5X9DE89KYV"
+        ;;
 
     # msupdate codes from:
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
@@ -508,6 +513,46 @@ case $identifier in
         expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSWD2019 )
+        ;;
+    microsoftexcel)
+        name="Microsoft Excel"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=525135"
+        expectedTeamID="UBF8T346G9"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps XCEL2019 )
+        ;;
+    microsoftpowerpoint)
+        name="Microsoft PowerPoint"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=525136"
+        expectedTeamID="UBF8T346G9"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps PPT32019 )
+        ;;
+    microsoftoutlook)
+        name="Microsoft Outlook"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=525137"
+        expectedTeamID="UBF8T346G9"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps OPIM2019 )
+        ;;
+    microsoftonenote)
+        name="Microsoft OneNote"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=820886"
+        expectedTeamID="UBF8T346G9"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps ONMC2019 )
+        ;;
+    microsoftonedrive)
+        name="Microsoft OneDrive"
+        type="pkg"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=823060"
+        expectedTeamID="UBF8T346G9"
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps ONDR18 )
         ;;
     microsoftsharepointplugin)
         name="MicrosoftSharePointPlugin"
