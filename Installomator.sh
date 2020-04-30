@@ -300,14 +300,15 @@ case $identifier in
     coderunner)
         # credit: Erik Stam
         name="CodeRunner"
-        type="dmg"
+        type="zip"
         downloadURL="https://coderunnerapp.com/download"
         expectedTeamID="R4GD98AJF9"
         ;;
     openvpnconnect)
         # credit: Erik Stam
-        name="OpenVPN Connect"
-        type="dmg"
+        name="OpenVPN"
+        type="pkgInDmg"
+        pkgName="OpenVPN_Connect_Installer_signed.pkg"
         downloadURL="https://openvpn.net/downloads/openvpn-connect-v2-macos.dmg"
         expectedTeamID="ACV7L3WCD8"
         ;;
@@ -359,6 +360,12 @@ case $identifier in
         expectedTeamID="EQHXZ8M8AV"
         ;;        
 
+
+    # msupdate codes from:
+    # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
+
+    # download link IDs from: https://macadmin.software
+    
     microsoftoffice365)
         name="MicrosoftOffice365"
         type="pkg"
@@ -423,8 +430,10 @@ case $identifier in
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=830196"
         expectedTeamID="UBF8T346G9"
-        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-        updateToolArguments=( --install --apps MSau04 )
+        # commented the updatetool for MSAutoupdate, because when Autoupdate is really
+        # old or broken, you want to force a new install
+        #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        #updateToolArguments=( --install --apps MSau04 )
         ;;
     microsoftedgeenterprisestable)
         name="Microsoft Edge"
@@ -466,11 +475,7 @@ case $identifier in
         updateToolArguments=( --install --apps WDAV00 )
         ;;
 
-    # msupdate codes from:
-    # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
 
-    # download link IDs from: https://macadmin.software
-    
     
     # these descriptions exist for testing and are intentionally broken
     brokendownloadurl)
