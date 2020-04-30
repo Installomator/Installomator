@@ -43,7 +43,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #     - pkg
 #     - zip
 #     - pkgInDmg
-#     - pkgInZip (not yet implemented)
+#     - pkgInZip (not yet tested)
 # 
 # - downloadURL: (required)
 #   URL to download the dmg.
@@ -760,6 +760,23 @@ installPkgInDmg() {
     installFromPKG
 }
 
+installPkgInZip() {
+    # unzip the archive
+    echo "Unzipping $archiveName"
+    tar -xf "$archiveName"
+
+    # locate pkg in zip
+    if [[ -z $pkgName ]]; then
+        pkgName="$name.pkg"
+    fi
+    
+    # it is now safe to overwrite archiveName for installFromPKG
+    archiveName="$tmpDir/$pkgName"
+    
+    # installFromPkgs
+    installFromPKG
+}
+
 runUpdateTool() {
     if [[ -x $updateTool ]]; then
         echo "running $updateTool $updateToolArguments"
@@ -896,6 +913,9 @@ case $type in
         ;;
     pkgInDmg)
         installPkgInDmg
+        ;;
+    pkgInZip)
+        installPkgInZip
         ;;
     *)
         echo "Cannot handle type $type"
