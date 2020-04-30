@@ -560,6 +560,25 @@ displaydialog() { # $1: message
     runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
 }
 
+getAppVersion() {
+    # get all apps matching name
+    applist=$(mdfind "kMDItemFSName == '$appName' && kMDItemKind == 'Application'" -0 )
+    appPathArray=( ${(0)applist} )
+
+    if [[ ${#appPathArray} -gt 0 ]]; then
+        filteredAppPaths=( ${(M)appPathArray:#${targetDir}*} )
+        if [[ ${#filteredAppPaths} -eq 1 ]]; then
+            installedAppPath=$filteredAppPaths[1]
+            appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
+            echo "found app at $installedAppPath, version $appversion"
+        else
+            echo "could not determine location of $appName"
+        fi
+    else
+        echo "could not find $appName"
+    fi
+}
+
 checkRunningProcesses() {
     # try at most 3 times
     for i in {1..3}; do
@@ -827,29 +846,16 @@ if ! cd "$tmpDir"; then
 fi
 
 # check if this is an Update
-if [[ $(mdfind -count "kMDItemFSName == '$appName' && kMDItemKind == 'Application'") -gt 0 ]]; then
-    # get all apps matching name
-    applist=$(mdfind "kMDItemFSName == '$appName' && kMDItemKind == 'Application'")
-    appPathArray=( ${(f)applist} )
-    filteredAppPaths=( ${(M)appPathArray:#${targetDir}*} )
-    echo $filteredAppPaths
-    if [[ ${#filteredAppPaths} -eq 1 ]]; then
-        installedAppPath=$filteredAppPaths[1]
-        appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
-        echo "found app at $installedAppPath, version $appversion"
-        if [[ $DEBUG == 0 ]]; then
-            if runUpdateTool; then
-                cleanupAndExit 0
-            fi # otherwise continue
-        else
-            echo "DEBUG mode enabled, not running update tool"
-        fi
+getAppVersion
+if [[ -n $appVersion ]]; then
+    if [[ $DEBUG == 0 ]]; then
+        if runUpdateTool; then
+            cleanupAndExit 0
+        fi # otherwise continue
     else
-        echo "could not determine location of $appName"
+        echo "DEBUG mode enabled, not running update tool"
     fi
-else
-    echo "could not find $appName"
-fi
+fi 
 
 # when user is logged in, and app is running, prompt user to quit app
 
@@ -897,7 +903,8 @@ case $type in
         ;;
 esac
 
-
+# print installed application location and version
+getAppVersion
 
 # TODO: notify when done
 
