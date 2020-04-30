@@ -400,9 +400,13 @@ case $identifier in
         name="Things"
         type="zip"
         downloadURL="https://culturedcode.com/things/download/"
-        expectedTeamsID="JLMPQHK86H"
+        expectedTeamID="JLMPQHK86H"
         ;;
-        
+    discord)
+        name="Discord"
+        type="dmg"
+        downloadURL="https://discordapp.com/api/download?platform=osx"
+        expectedTeamID="53Q6R32WPB"
 
     # msupdate codes from:
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
