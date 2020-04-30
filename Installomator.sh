@@ -19,9 +19,6 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 DEBUG=1 
 
-# if this is set to 1, the argument will be picked up at $4 instead of $1
-JAMF=0
-
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=prompt_user
 # options:
@@ -142,16 +139,21 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
 
 
-# get the identifier from the argument
+# use the _last_ argument for the identifier
+# this allows to use the command from the CLI as well as a jamf policy script
 
-if [ "$JAMF" -eq 0 ]; then
-    identifier=${1:?"no identifier provided"}
-else
-    identifier=${4:?"argument $4 required"}
+if [[ $# -eq 0 ]]; then
+    echo "no identifier provided"
+    exit 1
+elif [[ $# -gt 1 ]]; then
+    shift $(( $# - 1 ))
 fi
 
+identifier=${1:?"no identifier provided"}
+
+
 # lowercase the identifier
-identifier=$(echo "$identifier" |  tr '[:upper:]' '[:lower:]' )
+identifier=${identifier:l}
 
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
