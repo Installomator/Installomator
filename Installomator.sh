@@ -407,6 +407,13 @@ case $identifier in
         type="dmg"
         downloadURL="https://discordapp.com/api/download?platform=osx"
         expectedTeamID="53Q6R32WPB"
+        ;;
+    grandperspective)
+        name="GrandPerspective"
+        type="dmg"
+        downloadURL="https://sourceforge.net/projects/grandperspectiv/files/latest/download"
+        expectedTeamID="3Z75QZGN66"
+        ;;
 
     # msupdate codes from:
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
