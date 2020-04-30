@@ -95,7 +95,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   and the updateTool variable is set
 #      $updateTool $updateArguments
 #   Will be run instead of of downloading and installing a complete new version.
-#   Use this when the updateTool does differential and optimized downloads.citrix.com
+#   Use this when the updateTool does differential and optimized downloads.
 #   e.g. msupdate
 #
 # - updateToolRunAsCurrentUser:
@@ -104,16 +104,20 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 # todos:
 
-# TODO: handle pkgs in zip
 # TODO: print version of installed software
 # TODO: notification when done
-# TODO: add remaining MS pkgs
+# TODO: cleanup code
+# TODO: add remaining Microsoft pkgs
 # TODO: determine blockingProcesses for SharePointPlugin
 # TODO: generic function Sparkle to get latest download
-# TODO: ?generic function to initiate a SparkleProcess
+# TODO: handle pkgs in zip (?are there any?)
 # TODO: ?notify user of errors
+# TODO: ?generic function to initiate a SparkleProcess
 
-
+# apps:
+# - fix vlc
+# - slack
+# - PlistEdit Pro
 
 # functions to help with getting info
 
@@ -259,7 +263,8 @@ case $identifier in
     vlc)
         name="VLC"
         type="dmg"
-        downloadURL="http://get.videolan.org/vlc/3.0.8/macosx/vlc-3.0.8.dmg"
+        downloadURL=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-intel64.xml \
+            | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
         expectedTeamID="75GAHG3SZQ"
         ;;
     textmate)
