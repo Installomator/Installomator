@@ -104,6 +104,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 # todos:
 
+# TODO: better logging (or, really, any logging other than echo)
 # TODO: ?blockingProcesses for SharePointPlugin
 # TODO: generic function Sparkle to get latest download
 # TODO: ?notify user of errors
