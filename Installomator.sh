@@ -30,8 +30,8 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 
 
-# Each workflow identifier needs to be listed in the case statement below.
-# for each identifier these variables can be set:
+# Each workflow label needs to be listed in the case statement below.
+# for each label these variables can be set:
 #
 # - name: (required)
 #   Name of the installed app.
@@ -135,29 +135,29 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
 
 
-# use the _last_ argument for the identifier
+# use the _last_ argument for the label
 # this allows to use the command from the CLI as well as a jamf policy script
 
 if [[ $# -eq 0 ]]; then
-    echo "no identifier provided"
+    echo "no label provided"
     exit 1
 elif [[ $# -gt 1 ]]; then
     shift $(( $# - 1 ))
 fi
 
-identifier=${1:?"no identifier provided"}
+label=${1:?"no label provided"}
 
 
-# lowercase the identifier
-identifier=${identifier:l}
+# lowercase the label
+label=${label:l}
 
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
 
-# identifiers in case statement
+# labels in case statement
 
-case $identifier in
+case $label in
     version)
         # print the script version
         echo "Installomater: version $VERSION"
@@ -629,8 +629,8 @@ case $identifier in
         expectedTeamID="broken"
         ;;
     *)
-        # unknown identifier
-        echo "unknown identifier $identifier"
+        # unknown label
+        echo "unknown label $label"
         exit 1
         ;;
 esac
