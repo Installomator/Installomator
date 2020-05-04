@@ -28,11 +28,11 @@ There are obviously a few downsides to this approach:
 - when you download software from the internet, it should be verified to avoid man-in-the-middle or other injection attacks
 - there is no control over which version the clients get
 
-Some of these disadvantages can be seen as advantages in different setups. When your fleet is mostly mobile and offsite, then downloading from vendor servers will relieve your inbound connection to your server, or your data usage on your cloud server. Software vendors are pushing for subscriptions with continuous updates and feature releases, so moving the entire team to the latest versions quickly can make those available quickly. Also being on the latest release includes all current security patches.
+Some of these disadvantages can be seen as advantages in different setups. When your fleet is mostly mobile and offsite, then downloading from vendor servers will relieve the inbound connection to your management server, or the data usage on your cloud server. Software vendors are pushing for subscriptions with continuous updates and feature releases, so moving the entire team to the latest versions quickly can make those available quickly. Also being on the latest release includes all current security patches.
 
 Because this is an attractive solution for _certain kinds_ of deployment, there are already many scripts out there that will download and install the latest version of a given software. And we have built and used quite a few in-house, as well. Most importantly, [William Smith has this script](https://gist.github.com/talkingmoose/a16ca849416ce5ce89316bacd75fc91a) which can be used to install several different Microsoft applications and bundles, because Microsoft has a nice unified URL scheme.
 
-At some point, earlier this year, I got frustrated at the number of scripts we were maintaining (or failing to). Also, my concern that most of the script weren't doing _any_ verification of the download was getting unbearable. So, I set out to write the one install script to rule them all...
+At some point, earlier this year, I got frustrated at the number of scripts we were maintaining (or failing to). Also, my concern that most of the scripts weren't doing _any_ verification of the download was getting unbearable. So, I set out to write the one install script to rule them all...
 
 ## Goals
 
@@ -70,7 +70,7 @@ All downloads have to be signed _and_ notarized by a valid Apple Developer ID. S
 
 ### Simple interface
 
-When used to install software, Installomator has a single argument: the identifier or name of the software to be installed.
+When used to install software, Installomator has a single argument: the label or name of the software to be installed.
 
 ```
 ./Installomator.sh firefox
@@ -80,7 +80,7 @@ There is a debug mode and one other setting that can be controlled with variable
 
 ### Extensible
 
-As of this writing, Installomator knows how to download and install more than 50 different applications. You can add more by adding a block to the _long_ `case` statement starting on line 159. Some of them are more elaborate, but most of them just need this information:
+As of this writing, Installomator knows how to download and install more than 50 different applications. You can add more by adding a block to the _long_ `case` statement starting on line 160. Some of them are more elaborate, but most of them just need this information:
 
 ```
     googlechrome)
@@ -90,6 +90,8 @@ As of this writing, Installomator knows how to download and install more than 50
         expectedTeamID="EQHXZ8M8AV"
         ;;
 ```
+
+When you know how to extract these pieces of information from the application and/or download, then you can add an application to Installomator.
 
 ### Not specific to a management system
 
@@ -101,7 +103,7 @@ The script started out as a pure `sh` script, and when I needed arrays I 'switch
 
 Keeping the script as a `zsh` allows you to paste it into your management system's interface (and disable the DEBUG mode) and use it without requiring any other installations.
 
-##
+## 
 
 
 

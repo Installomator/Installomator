@@ -8,7 +8,8 @@
 # inspired by the download scripts from William Smith and Sander Schram
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
-VERSION='20200430'
+VERSION='0.1'
+VERSIONDATE='20200504'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -156,11 +157,15 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 
 
 # labels in case statement
-
 case $label in
     version)
+        # print the script VERSION
+        echo "$VERSION"
+        exit 0
+        ;;
+    longversion)
         # print the script version
-        echo "Installomater: version $VERSION"
+        echo "Installomater: version $VERSION ($VERSIONDATE)"
         exit 0
         ;;
     
