@@ -444,6 +444,12 @@ case $label in
         downloadURL=$(curl -fs https://version.cyberduck.io/changelog.rss | xpath '//rss/channel/item/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
         expectedTeamID="G69SCX94XU"
         ;;
+    dropbox)
+        name="Dropbox"
+        type="dmg"
+        downloadURL="https://www.dropbox.com/download?plat=mac&full=1"
+        expectedTeamID="G7HH3F8CAK"
+        ;;
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
