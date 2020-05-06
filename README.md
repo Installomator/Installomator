@@ -1,8 +1,8 @@
 # Installomator
 
-_The one installer script to rule them all._The
+_The one installer script to rule them all._
 
-![](https://img.shields.io/github/v/release/scriptingosx/Installomator)
+![](https://img.shields.io/github/v/release/scriptingosx/Installomator)&nbsp;![](https://img.shields.io/github/downloads/scriptingosx/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/scriptingosx/Installomator)
 
 ## Background
 
