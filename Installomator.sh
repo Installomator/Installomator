@@ -450,6 +450,14 @@ case $label in
         downloadURL="https://www.dropbox.com/download?plat=mac&full=1"
         expectedTeamID="G7HH3F8CAK"
         ;;
+    teamviewer)
+        name="TeamViewer"
+        type="pkgInDmg"
+        pkgName="Install TeamViewer.pkg"
+        downloadURL="https://download.teamviewer.com/download/TeamViewer.dmg"
+        expectedTeamID="H7UGFBUGV6"
+        ;;
+        
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)

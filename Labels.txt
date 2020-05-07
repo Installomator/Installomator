@@ -44,6 +44,7 @@ sonos
 sourcetree
 spotify
 suspiciouspackage
+teamviewer
 textmate
 things
 tunnelbear
