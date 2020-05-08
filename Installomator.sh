@@ -18,7 +18,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-DEBUG=1 
+DEBUG=1
 
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=prompt_user
@@ -718,6 +718,12 @@ getAppVersion() {
 }
 
 checkRunningProcesses() {
+    # don't check in DEBUG mode
+    if [[ $DEBUG -ne 0 ]]; then
+        echo "DEBUG mode, not checking for blocking processes"
+        return
+    fi
+    
     # try at most 3 times
     for i in {1..3}; do
         countedProcesses=0
@@ -809,7 +815,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
 
     # set ownership to current user
-    if [ -n "$currentUser" ]; then
+    if [ "$currentUser" != "loginwindow" ]; then
         echo "Changing owner to $currentUser"
         chown -R "$currentUser" "$targetDir/$appName" 
     else
@@ -984,7 +990,7 @@ if [[ -z $blockingProcesses ]]; then
 fi
 
 # determine tmp dir
-if [ "$DEBUG" -eq 1 ]; then
+if [ "$DEBUG" -ne 0 ]; then
     # for debugging use script dir as working directory
     tmpDir=$(dirname "$0")
 else
@@ -1003,7 +1009,7 @@ fi
 # check if this is an Update
 getAppVersion
 if [[ -n $appVersion ]]; then
-    if [[ $DEBUG == 0 ]]; then
+    if [[ $DEBUG -eq 0 ]]; then
         if runUpdateTool; then
             cleanupAndExit 0
         fi # otherwise continue
@@ -1028,7 +1034,7 @@ fi
 
 # download the archive
 
-if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
+if [ -f "$archiveName" ] && [ "$DEBUG" -ne 0 ]; then
     echo "$archiveName exists and DEBUG enabled, skipping download"
 else
     # download the dmg

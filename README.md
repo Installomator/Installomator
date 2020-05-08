@@ -103,8 +103,60 @@ The script started out as a pure `sh` script, and when I needed arrays I 'switch
 
 Keeping the script as a `zsh` allows you to paste it into your management system's interface (and disable the DEBUG mode) and use it without requiring any other installations.
 
-## 
+## How to use
 
+### Interactively in the command line
 
+The script will require at least one argument. If more than one argument is given, it will _ignore_ all but the last argument.
 
+The argument can be `version` or `longversion` which will print the script's version.
 
+```
+> ./Installomator.sh version
+0.1
+> ./Installomator.sh longversion
+Installomater: version 0.1 (20200506)
+```
+
+Other than the version arguments, the argument can be any of the labels listed in the Labels.txt file. Each of the labels will download and install the latest version of the application, or suite of applications. Since the script will have to run the `installer` command or copy the application to the `/Applications` folder, it will have to be run as root.
+
+```
+> sudo ./Installomator.sh desktoppr
+```
+
+### Debug mode
+
+There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) no actions that wousld actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
+
+Also when the `DEBUG` variable is `1`, downloaded archives and extracted files will be written to the script's directory, rather than a temporary directory, which can make debugging easier.
+
+_Always remember_ to change the `DEBUG` variable to `0` when deploying.
+
+### Use Installomator with Jamf Pro
+
+In Jamf Pro, create a new 'Script' and paste the contents of `Installomator.sh` into the 'Script Contents' area. Under 'Options' you can change the parameter label for argument 4 to 'Application Label.'
+
+Then you can use the Installomator script in a policy and choose the application to install by setting the label for argument 4.
+
+## What it does
+
+When it runs with a known label, the script will perform the following:
+
+- when the application is running, prompt the user to quit or cancel
+- download the latest version from the vendor
+- dmg or zip archives:
+    - extract the application and copy it to /Applications
+    - change the owner of the application to the current user
+- pkg files:
+    - when necessary, extract the pkg from the enclosing archive
+    - install the pkg with the `installer` tool
+- clean up the downloaded files
+- notify the user
+
+## Configuring the script
+
+As of now there are two settings that are meant to configured when deploying the script.
+
+### Debug mode
+
+The first is the `DEBUG` variable. When this is set to `1` the script will _not_ perform any changes to the current system. In other words, no application will be copied to the target directory and no `installer` command be performed. This is useful to test the download and verification process 
