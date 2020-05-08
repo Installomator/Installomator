@@ -9,7 +9,7 @@
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
 VERSION='0.1'
-VERSIONDATE='20200506'
+VERSIONDATE='20200508'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -134,16 +134,14 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 }
 
-
-
-# use the _last_ argument for the label
-# this allows to use the command from the CLI as well as a jamf policy script
-
+# get the label
 if [[ $# -eq 0 ]]; then
     echo "no label provided"
     exit 1
-elif [[ $# -gt 1 ]]; then
-    shift $(( $# - 1 ))
+elif [[ $# -gt 3 ]]; then
+	# jamf uses $4 for the first custom parameter
+    echo "shifting arguments for Jamf"
+    shift 3
 fi
 
 label=${1:?"no label provided"}
@@ -169,7 +167,7 @@ case $label in
         exit 0
         ;;
     
-    # app descriptions start here
+    # label descriptions start here
     googlechrome)
         name="Google Chrome"
         type="dmg"
@@ -456,6 +454,12 @@ case $label in
         pkgName="Install TeamViewer.pkg"
         downloadURL="https://download.teamviewer.com/download/TeamViewer.dmg"
         expectedTeamID="H7UGFBUGV6"
+        ;;
+    iterm2)
+        name="iTerm"
+        type="zip"
+        downloadURL="https://iterm2.com/downloads/stable/latest"
+        expectedTeamID="H7V7XYVQ7D"
         ;;
         
 
