@@ -256,8 +256,7 @@ Depending on the application or pkg there are a few more variables you can or ne
   File name of the pkg file _inside_ the dmg or zip.
   When not given the pkgName is set to `$name.pkg`.
 
-- `updateTool`:
-- `updateToolArguments`:
+- `updateTool`, `updateToolArguments`:
   When Installomator detects an existing installation of the application,
   and the `updateTool` variable is set then
      `$updateTool $updateArguments`
