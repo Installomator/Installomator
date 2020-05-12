@@ -238,7 +238,7 @@ case $label in
     eraseinstall)
         name="EraseInstall"
         type="pkg"
-        downloadURL="https://bitbucket.org"$(curl -s https://bitbucket.org/prowarehouse-nl/erase-install/downloads/ | grep pkg | cut -d'"' -f2 | head -n 1)
+        downloadURL=$(curl -fs https://bitbucket.org/prowarehouse-nl/erase-install/downloads/ | grep pkg | cut -d'"' -f2 | head -n 1)
         expectedTeamID="R55HK5K86Y"
         ;;
     omnigraffle7)
@@ -460,6 +460,12 @@ case $label in
         type="zip"
         downloadURL="https://iterm2.com/downloads/stable/latest"
         expectedTeamID="H7V7XYVQ7D"
+        ;;
+    royaltsx)
+        name="Royal TSX"
+        type="dmg"
+        downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
+        expectedTeamID="VXP8K9EDP6"
         ;;
         
 
