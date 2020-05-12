@@ -17,6 +17,7 @@ googlechromepkg
 googledrivefilestream
 grandperspective
 handbrake
+iterm2
 malwarebytes
 microsoftautoupdate
 microsoftdefenderatp
@@ -39,6 +40,7 @@ pacifist
 plisteditpro
 privileges
 resiliosynchome
+royaltsx
 slack
 sonos
 sourcetree
