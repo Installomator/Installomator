@@ -107,7 +107,7 @@ Keeping the script as a `zsh` allows you to paste it into your management system
 
 ### Interactively in the command line
 
-The script will require at least one argument. If more than one argument is given, it will _ignore_ all but the last argument.
+The script will require one argument.
 
 The argument can be `version` or `longversion` which will print the script's version.
 
@@ -123,6 +123,8 @@ Other than the version arguments, the argument can be any of the labels listed i
 ```
 > sudo ./Installomator.sh desktoppr
 ```
+
+(Since Jamf Pro always provides the mount point, computer name, and user name as the first three arguments for policy scripts, the script will use argument `$4` when there are more than three arguments.)
 
 ### Debug mode
 
@@ -159,4 +161,48 @@ As of now there are two settings that are meant to configured when deploying the
 
 ### Debug mode
 
-The first is the `DEBUG` variable. When this is set to `1` the script will _not_ perform any changes to the current system. In other words, no application will be copied to the target directory and no `installer` command be performed. This is useful to test the download and verification process 
+The first is the `DEBUG` variable. When this is set to `1` the script will _not_ perform any changes to the current system. In other words, no application will be copied to the target directory and no `installer` command be performed.
+
+In addition, files will be downloaded and extracted to the Installomator project folder instead of a temporary directory and _not_ deleted when the script exits. Also archives will _not_ be re-downloaded when they already exist in the project folder. The repository's `.gitignore` file is set up to ignore the archive file extensions.
+
+Debug mode is useful to test the download and verification process without having to re-download and re-install an application or package on your system.
+
+### Blocking Process actions
+
+The `BLOCKING_PROCESS_ACTION` variable controls the behavior of the script when it finds a blocking process running.
+
+There are four options:
+
+- `ignore`:       continue even when blocking processes are found
+- `silent_fail`:  exit script without prompt or installation
+- `prompt_user`:  show a user dialog for each blocking process found abort after three attempts to quit
+- `kill`:         kill process without prompting or giving the user a chance to save
+
+The default is `prompt_user`.
+
+### Adding applications/label blocks
+
+The script requires four pieces of information to download and install an application:
+
+```
+    spotify)
+        name="Spotify"
+        type="dmg"
+        downloadURL="https://download.scdn.co/Spotify.dmg"
+        expectedTeamID="2FNC3A47ZF"
+        ;;
+```
+
+The four required variables are
+
+- `name`: the display name of the installed application without the `.app` extensions
+- `type`: the type of the installation. Possible values:
+     - `dmg`: application in disk image file (drag'n drop installation)
+     - `pkg`: flat pkg download
+     - `zip`: application in zip archive (`zip` or `tbz` extension)
+     - `pkgInDmg`: a pkg file inside a disk image
+     - `pkgInZip`: a pkg file inside a zip
+- `downloadURL`: the URL from which to download the archive
+- `expectedTeamID`: the 10-character Developer Team ID with which the application or pkg is signed and notarized
+
+
