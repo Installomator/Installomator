@@ -4,6 +4,13 @@ _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/scriptingosx/Installomator)&nbsp;![](https://img.shields.io/github/downloads/scriptingosx/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/scriptingosx/Installomator)
 
+This script is in the "we find it useful, it is working for us" stage.
+
+Your production and deployment environment will be different, please test thoroughly before rolling it out to your production.
+
+I have put a lot of work into making it stable and safe, but I cannot - of course - make _any_ promises that it won't break in some not yet encountered edge case.
+
+
 ## Background
 
 As a system engineer at [an Apple Authorized Enterprise Reseller](https://prowarehouse.nl), we manage a lot of Jamf instances.
@@ -12,23 +19,30 @@ Some of these instances are tightly managed, i.e. the versions of the operating 
 
 Installomator was _not_ written for these kinds of deployment.
 
-If you are running this kind of deployment, you want [AutoPkg](https://github.com/autopkg/autopkg).
+If you are running this kind of deployment, you want to use [AutoPkg](https://github.com/autopkg/autopkg) and you can stop reading here.
 
 There are other kinds of deployments, though. In these deployments the management system is merely used to "get the user ready" as quickly as possible when they set up a new machine, and to offer software from a self service portal. In these deployments, system and software installations are 'latest version available' and updates are user driven (though we do want to nag them).
 
-These are mostly 'user controlled' Macs and we mostly just want to assist the user in doing the right thing. And the right thing is (often) to install the latest versions and updates when they are available.
+These deployments are
 
-The Mac App Store and software pushed through the Mac App Store follow this approach. When you manage software through the App Store — whether it is on iOS or macOS — neither the MacAdmin nor the user get a choice of the application version. They will get the latest version.
+- user driven
+- low control
+- minimal maintenance effort
 
-In such deployments, keeping the installers hosted in your management system up to date is an extra burden that often feels unnecessary. Instead of downloading, re-packaging, uploading application installers to the management system, it is often easier to run a script which downloads the latest version directly from the vendor's servers and installs it.
+These are mostly 'user controlled' Macs and we (the admins) just want to assist the user in doing the right thing. And the right thing is (often) to install the latest versions and updates when they are available.
+
+The Mac App Store and software pushed through the Mac App Store follow this approach. When you manage and deploy software through the App Store — whether it is on iOS or macOS — neither the MacAdmin nor the user get a choice of the application version. They will get the latest version.
+
+In such deployments, keeping the installers hosted in your management system up to date is an extra burden. AutoPkg can, well, automate much of the download/re-package/upload/stage cycle, but it still requires oversight and maintenance. Instead of downloading, re-packaging, uploading application installers to the management system, it is often easier to run a script which downloads the latest version directly from the vendor's servers and installs it.
 
 There are obviously a few downsides to this approach:
 
 - when your fleet is mostly on site and many will install or update at the same time, they will reach out over the internet to the vendor's servers, possibly overwhelming your internet connection
 - when you download software from the internet, it should be verified to avoid man-in-the-middle or other injection attacks
-- there is no control over which version the clients get
+- there is no control over which version the clients get, you cannot "hold back" new versions for testing and approval workflows
+- some application downloads are gated behind logins or paywalls and cannot be automated this way
 
-Some of these disadvantages can be seen as advantages in different setups. When your fleet is mostly mobile and offsite, then downloading from vendor servers will relieve the inbound connection to your management server, or the data usage on your cloud server. Software vendors are pushing for subscriptions with continuous updates and feature releases, so moving the entire team to the latest versions quickly can make those available quickly. Also being on the latest release includes all current security patches.
+Some of these disadvantages can be seen as advantages in different setups. When your fleet is mostly mobile and offsite, then downloading from vendor servers will relieve the inbound connection to your management server, or the data usage on your management system's cloud server. Software vendors are pushing for subscriptions with continuous updates and feature releases, so moving the entire team to the latest versions quickly can make those available quickly. Also being on the latest release includes all current security patches.
 
 Because this is an attractive solution for _certain kinds_ of deployment, there are already many scripts out there that will download and install the latest version of a given software. And we have built and used quite a few in-house, as well. Most importantly, [William Smith has this script](https://gist.github.com/talkingmoose/a16ca849416ce5ce89316bacd75fc91a) which can be used to install several different Microsoft applications and bundles, because Microsoft has a nice unified URL scheme.
 
@@ -58,7 +72,7 @@ Installomator can work with the following common archive and installer types:
 
 When the download yields a pkg file, Installomator will run `installer` to install it on the current system. 
 
-Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'b drop installation.
+Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation.
 
 (I consider it a disgrace, that Jamf, after nearly 20 years, _still_ cannot deal with 'drag'n drop installation dmgs' natively. It's not _that_ hard.)
 
@@ -128,7 +142,7 @@ Other than the version arguments, the argument can be any of the labels listed i
 
 ### Debug mode
 
-There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) no actions that wousld actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
+There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) no actions that would actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
 
 Also when the `DEBUG` variable is `1`, downloaded archives and extracted files will be written to the script's directory, rather than a temporary directory, which can make debugging easier.
 
@@ -137,6 +151,8 @@ _Always remember_ to change the `DEBUG` variable to `0` when deploying.
 ### Use Installomator with Jamf Pro
 
 In Jamf Pro, create a new 'Script' and paste the contents of `Installomator.sh` into the 'Script Contents' area. Under 'Options' you can change the parameter label for argument 4 to 'Application Label.'
+
+Remember to set `DEBUG` to `0`.
 
 Then you can use the Installomator script in a policy and choose the application to install by setting the label for argument 4.
 
