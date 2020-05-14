@@ -128,7 +128,7 @@ Other than the version arguments, the argument can be any of the labels listed i
 
 ### Debug mode
 
-There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) no actions that wousld actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
+There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) no actions that would actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
 
 Also when the `DEBUG` variable is `1`, downloaded archives and extracted files will be written to the script's directory, rather than a temporary directory, which can make debugging easier.
 
