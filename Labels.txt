@@ -20,6 +20,7 @@ handbrake
 iterm2
 malwarebytes
 microsoftautoupdate
+microsoftcompanyportal
 microsoftdefenderatp
 microsoftedgeconsumerstable
 microsoftedgeenterprisestable
@@ -30,7 +31,10 @@ microsoftonedrive
 microsoftonenote
 microsoftoutlook
 microsoftpowerpoint
+microsoftremotedesktop
 microsoftsharepointplugin
+microsoftskypeforbusiness
+microsoftteams
 microsoftword
 netnewswire
 omnifocus3
