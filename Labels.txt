@@ -18,7 +18,9 @@ googlechromepkg
 googledrivefilestream
 grandperspective
 handbrake
+icons
 iterm2
+jamfpppcutility
 jamfmigrator
 jamfreenroller
 malwarebytes
