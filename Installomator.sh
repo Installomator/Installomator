@@ -45,7 +45,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #     - zip
 #     - pkgInDmg
 #     - pkgInZip (not yet tested)
-# 
+#
 # - downloadURL: (required)
 #   URL to download the dmg.
 #   Can be generated with a series of commands (see BBEdit for an example).
@@ -61,7 +61,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #     spctl -a -vv -t install ~/Downloads/desktoppr-0.2.pkg
 #
 #   The team ID is the ten-digit ID at the end of the line starting with 'origin='
-# 
+#
 # - archiveName: (optional)
 #   The name of the downloaded file.
 #   When not given the archiveName is derived from the $name.
@@ -74,7 +74,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   dmg or zip:
 #     Applications will be copied to this directory.
 #     Default value is '/Applications' for dmg and zip installations.
-#   pkg: 
+#   pkg:
 #     targetDir is used as the install-location. Default is '/'.
 #
 # - blockingProcesses: (optional)
@@ -85,7 +85,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #     blockingProcesses=( "Keynote" "Pages" "Numbers" )
 #   When a workflow has no blocking processes, use
 #     blockingProcesses=( NONE )
-# 
+#
 # - pkgName: (optional, only used for dmgInPkg and dmgInZip)
 #   File name of the pkg file _inside_ the dmg or zip
 #   When not given the pkgName is derived from the $name
@@ -118,7 +118,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-    
+
     if [ -n "$archiveName" ]; then
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
     | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
@@ -166,7 +166,7 @@ case $label in
         echo "Installomater: version $VERSION ($VERSIONDATE)"
         exit 0
         ;;
-    
+
     # label descriptions start here
     googlechrome)
         name="Google Chrome"
@@ -289,7 +289,7 @@ case $label in
             | cut -d '"' -f 2 )
         expectedTeamID="UPXU4CQZ5P"
         ;;
-    boxdrive) 
+    boxdrive)
         # credit: Isaac Ordonez, Mann consulting
         name="Box"
         type="pkg"
@@ -308,7 +308,7 @@ case $label in
         name="Zoom.us"
         type="pkg"
         downloadURL="https://zoom.us/client/latest/ZoomInstallerIT.pkg"
-        expectedTeamID="BJ4HAAB9B3"        
+        expectedTeamID="BJ4HAAB9B3"
         blockingProcesses=( zoom.us )
         ;;
     sonos)
@@ -385,7 +385,7 @@ case $label in
         type="zip"
         downloadURL="https://www.fatcatsoftware.com/plisteditpro/PlistEditPro.zip"
         expectedTeamID="8NQ43ND65V"
-        ;;    
+        ;;
     slack)
         name="Slack"
         type="dmg"
@@ -467,7 +467,7 @@ case $label in
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
-        
+
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
@@ -482,7 +482,7 @@ case $label in
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
 
     # download link IDs from: https://macadmin.software
-    
+
     microsoftoffice365)
         name="MicrosoftOffice365"
         type="pkg"
@@ -493,7 +493,7 @@ case $label in
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "OneDrive" )
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install )
-        ;;   
+        ;;
     microsoftofficebusinesspro)
         name="MicrosoftOfficeBusinessPro"
         type="pkg"
@@ -504,7 +504,7 @@ case $label in
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "OneDrive" "Teams")
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install )
-        ;;   
+        ;;
     microsoftedgeconsumerstable)
         name="Microsoft Edge"
         type="pkg"
@@ -513,7 +513,7 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps EDGE01 )
         ;;
-    microsoftcompanyportal)  
+    microsoftcompanyportal)
         name="Company Portal"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869655"
@@ -521,7 +521,7 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps IMCP01 )
         ;;
-    microsoftskypeforbusiness)  
+    microsoftskypeforbusiness)
         name="Skype for Business"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=832978"
@@ -529,7 +529,7 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSFB16 )
         ;;
-    microsoftremotedesktop)  
+    microsoftremotedesktop)
         name="Microsoft Remote Desktop"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
@@ -537,7 +537,7 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSRD10 )
         ;;
-    microsoftteams)  
+    microsoftteams)
         name="Microsoft Teams"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
@@ -637,7 +637,7 @@ case $label in
         ;;
 
 
-    
+
     # these descriptions exist for testing and are intentionally broken
     brokendownloadurl)
         name="Google Chrome"
@@ -674,7 +674,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
         echo "Deleting $tmpDir"
         rm -Rf "$tmpDir"
     fi
-    
+
     if [ -n "$dmgmount" ]; then
         # unmount disk image
         echo "Unmounting $dmgmount"
@@ -683,7 +683,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
     exit "$1"
 }
 
-runAsUser() {  
+runAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
         launchctl asuser $uid sudo -u $currentUser "$@"
@@ -699,7 +699,7 @@ displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
-    
+
     if [[ -x "$manageaction" ]]; then
          "$manageaction" -message "$message" -title "$title"
     else
@@ -733,14 +733,14 @@ checkRunningProcesses() {
         echo "DEBUG mode, not checking for blocking processes"
         return
     fi
-    
+
     # try at most 3 times
     for i in {1..3}; do
         countedProcesses=0
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
                 echo "found blocking process $x"
-                
+
                 case $BLOCKING_PROCESS_ACTION in
                     kill)
                       echo "killing process $x"
@@ -758,7 +758,7 @@ checkRunningProcesses() {
                       cleanupAndExit 12 "blocking process '$x' found, aborting"
                       ;;
                 esac
-                
+
                 countedProcesses=$((countedProcesses + 1))
             fi
         done
@@ -782,7 +782,7 @@ checkRunningProcesses() {
 
 installAppWithPath() { # $1: path to app to install in $targetDir
     appPath=${1?:"no path to app"}
-    
+
     # check if app exists
     if [ ! -e "$appPath" ]; then
         cleanupAndExit 8 "could not find: $appPath"
@@ -806,7 +806,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         if [ "$DEBUG" -eq 0 ]; then
             cleanupAndExit 6 "not running as root, exiting"
         fi
-    
+
         echo "DEBUG enabled, skipping copy and chown steps"
         return 0
     fi
@@ -827,7 +827,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     # set ownership to current user
     if [ "$currentUser" != "loginwindow" ]; then
         echo "Changing owner to $currentUser"
-        chown -R "$currentUser" "$targetDir/$appName" 
+        chown -R "$currentUser" "$targetDir/$appName"
     else
         echo "No user logged in, not changing user"
     fi
@@ -841,18 +841,18 @@ mountDMG() {
     if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
         cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
     fi
-    
+
     if [[ ! -e $dmgmount ]]; then
         echo "Error mounting $tmpDir/$archiveName"
         cleanupAndExit 3
     fi
-    
+
     echo "Mounted: $dmgmount"
 }
 
 installFromDMG() {
     mountDMG
-    
+
     installAppWithPath "$dmgmount/$appName"
 }
 
@@ -870,18 +870,18 @@ installFromPKG() {
         echo "Team IDs do not match!"
         cleanupAndExit 5
     fi
-    
+
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
         echo "DEBUG enabled, skipping installation"
         return 0
     fi
-    
+
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
         echo "not running as root, exiting"
-        cleanupAndExit 6    
+        cleanupAndExit 6
     fi
 
     # install pkg
@@ -896,7 +896,7 @@ installFromZIP() {
     # unzip the archive
     echo "Unzipping $archiveName"
     tar -xf "$archiveName"
-    
+
     installAppWithPath "$tmpDir/$appName"
 }
 
@@ -906,10 +906,10 @@ installPkgInDmg() {
     if [[ -z $pkgName ]]; then
         pkgName="$name.pkg"
     fi
-    
+
     # it is now safe to overwrite archiveName for installFromPKG
     archiveName="$dmgmount/$pkgName"
-    
+
     # installFromPkgs
     installFromPKG
 }
@@ -923,10 +923,10 @@ installPkgInZip() {
     if [[ -z $pkgName ]]; then
         pkgName="$name.pkg"
     fi
-    
+
     # it is now safe to overwrite archiveName for installFromPKG
     archiveName="$tmpDir/$pkgName"
-    
+
     # installFromPkgs
     installFromPKG
 }
@@ -1026,7 +1026,7 @@ if [[ -n $appVersion ]]; then
     else
         echo "DEBUG mode enabled, not running update tool"
     fi
-fi 
+fi
 
 # when user is logged in, and app is running, prompt user to quit app
 
