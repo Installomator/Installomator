@@ -1,5 +1,6 @@
 1password7
 atom
+autodmg
 aviatrix
 bbedit
 citrixworkspace
@@ -17,7 +18,11 @@ googlechromepkg
 googledrivefilestream
 grandperspective
 handbrake
+icons
 iterm2
+jamfpppcutility
+jamfmigrator
+jamfreenroller
 malwarebytes
 microsoftautoupdate
 microsoftcompanyportal
@@ -42,6 +47,7 @@ omnigraffle7
 openvpnconnect
 pacifist
 plisteditpro
+postman
 privileges
 resiliosynchome
 royaltsx
@@ -49,6 +55,7 @@ slack
 sonos
 sourcetree
 spotify
+sublimetext
 suspiciouspackage
 teamviewer
 textmate
