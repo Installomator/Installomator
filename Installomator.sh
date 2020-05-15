@@ -168,6 +168,13 @@ case $label in
         ;;
     
     # label descriptions start here
+     autodmg)
+        # credit: Mischa van der Bent
+        name="AutoDMG"
+        type="dmg"
+        downloadURL=$(downloadURLFromGit MagerValp AutoDMG)
+        expectedTeamID="5KQ3D3FG5H"
+        ;;
     googlechrome)
         name="Google Chrome"
         type="dmg"
@@ -373,6 +380,13 @@ case $label in
         downloadURL=$(downloadURLFromGit sap macOS-enterprise-privileges )
         expectedTeamID="7R5ZEU67FQ"
         ;;
+    icons)
+        # credit: Mischa van der Bent
+        name="Icons"
+        type="zip"
+        downloadURL=$(downloadURLFromGit sap macOS-icon-generator )
+        expectedTeamID="7R5ZEU67FQ"
+        ;;
     googledrivefilestream)
         # credit: Isaac Ordonez, Mann consulting
         name="Google Drive File Stream"
@@ -386,11 +400,46 @@ case $label in
         downloadURL="https://www.fatcatsoftware.com/plisteditpro/PlistEditPro.zip"
         expectedTeamID="8NQ43ND65V"
         ;;    
+    postman)
+        # credit: Mischa van der Bent
+        name="Postman"
+        type="zip"
+        downloadURL="https://dl.pstmn.io/download/latest/osx"
+        expectedTeamID="H7H8Q7M5CK"
+        ;;
+    jamfpppcutility)
+        # credit: Mischa van der Bent
+        name="PPPC Utility"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf PPPC-Utility)
+        expectedTeamID="483DWKW443"
+        ;;
+    jamfmigrator)
+        # credit: Mischa van der Bent
+        name="jamf-migrator"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf JamfMigrator)
+        expectedTeamID="PS2F6S478M"
+        ;;
+    jamfreenroller)
+        # credit: Mischa van der Bent
+        name="ReEnroller"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf ReEnroller)
+        expectedTeamID="PS2F6S478M"
+        ;;
     slack)
         name="Slack"
         type="dmg"
         downloadURL="https://slack.com/ssb/download-osx"
         expectedTeamID="BQR82RBBHL"
+        ;;
+    sublimetext)
+        # credit: Mischa van der Bent
+        name="Sublime Text"
+        type="dmg"
+        downloadURL="https://download.sublimetext.com/latest/stable/osx"
+        expectedTeamID="Z6D26JE4Y4"
         ;;
     githubdesktop)
         name="GitHub Desktop"
