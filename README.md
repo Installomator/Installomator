@@ -285,19 +285,19 @@ Depending on the application or pkg there are a few more variables you can or ne
 
 ## Frequently Asked Questions
 
-### What if the latest is already installed?
+### What if the latest version of the app is already installed?
 
 Short answer: Installomator will re-download and re-install the latest over the existing installation.
 
 Longer answer:
 
-Installomator will try to find a currently installed app and log the version. When Installomator finds an existing app (any version) and the `updateTool` variable is set, then Installomator will _not_ download and install, but run the `updateTool` instead.
+Installomator will try to find a currently installed app to log the version. When Installomator finds an existing app (any version) and the `updateTool` variable is set, then Installomator will _not_ download and install, but run the `updateTool` instead.
 
 However, there is no simple generic method to actually determine the latest version of an application or installer.
 
 We deploy Installomator usually for user initiated installations from Self Service, so re-installs don't really 'hurt' and may be a useful troubleshooting step.
 
-When you want to have automated installations, you should use smart groups based on the app version to limit excessive re-installations.
+When you want to have automated installations, you can use smart groups based on the app version to limit excessive re-installations.
 
 ### Why don't you just use `autopkg install`?
 
