@@ -42,6 +42,7 @@ omnigraffle7
 openvpnconnect
 pacifist
 plisteditpro
+powershell
 privileges
 resiliosynchome
 royaltsx

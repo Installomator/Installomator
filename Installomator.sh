@@ -635,7 +635,12 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps WDAV00 )
         ;;
-
+    powershell)
+        name="PowerShell"
+        type="pkg"
+        downloadURL=$(downloadURLFromGit PowerShell PowerShell | grep lts)
+        expectedTeamID="UBF8T346G9"
+        ;;
 
 
     # these descriptions exist for testing and are intentionally broken
