@@ -52,6 +52,7 @@ postman
 privileges
 resiliosynchome
 royaltsx
+santa
 slack
 sonos
 sourcetree

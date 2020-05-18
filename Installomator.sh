@@ -190,6 +190,12 @@ case $label in
         updateToolArguments=( -runMode oneshot -userInitiated YES )
         updateToolRunAsCurrentUser=1
         ;;
+    santa)
+        name="Santa"
+        type="pkgInDmg"
+        downloadURL=$(downloadURLFromGit google santa)
+        expectedTeamID="EQHXZ8M8AV"
+        ;;
     spotify)
         name="Spotify"
         type="dmg"
