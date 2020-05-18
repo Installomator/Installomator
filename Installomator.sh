@@ -657,6 +657,7 @@ case $label in
         updateToolArguments=( --install --apps WDAV00 )
         ;;
     powershell)
+        # credit: Tadayuki Onishi (@kenchan0130)
         name="PowerShell"
         type="pkg"
         downloadURL=$(downloadURLFromGit PowerShell PowerShell | grep lts)
