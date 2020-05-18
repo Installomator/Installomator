@@ -467,7 +467,11 @@ case $label in
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
-        
+    roamingclient)
+        name="Roaming Client"
+        type="pkgInZip"
+        downloadURL="http://shared.opendns.com/roaming/enterprise/release/mac/production/RoamingClient_MAC.mpkg.zip"
+        expectedTeamID="7P7HQ8H646"
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
