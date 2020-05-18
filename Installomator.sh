@@ -516,6 +516,13 @@ case $label in
         downloadURL=$(curl -fs https://freemacsoft.net/appcleaner/Updates.xml | xpath '//rss/channel/*/enclosure/@url' 2>/dev/null | tr " " "\n" | sort | tail -1 | cut -d '"' -f 2)
         expectedTeamID="X85ZX835W9"
         ;;
+    karabinerelements)
+        # credit: Tadayuki Onishi (@kenchan0130)
+        name="Karabiner-Elements"
+        type="pkgInDmg"
+        downloadURL=$(downloadURLFromGit pqrs-org Karabiner-Elements)
+        expectedTeamID="G43BCU2T37"
+        ;;
 
 
 

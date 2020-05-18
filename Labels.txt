@@ -25,6 +25,7 @@ iterm2
 jamfpppcutility
 jamfmigrator
 jamfreenroller
+karabinerelements
 malwarebytes
 microsoftautoupdate
 microsoftcompanyportal
