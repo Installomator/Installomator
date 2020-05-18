@@ -505,6 +505,13 @@ case $label in
         type="pkgInZip"
         downloadURL="http://shared.opendns.com/roaming/enterprise/release/mac/production/RoamingClient_MAC.mpkg.zip"
         expectedTeamID="7P7HQ8H646"
+        ;;
+    appcleaner)
+        name="AppCleaner"
+        type="zip"
+        downloadURL=$(curl -fs https://freemacsoft.net/appcleaner/Updates.xml | xpath '//rss/channel/*/enclosure/@url' 2>/dev/null | tr " " "\n" | sort | tail -1 | cut -d '"' -f 2)
+        expectedTeamID="X85ZX835W9"
+        ;;
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
