@@ -201,8 +201,9 @@ case $label in
         ;;
     googlejapaneseinput)
         # credit: Tadayuki Onishi (@kenchan0130)
-        name="Google Japanese Input"
+        name="GoogleJapaneseInput"
         type="pkgInDmg"
+        pkgName="GoogleJapaneseInput.pkg"
         downloadURL="https://dl.google.com/japanese-ime/latest/GoogleJapaneseInput.dmg"
         expectedTeamID="EQHXZ8M8AV"
         ;;
@@ -513,7 +514,7 @@ case $label in
         ;;
     roamingclient)
         # credit: Tadayuki Onishi (@kenchan0130)
-        name="Roaming Client"
+        name="RoamingClient"
         type="pkgInZip"
         downloadURL="http://shared.opendns.com/roaming/enterprise/release/mac/production/RoamingClient_MAC.mpkg.zip"
         expectedTeamID="7P7HQ8H646"
@@ -978,9 +979,7 @@ installPkgInDmg() {
     if [[ -z $pkgName ]]; then
         # find a file starting with $name and ending with 'pkg'
         findfiles=$(find -X "$dmgmount" -iname "${name}*.pkg" -maxdepth 1  )
-        echo $findfiles
         filearray=( ${(0)findfiles} )
-        echo $filearray  ${#filearray}
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
         fi
@@ -1002,11 +1001,19 @@ installPkgInZip() {
 
     # locate pkg in zip
     if [[ -z $pkgName ]]; then
-        pkgName="$name.pkg"
+        # find a file starting with $name and ending with 'pkg'
+        findfiles=$(find -X "$tmpDir" -iname "${name}*.pkg" -maxdepth 1  )
+        filearray=( ${(0)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 20 "couldn't find pkg in zip $archiveName"
+        fi
+        archiveName="${filearray[1]}"
+        # it is now safe to overwrite archiveName for installFromPKG
+        echo "found pkg: $archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromPKG
+        archiveName="$tmpDir/$pkgName"
     fi
-
-    # it is now safe to overwrite archiveName for installFromPKG
-    archiveName="$tmpDir/$pkgName"
 
     # installFromPkgs
     installFromPKG
