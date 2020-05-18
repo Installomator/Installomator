@@ -118,16 +118,25 @@ BLOCKING_PROCESS_ACTION=prompt_user
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-
+    
+    if [[ $type == "pkgInDmg" ]]; then
+        filetype="dmg"
+    elif [[ $type == "pkgInZip" ]]; then
+        filetype="zip"
+    else
+        filetype=$type
+    fi
+    
     if [ -n "$archiveName" ]; then
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
     | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
     else
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$type/ { print \$4 }")
+    | awk -F '"' "/browser_download_url/ && /$filetype/ { print \$4 }")
     fi
     if [ -z "$downloadURL" ]; then
-        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame"
+        echo "could not retrieve download URL for $gitusername/$gitreponame"
+        exit 9
     else
         echo "$downloadURL"
         return 0
@@ -967,11 +976,20 @@ installPkgInDmg() {
     mountDMG
     # locate pkg in dmg
     if [[ -z $pkgName ]]; then
-        pkgName="$name.pkg"
+        # find a file starting with $name and ending with 'pkg'
+        findfiles=$(find -X "$dmgmount" -iname "${name}*.pkg" -maxdepth 1  )
+        echo $findfiles
+        filearray=( ${(0)findfiles} )
+        echo $filearray  ${#filearray}
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
+        fi
+        archiveName="${filearray[1]}"
+        echo "found pkg: $archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromPKG
+        archiveName="$dmgmount/$pkgName"
     fi
-
-    # it is now safe to overwrite archiveName for installFromPKG
-    archiveName="$dmgmount/$pkgName"
 
     # installFromPkgs
     installFromPKG
