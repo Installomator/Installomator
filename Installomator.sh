@@ -512,7 +512,7 @@ case $label in
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
-s    appcleaner)
+    appcleaner)
         # credit: Tadayuki Onishi (@kenchan0130)
         name="AppCleaner"
         type="zip"
