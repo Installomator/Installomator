@@ -467,7 +467,12 @@ case $label in
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
-        
+    appclener)
+        name="AppCleaner"
+        type="zip"
+        downloadURL=$(curl -fs https://freemacsoft.net/appcleaner/Updates.xml | xpath '//rss/channel/*/enclosure/@url' 2>/dev/null | tr " " "\n" | sort | tail -1 | cut -d '"' -f 2)
+        expectedTeamID="X85ZX835W9"
+        ;;
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
