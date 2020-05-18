@@ -526,6 +526,34 @@ s    appcleaner)
         downloadURL=$(downloadURLFromGit pqrs-org Karabiner-Elements)
         expectedTeamID="G43BCU2T37"
         ;;
+    postman)
+        # credit: Mischa van der Bent
+        name="Postman"
+        type="zip"
+        downloadURL="https://dl.pstmn.io/download/latest/osx"
+        expectedTeamID="H7H8Q7M5CK"
+        ;;
+    jamfpppcutility)
+        # credit: Mischa van der Bent
+        name="PPPC Utility"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf PPPC-Utility)
+        expectedTeamID="483DWKW443"
+        ;;
+    jamfmigrator)
+        # credit: Mischa van der Bent
+        name="jamf-migrator"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf JamfMigrator)
+        expectedTeamID="PS2F6S478M"
+        ;;
+    jamfreenroller)
+        # credit: Mischa van der Bent
+        name="ReEnroller"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf ReEnroller)
+        expectedTeamID="PS2F6S478M"
+        ;;
 
 
 
