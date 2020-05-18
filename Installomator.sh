@@ -512,14 +512,7 @@ case $label in
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
-    roamingclient)
-        # credit: Tadayuki Onishi (@kenchan0130)
-        name="RoamingClient"
-        type="pkgInZip"
-        downloadURL="http://shared.opendns.com/roaming/enterprise/release/mac/production/RoamingClient_MAC.mpkg.zip"
-        expectedTeamID="7P7HQ8H646"
-        ;;
-    appcleaner)
+s    appcleaner)
         # credit: Tadayuki Onishi (@kenchan0130)
         name="AppCleaner"
         type="zip"
@@ -701,13 +694,6 @@ case $label in
         expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps WDAV00 )
-        ;;
-    powershell)
-        # credit: Tadayuki Onishi (@kenchan0130)
-        name="PowerShell"
-        type="pkg"
-        downloadURL=$(downloadURLFromGit PowerShell PowerShell | grep lts)
-        expectedTeamID="UBF8T346G9"
         ;;
 
 
