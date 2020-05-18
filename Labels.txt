@@ -47,6 +47,7 @@ omnigraffle7
 openvpnconnect
 pacifist
 plisteditpro
+powershell
 postman
 privileges
 resiliosynchome
