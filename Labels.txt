@@ -14,6 +14,7 @@ firefox
 githubdesktop
 googlechrome
 googlechromepkg
+googlejapaneseinput
 googledrivefilestream
 grandperspective
 handbrake
