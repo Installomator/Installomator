@@ -9,7 +9,7 @@
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
 VERSION='0.2'
-VERSIONDATE='20200515'
+VERSIONDATE='20200518'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -169,7 +169,7 @@ case $label in
 
     # label descriptions start here
      autodmg)
-        # credit: Mischa van der Bent
+        # credit: Mischa van der Bent (@mischavdbent)
         name="AutoDMG"
         type="dmg"
         downloadURL=$(downloadURLFromGit MagerValp AutoDMG)
@@ -191,12 +191,14 @@ case $label in
         updateToolRunAsCurrentUser=1
         ;;
     googlejapaneseinput)
+        # credit: Tadayuki Onishi (@kenchan0130)
         name="Google Japanese Input"
         type="pkgInDmg"
         downloadURL="https://dl.google.com/japanese-ime/latest/GoogleJapaneseInput.dmg"
         expectedTeamID="EQHXZ8M8AV"
         ;;
     santa)
+        # credit: Tadayuki Onishi (@kenchan0130)
         name="Santa"
         type="pkgInDmg"
         downloadURL=$(downloadURLFromGit google santa)
@@ -241,7 +243,7 @@ case $label in
         expectedTeamID="GVZRY6KDKR"
         ;;
     suspiciouspackage)
-        # credit: Mischa van der Bent
+        # credit: Mischa van der Bent (@mischavdbent)
         name="Suspicious Package"
         type="dmg"
         downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
@@ -309,21 +311,21 @@ case $label in
         expectedTeamID="UPXU4CQZ5P"
         ;;
     boxdrive)
-        # credit: Isaac Ordonez, Mann consulting
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
         name="Box"
         type="pkg"
         downloadURL="https://e3.boxcdn.net/box-installers/desktop/releases/mac/Box.pkg"
         expectedTeamID="M683GB7CPW"
         ;;
     aviatrix)
-        # credit: Isaac Ordonez, Mann consulting
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
         name="Aviatrix VPN Client"
         type="pkg"
         downloadURL="https://s3-us-west-2.amazonaws.com/aviatrix-download/AviatrixVPNClient/AVPNC_mac.pkg"
         expectedTeamID="32953Z7NBN"
         ;;
     zoom)
-        # credit: Isaac Ordonez, Mann consulting
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
         name="Zoom.us"
         type="pkg"
         downloadURL="https://zoom.us/client/latest/ZoomInstallerIT.pkg"
@@ -331,21 +333,21 @@ case $label in
         blockingProcesses=( zoom.us )
         ;;
     sonos)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Sonos"
         type="dmg"
         downloadURL="https://www.sonos.com/redir/controller_software_mac"
         expectedTeamID="2G4LW83Q3E"
         ;;
     coderunner)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="CodeRunner"
         type="zip"
         downloadURL="https://coderunnerapp.com/download"
         expectedTeamID="R4GD98AJF9"
         ;;
     openvpnconnect)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="OpenVPN"
         type="pkgInDmg"
         pkgName="OpenVPN_Connect_Installer_signed.pkg"
@@ -365,42 +367,42 @@ case $label in
         expectedTeamID="2BUA8C4S2C"
         ;;
     webexmeetings)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Cisco Webex Meetings"
         type="pkgInDmg"
         downloadURL="https://akamaicdn.webex.com/client/webexapp.dmg"
         expectedTeamID="DE8Y96K9QP"
         ;;
     webexteams)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Webex Teams"
         type="pkgInDmg"
         downloadURL="https://binaries.webex.com/WebexTeamsDesktop-MACOS-Gold/WebexTeams.dmg"
         expectedTeamID="DE8Y96K9QP"
         ;;
     citrixworkspace)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Citrix Workspace"
         type="pkgInDmg"
         downloadURL="https://downloads.citrix.com/17596/CitrixWorkspaceApp.dmg?__gda__=1588183500_fc68033aef7d6d163d8b8309b964f1de"
         expectedTeamID="S272Y5R93J"
         ;;
     privileges)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Privileges"
         type="zip"
         downloadURL=$(downloadURLFromGit sap macOS-enterprise-privileges )
         expectedTeamID="7R5ZEU67FQ"
         ;;
     icons)
-        # credit: Mischa van der Bent
+        # credit: Mischa van der Bent (@mischavdbent)
         name="Icons"
         type="zip"
         downloadURL=$(downloadURLFromGit sap macOS-icon-generator )
         expectedTeamID="7R5ZEU67FQ"
         ;;
     googledrivefilestream)
-        # credit: Isaac Ordonez, Mann consulting
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
         name="Google Drive File Stream"
         type="pkgInDmg"
         downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg"
@@ -419,7 +421,7 @@ case $label in
         expectedTeamID="BQR82RBBHL"
         ;;
     sublimetext)
-        # credit: Mischa van der Bent
+        # credit: Mischa van der Bent (@mischavdbent)
         name="Sublime Text"
         type="dmg"
         downloadURL="https://download.sublimetext.com/latest/stable/osx"
@@ -501,17 +503,21 @@ case $label in
         expectedTeamID="VXP8K9EDP6"
         ;;
     roamingclient)
+        # credit: Tadayuki Onishi (@kenchan0130)
         name="Roaming Client"
         type="pkgInZip"
         downloadURL="http://shared.opendns.com/roaming/enterprise/release/mac/production/RoamingClient_MAC.mpkg.zip"
         expectedTeamID="7P7HQ8H646"
         ;;
     appcleaner)
+        # credit: Tadayuki Onishi (@kenchan0130)
         name="AppCleaner"
         type="zip"
         downloadURL=$(curl -fs https://freemacsoft.net/appcleaner/Updates.xml | xpath '//rss/channel/*/enclosure/@url' 2>/dev/null | tr " " "\n" | sort | tail -1 | cut -d '"' -f 2)
         expectedTeamID="X85ZX835W9"
         ;;
+
+
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
