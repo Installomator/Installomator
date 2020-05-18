@@ -52,6 +52,7 @@ powershell
 postman
 privileges
 resiliosynchome
+roamingclient
 royaltsx
 santa
 slack
