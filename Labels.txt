@@ -18,6 +18,7 @@ googledrivefilestream
 grandperspective
 handbrake
 iterm2
+karabinerelements
 malwarebytes
 microsoftautoupdate
 microsoftcompanyportal
