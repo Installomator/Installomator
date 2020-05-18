@@ -554,7 +554,13 @@ case $label in
         downloadURL=$(downloadURLFromGit jamf ReEnroller)
         expectedTeamID="PS2F6S478M"
         ;;
-
+    adobereaderdc)
+        name="Adobe Acrobat Reader DC"
+        type="pkgInDmg"
+        downloadURL=$(adobecurrent=`curl -s https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDC_"$adobecurrent"_MUI.dmg)
+        expectedTeamID="JQ525L2MZD"
+        blockingProcesses=( "AdobeReader" )
+        ;;
 
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
@@ -991,8 +997,8 @@ installPkgInDmg() {
     mountDMG
     # locate pkg in dmg
     if [[ -z $pkgName ]]; then
-        # find a file starting with $name and ending with 'pkg'
-        findfiles=$(find -X "$dmgmount" -iname "${name}*.pkg" -maxdepth 1  )
+        # find first file ending with 'pkg'
+        findfiles=$(find -X "$dmgmount" -iname "*.pkg" -maxdepth 1  )
         filearray=( ${(0)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
@@ -1015,7 +1021,7 @@ installPkgInZip() {
 
     # locate pkg in zip
     if [[ -z $pkgName ]]; then
-        # find a file starting with $name and ending with 'pkg'
+        # find first file starting with $name and ending with 'pkg'
         findfiles=$(find -X "$tmpDir" -iname "${name}*.pkg" -maxdepth 1  )
         filearray=( ${(0)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
