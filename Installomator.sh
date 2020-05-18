@@ -190,6 +190,12 @@ case $label in
         updateToolArguments=( -runMode oneshot -userInitiated YES )
         updateToolRunAsCurrentUser=1
         ;;
+    googlejapaneseinput)
+        name="Google Japanese Input"
+        type="pkgInDmg"
+        downloadURL="https://dl.google.com/japanese-ime/latest/GoogleJapaneseInput.dmg"
+        expectedTeamID="EQHXZ8M8AV"
+        ;;
     santa)
         name="Santa"
         type="pkgInDmg"
