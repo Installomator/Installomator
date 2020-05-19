@@ -561,6 +561,13 @@ case $label in
         expectedTeamID="JQ525L2MZD"
         blockingProcesses=( "AdobeReader" )
         ;;
+    signal)
+        # credit: Søren Theilgaard
+        name="Signal"
+        type="dmg"
+        downloadURL=https://updates.signal.org/desktop/$(curl -fs https://updates.signal.org/desktop/latest-mac.yml | awk '/url/ && /dmg/ {print $3}')
+        expectedTeamID="U68MSDN6DR"
+        ;;
 
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
