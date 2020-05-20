@@ -2,6 +2,7 @@
 atom
 aviatrix
 bbedit
+brave
 citrixworkspace
 coderunner
 cyberduck
