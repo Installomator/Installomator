@@ -635,7 +635,12 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps WDAV00 )
         ;;
-
+    docker)
+        name="Docker"
+        type="dmg"
+        downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
+        expectedTeamID="9BNSXJN65R"
+        ;;
 
     
     # these descriptions exist for testing and are intentionally broken
