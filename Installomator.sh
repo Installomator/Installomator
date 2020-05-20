@@ -114,6 +114,17 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 # functions to help with getting info
 
+# Logging
+log_location="/var/log/Installomator.log"
+
+ScriptLogging(){
+
+    DATE=$(date +%Y-%m-%d\ %H:%M:%S)
+    LOG="$log_location"
+
+    echo "$DATE" " $1" 2>&1 | tee -a $LOG
+}
+
 # will get the latest release download from a github repo
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
@@ -129,18 +140,18 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     if [ -z "$downloadURL" ]; then
         cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame"
     else
-        echo "$downloadURL"
+        ScriptLogging "$downloadURL"
         return 0
     fi
 }
 
 # get the label
 if [[ $# -eq 0 ]]; then
-    echo "no label provided"
+    ScriptLogging "no label provided"
     exit 1
 elif [[ $# -gt 3 ]]; then
 	# jamf uses $4 for the first custom parameter
-    echo "shifting arguments for Jamf"
+    ScriptLogging "shifting arguments for Jamf"
     shift 3
 fi
 
@@ -158,12 +169,12 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 case $label in
     version)
         # print the script VERSION
-        echo "$VERSION"
+        ScriptLogging "$VERSION"
         exit 0
         ;;
     longversion)
         # print the script version
-        echo "Installomater: version $VERSION ($VERSIONDATE)"
+        ScriptLogging "Installomater: version $VERSION ($VERSIONDATE)"
         exit 0
         ;;
     
@@ -659,7 +670,7 @@ case $label in
         ;;
     *)
         # unknown label
-        echo "unknown label $label"
+        ScriptLogging "unknown label $label"
         exit 1
         ;;
 esac
@@ -667,17 +678,17 @@ esac
 # functions
 cleanupAndExit() { # $1 = exit code, $2 message
     if [[ -n $2 && $1 -ne 0 ]]; then
-        echo "ERROR: $2"
+        ScriptLogging "ERROR: $2"
     fi
     if [ "$DEBUG" -eq 0 ]; then
         # remove the temporary working directory when done
-        echo "Deleting $tmpDir"
+        ScriptLogging "Deleting $tmpDir"
         rm -Rf "$tmpDir"
     fi
     
     if [ -n "$dmgmount" ]; then
         # unmount disk image
-        echo "Unmounting $dmgmount"
+        ScriptLogging "Unmounting $dmgmount"
         hdiutil detach "$dmgmount"
     fi
     exit "$1"
@@ -718,19 +729,19 @@ getAppVersion() {
         if [[ ${#filteredAppPaths} -eq 1 ]]; then
             installedAppPath=$filteredAppPaths[1]
             appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
-            echo "found app at $installedAppPath, version $appversion"
+            ScriptLogging "found app at $installedAppPath, version $appversion"
         else
-            echo "could not determine location of $appName"
+            ScriptLogging "could not determine location of $appName"
         fi
     else
-        echo "could not find $appName"
+        ScriptLogging "could not find $appName"
     fi
 }
 
 checkRunningProcesses() {
     # don't check in DEBUG mode
     if [[ $DEBUG -ne 0 ]]; then
-        echo "DEBUG mode, not checking for blocking processes"
+        ScriptLogging "DEBUG mode, not checking for blocking processes"
         return
     fi
     
@@ -739,11 +750,11 @@ checkRunningProcesses() {
         countedProcesses=0
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
-                echo "found blocking process $x"
+                ScriptLogging "found blocking process $x"
                 
                 case $BLOCKING_PROCESS_ACTION in
                     kill)
-                      echo "killing process $x"
+                      ScriptLogging "killing process $x"
                       pkill $x
                       ;;
                     prompt_user)
@@ -768,7 +779,7 @@ checkRunningProcesses() {
             break
         else
             # give the user a bit of time to quit apps
-            echo "waiting 30 seconds for processes to quit"
+            ScriptLogging "waiting 30 seconds for processes to quit"
             sleep 30
         fi
     done
@@ -777,7 +788,7 @@ checkRunningProcesses() {
         cleanupAndExit 11 "could not quit all processes, aborting..."
     fi
 
-    echo "no more blocking processes, continue with update"
+    ScriptLogging "no more blocking processes, continue with update"
 }
 
 installAppWithPath() { # $1: path to app to install in $targetDir
@@ -789,12 +800,12 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     fi
 
     # verify with spctl
-    echo "Verifying: $appPath"
+    ScriptLogging "Verifying: $appPath"
     if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
         cleanupAndExit 4 "Error verifying $appPath"
     fi
 
-    echo "Team ID: $teamID (expected: $expectedTeamID )"
+    ScriptLogging "Team ID: $teamID (expected: $expectedTeamID )"
 
     if [ "$expectedTeamID" != "$teamID" ]; then
         cleanupAndExit 5 "Team IDs do not match"
@@ -807,18 +818,18 @@ installAppWithPath() { # $1: path to app to install in $targetDir
             cleanupAndExit 6 "not running as root, exiting"
         fi
     
-        echo "DEBUG enabled, skipping copy and chown steps"
+        ScriptLogging "DEBUG enabled, skipping copy and chown steps"
         return 0
     fi
 
     # remove existing application
     if [ -e "$targetDir/$appName" ]; then
-        echo "Removing existing $targetDir/$appName"
+        ScriptLogging "Removing existing $targetDir/$appName"
         rm -Rf "$targetDir/$appName"
     fi
 
     # copy app to /Applications
-    echo "Copy $appPath to $targetDir"
+    ScriptLogging "Copy $appPath to $targetDir"
     if ! ditto "$appPath" "$targetDir/$appName"; then
         cleanupAndExit 7 "Error while copying"
     fi
@@ -826,28 +837,28 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # set ownership to current user
     if [ "$currentUser" != "loginwindow" ]; then
-        echo "Changing owner to $currentUser"
+        ScriptLogging "Changing owner to $currentUser"
         chown -R "$currentUser" "$targetDir/$appName" 
     else
-        echo "No user logged in, not changing user"
+        ScriptLogging "No user logged in, not changing user"
     fi
 
 }
 
 mountDMG() {
     # mount the dmg
-    echo "Mounting $tmpDir/$archiveName"
+    ScriptLogging "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
-    if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+    if ! dmgmount=$(ScriptLogging 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
         cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
     fi
     
     if [[ ! -e $dmgmount ]]; then
-        echo "Error mounting $tmpDir/$archiveName"
+        ScriptLogging "Error mounting $tmpDir/$archiveName"
         cleanupAndExit 3
     fi
     
-    echo "Mounted: $dmgmount"
+    ScriptLogging "Mounted: $dmgmount"
 }
 
 installFromDMG() {
@@ -858,43 +869,43 @@ installFromDMG() {
 
 installFromPKG() {
     # verify with spctl
-    echo "Verifying: $archiveName"
+    ScriptLogging "Verifying: $archiveName"
     if ! teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
-        echo "Error verifying $archiveName"
+        ScriptLogging "Error verifying $archiveName"
         cleanupAndExit 4
     fi
 
-    echo "Team ID: $teamID (expected: $expectedTeamID )"
+    ScriptLogging "Team ID: $teamID (expected: $expectedTeamID )"
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        echo "Team IDs do not match!"
+        ScriptLogging "Team IDs do not match!"
         cleanupAndExit 5
     fi
     
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
-        echo "DEBUG enabled, skipping installation"
+        ScriptLogging "DEBUG enabled, skipping installation"
         return 0
     fi
     
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
-        echo "not running as root, exiting"
+        ScriptLogging "not running as root, exiting"
         cleanupAndExit 6    
     fi
 
     # install pkg
-    echo "Installing $archiveName to $targetDir"
+    ScriptLogging "Installing $archiveName to $targetDir"
     if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
-        echo "error installing $archiveName"
+        ScriptLogging "error installing $archiveName"
         cleanupAndExit 9
     fi
 }
 
 installFromZIP() {
     # unzip the archive
-    echo "Unzipping $archiveName"
+    ScriptLogging "Unzipping $archiveName"
     tar -xf "$archiveName"
     
     installAppWithPath "$tmpDir/$appName"
@@ -916,7 +927,7 @@ installPkgInDmg() {
 
 installPkgInZip() {
     # unzip the archive
-    echo "Unzipping $archiveName"
+    ScriptLogging "Unzipping $archiveName"
     tar -xf "$archiveName"
 
     # locate pkg in zip
@@ -933,7 +944,7 @@ installPkgInZip() {
 
 runUpdateTool() {
     if [[ -x $updateTool ]]; then
-        echo "running $updateTool $updateToolArguments"
+        ScriptLogging "running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
             runAsUser $updateTool ${updateToolArguments}
         else
@@ -943,7 +954,7 @@ runUpdateTool() {
             cleanupAndExit 15 "Error running $updateTool"
         fi
     else
-        echo "couldn't find $updateTool, continuing normally"
+        ScriptLogging "couldn't find $updateTool, continuing normally"
         return 1
     fi
     return 0
@@ -968,7 +979,7 @@ if [ -z "$archiveName" ]; then
             archiveName="${name}.zip"
             ;;
         *)
-            echo "Cannot handle type $type"
+            ScriptLogging "Cannot handle type $type"
             cleanupAndExit 99
             ;;
     esac
@@ -988,14 +999,14 @@ if [ -z "$targetDir" ]; then
             targetDir="/"
             ;;
         *)
-            echo "Cannot handle type $type"
+            ScriptLogging "Cannot handle type $type"
             cleanupAndExit 99
             ;;
     esac
 fi
 
 if [[ -z $blockingProcesses ]]; then
-    echo "no blocking processes defined, using $name as default"
+    ScriptLogging "no blocking processes defined, using $name as default"
     blockingProcesses=( $name )
 fi
 
@@ -1009,9 +1020,9 @@ else
 fi
 
 # change directory to temporary working directory
-echo "Changing directory to $tmpDir"
+ScriptLogging "Changing directory to $tmpDir"
 if ! cd "$tmpDir"; then
-    echo "error changing directory $tmpDir"
+    ScriptLogging "error changing directory $tmpDir"
     #rm -Rf "$tmpDir"
     cleanupAndExit 1
 fi
@@ -1024,14 +1035,14 @@ if [[ -n $appVersion ]]; then
             cleanupAndExit 0
         fi # otherwise continue
     else
-        echo "DEBUG mode enabled, not running update tool"
+        ScriptLogging "DEBUG mode enabled, not running update tool"
     fi
 fi 
 
 # when user is logged in, and app is running, prompt user to quit app
 
 if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
-    echo "ignoring blocking processes"
+    ScriptLogging "ignoring blocking processes"
 else
     if [[ $currentUser != "loginwindow" ]]; then
         if [[ ${#blockingProcesses} -gt 0 ]]; then
@@ -1045,12 +1056,12 @@ fi
 # download the archive
 
 if [ -f "$archiveName" ] && [ "$DEBUG" -ne 0 ]; then
-    echo "$archiveName exists and DEBUG enabled, skipping download"
+    ScriptLogging "$archiveName exists and DEBUG enabled, skipping download"
 else
     # download the dmg
-    echo "Downloading $downloadURL to $archiveName"
+    ScriptLogging "Downloading $downloadURL to $archiveName"
     if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
-        echo "error downloading $downloadURL"
+        ScriptLogging "error downloading $downloadURL"
         cleanupAndExit 2
     fi
 fi
@@ -1072,7 +1083,7 @@ case $type in
         installPkgInZip
         ;;
     *)
-        echo "Cannot handle type $type"
+        ScriptLogging "Cannot handle type $type"
         cleanupAndExit 99
         ;;
 esac
@@ -1082,7 +1093,7 @@ getAppVersion
 
 # TODO: notify when done
 if [[ $currentUser != "loginwindow" ]]; then
-    echo "notifying"
+    ScriptLogging "notifying"
     displaynotification "Installed $name, version $appversion" "Installation complete!"
 fi
 
