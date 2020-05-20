@@ -145,6 +145,8 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 }
 
+ScriptLogging "################## Start Installomator"
+
 # get the label
 if [[ $# -eq 0 ]]; then
     ScriptLogging "no label provided"
@@ -157,6 +159,7 @@ fi
 
 label=${1:?"no label provided"}
 
+ScriptLogging "################## $label"
 
 # lowercase the label
 label=${label:l}
@@ -691,6 +694,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
         ScriptLogging "Unmounting $dmgmount"
         hdiutil detach "$dmgmount"
     fi
+    ScriptLogging "################## End Installomator \n\n"
     exit "$1"
 }
 
