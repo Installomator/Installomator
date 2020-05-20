@@ -467,7 +467,19 @@ case $label in
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
-        
+    docker)
+        name="Docker"
+        type="dmg"
+        downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
+        expectedTeamID="9BNSXJN65R"
+        ;;
+    brave)
+        name="Brave"
+        type="dmg"
+        downloadURL="https://laptop-updates.brave.com/latest/osx"
+        expectedTeamID="9BNSXJN65R"
+        ;;
+ 
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
@@ -635,13 +647,6 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps WDAV00 )
         ;;
-    docker)
-        name="Docker"
-        type="dmg"
-        downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
-        expectedTeamID="9BNSXJN65R"
-        ;;
-
     
     # these descriptions exist for testing and are intentionally broken
     brokendownloadurl)
