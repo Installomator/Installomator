@@ -8,6 +8,7 @@ cyberduck
 depnotify
 desktoppr
 discord
+docker
 dropbox
 eraseinstall
 firefox
