@@ -571,6 +571,19 @@ case $label in
         expectedTeamID="U68MSDN6DR"
         ;;
 
+    docker)
+        name="Docker"
+        type="dmg"
+        downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
+        expectedTeamID="9BNSXJN65R"
+        ;;
+    brave)
+        name="Brave"
+        type="dmg"
+        downloadURL="https://laptop-updates.brave.com/latest/osx"
+        expectedTeamID="9BNSXJN65R"
+        ;;
+ 
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)

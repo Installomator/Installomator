@@ -5,12 +5,14 @@ atom
 autodmg
 aviatrix
 bbedit
+brave
 citrixworkspace
 coderunner
 cyberduck
 depnotify
 desktoppr
 discord
+docker
 dropbox
 eraseinstall
 firefox
