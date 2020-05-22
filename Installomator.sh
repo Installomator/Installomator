@@ -109,7 +109,8 @@ BLOCKING_PROCESS_ACTION=prompt_user
 # TODO: ?blockingProcesses for SharePointPlugin
 # TODO: generic function Sparkle to get latest download
 # TODO: ?notify user of errors
-# TODO: ?generic function to initiate a SparkleProcess
+# TODO: ?generic function to initiate a Sparkle Update
+# TODO: better version retrieval and reporting, before and after install
 
 
 # functions to help with getting info
@@ -416,6 +417,7 @@ case $label in
         name="Google Drive File Stream"
         type="pkgInDmg"
         downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg"
+        pkgName="GoogleDriveFileStream.pkg"
         expectedTeamID="EQHXZ8M8AV"
         ;;
     plisteditpro)
