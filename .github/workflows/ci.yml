@@ -1,0 +1,20 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "!*"
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run test
+        run: |
+          concurrency=$(sysctl -n hw.ncpu)
+          cat Labels.txt | parallel --halt now,fail=1 --jobs ${concurrency} --tagstring {}: ./Installomator.sh {}
+        env:
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
