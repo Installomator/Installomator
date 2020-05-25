@@ -106,7 +106,6 @@ BLOCKING_PROCESS_ACTION=prompt_user
 # todos:
 
 # TODO: better logging (or, really, any logging other than echo)
-# TODO: ?blockingProcesses for SharePointPlugin
 # TODO: generic function Sparkle to get latest download
 # TODO: ?notify user of errors
 # TODO: ?generic function to initiate a Sparkle Update
@@ -270,7 +269,7 @@ case $label in
     eraseinstall)
         name="EraseInstall"
         type="pkg"
-        downloadURL=$(curl -fs https://bitbucket.org/prowarehouse-nl/erase-install/downloads/ | grep pkg | cut -d'"' -f2 | head -n 1)
+        downloadURL=https://bitbucket.org$(curl -fs https://bitbucket.org/prowarehouse-nl/erase-install/downloads/ | grep pkg | cut -d'"' -f2 | head -n 1)
         expectedTeamID="R55HK5K86Y"
         ;;
     omnigraffle7)
@@ -570,7 +569,6 @@ case $label in
         downloadURL=https://updates.signal.org/desktop/$(curl -fs https://updates.signal.org/desktop/latest-mac.yml | awk '/url/ && /dmg/ {print $3}')
         expectedTeamID="U68MSDN6DR"
         ;;
-
     docker)
         name="Docker"
         type="dmg"
