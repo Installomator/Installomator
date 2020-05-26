@@ -467,10 +467,10 @@ case $label in
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
-    roamingclient)
-        name="Roaming Client"
+    umbrellaroamingclient)
+        name="Umbrella Roaming Client"
         type="pkgInZip"
-        downloadURL="http://shared.opendns.com/roaming/enterprise/release/mac/production/RoamingClient_MAC.mpkg.zip"
+        downloadURL="https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )"
         expectedTeamID="7P7HQ8H646"
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it

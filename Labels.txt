@@ -44,7 +44,7 @@ pacifist
 plisteditpro
 privileges
 resiliosynchome
-roamingclient
+umbrellaroamingclient
 royaltsx
 slack
 sonos
