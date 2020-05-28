@@ -8,8 +8,8 @@
 # inspired by the download scripts from William Smith and Sander Schram
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
-VERSION='0.1'
-VERSIONDATE='20200512'
+VERSION='0.2'
+VERSIONDATE='20200518'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -45,7 +45,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #     - zip
 #     - pkgInDmg
 #     - pkgInZip (not yet tested)
-# 
+#
 # - downloadURL: (required)
 #   URL to download the dmg.
 #   Can be generated with a series of commands (see BBEdit for an example).
@@ -61,7 +61,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #     spctl -a -vv -t install ~/Downloads/desktoppr-0.2.pkg
 #
 #   The team ID is the ten-digit ID at the end of the line starting with 'origin='
-# 
+#
 # - archiveName: (optional)
 #   The name of the downloaded file.
 #   When not given the archiveName is derived from the $name.
@@ -74,7 +74,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   dmg or zip:
 #     Applications will be copied to this directory.
 #     Default value is '/Applications' for dmg and zip installations.
-#   pkg: 
+#   pkg:
 #     targetDir is used as the install-location. Default is '/'.
 #
 # - blockingProcesses: (optional)
@@ -85,7 +85,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #     blockingProcesses=( "Keynote" "Pages" "Numbers" )
 #   When a workflow has no blocking processes, use
 #     blockingProcesses=( NONE )
-# 
+#
 # - pkgName: (optional, only used for dmgInPkg and dmgInZip)
 #   File name of the pkg file _inside_ the dmg or zip
 #   When not given the pkgName is derived from the $name
@@ -106,10 +106,10 @@ BLOCKING_PROCESS_ACTION=prompt_user
 # todos:
 
 # TODO: better logging (or, really, any logging other than echo)
-# TODO: ?blockingProcesses for SharePointPlugin
 # TODO: generic function Sparkle to get latest download
 # TODO: ?notify user of errors
-# TODO: ?generic function to initiate a SparkleProcess
+# TODO: ?generic function to initiate a Sparkle Update
+# TODO: better version retrieval and reporting, before and after install
 
 
 # functions to help with getting info
@@ -130,15 +130,24 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
     
+    if [[ $type == "pkgInDmg" ]]; then
+        filetype="dmg"
+    elif [[ $type == "pkgInZip" ]]; then
+        filetype="zip"
+    else
+        filetype=$type
+    fi
+    
     if [ -n "$archiveName" ]; then
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
     | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
     else
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$type/ { print \$4 }")
+    | awk -F '"' "/browser_download_url/ && /$filetype/ { print \$4 }")
     fi
     if [ -z "$downloadURL" ]; then
-        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame"
+        echo "could not retrieve download URL for $gitusername/$gitreponame"
+        exit 9
     else
         ScriptLogging "$downloadURL"
         return 0
@@ -180,8 +189,15 @@ case $label in
         ScriptLogging "Installomater: version $VERSION ($VERSIONDATE)"
         exit 0
         ;;
-    
+
     # label descriptions start here
+     autodmg)
+        # credit: Mischa van der Bent (@mischavdbent)
+        name="AutoDMG"
+        type="dmg"
+        downloadURL=$(downloadURLFromGit MagerValp AutoDMG)
+        expectedTeamID="5KQ3D3FG5H"
+        ;;
     googlechrome)
         name="Google Chrome"
         type="dmg"
@@ -196,6 +212,21 @@ case $label in
         updateTool="/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/GoogleSoftwareUpdateAgent.app/Contents/MacOS/GoogleSoftwareUpdateAgent"
         updateToolArguments=( -runMode oneshot -userInitiated YES )
         updateToolRunAsCurrentUser=1
+        ;;
+    googlejapaneseinput)
+        # credit: Tadayuki Onishi (@kenchan0130)
+        name="GoogleJapaneseInput"
+        type="pkgInDmg"
+        pkgName="GoogleJapaneseInput.pkg"
+        downloadURL="https://dl.google.com/japanese-ime/latest/GoogleJapaneseInput.dmg"
+        expectedTeamID="EQHXZ8M8AV"
+        ;;
+    santa)
+        # credit: Tadayuki Onishi (@kenchan0130)
+        name="Santa"
+        type="pkgInDmg"
+        downloadURL=$(downloadURLFromGit google santa)
+        expectedTeamID="EQHXZ8M8AV"
         ;;
     spotify)
         name="Spotify"
@@ -236,7 +267,7 @@ case $label in
         expectedTeamID="GVZRY6KDKR"
         ;;
     suspiciouspackage)
-        # credit: Mischa van der Bent
+        # credit: Mischa van der Bent (@mischavdbent)
         name="Suspicious Package"
         type="dmg"
         downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
@@ -252,7 +283,7 @@ case $label in
     eraseinstall)
         name="EraseInstall"
         type="pkg"
-        downloadURL=$(curl -fs https://bitbucket.org/prowarehouse-nl/erase-install/downloads/ | grep pkg | cut -d'"' -f2 | head -n 1)
+        downloadURL=https://bitbucket.org$(curl -fs https://bitbucket.org/prowarehouse-nl/erase-install/downloads/ | grep pkg | cut -d'"' -f2 | head -n 1)
         expectedTeamID="R55HK5K86Y"
         ;;
     omnigraffle7)
@@ -303,44 +334,44 @@ case $label in
             | cut -d '"' -f 2 )
         expectedTeamID="UPXU4CQZ5P"
         ;;
-    boxdrive) 
-        # credit: Isaac Ordonez, Mann consulting
+    boxdrive)
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
         name="Box"
         type="pkg"
         downloadURL="https://e3.boxcdn.net/box-installers/desktop/releases/mac/Box.pkg"
         expectedTeamID="M683GB7CPW"
         ;;
     aviatrix)
-        # credit: Isaac Ordonez, Mann consulting
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
         name="Aviatrix VPN Client"
         type="pkg"
         downloadURL="https://s3-us-west-2.amazonaws.com/aviatrix-download/AviatrixVPNClient/AVPNC_mac.pkg"
         expectedTeamID="32953Z7NBN"
         ;;
     zoom)
-        # credit: Isaac Ordonez, Mann consulting
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
         name="Zoom.us"
         type="pkg"
         downloadURL="https://zoom.us/client/latest/ZoomInstallerIT.pkg"
-        expectedTeamID="BJ4HAAB9B3"        
+        expectedTeamID="BJ4HAAB9B3"
         blockingProcesses=( zoom.us )
         ;;
     sonos)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Sonos"
         type="dmg"
         downloadURL="https://www.sonos.com/redir/controller_software_mac"
         expectedTeamID="2G4LW83Q3E"
         ;;
     coderunner)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="CodeRunner"
         type="zip"
         downloadURL="https://coderunnerapp.com/download"
         expectedTeamID="R4GD98AJF9"
         ;;
     openvpnconnect)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="OpenVPN"
         type="pkgInDmg"
         pkgName="OpenVPN_Connect_Installer_signed.pkg"
@@ -360,38 +391,46 @@ case $label in
         expectedTeamID="2BUA8C4S2C"
         ;;
     webexmeetings)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Cisco Webex Meetings"
         type="pkgInDmg"
         downloadURL="https://akamaicdn.webex.com/client/webexapp.dmg"
         expectedTeamID="DE8Y96K9QP"
         ;;
     webexteams)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Webex Teams"
-        type="pkgInDmg"
+        type="dmg"
         downloadURL="https://binaries.webex.com/WebexTeamsDesktop-MACOS-Gold/WebexTeams.dmg"
         expectedTeamID="DE8Y96K9QP"
         ;;
     citrixworkspace)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Citrix Workspace"
         type="pkgInDmg"
         downloadURL="https://downloads.citrix.com/17596/CitrixWorkspaceApp.dmg?__gda__=1588183500_fc68033aef7d6d163d8b8309b964f1de"
         expectedTeamID="S272Y5R93J"
         ;;
     privileges)
-        # credit: Erik Stam
+        # credit: Erik Stam (@erikstam)
         name="Privileges"
         type="zip"
         downloadURL=$(downloadURLFromGit sap macOS-enterprise-privileges )
         expectedTeamID="7R5ZEU67FQ"
         ;;
+    icons)
+        # credit: Mischa van der Bent (@mischavdbent)
+        name="Icons"
+        type="zip"
+        downloadURL=$(downloadURLFromGit sap macOS-icon-generator )
+        expectedTeamID="7R5ZEU67FQ"
+        ;;
     googledrivefilestream)
-        # credit: Isaac Ordonez, Mann consulting
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
         name="Google Drive File Stream"
         type="pkgInDmg"
         downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg"
+        pkgName="GoogleDriveFileStream.pkg"
         expectedTeamID="EQHXZ8M8AV"
         ;;
     plisteditpro)
@@ -399,12 +438,19 @@ case $label in
         type="zip"
         downloadURL="https://www.fatcatsoftware.com/plisteditpro/PlistEditPro.zip"
         expectedTeamID="8NQ43ND65V"
-        ;;    
+        ;;
     slack)
         name="Slack"
         type="dmg"
         downloadURL="https://slack.com/ssb/download-osx"
         expectedTeamID="BQR82RBBHL"
+        ;;
+    sublimetext)
+        # credit: Mischa van der Bent (@mischavdbent)
+        name="Sublime Text"
+        type="dmg"
+        downloadURL="https://download.sublimetext.com/latest/stable/osx"
+        expectedTeamID="Z6D26JE4Y4"
         ;;
     githubdesktop)
         name="GitHub Desktop"
@@ -481,7 +527,75 @@ case $label in
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
-        
+    appcleaner)
+        # credit: Tadayuki Onishi (@kenchan0130)
+        name="AppCleaner"
+        type="zip"
+        downloadURL=$(curl -fs https://freemacsoft.net/appcleaner/Updates.xml | xpath '//rss/channel/*/enclosure/@url' 2>/dev/null | tr " " "\n" | sort | tail -1 | cut -d '"' -f 2)
+        expectedTeamID="X85ZX835W9"
+        ;;
+    karabinerelements)
+        # credit: Tadayuki Onishi (@kenchan0130)
+        name="Karabiner-Elements"
+        type="pkgInDmg"
+        downloadURL=$(downloadURLFromGit pqrs-org Karabiner-Elements)
+        expectedTeamID="G43BCU2T37"
+        ;;
+    postman)
+        # credit: Mischa van der Bent
+        name="Postman"
+        type="zip"
+        downloadURL="https://dl.pstmn.io/download/latest/osx"
+        expectedTeamID="H7H8Q7M5CK"
+        ;;
+    jamfpppcutility)
+        # credit: Mischa van der Bent
+        name="PPPC Utility"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf PPPC-Utility)
+        expectedTeamID="483DWKW443"
+        ;;
+    jamfmigrator)
+        # credit: Mischa van der Bent
+        name="jamf-migrator"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf JamfMigrator)
+        expectedTeamID="PS2F6S478M"
+        ;;
+    jamfreenroller)
+        # credit: Mischa van der Bent
+        name="ReEnroller"
+        type="zip"
+        downloadURL=$(downloadURLFromGit jamf ReEnroller)
+        expectedTeamID="PS2F6S478M"
+        ;;
+    adobereaderdc)
+        name="Adobe Acrobat Reader DC"
+        type="pkgInDmg"
+        downloadURL=$(adobecurrent=`curl -s https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDC_"$adobecurrent"_MUI.dmg)
+        expectedTeamID="JQ525L2MZD"
+        blockingProcesses=( "AdobeReader" )
+        ;;
+    signal)
+        # credit: Søren Theilgaard
+        name="Signal"
+        type="dmg"
+        downloadURL=https://updates.signal.org/desktop/$(curl -fs https://updates.signal.org/desktop/latest-mac.yml | awk '/url/ && /dmg/ {print $3}')
+        expectedTeamID="U68MSDN6DR"
+        ;;
+    docker)
+        name="Docker"
+        type="dmg"
+        downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
+        expectedTeamID="9BNSXJN65R"
+        ;;
+    brave)
+        name="Brave"
+        type="dmg"
+        downloadURL="https://laptop-updates.brave.com/latest/osx"
+        expectedTeamID="9BNSXJN65R"
+        ;;
+ 
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
@@ -496,7 +610,7 @@ case $label in
     # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
 
     # download link IDs from: https://macadmin.software
-    
+
     microsoftoffice365)
         name="MicrosoftOffice365"
         type="pkg"
@@ -507,7 +621,7 @@ case $label in
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "OneDrive" )
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install )
-        ;;   
+        ;;
     microsoftofficebusinesspro)
         name="MicrosoftOfficeBusinessPro"
         type="pkg"
@@ -518,7 +632,7 @@ case $label in
         blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "OneDrive" "Teams")
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install )
-        ;;   
+        ;;
     microsoftedgeconsumerstable)
         name="Microsoft Edge"
         type="pkg"
@@ -527,7 +641,7 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps EDGE01 )
         ;;
-    microsoftcompanyportal)  
+    microsoftcompanyportal)
         name="Company Portal"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869655"
@@ -535,7 +649,7 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps IMCP01 )
         ;;
-    microsoftskypeforbusiness)  
+    microsoftskypeforbusiness)
         name="Skype for Business"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=832978"
@@ -543,7 +657,7 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSFB16 )
         ;;
-    microsoftremotedesktop)  
+    microsoftremotedesktop)
         name="Microsoft Remote Desktop"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
@@ -551,7 +665,7 @@ case $label in
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSRD10 )
         ;;
-    microsoftteams)  
+    microsoftteams)
         name="Microsoft Teams"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
@@ -651,7 +765,6 @@ case $label in
         ;;
 
 
-    
     # these descriptions exist for testing and are intentionally broken
     brokendownloadurl)
         name="Google Chrome"
@@ -688,7 +801,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
         ScriptLogging "Deleting $tmpDir"
         rm -Rf "$tmpDir"
     fi
-    
+
     if [ -n "$dmgmount" ]; then
         # unmount disk image
         ScriptLogging "Unmounting $dmgmount"
@@ -698,7 +811,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
     exit "$1"
 }
 
-runAsUser() {  
+runAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
         launchctl asuser $uid sudo -u $currentUser "$@"
@@ -714,7 +827,7 @@ displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
-    
+
     if [[ -x "$manageaction" ]]; then
          "$manageaction" -message "$message" -title "$title"
     else
@@ -748,14 +861,14 @@ checkRunningProcesses() {
         ScriptLogging "DEBUG mode, not checking for blocking processes"
         return
     fi
-    
+
     # try at most 3 times
     for i in {1..3}; do
         countedProcesses=0
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
-                ScriptLogging "found blocking process $x"
-                
+                echo "found blocking process $x"
+
                 case $BLOCKING_PROCESS_ACTION in
                     kill)
                       ScriptLogging "killing process $x"
@@ -773,7 +886,7 @@ checkRunningProcesses() {
                       cleanupAndExit 12 "blocking process '$x' found, aborting"
                       ;;
                 esac
-                
+
                 countedProcesses=$((countedProcesses + 1))
             fi
         done
@@ -797,7 +910,7 @@ checkRunningProcesses() {
 
 installAppWithPath() { # $1: path to app to install in $targetDir
     appPath=${1?:"no path to app"}
-    
+
     # check if app exists
     if [ ! -e "$appPath" ]; then
         cleanupAndExit 8 "could not find: $appPath"
@@ -821,8 +934,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         if [ "$DEBUG" -eq 0 ]; then
             cleanupAndExit 6 "not running as root, exiting"
         fi
-    
-        ScriptLogging "DEBUG enabled, skipping copy and chown steps"
+
+        echo "DEBUG enabled, skipping copy and chown steps"
         return 0
     fi
 
@@ -841,8 +954,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # set ownership to current user
     if [ "$currentUser" != "loginwindow" ]; then
-        ScriptLogging "Changing owner to $currentUser"
-        chown -R "$currentUser" "$targetDir/$appName" 
+        echo "Changing owner to $currentUser"
+        chown -R "$currentUser" "$targetDir/$appName"
     else
         ScriptLogging "No user logged in, not changing user"
     fi
@@ -856,18 +969,18 @@ mountDMG() {
     if ! dmgmount=$(ScriptLogging 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
         cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
     fi
-    
+
     if [[ ! -e $dmgmount ]]; then
         ScriptLogging "Error mounting $tmpDir/$archiveName"
         cleanupAndExit 3
     fi
-    
-    ScriptLogging "Mounted: $dmgmount"
+
+    echo "Mounted: $dmgmount"
 }
 
 installFromDMG() {
     mountDMG
-    
+
     installAppWithPath "$dmgmount/$appName"
 }
 
@@ -885,18 +998,18 @@ installFromPKG() {
         ScriptLogging "Team IDs do not match!"
         cleanupAndExit 5
     fi
-    
+
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
         ScriptLogging "DEBUG enabled, skipping installation"
         return 0
     fi
-    
+
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
-        ScriptLogging "not running as root, exiting"
-        cleanupAndExit 6    
+        echo "not running as root, exiting"
+        cleanupAndExit 6
     fi
 
     # install pkg
@@ -911,7 +1024,7 @@ installFromZIP() {
     # unzip the archive
     ScriptLogging "Unzipping $archiveName"
     tar -xf "$archiveName"
-    
+
     installAppWithPath "$tmpDir/$appName"
 }
 
@@ -919,12 +1032,19 @@ installPkgInDmg() {
     mountDMG
     # locate pkg in dmg
     if [[ -z $pkgName ]]; then
-        pkgName="$name.pkg"
+        # find first file ending with 'pkg'
+        findfiles=$(find -X "$dmgmount" -iname "*.pkg" -maxdepth 1  )
+        filearray=( ${(0)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
+        fi
+        archiveName="${filearray[1]}"
+        echo "found pkg: $archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromPKG
+        archiveName="$dmgmount/$pkgName"
     fi
-    
-    # it is now safe to overwrite archiveName for installFromPKG
-    archiveName="$dmgmount/$pkgName"
-    
+
     # installFromPkgs
     installFromPKG
 }
@@ -936,12 +1056,20 @@ installPkgInZip() {
 
     # locate pkg in zip
     if [[ -z $pkgName ]]; then
-        pkgName="$name.pkg"
+        # find first file starting with $name and ending with 'pkg'
+        findfiles=$(find -X "$tmpDir" -iname "${name}*.pkg" -maxdepth 1  )
+        filearray=( ${(0)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 20 "couldn't find pkg in zip $archiveName"
+        fi
+        archiveName="${filearray[1]}"
+        # it is now safe to overwrite archiveName for installFromPKG
+        echo "found pkg: $archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromPKG
+        archiveName="$tmpDir/$pkgName"
     fi
-    
-    # it is now safe to overwrite archiveName for installFromPKG
-    archiveName="$tmpDir/$pkgName"
-    
+
     # installFromPkgs
     installFromPKG
 }
@@ -1041,7 +1169,7 @@ if [[ -n $appVersion ]]; then
     else
         ScriptLogging "DEBUG mode enabled, not running update tool"
     fi
-fi 
+fi
 
 # when user is logged in, and app is running, prompt user to quit app
 
