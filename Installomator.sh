@@ -20,6 +20,13 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 DEBUG=1
 
+# notify behavior
+NOTIFY=success
+# options:
+#   - success      notify the user on success
+#   - silent       no notifications
+
+
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=prompt_user
 # options:
@@ -28,7 +35,6 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   - prompt_user  show a user dialog for each blocking process found
 #                  abort after three attempts to quit
 #   - kill         kill process without prompting or giving the user a chance to save
-
 
 
 # Each workflow label needs to be listed in the case statement below.
@@ -1250,8 +1256,15 @@ esac
 sleep 10 # wait a moment to let spotlight catch up
 getAppVersion
 
-# TODO: notify when done
-if [[ $currentUser != "loginwindow" ]]; then
+if [[ -z $appversion ]]; then
+    message="Installed $name"
+else
+    message="Installed $name, version $appversion"
+fi
+
+printlog "$message"
+
+if [[ $currentUser != "loginwindow" && $NOTIFY == "success" ]]; then
     printlog "notifying"
     displaynotification "Installed $name, version $appversion" "Installation complete!"
 fi
