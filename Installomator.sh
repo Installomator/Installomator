@@ -599,10 +599,27 @@ case $label in
         expectedTeamID="9BNSXJN65R"
         ;;
     umbrellaroamingclient)
+        # credit: Tadayuki Onishi (@kenchan0130)
         name="Umbrella Roaming Client"
         type="pkgInZip"
         downloadURL=https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )
         expectedTeamID="7P7HQ8H646"
+        ;;
+powershell)
+        # credit: Tadayuki Onishi (@kenchan0130)
+        name="PowerShell"
+        type="pkg"
+        downloadURL=$(curl -fs "https://api.github.com/repos/Powershell/Powershell/releases/latest" \
+        | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep -v lts )
+        expectedTeamID="UBF8T346G9"
+        ;;
+powershell-lts)
+        # credit: Tadayuki Onishi (@kenchan0130)
+        name="PowerShell"
+        type="pkg"
+        downloadURL=$(curl -fs "https://api.github.com/repos/Powershell/Powershell/releases/latest" \
+        | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep lts)
+        expectedTeamID="UBF8T346G9"
         ;;
 
 
