@@ -1221,6 +1221,7 @@ case $type in
 esac
 
 # print installed application location and version
+sleep 10
 getAppVersion
 
 # TODO: notify when done
