@@ -598,7 +598,13 @@ case $label in
         downloadURL="https://laptop-updates.brave.com/latest/osx"
         expectedTeamID="9BNSXJN65R"
         ;;
- 
+    umbrellaroamingclient)
+        name="Umbrella Roaming Client"
+        type="pkgInZip"
+        downloadURL=https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )
+        expectedTeamID="7P7HQ8H646"
+        ;;
+
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
@@ -1042,7 +1048,7 @@ installPkgInDmg() {
             cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
         fi
         archiveName="${filearray[1]}"
-        echo "found pkg: $archiveName"
+        printlog "found pkg: $archiveName"
     else
         # it is now safe to overwrite archiveName for installFromPKG
         archiveName="$dmgmount/$pkgName"
@@ -1060,14 +1066,14 @@ installPkgInZip() {
     # locate pkg in zip
     if [[ -z $pkgName ]]; then
         # find first file starting with $name and ending with 'pkg'
-        findfiles=$(find -X "$tmpDir" -iname "${name}*.pkg" -maxdepth 1  )
+        findfiles=$(find -X "$tmpDir" -iname "*.pkg" -maxdepth 1  )
         filearray=( ${(0)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in zip $archiveName"
         fi
         archiveName="${filearray[1]}"
         # it is now safe to overwrite archiveName for installFromPKG
-        echo "found pkg: $archiveName"
+        printlog "found pkg: $archiveName"
     else
         # it is now safe to overwrite archiveName for installFromPKG
         archiveName="$tmpDir/$pkgName"
