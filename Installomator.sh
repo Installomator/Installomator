@@ -470,9 +470,10 @@ case $label in
     umbrellaroamingclient)
         name="Umbrella Roaming Client"
         type="pkgInZip"
-        downloadURL="https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )"
+        downloadURL=https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )
         expectedTeamID="7P7HQ8H646"
-
+        ;;
+        
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
 #        name="Packages"
