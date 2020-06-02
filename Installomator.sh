@@ -593,12 +593,14 @@ case $label in
         expectedTeamID="U68MSDN6DR"
         ;;
     docker)
+        # credit: @securitygeneration      
         name="Docker"
         type="dmg"
         downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
         expectedTeamID="9BNSXJN65R"
         ;;
     brave)
+        # credit: @securitygeneration
         name="Brave"
         type="dmg"
         downloadURL="https://laptop-updates.brave.com/latest/osx"
