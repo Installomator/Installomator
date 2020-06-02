@@ -158,7 +158,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
         echo "could not retrieve download URL for $gitusername/$gitreponame"
         exit 9
     else
-        printlog "$downloadURL"
+        echo "$downloadURL"
         return 0
     fi
 }
@@ -1268,7 +1268,7 @@ printlog "$message"
 
 if [[ $currentUser != "loginwindow" && $NOTIFY == "success" ]]; then
     printlog "notifying"
-    displaynotification "Installed $name, version $appversion" "Installation complete!"
+    displaynotification "$message" "Installation complete!"
 fi
 
 # all done!
