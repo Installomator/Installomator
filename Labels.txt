@@ -16,6 +16,8 @@ docker
 dropbox
 eraseinstall
 firefox
+firefoxesrpkg
+firefoxpkg
 githubdesktop
 googlechrome
 googlechromepkg
