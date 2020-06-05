@@ -80,5 +80,5 @@ vlc
 webexmeetings
 webexteams
 whatsapp
-wwdcformacs
+wwdcformac
 zoom
