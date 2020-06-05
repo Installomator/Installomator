@@ -643,6 +643,12 @@ powershell-lts)
         | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep lts)
         expectedTeamID="UBF8T346G9"
         ;;
+    wwdcformac)
+        name="WWDC"
+        type="zip"
+        downloadURL="https://cdn.wwdc.io/WWDC_latest.zip"
+        expectedTeamID="8C7439RJLG"
+        ;;
 
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
