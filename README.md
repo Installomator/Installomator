@@ -196,6 +196,14 @@ There are four options:
 
 The default is `prompt_user`.
 
+### Notification
+
+The `NOTIFY` variable controls the notifications shown to the user. As of now, there are two options: `success` (default) and `silent`.
+
+- `success`:   notify the user after a successful install
+- `silent`:    no notifications
+
+
 ### Adding applications/label blocks
 
 #### Required Variables
