@@ -649,6 +649,22 @@ powershell-lts)
         downloadURL="https://cdn.wwdc.io/WWDC_latest.zip"
         expectedTeamID="8C7439RJLG"
         ;;
+    ringcentralmeetings)
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+        name="Ring Central Meetings"
+        type="pkg"
+        downloadURL="http://dn.ringcentral.com/data/web/download/RCMeetings/1210/RCMeetingsClientSetup.pkg"
+        expectedTeamID="M932RC5J66"        
+        blockingProcesses=( "RingCentral Meetings" )
+        ;;
+    ringcentralapp)
+        # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+        name="Glip"
+        type="dmg"
+        downloadURL="https://downloads.ringcentral.com/glip/rc/GlipForMac"
+        expectedTeamID="M932RC5J66"        
+        blockingProcesses=( "Glip" )
+        ;;
 
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it

@@ -61,6 +61,8 @@ powershell
 powershell-lts
 privileges
 resiliosynchome
+ringcentralapp
+ringcentralmeetings
 royaltsx
 santa
 signal
