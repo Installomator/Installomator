@@ -627,7 +627,7 @@ case $label in
         downloadURL=https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )
         expectedTeamID="7P7HQ8H646"
         ;;
-powershell)
+    powershell)
         # credit: Tadayuki Onishi (@kenchan0130)
         name="PowerShell"
         type="pkg"
@@ -635,7 +635,7 @@ powershell)
         | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep -v lts )
         expectedTeamID="UBF8T346G9"
         ;;
-powershell-lts)
+    powershell-lts)
         # credit: Tadayuki Onishi (@kenchan0130)
         name="PowerShell"
         type="pkg"
@@ -671,6 +671,13 @@ powershell-lts)
         downloadURL="https://developer.apple.com/design/downloads/SF-Symbols.dmg"
         expectedTeamID="Software Update"
         ;;
+    swiftruntimeforcommandlinetools)
+        name="SwiftRuntimeForCommandLineTools"
+        type="pkgInDmg"
+        downloadURL="https://updates.cdn-apple.com/2019/cert/061-41823-20191025-5efc5a59-d7dc-46d3-9096-396bb8cb4a73/SwiftRuntimeForCommandLineTools.dmg"
+        expectedTeamID="SoftwareUpdate"
+        ;;
+
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)

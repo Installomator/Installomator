@@ -73,6 +73,7 @@ sourcetree
 spotify
 sublimetext
 suspiciouspackage
+swiftruntimeforcommandlinetools
 teamviewer
 textmate
 things
