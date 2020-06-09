@@ -65,6 +65,7 @@ ringcentralapp
 ringcentralmeetings
 royaltsx
 santa
+sfsymbols
 signal
 slack
 sonos

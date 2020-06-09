@@ -665,7 +665,12 @@ powershell-lts)
         expectedTeamID="M932RC5J66"        
         blockingProcesses=( "Glip" )
         ;;
-
+    sfsymbols)
+        name="SF Symbols"
+        type="pkgInDmg"
+        downloadURL="https://developer.apple.com/design/downloads/SF-Symbols.dmg"
+        expectedTeamID="Software Update"
+        ;;
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
@@ -1057,10 +1062,19 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
-    if ! teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
+    
+    if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then        
         printlog "Error verifying $archiveName"
         cleanupAndExit 4
     fi
+    
+    teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+    echo $teamID
+    # Apple signed software has no teamID, grab entire origin instead
+    if [[ -z $teamID ]]; then
+        teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
+    fi
+
 
     printlog "Team ID: $teamID (expected: $expectedTeamID )"
 
