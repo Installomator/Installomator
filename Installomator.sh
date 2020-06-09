@@ -20,6 +20,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 DEBUG=1
 
+
 # notify behavior
 NOTIFY=success
 # options:
@@ -430,7 +431,7 @@ case $label in
     #citrixworkspace)
         # credit: Erik Stam (@erikstam)
         #name="Citrix Workspace"
-        3type="pkgInDmg"
+        #type="pkgInDmg"
         #downloadURL="https://downloads.citrix.com/17596/CitrixWorkspaceApp.dmg?__gda__=1588183500_fc68033aef7d6d163d8b8309b964f1de"
         #expectedTeamID="S272Y5R93J"
         #;;
@@ -615,7 +616,7 @@ case $label in
         ;;
     brave)
         # credit: @securitygeneration
-        name="Brave"
+        name="Brave Browser"
         type="dmg"
         downloadURL="https://laptop-updates.brave.com/latest/osx"
         expectedTeamID="9BNSXJN65R"
@@ -672,10 +673,11 @@ case $label in
         expectedTeamID="Software Update"
         ;;
     swiftruntimeforcommandlinetools)
+        # Note: this installer will error on macOS versions later than 10.14.3
         name="SwiftRuntimeForCommandLineTools"
         type="pkgInDmg"
         downloadURL="https://updates.cdn-apple.com/2019/cert/061-41823-20191025-5efc5a59-d7dc-46d3-9096-396bb8cb4a73/SwiftRuntimeForCommandLineTools.dmg"
-        expectedTeamID="SoftwareUpdate"
+        expectedTeamID="Software Update"
         ;;
 
 
