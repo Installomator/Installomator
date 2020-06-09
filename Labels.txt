@@ -7,7 +7,6 @@ aviatrix
 bbedit
 boxdrive
 brave
-citrixworkspace
 coderunner
 cyberduck
 depnotify
