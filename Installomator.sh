@@ -679,7 +679,15 @@ case $label in
         downloadURL="https://updates.cdn-apple.com/2019/cert/061-41823-20191025-5efc5a59-d7dc-46d3-9096-396bb8cb4a73/SwiftRuntimeForCommandLineTools.dmg"
         expectedTeamID="Software Update"
         ;;
-
+    sketch)
+        name="Sketch"
+        type="zip"
+        downloadURL=$(curl -sf "https://www.sketch.com/get/" \
+          | grep -o '<a class="download" href=['"'"'"][^"'"'"']*['"'"'"]' \
+          | sed -e 's/^<a class="download" href=["'"'"']//' -e 's/["'"'"']$//' \
+          | uniq)
+        expectedTeamID="WUGMZZ5K46"
+        ;;
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it
 #    packages)
