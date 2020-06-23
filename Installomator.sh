@@ -384,9 +384,9 @@ case $label in
         expectedTeamID="BJ4HAAB9B3"
         blockingProcesses=( zoom.us )
         ;;
-    sonos)
+    sonos|sonoss1)
         # credit: Erik Stam (@erikstam)
-        name="Sonos"
+        name="Sonos S1 Controller"
         type="dmg"
         downloadURL="https://www.sonos.com/redir/controller_software_mac"
         expectedTeamID="2G4LW83Q3E"
@@ -487,7 +487,7 @@ case $label in
         expectedTeamID="VEKTX9H2N7"
         ;;
     things)
-        name="Things"
+        name="Things3"
         type="zip"
         downloadURL="https://culturedcode.com/things/download/"
         expectedTeamID="JLMPQHK86H"
@@ -682,6 +682,13 @@ case $label in
         type="pkgInDmg"
         downloadURL="https://updates.cdn-apple.com/2019/cert/061-41823-20191025-5efc5a59-d7dc-46d3-9096-396bb8cb4a73/SwiftRuntimeForCommandLineTools.dmg"
         expectedTeamID="Software Update"
+        ;;
+    vmwarefusion)
+        # credit: Erik Stam (@erikstam)
+        name="VMware Fusion"
+        type="dmg"
+        downloadURL="https://www.vmware.com/go/getfusion"
+        expectedTeamID="EG7KH642X6"
         ;;
 
 
