@@ -208,13 +208,7 @@ case $label in
         downloadURL=$(downloadURLFromGit MagerValp AutoDMG)
         expectedTeamID="5KQ3D3FG5H"
         ;;
-    googlechrome)
-        name="Google Chrome"
-        type="dmg"
-        downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-        expectedTeamID="EQHXZ8M8AV"
-        ;;
-    googlechromepkg)
+    googlechrome|googlechromepkg)
         name="Google Chrome"
         type="pkg"
         #
@@ -384,11 +378,19 @@ case $label in
         expectedTeamID="BJ4HAAB9B3"
         blockingProcesses=( zoom.us )
         ;;
+    # for compatibility 'sonos' will download and install the S1 Controller
+    # use 'sonoss2' for the new controller
     sonos|sonoss1)
         # credit: Erik Stam (@erikstam)
         name="Sonos S1 Controller"
         type="dmg"
         downloadURL="https://www.sonos.com/redir/controller_software_mac"
+        expectedTeamID="2G4LW83Q3E"
+        ;;
+    sonoss2)
+        name="Sonos"
+        type="dmg"
+        downloadURL="https://www.sonos.com/redir/controller_software_mac2"
         expectedTeamID="2G4LW83Q3E"
         ;;
     coderunner)
@@ -597,10 +599,17 @@ case $label in
         downloadURL=$(downloadURLFromGit jamf ReEnroller)
         expectedTeamID="PS2F6S478M"
         ;;
-    adobereaderdc)
+    adobereaderdc|adobereaderdc-install)
         name="Adobe Acrobat Reader DC"
         type="pkgInDmg"
-        downloadURL=$(adobecurrent=`curl -s https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDC_"$adobecurrent"_MUI.dmg)
+        downloadURL=$(curl -H "Sec-Fetch-Site: same-origin" -H "Accept-Encoding: gzip, deflate, br" -H "Accept-Language: en-US;q=0.9,en;q=0.8" -H "DNT: 1" -H "Sec-Fetch-Mode: cors" -H "X-Requested-With: XMLHttpRequest" -H "Referer: https://get.adobe.com/reader/enterprise/" -H "Accept: */*" "https://get.adobe.com/reader/webservices/json/standalone/?platform_type=Macintosh&platform_dist=OSX&platform_arch=x86-32&language=English&eventname=readerotherversions" | grep -Eo '"download_url":.*?[^\\]",' | head -n 1 | cut -d \" -f 4)
+        expectedTeamID="JQ525L2MZD"
+        blockingProcesses=( "AdobeReader" )
+        ;;
+    adobereaderdc-update)
+        name="Adobe Acrobat Reader DC"
+        type="pkgInDmg"
+        downloadURL=$(adobecurrent=`curl -s https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDCUpd"$adobecurrent"_MUI.dmg)
         expectedTeamID="JQ525L2MZD"
         blockingProcesses=( "AdobeReader" )
         ;;

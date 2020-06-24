@@ -1,5 +1,7 @@
 1password7
 adobereaderdc
+adobereaderdc-install
+adobereaderdc-update
 appcleaner
 atom
 autodmg
@@ -68,6 +70,8 @@ sfsymbols
 signal
 slack
 sonos
+sonoss1
+sonoss2
 sourcetree
 spotify
 sublimetext
@@ -80,6 +84,7 @@ tunnelbear
 umbrellaroamingclient
 visualstudiocode
 vlc
+vmwarefusion
 webexmeetings
 webexteams
 whatsapp
