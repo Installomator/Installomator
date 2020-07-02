@@ -594,9 +594,10 @@ case $label in
         expectedTeamID="PS2F6S478M"
         ;;
     adobereaderdc)
+    	# credit: Noelmo Melo
         name="Adobe Acrobat Reader DC"
         type="pkgInDmg"
-        downloadURL=$(adobecurrent=`curl -s https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDC_"$adobecurrent"_MUI.dmg)
+        downloadURL=$(adobecurrent=`curl -s -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15)" https://get.adobe.com/reader/ | grep "<strong>Version" | sed 's/[^0-9]*//g' | cut -c 3-` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDC_"$adobecurrent"_MUI.dmg)
         expectedTeamID="JQ525L2MZD"
         blockingProcesses=( "AdobeReader" )
         ;;
