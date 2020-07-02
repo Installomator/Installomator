@@ -50,6 +50,7 @@ microsoftskypeforbusiness
 microsoftteams
 microsoftword
 netnewswire
+nomad
 omnifocus3
 omnigraffle7
 openvpnconnect
