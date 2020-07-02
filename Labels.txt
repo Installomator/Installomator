@@ -31,6 +31,7 @@ jamfmigrator
 jamfpppcutility
 jamfreenroller
 karabinerelements
+krisp
 malwarebytes
 microsoftautoupdate
 microsoftcompanyportal
