@@ -1327,7 +1327,7 @@ printlog "$message"
 
 if [[ $currentUser != "loginwindow" && $NOTIFY == "success" ]]; then
     printlog "notifying"
-    displaynotification "$message" "Installation complete!"
+    displaynotification "$message" "$name update-installation complete!"
 fi
 
 # all done!
