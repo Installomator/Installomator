@@ -951,7 +951,7 @@ checkRunningProcesses() {
         countedProcesses=0
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
-                echo "found blocking process $x"
+                printlog "found blocking process $x"
 
                 case $BLOCKING_PROCESS_ACTION in
                     kill)
@@ -1019,7 +1019,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
             cleanupAndExit 6 "not running as root, exiting"
         fi
 
-        echo "DEBUG enabled, skipping copy and chown steps"
+        printlog "DEBUG enabled, skipping copy and chown steps"
         return 0
     fi
 
@@ -1038,7 +1038,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # set ownership to current user
     if [ "$currentUser" != "loginwindow" ]; then
-        echo "Changing owner to $currentUser"
+        printlog "Changing owner to $currentUser"
         chown -R "$currentUser" "$targetDir/$appName"
     else
         printlog "No user logged in, not changing user"
@@ -1059,7 +1059,7 @@ mountDMG() {
         cleanupAndExit 3
     fi
 
-    echo "Mounted: $dmgmount"
+    printlog "Mounted: $dmgmount"
 }
 
 installFromDMG() {
