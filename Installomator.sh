@@ -180,6 +180,27 @@ label=${1:?"no label provided"}
 
 printlog "################## $label"
 
+# Second parameter as the handling of blocked process (so admin can force update)
+# credit: Søren Theilgaard (@theilgaard)
+if [[ $2 ]]; then
+    BLOCKING_PROCESS_ACTION=${2:?"prompt_user"}
+    case $BLOCKING_PROCESS_ACTION in
+        ignore|silent_fail|prompt_user|kill)
+            ;;
+        *)
+            printlog "Incorrect parameter for handling of blocked process."
+            printlog "Can be the following:"
+            printlog "- ignore       continue even when blocking processes are found"
+            printlog "- silent_fail  exit script without prompt or installation"
+            printlog "- prompt_user  show a user dialog for each blocking process found abort after three attempts to quit"
+            printlog "- kill         kill process without prompting or giving the user a chance to save"
+            printlog "Continue with prompt_user"
+            BLOCKING_PROCESS_ACTION=prompt_user
+            ;;
+    esac
+    printlog "Handling of blocking process: $BLOCKING_PROCESS_ACTION"
+fi
+
 # lowercase the label
 label=${label:l}
 
@@ -902,9 +923,10 @@ runAsUser() {
     fi
 }
 
-displaydialog() { # $1: message
+displaydialog() { # $1: message, $2 title
     message=${1:-"Message"}
-    runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
+    title=${2:-"Installomator"}
+    runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" with title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
 }
 
 displaynotification() { # $1: message $2: title
@@ -959,7 +981,7 @@ checkRunningProcesses() {
                       pkill $x
                       ;;
                     prompt_user)
-                      button=$(displaydialog "The application $x needs to be updated. Quit $x to continue updating?")
+                      button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update"
                       else
