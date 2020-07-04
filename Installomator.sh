@@ -212,6 +212,7 @@ case $label in
         name="Google Chrome"
         type="dmg"
         downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac,stable/{print $3; exit}') #Credits William Smith, talkingmoose
         expectedTeamID="EQHXZ8M8AV"
         ;;
     googlechromepkg)
@@ -248,12 +249,22 @@ case $label in
         name="BBEdit"
         type="dmg"
         downloadURL=$(curl -s https://versioncheck.barebones.com/BBEdit.xml | grep dmg | sort | tail -n1 | cut -d">" -f2 | cut -d"<" -f1)
+	appNewVersion=$(curl -s https://versioncheck.barebones.com/BBEdit.xml | grep dmg | sort  | tail -n1 | sed -E 's/.*(BBEdit_)([0-9 .]*)\.dmg.*/\2/')
         expectedTeamID="W52GZAXT98"
         ;;
     firefox)
         name="Firefox"
         type="dmg"
         downloadURL="https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US"
+	appNewVersion=$(/usr/bin/curl https://www.mozilla.org/en-US/firefox/releases/ --silent | /usr/bin/grep '<html' | /usr/bin/awk -F\" '{ print $8 }') # Credit: William Smith (@meck)
+        expectedTeamID="43AQ936H96"
+        blockingProcesses=( firefox )
+        ;;
+    firefox_da)
+        name="Firefox"
+        type="dmg"
+        downloadURL="https://download.mozilla.org/?product=firefox-latest&amp;os=osx&amp;lang=da"
+        appNewVersion=$(/usr/bin/curl https://www.mozilla.org/en-US/firefox/releases/ --silent | /usr/bin/grep '<html' | /usr/bin/awk -F\" '{ print $8 }') # Credit: William Smith (@meck)
         expectedTeamID="43AQ936H96"
         blockingProcesses=( firefox )
         ;;
@@ -329,6 +340,7 @@ case $label in
         type="dmg"
         downloadURL=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-intel64.xml \
             | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
+	appNewVersion=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-intel64.xml | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null | cut -d '"' -f 2 )
         expectedTeamID="75GAHG3SZQ"
         ;;
     textmate)
@@ -505,6 +517,7 @@ case $label in
         type="dmg"
         downloadURL=$(curl --silent --fail "https://api.github.com/repos/HandBrake/HandBrake/releases/latest" \
             | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ { print \$4 }")
+	appNewVersion=$(curl -sf "https://api.github.com/repos/HandBrake/HandBrake/releases/latest" | awk -F '"' "/tag_name/ { print \$4 }")
         expectedTeamID="5X9DE89KYV"
         ;;
     netnewswire)
@@ -512,6 +525,7 @@ case $label in
         type="zip"
         downloadURL=$(curl -fs https://ranchero.com/downloads/netnewswire-release.xml \
             | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2)
+	appNewVersion=$(curl -fs https://ranchero.com/downloads/netnewswire-release.xml | xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="M8L2WTLA8W"
         ;;
     resiliosynchome)
@@ -524,6 +538,7 @@ case $label in
         name="Cyberduck"
         type="zip"
         downloadURL=$(curl -fs https://version.cyberduck.io/changelog.rss | xpath '//rss/channel/item/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
+	appNewVersion=$(curl -fs https://version.cyberduck.io/changelog.rss | xpath '//rss/channel/item/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2 )
         expectedTeamID="G69SCX94XU"
         ;;
     dropbox)
@@ -549,6 +564,7 @@ case $label in
         name="Royal TSX"
         type="dmg"
         downloadURL=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@url'  2>/dev/null | cut -d '"' -f 2)
+	appNewVersion=$(curl -fs https://royaltsx-v4.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString'  2>/dev/null | cut -d '"' -f 2)
         expectedTeamID="VXP8K9EDP6"
         ;;
     appcleaner)
@@ -594,18 +610,37 @@ case $label in
         expectedTeamID="PS2F6S478M"
         ;;
     adobereaderdc)
+        # Credit: Søren Theilgaard (@theilgaard)
         name="Adobe Acrobat Reader DC"
         type="pkgInDmg"
-        downloadURL=$(adobecurrent=`curl -s https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDC_"$adobecurrent"_MUI.dmg)
+        downloadURL=$(adobecurrent=`curl -s -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15)" https://get.adobe.com/reader/ | grep "<strong>Version" | sed 's/[^0-9]*//g' | cut -c 3-` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDC_"$adobecurrent"_MUI.dmg)
+	appNewVersion=$(curl -s -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15)" https://get.adobe.com/reader/ | grep "<strong>Version" | sed 's/[^0-9 .]*//g' | awk '{print $1}')
         expectedTeamID="JQ525L2MZD"
         blockingProcesses=( "AdobeReader" )
         ;;
     signal)
-        # credit: Søren Theilgaard
+        # Credit: Søren Theilgaard (@theilgaard)
         name="Signal"
         type="dmg"
         downloadURL=https://updates.signal.org/desktop/$(curl -fs https://updates.signal.org/desktop/latest-mac.yml | awk '/url/ && /dmg/ {print $3}')
+	appNewVersion=$(curl -fs https://updates.signal.org/desktop/latest-mac.yml | grep version | awk '{print $2}')
         expectedTeamID="U68MSDN6DR"
+        ;;
+    telegram)
+    	# Credit: Søren Theilgaard (@theilgaard)
+        name="Telegram"
+        type="dmg"
+        downloadURL="https://telegram.org/dl/macos"
+        appName="Telegram.app"
+        expectedTeamID="6N38VWS5BX"
+        ;;
+    teamviewerqs)
+    	# Credit: Søren Theilgaard (@theilgaard)
+        name="TeamViewerQS"
+        type="dmg"
+        downloadURL="https://download.teamviewer.com/download/TeamViewerQS.dmg"
+        appName="TeamViewerQS.app"
+        expectedTeamID="H7UGFBUGV6"
         ;;
     docker)
         # credit: @securitygeneration      
@@ -619,7 +654,7 @@ case $label in
         name="Brave Browser"
         type="dmg"
         downloadURL="https://laptop-updates.brave.com/latest/osx"
-        expectedTeamID="9BNSXJN65R"
+        expectedTeamID="KL8N8XSYF4"
         ;;
     umbrellaroamingclient)
         # credit: Tadayuki Onishi (@kenchan0130)
@@ -929,7 +964,7 @@ getAppVersion() {
         filteredAppPaths=( ${(M)appPathArray:#${targetDir}*} )
         if [[ ${#filteredAppPaths} -eq 1 ]]; then
             installedAppPath=$filteredAppPaths[1]
-            appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
+	    appversion=$(defaults read $installedAppPath/Contents/Info.plist CFBundleShortVersionString) #Not dependant on Spotlight indexing
             printlog "found app at $installedAppPath, version $appversion"
         else
             printlog "could not determine location of $appName"
@@ -1264,6 +1299,21 @@ if [[ -n $appVersion ]]; then
     fi
 fi
 
+# Exit if new version is the same as installed version
+if [[ -n $appNewVersion ]]; then
+	printlog "Latest version of $name is $appNewVersion"
+	if [[ $appversion == $appNewVersion ]]; then
+	    if [[ $DEBUG -eq 0 ]]; then
+			printlog "There is no new version available. Exiting."
+			exit 0
+	    else
+	        printlog "DEBUG mode enabled, not exiting, but there is no new version of app."
+	    fi
+	fi
+else
+	printlog "Latest version not specified."
+fi
+
 # when user is logged in, and app is running, prompt user to quit app
 
 if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
@@ -1314,7 +1364,7 @@ case $type in
 esac
 
 # print installed application location and version
-sleep 10 # wait a moment to let spotlight catch up
+#sleep 10 # wait a moment to let spotlight catch up # not needed with my version check /Søren Theilgaard
 getAppVersion
 
 if [[ -z $appversion ]]; then
