@@ -721,6 +721,7 @@ case $label in
         name="Microsoft Edge"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2069148"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.edge"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
         expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps EDGE01 )
@@ -737,6 +738,7 @@ case $label in
         name="Skype for Business"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=832978"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.skypeforbusiness.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
         expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSFB16 )
@@ -745,6 +747,7 @@ case $label in
         name="Microsoft Remote Desktop"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.remotedesktop.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
         expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps MSRD10 )
@@ -753,15 +756,26 @@ case $label in
         name="Microsoft Teams"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.teams.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
         expectedTeamID="UBF8T346G9"
         blockingProcesses=( Teams "Microsoft Teams Helper" )
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps TEAM01 )
         ;;
+    microsoftyammer)
+        name="Yammer"
+        type="dmg"
+        downloadURL="https://aka.ms/yammer_desktop_mac"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.yammer.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
+        expectedTeamID="UBF8T346G9"
+        #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        #updateToolArguments=( --install --apps ?????? )
+        ;;
     microsoftautoupdate)
         name="Microsoft AutoUpdate"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=830196"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.autoupdate.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
         expectedTeamID="UBF8T346G9"
         # commented the updatetool for MSAutoupdate, because when Autoupdate is really
         # old or broken, you want to force a new install
@@ -772,6 +786,7 @@ case $label in
         name="Microsoft Edge"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2093438"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.edge"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/') # Same version expected as consumer stable
         expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps EDGE01 )
@@ -828,6 +843,7 @@ case $label in
         name="MicrosoftSharePointPlugin"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=800050"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.sharepointplugin.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
         expectedTeamID="UBF8T346G9"
         # TODO: determine blockingProcesses for SharePointPlugin
         ;;
@@ -843,6 +859,7 @@ case $label in
         name="Microsoft Defender ATP"
         type="pkg"
         downloadURL="https://go.microsoft.com/fwlink/?linkid=2097502"
+        appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.defender.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
         expectedTeamID="UBF8T346G9"
         updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
         updateToolArguments=( --install --apps WDAV00 )
