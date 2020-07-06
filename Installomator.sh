@@ -679,6 +679,12 @@ case $label in
         downloadURL="https://updates.cdn-apple.com/2019/cert/061-41823-20191025-5efc5a59-d7dc-46d3-9096-396bb8cb4a73/SwiftRuntimeForCommandLineTools.dmg"
         expectedTeamID="Software Update"
         ;;
+    r)
+        name="R"
+        type="pkg"
+        downloadURL=$( curl -fsL https://formulae.brew.sh/api/cask/r.json | sed -n 's/^.*"url":"\([^"]*\)".*$/\1/p' )
+        expectedTeamID="VZLD955F6P"
+        ;;
 
 
 #    Note: Packages is signed but _not_ notarized, so spctl will reject it

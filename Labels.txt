@@ -59,6 +59,7 @@ postman
 powershell
 powershell-lts
 privileges
+r
 resiliosynchome
 ringcentralapp
 ringcentralmeetings
