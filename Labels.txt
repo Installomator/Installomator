@@ -5,6 +5,7 @@ atom
 autodmg
 aviatrix
 bbedit
+bettertouchtool
 boxdrive
 brave
 coderunner
