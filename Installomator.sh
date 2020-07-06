@@ -1012,6 +1012,16 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         cleanupAndExit 5 "Team IDs do not match"
     fi
 
+    # versioncheck
+    # credit: Søren Theilgaard (@theilgaard)
+    appNewVersion=$(defaults read $appPath/Contents/Info.plist CFBundleShortVersionString)
+	if [[ $appversion == $appNewVersion ]]; then
+        printlog "Downloaded version of $name is $appNewVersion, same as installed. Exiting."
+        cleanupAndExit 0
+    else
+        printlog "Downloaded version of $name is $appNewVersion (replacing version $appversion)."
+	fi
+
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
