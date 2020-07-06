@@ -164,6 +164,20 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 }
 
+versionFromGit() { # $1 git user name, $2 git repo name
+    gitusername=${1?:"no git user name"}
+    gitreponame=${2?:"no git repo name"}
+        
+    appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9.]//g')
+    if [ -z "$appNewVersion" ]; then
+        echo "could not retrieve version number for $gitusername/$gitreponame"
+        exit 9
+    else
+        echo "$appNewVersion"
+        return 0
+    fi
+}
+
 printlog "################## Start Installomator"
 
 # get the label
