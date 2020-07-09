@@ -168,7 +168,9 @@ printlog "################## Start Installomator"
 
 # get the label
 if [[ $# -eq 0 ]]; then
-    printlog "no label provided"
+    printlog "no label provided. Printing labels:"
+    printlog "$(grep -E '^ *[a-z]*\*?\)$' "$0" | sed -E 's/^ *([a-z]+)[)]$/\1/g' )"
+    printlog "Omit the last lines from “*)”."
     exit 1
 elif [[ $# -gt 3 ]]; then
 	# jamf uses $4 for the first custom parameter
