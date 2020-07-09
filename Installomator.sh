@@ -183,6 +183,29 @@ printlog "################## $label"
 # lowercase the label
 label=${label:l}
 
+# Second parameter as the handling of blocked process (so admin can force update)
+# credit: Søren Theilgaard (@theilgaard)
+if [[ $2 ]]; then
+    BLOCKING_PROCESS_ACTION=$2
+    case $BLOCKING_PROCESS_ACTION in
+        ignore|silent_fail|prompt_user|kill)
+            printlog "Handling of blocking process set by parameter."
+            ;;
+        *)
+            printlog "Incorrect parameter for handling of blocked process."
+            printlog "Can be the following:"
+            printlog "- ignore       continue even when blocking processes are found"
+            printlog "- silent_fail  exit script without prompt or installation"
+            printlog "- prompt_user  show a user dialog for each blocking process found abort after three attempts to quit"
+            printlog "- kill         kill process without prompting or giving the user a chance to save"
+            printlog "Continue with prompt_user"
+            BLOCKING_PROCESS_ACTION=prompt_user
+            ;;
+    esac
+    
+fi
+printlog "Handling of blocking process: $BLOCKING_PROCESS_ACTION"
+
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
