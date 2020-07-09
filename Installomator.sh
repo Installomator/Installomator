@@ -474,12 +474,14 @@ case $label in
         name="Sublime Text"
         type="dmg"
         downloadURL="https://download.sublimetext.com/latest/stable/osx"
+	appNewVersion=$(curl -fs https://www.sublimetext.com/3 | grep 'class="latest"' | cut -d '>' -f 4 | sed -E 's/ (.*[0-9]*)<.*/\1/g')
         expectedTeamID="Z6D26JE4Y4"
         ;;
     githubdesktop)
         name="GitHub Desktop"
         type="zip"
         downloadURL="https://central.github.com/deployments/desktop/desktop/latest/darwin"
+	appNewVersion=$(curl -fsL https://central.github.com/deployments/desktop/desktop/changelog.json | awk -F '{' '/"version"/ { print $2 }' | sed -E 's/.*,\"version\":\"([0-9.]*)\".*/\1/g')
         expectedTeamID="VEKTX9H2N7"
         ;;
     things)
