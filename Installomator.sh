@@ -922,8 +922,8 @@ displaynotification() { # $1: message $2: title
 
 getAppVersion() {
     # get all apps matching name
-    applist=$(mdfind "kMDItemFSName == '$appName' && kMDItemKind == 'Application'" -0 )
-    if [ applist="" ]; then
+    applist=$(mdfind "kind:application $appName" -0 )
+    if [[ $applist = "" ]]; then
         printlog "Spotlight not returning any app, trying manually in /Applications."
         if [ -d "/Applications/$appName" ]; then
             applist="/Applications/$appName"
