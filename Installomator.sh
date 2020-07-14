@@ -166,6 +166,14 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
 printlog "################## Start Installomator"
 
+# check minimal macOS requirement
+autoload is-at-least
+
+if ! is-at-least 10.14 $(sw_vers -productVersion); then
+    printlog "Installomator requires at least macOS 10.14 Mojave."
+    exit 98
+fi
+
 # get the label
 if [[ $# -eq 0 ]]; then
     printlog "no label provided"
