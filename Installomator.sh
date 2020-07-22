@@ -748,7 +748,12 @@ nomad)
     downloadURL="https://files.nomad.menu/NoMAD.pkg"
     expectedTeamID="AAPZK3CB24"
     ;;
-   
+bettertouchtool)
+    name="BetterTouchTool"
+    type="zip"
+    downloadURL="https://folivora.ai/releases/BetterTouchTool.zip"
+    expectedTeamID="DAFVSXZ82P"
+    ;;
     
 # MARK: add new labels above here
 
