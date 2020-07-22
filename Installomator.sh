@@ -749,11 +749,19 @@ nomad)
     expectedTeamID="AAPZK3CB24"
     ;;
 bettertouchtool)
+    # credit: Tadayuki Onishi (@kenchan0130)
     name="BetterTouchTool"
     type="zip"
     downloadURL="https://folivora.ai/releases/BetterTouchTool.zip"
     expectedTeamID="DAFVSXZ82P"
     ;;
+r)
+    # credit: Tadayuki Onishi (@kenchan0130)        
+    name="R"
+    type="pkg"
+    downloadURL=$( curl -fsL https://formulae.brew.sh/api/cask/r.json | sed -n 's/^.*"url":"\([^"]*\)".*$/\1/p' )
+    expectedTeamID="VZLD955F6P"
+    ;; 
     
 # MARK: add new labels above here
 
