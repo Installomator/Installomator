@@ -693,6 +693,13 @@ swiftruntimeforcommandlinetools)
     downloadURL="https://updates.cdn-apple.com/2019/cert/061-41823-20191025-5efc5a59-d7dc-46d3-9096-396bb8cb4a73/SwiftRuntimeForCommandLineTools.dmg"
     expectedTeamID="Software Update"
     ;;
+aquaskk)
+    # credit: Tadayuki Onishi (@kenchan0130)
+    name="aquaskk"
+    type="pkg"
+    downloadURL="$(downloadURLFromGit codefirst aquaskk)"
+    expectedTeamID="FPZK4WRGW7"
+    ;;
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
 # packages)
