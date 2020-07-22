@@ -763,13 +763,20 @@ r)
     expectedTeamID="VZLD955F6P"
     ;; 
 8x8)
-    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+    # credit: #D-A-James from MacAdmins Slack
     name="8x8 - Virtual Office"
     type="dmg"
-    downloadURL=$(curl -fs https://support.8x8.com/cloud-phone-service/voice/virtual-office-desktop/download-virtual-office-desktop | grep -m 1 -o "http.*VOD.*.dmg")
+    downloadURL='https://support.8x8.com/cloud-phone-service/voice/virtual-office-desktop/download-virtual-office-desktop'
     expectedTeamID="FC967L3QRG"
     ;;    
-
+egnyte)
+    # credit: #MoeMunyoki from MacAdmins Slack
+    name="Egnyte Connect"
+    type="pkg"
+    downloadURL="https://egnyte-cdn.egnyte.com/egnytedrive/mac/en-us/latest/EgnyteConnectMac.pkg"
+    expectedTeamID="FELUD555VC"
+    BLOCKING_PROCESS_ACTION=ignore
+    ;;
 # MARK: add new labels above here
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
