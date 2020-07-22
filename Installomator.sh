@@ -428,13 +428,15 @@ case $label in
         downloadURL="https://binaries.webex.com/WebexTeamsDesktop-MACOS-Gold/WebexTeams.dmg"
         expectedTeamID="DE8Y96K9QP"
         ;;
-    #citrixworkspace)
-        # credit: Erik Stam (@erikstam)
-        #name="Citrix Workspace"
-        #type="pkgInDmg"
-        #downloadURL="https://downloads.citrix.com/17596/CitrixWorkspaceApp.dmg?__gda__=1588183500_fc68033aef7d6d163d8b8309b964f1de"
-        #expectedTeamID="S272Y5R93J"
-        #;;
+    citrixworkspace)
+        # credit: Erik Stam (@erikstam) updated by Phinehas Bynum (@phinbox)
+        name="Citrix Workspace"
+        type="pkgInDmg"
+        downloadURL=$(curl -s https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html \
+            | grep -m1 -o --regexp="downloads.citrix.com/[0-9]\{5\}\/CitrixWorkspaceApp.dmg?__gda__=[0-9a-f_]*" \
+            | sed 's/^/https:\/\//')
+        expectedTeamID="S272Y5R93J"
+        ;;
     privileges)
         # credit: Erik Stam (@erikstam)
         name="Privileges"
