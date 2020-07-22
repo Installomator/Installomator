@@ -1144,8 +1144,20 @@ installFromPKG() {
 installFromZIP() {
     # unzip the archive
     printlog "Unzipping $archiveName"
-    tar -xf "$archiveName"
+    
+    # tar -xf "$archiveName"
 
+    # note: when you expand a zip using tar in Mojave the expanded 
+    # app will never pass the spctl check
+    
+    unzip -o -qq "$archiveName"
+    installAppWithPath "$tmpDir/$appName"
+}
+
+installFromTBZ() {
+    # unzip the archive
+    printlog "Unzipping $archiveName"
+    tar -xf "$archiveName"
     installAppWithPath "$tmpDir/$appName"
 }
 
@@ -1326,8 +1338,11 @@ case $type in
     pkg)
         installFromPKG
         ;;
-    zip|tbz)
+    zip)
         installFromZIP
+        ;;
+    tbz)
+        installFromTBZ
         ;;
     pkgInDmg)
         installPkgInDmg
