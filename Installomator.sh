@@ -13,7 +13,7 @@ VERSIONDATE='20200609'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-# adjust these variables:
+# NOTE: adjust these variables:
 
 # set to 0 for production, 1 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
@@ -37,6 +37,8 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #                  abort after three attempts to quit
 #   - kill         kill process without prompting or giving the user a chance to save
 
+
+# NOTE: How labels work
 
 # Each workflow label needs to be listed in the case statement below.
 # for each label these variables can be set:
@@ -110,16 +112,8 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   When this variable is set (any value), $updateTool will be run as the current user.
 #
 
-# todos:
 
-# TODO: better logging (or, really, any logging other than echo)
-# TODO: generic function Sparkle to get latest download
-# TODO: ?notify user of errors
-# TODO: ?generic function to initiate a Sparkle Update
-# TODO: better version retrieval and reporting, before and after install
-
-
-# functions to help with getting info
+# MARK: functions to help with getting data
 
 # Logging
 log_location="/private/var/log/Installomator.log"
@@ -602,10 +596,17 @@ jamfreenroller)
     downloadURL=$(downloadURLFromGit jamf ReEnroller)
     expectedTeamID="PS2F6S478M"
     ;;
-adobereaderdc)
+adobereaderdc|adobereaderdc-install)
     name="Adobe Acrobat Reader DC"
     type="pkgInDmg"
-    downloadURL=$(adobecurrent=`curl -s https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDC_"$adobecurrent"_MUI.dmg)
+    downloadURL=$(curl --silent --fail -H "Sec-Fetch-Site: same-origin" -H "Accept-Encoding: gzip, deflate, br" -H "Accept-Language: en-US;q=0.9,en;q=0.8" -H "DNT: 1" -H "Sec-Fetch-Mode: cors" -H "X-Requested-With: XMLHttpRequest" -H "Referer: https://get.adobe.com/reader/enterprise/" -H "Accept: */*" "https://get.adobe.com/reader/webservices/json/standalone/?platform_type=Macintosh&platform_dist=OSX&platform_arch=x86-32&language=English&eventname=readerotherversions" | grep -Eo '"download_url":.*?[^\\]",' | head -n 1 | cut -d \" -f 4)
+    expectedTeamID="JQ525L2MZD"
+    blockingProcesses=( "AdobeReader" )
+    ;;
+adobereaderdc-update)
+    name="Adobe Acrobat Reader DC"
+    type="pkgInDmg"
+    downloadURL=$(adobecurrent=`curl --fail --silent https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDCUpd"$adobecurrent"_MUI.dmg)
     expectedTeamID="JQ525L2MZD"
     blockingProcesses=( "AdobeReader" )
     ;;
@@ -884,7 +885,8 @@ brokenteamid)
     ;;
 esac
 
-# functions
+# MARK: Functions
+
 cleanupAndExit() { # $1 = exit code, $2 message
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2"
@@ -1068,7 +1070,7 @@ mountDMG() {
         cleanupAndExit 3
     fi
 
-    echo "Mounted: $dmgmount"
+    printlog "Mounted: $dmgmount"
 }
 
 installFromDMG() {
@@ -1110,7 +1112,7 @@ installFromPKG() {
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
-        echo "not running as root, exiting"
+        printlog "not running as root, exiting"
         cleanupAndExit 6
     fi
 
@@ -1208,11 +1210,11 @@ runUpdateTool() {
 
 
 
-### main code starts here
+# MARK: main code starts here
 
 
 
-# extract info from data
+# MARK: extract info from data
 if [ -z "$archiveName" ]; then
     case $type in
         dmg|pkg|zip|tbz)
@@ -1256,7 +1258,7 @@ if [[ -z $blockingProcesses ]]; then
     blockingProcesses=( $name )
 fi
 
-# determine tmp dir
+# MARK: determine tmp dir
 if [ "$DEBUG" -ne 0 ]; then
     # for debugging use script dir as working directory
     tmpDir=$(dirname "$0")
@@ -1265,7 +1267,7 @@ else
     tmpDir=$(mktemp -d )
 fi
 
-# change directory to temporary working directory
+# MARK: change directory to temporary working directory
 printlog "Changing directory to $tmpDir"
 if ! cd "$tmpDir"; then
     printlog "error changing directory $tmpDir"
@@ -1273,7 +1275,7 @@ if ! cd "$tmpDir"; then
     cleanupAndExit 1
 fi
 
-# check if this is an Update
+# MARK: check if this is an Update
 getAppVersion
 if [[ -n $appVersion ]]; then
     if [[ $DEBUG -eq 0 ]]; then
@@ -1285,7 +1287,7 @@ if [[ -n $appVersion ]]; then
     fi
 fi
 
-# when user is logged in, and app is running, prompt user to quit app
+# MARK: when user is logged in, and app is running, prompt user to quit app
 
 if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
     printlog "ignoring blocking processes"
@@ -1299,7 +1301,7 @@ else
     fi
 fi
 
-# download the archive
+# MARK: download the archive
 
 if [ -f "$archiveName" ] && [ "$DEBUG" -ne 0 ]; then
     printlog "$archiveName exists and DEBUG enabled, skipping download"
@@ -1311,6 +1313,8 @@ else
         cleanupAndExit 2
     fi
 fi
+
+# MARK: install the download
 
 case $type in
     dmg)
@@ -1337,7 +1341,7 @@ case $type in
         ;;
 esac
 
-# print installed application location and version
+# MARK: print installed application location and version
 sleep 10 # wait a moment to let spotlight catch up
 getAppVersion
 
