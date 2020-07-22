@@ -158,7 +158,6 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 }
 
-printlog "################## Start Installomator"
 
 # MARK: check minimal macOS requirement
 autoload is-at-least
@@ -170,7 +169,6 @@ fi
 
 # MARK: get the label
 if [[ $# -eq 0 ]]; then
-    printlog "no label provided. Printing labels:"
     grep -E '^[a-z0-9\-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^broken' | grep -v -E '^(longversion|version)$' | sort
     exit 0
 elif [[ $# -gt 3 ]]; then
@@ -181,6 +179,7 @@ fi
 
 label=${1:?"no label provided"}
 
+printlog "################## Start Installomator"
 printlog "################## $label"
 
 # lowercase the label
