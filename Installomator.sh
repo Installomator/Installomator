@@ -762,7 +762,14 @@ r)
     downloadURL=$( curl -fsL https://formulae.brew.sh/api/cask/r.json | sed -n 's/^.*"url":"\([^"]*\)".*$/\1/p' )
     expectedTeamID="VZLD955F6P"
     ;; 
-    
+8x8)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+    name="8x8 - Virtual Office"
+    type="dmg"
+    downloadURL=$(curl -fs https://support.8x8.com/cloud-phone-service/voice/virtual-office-desktop/download-virtual-office-desktop | grep -m 1 -o "http.*VOD.*.dmg")
+    expectedTeamID="FC967L3QRG"
+    ;;    
+
 # MARK: add new labels above here
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
