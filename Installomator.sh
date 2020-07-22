@@ -160,7 +160,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
 printlog "################## Start Installomator"
 
-# check minimal macOS requirement
+# MARK: check minimal macOS requirement
 autoload is-at-least
 
 if ! is-at-least 10.14 $(sw_vers -productVersion); then
@@ -168,10 +168,10 @@ if ! is-at-least 10.14 $(sw_vers -productVersion); then
     exit 98
 fi
 
-# get the label
+# MARK: get the label
 if [[ $# -eq 0 ]]; then
     printlog "no label provided. Printing labels:"
-    grep -E '^[a-z0-9]*\)$' "$0" | tr -d ')' | grep -v -E '^broken' | sort
+    grep -E '^[a-z0-9\-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^broken' | grep -v -E '^(longversion|version)$' | sort
     exit 0
 elif [[ $# -gt 3 ]]; then
 	# jamf uses $4 for the first custom parameter
@@ -190,7 +190,7 @@ label=${label:l}
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
 
-# labels in case statement
+# MARK: labels in case statement
 case $label in
 version)
     # print the script VERSION
@@ -204,7 +204,7 @@ longversion)
     ;;
 
 # label descriptions start here
- autodmg)
+autodmg)
     # credit: Mischa van der Bent (@mischavdbent)
     name="AutoDMG"
     type="dmg"
@@ -596,7 +596,8 @@ jamfreenroller)
     downloadURL=$(downloadURLFromGit jamf ReEnroller)
     expectedTeamID="PS2F6S478M"
     ;;
-adobereaderdc|adobereaderdc-install)
+adobereaderdc|\
+adobereaderdc-install)
     name="Adobe Acrobat Reader DC"
     type="pkgInDmg"
     downloadURL=$(curl --silent --fail -H "Sec-Fetch-Site: same-origin" -H "Accept-Encoding: gzip, deflate, br" -H "Accept-Language: en-US;q=0.9,en;q=0.8" -H "DNT: 1" -H "Sec-Fetch-Mode: cors" -H "X-Requested-With: XMLHttpRequest" -H "Referer: https://get.adobe.com/reader/enterprise/" -H "Accept: */*" "https://get.adobe.com/reader/webservices/json/standalone/?platform_type=Macintosh&platform_dist=OSX&platform_arch=x86-32&language=English&eventname=readerotherversions" | grep -Eo '"download_url":.*?[^\\]",' | head -n 1 | cut -d \" -f 4)
