@@ -639,22 +639,25 @@ umbrellaroamingclient)
     downloadURL=https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )
     expectedTeamID="7P7HQ8H646"
     ;;
-powershell)
-    # credit: Tadayuki Onishi (@kenchan0130)
-    name="PowerShell"
-    type="pkg"
-    downloadURL=$(curl -fs "https://api.github.com/repos/Powershell/Powershell/releases/latest" \
-    | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep -v lts )
-    expectedTeamID="UBF8T346G9"
-    ;;
-powershell-lts)
-    # credit: Tadayuki Onishi (@kenchan0130)
-    name="PowerShell"
-    type="pkg"
-    downloadURL=$(curl -fs "https://api.github.com/repos/Powershell/Powershell/releases/latest" \
-    | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep lts)
-    expectedTeamID="UBF8T346G9"
-    ;;
+
+# NOTE: powershell installers are not notarized
+# powershell)
+#     # credit: Tadayuki Onishi (@kenchan0130)
+#     name="PowerShell"
+#     type="pkg"
+#     downloadURL=$(curl -fs "https://api.github.com/repos/Powershell/Powershell/releases/latest" \
+#     | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep -v lts )
+#     expectedTeamID="UBF8T346G9"
+#     ;;
+# powershell-lts)
+#     # credit: Tadayuki Onishi (@kenchan0130)
+#     name="PowerShell"
+#     type="pkg"
+#     downloadURL=$(curl -fs "https://api.github.com/repos/Powershell/Powershell/releases/latest" \
+#     | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep lts)
+#     expectedTeamID="UBF8T346G9"
+#     ;;
+
 wwdcformac)
     name="WWDC"
     type="zip"
@@ -691,15 +694,14 @@ swiftruntimeforcommandlinetools)
     expectedTeamID="Software Update"
     ;;
 
-
-#    Note: Packages is signed but _not_ notarized, so spctl will reject it
-#    packages)
-#        name="Packages"
-#        type="pkgInDmg"
-#        pkgName="Install Packages.pkg"
-#        downloadURL="http://s.sudre.free.fr/Software/files/Packages.dmg"
-#        expectedTeamID="NL5M9E394P"
-#        ;;
+# NOTE: Packages is signed but _not_ notarized, so spctl will reject it
+# packages)
+#    name="Packages"
+#    type="pkgInDmg"
+#    pkgName="Install Packages.pkg"
+#    downloadURL="http://s.sudre.free.fr/Software/files/Packages.dmg"
+#    expectedTeamID="NL5M9E394P"
+#    ;;
 
 # msupdate codes from:
 # https://docs.microsoft.com/en-us/deployoffice/mac/update-office-for-mac-using-msupdate
