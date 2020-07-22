@@ -150,7 +150,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     | awk -F '"' "/browser_download_url/ && /$filetype/ { print \$4 }")
     fi
     if [ -z "$downloadURL" ]; then
-        echo "could not retrieve download URL for $gitusername/$gitreponame"
+        printlog "could not retrieve download URL for $gitusername/$gitreponame"
         exit 9
     else
         echo "$downloadURL"
@@ -220,7 +220,11 @@ googlechrome)
 googlechromepkg)
     name="Google Chrome"
     type="pkg"
-    downloadURL="https://dl.google.com/chrome/mac/stable/gcem/GoogleChrome.pkg"
+    #
+    # Note: this url acknowledges that you accept the terms of service
+    # https://support.google.com/chrome/a/answer/9915669
+    #
+    downloadURL="https://dl.google.com/chrome/mac/stable/accept_tos%3Dhttps%253A%252F%252Fwww.google.com%252Fintl%252Fen_ph%252Fchrome%252Fterms%252F%26_and_accept_tos%3Dhttps%253A%252F%252Fpolicies.google.com%252Fterms/googlechrome.pkg"
     expectedTeamID="EQHXZ8M8AV"
     updateTool="/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/GoogleSoftwareUpdateAgent.app/Contents/MacOS/GoogleSoftwareUpdateAgent"
     updateToolArguments=( -runMode oneshot -userInitiated YES )
@@ -383,11 +387,18 @@ zoom)
     expectedTeamID="BJ4HAAB9B3"
     blockingProcesses=( zoom.us )
     ;;
-sonos)
+sonos|\
+sonoss1)
     # credit: Erik Stam (@erikstam)
-    name="Sonos"
+    name="Sonos S1 Controller"
     type="dmg"
     downloadURL="https://www.sonos.com/redir/controller_software_mac"
+    expectedTeamID="2G4LW83Q3E"
+    ;;
+sonoss2)
+    name="Sonos"
+    type="dmg"
+    downloadURL="https://www.sonos.com/redir/controller_software_mac2"
     expectedTeamID="2G4LW83Q3E"
     ;;
 coderunner)
@@ -639,6 +650,14 @@ umbrellaroamingclient)
     downloadURL=https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )
     expectedTeamID="7P7HQ8H646"
     ;;
+# TODO: vmwarefusion installation process needs testing
+# vmwarefusion)
+#     # credit: Erik Stam (@erikstam)
+#     name="VMware Fusion"
+#     type="dmg"
+#     downloadURL="https://www.vmware.com/go/getfusion"
+#     expectedTeamID="EG7KH642X6"
+#     ;;
 
 # NOTE: powershell installers are not notarized
 # powershell)
@@ -699,6 +718,29 @@ aquaskk)
     type="pkg"
     downloadURL="$(downloadURLFromGit codefirst aquaskk)"
     expectedTeamID="FPZK4WRGW7"
+    ;;
+krisp)
+    # credit: Tadayuki Onishi (@kenchan0130)
+    name="Krisp"
+    type="pkg"
+    downloadURL="https://download.krisp.ai/mac"
+    expectedTeamID="U5R26XM5Z2"
+    ;;
+torbrowser)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="Tor Browser"
+    type="dmg"
+    downloadURL=https://www.torproject.org$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | cut -d '"' -f 4)
+    appNewVersion=$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | cut -d '"' -f 4 | cut -d / -f 4)
+    expectedTeamID="MADPSAYN6T"
+    ;;
+code42)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+    name="Code42"
+    type="pkgInDmg"
+    downloadURL=https://download.code42.com/installs/agent/latest-mac.dmg
+    expectedTeamID="9YV9435DHD"
+    BLOCKING_PROCESS_ACTION=ignore
     ;;
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
@@ -972,7 +1014,7 @@ checkRunningProcesses() {
         countedProcesses=0
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
-                echo "found blocking process $x"
+                printlog "found blocking process $x"
 
                 case $BLOCKING_PROCESS_ACTION in
                     kill)
@@ -1040,7 +1082,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
             cleanupAndExit 6 "not running as root, exiting"
         fi
 
-        echo "DEBUG enabled, skipping copy and chown steps"
+        printlog "DEBUG enabled, skipping copy and chown steps"
         return 0
     fi
 
@@ -1059,7 +1101,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # set ownership to current user
     if [ "$currentUser" != "loginwindow" ]; then
-        echo "Changing owner to $currentUser"
+        printlog "Changing owner to $currentUser"
         chown -R "$currentUser" "$targetDir/$appName"
     else
         printlog "No user logged in, not changing user"
@@ -1099,7 +1141,7 @@ installFromPKG() {
     fi
     
     teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
-    echo $teamID
+
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
         teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')

@@ -3,12 +3,14 @@ adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
 appcleaner
+aquaskk
 atom
 autodmg
 aviatrix
 bbedit
 boxdrive
 brave
+code42
 coderunner
 cyberduck
 depnotify
@@ -33,6 +35,7 @@ jamfmigrator
 jamfpppcutility
 jamfreenroller
 karabinerelements
+krisp
 malwarebytes
 microsoftautoupdate
 microsoftcompanyportal
@@ -58,8 +61,6 @@ openvpnconnect
 pacifist
 plisteditpro
 postman
-powershell
-powershell-lts
 privileges
 resiliosynchome
 ringcentralapp
@@ -80,11 +81,11 @@ swiftruntimeforcommandlinetools
 teamviewer
 textmate
 things
+torbrowser
 tunnelbear
 umbrellaroamingclient
 visualstudiocode
 vlc
-vmwarefusion
 webexmeetings
 webexteams
 whatsapp
