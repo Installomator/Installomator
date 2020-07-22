@@ -741,6 +741,16 @@ code42)
     expectedTeamID="9YV9435DHD"
     BLOCKING_PROCESS_ACTION=ignore
     ;;
+nomad)
+    # credit: Tadayuki Onishi (@kenchan0130)
+    name="NoMAD"
+    type="pkg"
+    downloadURL="https://files.nomad.menu/NoMAD.pkg"
+    expectedTeamID="AAPZK3CB24"
+    ;;
+   
+    
+# MARK: add new labels above here
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
 # packages)
