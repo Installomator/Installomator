@@ -441,13 +441,13 @@ webexteams)
     downloadURL="https://binaries.webex.com/WebexTeamsDesktop-MACOS-Gold/WebexTeams.dmg"
     expectedTeamID="DE8Y96K9QP"
     ;;
-#citrixworkspace)
-    # credit: Erik Stam (@erikstam)
-    #name="Citrix Workspace"
-    #type="pkgInDmg"
-    #downloadURL="https://downloads.citrix.com/17596/CitrixWorkspaceApp.dmg?__gda__=1588183500_fc68033aef7d6d163d8b8309b964f1de"
-    #expectedTeamID="S272Y5R93J"
-    #;;
+citrixworkspace)
+    #credit: Erik Stam (@erikstam)
+    name="Citrix Workspace"
+    type="pkgInDmg"
+    downloadURL="https:"$(curl -s -L "https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html#ctx-dl-eula-external" | grep "dmg?" | sed "s/.*rel=.\(.*\)..id=.*/\1/")
+    expectedTeamID="S272Y5R93J"
+    ;;
 privileges)
     # credit: Erik Stam (@erikstam)
     name="Privileges"
