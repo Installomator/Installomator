@@ -12,6 +12,7 @@ bbedit
 bettertouchtool
 boxdrive
 brave
+citrixworkspace
 code42
 coderunner
 cyberduck
