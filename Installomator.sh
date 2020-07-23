@@ -1002,9 +1002,10 @@ runAsUser() {
     fi
 }
 
-displaydialog() { # $1: message
+displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
-    runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
+    title=${2:-"Installomator"}
+    runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" with title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
 }
 
 displaynotification() { # $1: message $2: title
@@ -1066,11 +1067,11 @@ checkRunningProcesses() {
                       pkill $x
                       ;;
                     prompt_user)
-                      button=$(displaydialog "The application $x needs to be updated. Quit $x to continue updating?")
+                      button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update"
                       else
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        runAsUser osascript -e "tell app “$x” to quit"
                       fi
                       ;;
                     silent_fail)
