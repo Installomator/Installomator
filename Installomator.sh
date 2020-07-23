@@ -557,6 +557,7 @@ iterm2)
     type="zip"
     downloadURL="https://iterm2.com/downloads/stable/latest"
     expectedTeamID="H7V7XYVQ7D"
+    blockingProcesses=( iTerm2 )
     ;;
 royaltsx)
     name="Royal TSX"
@@ -763,19 +764,19 @@ r)
     expectedTeamID="VZLD955F6P"
     ;; 
 8x8)
-    # credit: #D-A-James from MacAdmins Slack
+    # credit: #D-A-James from MacAdmins Slack and Isaac Ordonez, Mann consulting (@mannconsulting)
     name="8x8 - Virtual Office"
     type="dmg"
-    downloadURL='https://support.8x8.com/cloud-phone-service/voice/virtual-office-desktop/download-virtual-office-desktop'
+    downloadURL=$(curl -fs https://support.8x8.com/cloud-phone-service/voice/virtual-office-desktop/download-virtual-office-desktop | grep -m 1 -o "http.*VOD.*.dmg")
     expectedTeamID="FC967L3QRG"
-    ;;    
+    ;;
 egnyte)
     # credit: #MoeMunyoki from MacAdmins Slack
     name="Egnyte Connect"
     type="pkg"
     downloadURL="https://egnyte-cdn.egnyte.com/egnytedrive/mac/en-us/latest/EgnyteConnectMac.pkg"
     expectedTeamID="FELUD555VC"
-    BLOCKING_PROCESS_ACTION=ignore
+    blockingProcesses=( NONE )
     ;;
 
 # MARK: add new labels above here
@@ -1005,7 +1006,7 @@ runAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser /usr/bin/osascript -e "button returned of (display dialog \"$message\" with title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
 }
 
 displaynotification() { # $1: message $2: title
@@ -1071,7 +1072,7 @@ checkRunningProcesses() {
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update"
                       else
-                        runAsUser osascript -e "tell app “$x” to quit"
+                        runAsUser osascript -e "tell app \"$x\" to quit"
                       fi
                       ;;
                     silent_fail)
