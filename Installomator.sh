@@ -777,6 +777,7 @@ egnyte)
     expectedTeamID="FELUD555VC"
     BLOCKING_PROCESS_ACTION=ignore
     ;;
+
 # MARK: add new labels above here
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
@@ -1021,7 +1022,14 @@ displaynotification() { # $1: message $2: title
 
 getAppVersion() {
     # get all apps matching name
-    applist=$(mdfind "kMDItemFSName == '$appName' && kMDItemKind == 'Application'" -0 )
+    applist=$(mdfind "kind:application $appName" -0 )
+    if [[ $applist = "" ]]; then        
+        printlog "Spotlight not returning any app, trying manually in /Applications."
+        if [[ -d "/Applications/$appName" ]]; then
+            applist="/Applications/$appName"
+        fi
+    fi
+     
     appPathArray=( ${(0)applist} )
 
     if [[ ${#appPathArray} -gt 0 ]]; then
