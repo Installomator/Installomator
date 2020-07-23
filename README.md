@@ -10,6 +10,20 @@ Your production and deployment environment will be different, please test thorou
 
 I have put a lot of work into making it stable and safe, but I cannot - of course - make _any_ promises that it won't break in some not yet encountered edge case.
 
+## Support and Contributing
+
+Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins Slack](https:/macadmins.org). Go there for support questions.
+
+Do not create an issue just when you have a questions, but do file an issue or pull request for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
+
+If you have added a new label, then please file a pull request. (and Thank you!)
+
+## More reading
+
+There are a few interesting post on Installomator on my weblog:
+
+- [Introducing Installomator](https://scriptingosx.com/2020/05/introducing-installomator/)
+- [Using Installomator with Jamf Pro](https://scriptingosx.com/2020/06/using-installomator-with-jamf-pro/) by Mischa van der Bent
 
 ## Background
 
@@ -97,12 +111,12 @@ There is a debug mode and one other setting that can be controlled with variable
 As of this writing, Installomator knows how to download and install more than 50 different applications. You can add more by adding a block to the _long_ `case` statement starting on line 160. Some of them are more elaborate, but most of them just need this information:
 
 ```
-    googlechrome)
-        name="Google Chrome"
-        type="dmg"
-        downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-        expectedTeamID="EQHXZ8M8AV"
-        ;;
+googlechrome)
+    name="Google Chrome"
+    type="dmg"
+    downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+    expectedTeamID="EQHXZ8M8AV"
+    ;;
 ```
 
 When you know how to extract these pieces of information from the application and/or download, then you can add an application to Installomator.
@@ -211,12 +225,12 @@ The `NOTIFY` variable controls the notifications shown to the user. As of now, t
 The script requires four pieces of information to download and install an application:
 
 ```
-    spotify)
-        name="Spotify"
-        type="dmg"
-        downloadURL="https://download.scdn.co/Spotify.dmg"
-        expectedTeamID="2FNC3A47ZF"
-        ;;
+spotify)
+    name="Spotify"
+    type="dmg"
+    downloadURL="https://download.scdn.co/Spotify.dmg"
+    expectedTeamID="2FNC3A47ZF"
+    ;;
 ```
 
 The four required variables are
@@ -244,7 +258,7 @@ The 10-character Developer Team ID with which the application or pkg is signed a
    - Applications (in dmgs or zips)
      `spctl -a -vv /Applications/BBEdit.app`
 
-   - Pkgs
+   - Installation Packages (pkg)
      `spctl -a -vv -t install ~/Downloads/desktoppr-0.2.pkg`
 
 
@@ -337,5 +351,5 @@ But it is not suited as a client install automation tool.
 
 ### Why don't you just use brew?
 
-Read the explanation for `autopkg`, pretty much the same applies for `brew`, i.e. While it is useful on a single Mac, it is a un-manageable mess when you think about deploying and managing on a fleet of computers.
+Read the explanation for `autopkg`, pretty much the same applies for `brew`, i.e. while it is useful on a single Mac, it is a un-manageable mess when you think about deploying and managing on a fleet of computers.
 
