@@ -1,4 +1,5 @@
 1password7
+8x8
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
@@ -8,6 +9,7 @@ atom
 autodmg
 aviatrix
 bbedit
+bettertouchtool
 boxdrive
 brave
 code42
@@ -18,6 +20,7 @@ desktoppr
 discord
 docker
 dropbox
+egnyte
 eraseinstall
 firefox
 firefoxesrpkg
@@ -55,6 +58,7 @@ microsoftskypeforbusiness
 microsoftteams
 microsoftword
 netnewswire
+nomad
 omnifocus3
 omnigraffle7
 openvpnconnect
@@ -62,6 +66,7 @@ pacifist
 plisteditpro
 postman
 privileges
+r
 resiliosynchome
 ringcentralapp
 ringcentralmeetings
