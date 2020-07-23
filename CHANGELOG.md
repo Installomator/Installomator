@@ -1,6 +1,6 @@
 ## v0.3 - 2020-07-
 
-- added several new labels for total of
+- added several new labels for total of 98
 - removed the powershell labels, since the installer is not notarized
 - when run without any arguments, the script now lists all labels
 - changed how zips are expanded because this was broken on Mojave
