@@ -740,7 +740,7 @@ code42)
     type="pkgInDmg"
     downloadURL=https://download.code42.com/installs/agent/latest-mac.dmg
     expectedTeamID="9YV9435DHD"
-    BLOCKING_PROCESS_ACTION=ignore
+    blockingProcesses=( NONE )
     ;;
 nomad)
     # credit: Tadayuki Onishi (@kenchan0130)
@@ -1453,7 +1453,7 @@ printlog "$message"
 
 if [[ $currentUser != "loginwindow" && $NOTIFY == "success" ]]; then
     printlog "notifying"
-    displaynotification "$message" "Installation complete!"
+    displaynotification "$message" "$name update/installation complete!"
 fi
 
 # all done!
