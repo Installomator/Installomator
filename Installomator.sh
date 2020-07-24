@@ -1159,7 +1159,7 @@ mountDMG() {
     # mount the dmg
     printlog "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
-    if ! dmgmount=$(printlog 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+    if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
         cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
     fi
 
