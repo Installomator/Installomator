@@ -442,7 +442,7 @@ webexteams)
     expectedTeamID="DE8Y96K9QP"
     ;;
 citrixworkspace)
-    #credit: Erik Stam (@erikstam)
+    #credit: Erik Stam (@erikstam) and #Philipp on MacAdmins Slack
     name="Citrix Workspace"
     type="pkgInDmg"
     downloadURL="https:"$(curl -s -L "https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html#ctx-dl-eula-external" | grep "dmg?" | sed "s/.*rel=.\(.*\)..id=.*/\1/")
