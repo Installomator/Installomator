@@ -203,6 +203,16 @@ longversion)
     ;;
 
 # label descriptions start here
+
+# TODO: parallels installation process needs testing
+# parallels)
+#     # credit: Alexander Duffner (@aduffner)
+#     name="Parallels Desktop"
+#     type="dmg"
+#     downloadURL="https://parallels.com/directdownload/pd15/"
+#     expectedTeamID="4C6364ACXT"
+#     ;;
+
 autodmg)
     # credit: Mischa van der Bent (@mischavdbent)
     name="AutoDMG"
