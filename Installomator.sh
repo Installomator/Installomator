@@ -752,14 +752,6 @@ resiliosynchome)
     downloadURL="https://download-cdn.resilio.com/stable/osx/Resilio-Sync.dmg"
     expectedTeamID="2953Z5SZSK"
     ;;
-ringcentralmeetings)
-    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
-    name="Ring Central Meetings"
-    type="pkg"
-    downloadURL="http://dn.ringcentral.com/data/web/download/RCMeetings/1210/RCMeetingsClientSetup.pkg"
-    expectedTeamID="M932RC5J66"        
-    blockingProcesses=( "RingCentral Meetings" )
-    ;;
 ringcentralapp)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Glip"
@@ -767,6 +759,14 @@ ringcentralapp)
     downloadURL="https://downloads.ringcentral.com/glip/rc/GlipForMac"
     expectedTeamID="M932RC5J66"        
     blockingProcesses=( "Glip" )
+    ;;
+ringcentralmeetings)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+    name="Ring Central Meetings"
+    type="pkg"
+    downloadURL="http://dn.ringcentral.com/data/web/download/RCMeetings/1210/RCMeetingsClientSetup.pkg"
+    expectedTeamID="M932RC5J66"        
+    blockingProcesses=( "RingCentral Meetings" )
     ;;
 royaltsx)
     name="Royal TSX"
