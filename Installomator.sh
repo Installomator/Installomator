@@ -791,6 +791,12 @@ snagit2020)
     downloadURL="https://download.techsmith.com/snagitmac/releases/Snagit.dmg"
     expectedTeamID="7TQL462TU8"
     ;;
+keepassxc)
+    name="KeePassXC"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit keepassxreboot keepassxc)"
+    expectedTeamID="G2S7P7J672"
+    ;;
 
 
 # MARK: add new labels above here
