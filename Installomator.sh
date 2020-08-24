@@ -791,7 +791,13 @@ snagit2020)
     downloadURL="https://download.techsmith.com/snagitmac/releases/Snagit.dmg"
     expectedTeamID="7TQL462TU8"
     ;;
-
+autopkgr)
+    name="AutoPkgr"
+    type="dmg"
+    downloadURL=$(curl -fs "https://api.github.com/repos/lindegroup/autopkgr/releases/latest" \
+        | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ && ! /sha256/ { print \$4 }")
+    expectedTeamID="JVY2ZR6SEF"
+    ;;
 
 # MARK: add new labels above here
 
