@@ -791,6 +791,12 @@ snagit2020)
     downloadURL="https://download.techsmith.com/snagitmac/releases/Snagit.dmg"
     expectedTeamID="7TQL462TU8"
     ;;
+detectxswift)
+    name="DetectX Swift"
+    type="zip"
+    downloadURL="https://s3.amazonaws.com/sqwarq.com/PublicZips/DetectX_Swift.app.zip"
+    expectedTeamID="MAJ5XBJSG3"
+    ;;
 
 
 # MARK: add new labels above here
