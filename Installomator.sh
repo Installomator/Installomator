@@ -791,6 +791,12 @@ snagit2020)
     downloadURL="https://download.techsmith.com/snagitmac/releases/Snagit.dmg"
     expectedTeamID="7TQL462TU8"
     ;;
+airserver)
+    name="AirServer"
+    type="dmg"
+    downloadURL="https://www.airserver.com/download/mac/latest"
+    expectedTeamID="6C755KS5W3"
+    ;;
 
 
 # MARK: add new labels above here
