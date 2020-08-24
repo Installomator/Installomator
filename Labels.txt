@@ -90,6 +90,7 @@ things
 torbrowser
 tunnelbear
 umbrellaroamingclient
+virtualbox
 visualstudiocode
 vlc
 webexmeetings
