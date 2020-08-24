@@ -791,6 +791,14 @@ snagit2020)
     downloadURL="https://download.techsmith.com/snagitmac/releases/Snagit.dmg"
     expectedTeamID="7TQL462TU8"
     ;;
+virtualbox)
+    name="VirtualBox"
+    type="pkgInDmg"
+    pkgName="VirtualBox.pkg"
+    downloadURL=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" \
+        | awk -F '"' "/OSX.dmg/ { print \$4 }")
+    expectedTeamID="VB5E2TV963"
+    ;;
 
 
 # MARK: add new labels above here
