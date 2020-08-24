@@ -794,7 +794,7 @@ snagit2020)
 vscodium)
     name="VSCodium"
     type="dmg"
-    downloadURL=$(curl -fs "https://api.github.com/repos/HandBrake/HandBrake/releases/latest" \
+    downloadURL=$(curl -fs "https://api.github.com/repos/VSCodium/vscodium/releases/latest" \
         | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ && ! /sha256/ { print \$4 }")
     expectedTeamID="C7S3ZQ2B8V"
     appName="VSCodium.app"
