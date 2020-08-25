@@ -3,10 +3,12 @@
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
+airserver
 appcleaner
 aquaskk
 atom
 autodmg
+autopkgr
 aviatrix
 bbedit
 bettertouchtool
@@ -93,6 +95,7 @@ tunnelbear
 umbrellaroamingclient
 visualstudiocode
 vlc
+vscodium
 webexmeetings
 webexteams
 whatsapp
