@@ -8,6 +8,7 @@ appcleaner
 aquaskk
 atom
 autodmg
+autopkgr
 aviatrix
 bbedit
 bettertouchtool
