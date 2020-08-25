@@ -20,6 +20,7 @@ coderunner
 cyberduck
 depnotify
 desktoppr
+detectxswift
 discord
 docker
 dropbox
