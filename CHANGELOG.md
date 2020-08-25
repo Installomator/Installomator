@@ -1,4 +1,8 @@
-## v0.3 - 2020-07-
+## v0.4 - 2020-
+
+- change `downloadFromGit` to match file types better (#58)
+
+## v0.3 - 2020-07-23
 
 - added several new labels for total of 98
 - removed the powershell labels, since the installer is not notarized

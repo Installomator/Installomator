@@ -792,18 +792,23 @@ snagit2020)
     expectedTeamID="7TQL462TU8"
     ;;
 virtualbox)
+    # credit: AP Orlebeke (@apizz)
     name="VirtualBox"
     type="pkgInDmg"
     pkgName="VirtualBox.pkg"
     downloadURL=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" \
         | awk -F '"' "/OSX.dmg/ { print \$4 }")
     expectedTeamID="VB5E2TV963"
+    ;;
 detectxswift)
+    # credit: AP Orlebeke (@apizz)
     name="DetectX Swift"
     type="zip"
     downloadURL="https://s3.amazonaws.com/sqwarq.com/PublicZips/DetectX_Swift.app.zip"
     expectedTeamID="MAJ5XBJSG3"
+    ;;
 autopkgr)
+    # credit: AP Orlebeke (@apizz)
     name="AutoPkgr"
     type="dmg"
     downloadURL=$(curl -fs "https://api.github.com/repos/lindegroup/autopkgr/releases/latest" \
@@ -811,11 +816,14 @@ autopkgr)
     expectedTeamID="JVY2ZR6SEF"
     ;;
 airserver)
+    # credit: AP Orlebeke (@apizz)
     name="AirServer"
     type="dmg"
     downloadURL="https://www.airserver.com/download/mac/latest"
     expectedTeamID="6C755KS5W3"
+    ;;
 vscodium)
+    # credit: AP Orlebeke (@apizz)
     name="VSCodium"
     type="dmg"
     downloadURL=$(curl -fs "https://api.github.com/repos/VSCodium/vscodium/releases/latest" \
@@ -823,7 +831,9 @@ vscodium)
     expectedTeamID="C7S3ZQ2B8V"
     appName="VSCodium.app"
     blockingProcesses=( Electron )
+    ;;
 keepassxc)
+    # credit: Patrick Atoon (@raptor399)
     name="KeePassXC"
     type="dmg"
     downloadURL="$(downloadURLFromGit keepassxreboot keepassxc)"

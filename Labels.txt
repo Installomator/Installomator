@@ -14,6 +14,7 @@ bbedit
 bettertouchtool
 boxdrive
 brave
+camtasia
 citrixworkspace
 code42
 coderunner
@@ -42,6 +43,7 @@ jamfmigrator
 jamfpppcutility
 jamfreenroller
 karabinerelements
+keepassxc
 krisp
 malwarebytes
 microsoftautoupdate
@@ -79,6 +81,7 @@ santa
 sfsymbols
 signal
 slack
+snagit2020
 sonos
 sonoss1
 sonoss2
