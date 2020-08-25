@@ -80,6 +80,7 @@ royaltsx
 santa
 sfsymbols
 signal
+sizeup
 slack
 snagit2020
 sonos
