@@ -93,6 +93,7 @@ tunnelbear
 umbrellaroamingclient
 visualstudiocode
 vlc
+vscodium
 webexmeetings
 webexteams
 whatsapp
