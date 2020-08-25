@@ -3,10 +3,12 @@
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
+airserver
 appcleaner
 aquaskk
 atom
 autodmg
+autopkgr
 aviatrix
 bbedit
 bettertouchtool
@@ -18,6 +20,7 @@ coderunner
 cyberduck
 depnotify
 desktoppr
+detectxswift
 discord
 docker
 dropbox
@@ -93,6 +96,7 @@ umbrellaroamingclient
 virtualbox
 visualstudiocode
 vlc
+vscodium
 webexmeetings
 webexteams
 whatsapp

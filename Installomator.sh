@@ -147,7 +147,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
     else
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$filetype/ { print \$4 }")
+    | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4 }")
     fi
     if [ -z "$downloadURL" ]; then
         printlog "could not retrieve download URL for $gitusername/$gitreponame"
@@ -798,6 +798,36 @@ virtualbox)
     downloadURL=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" \
         | awk -F '"' "/OSX.dmg/ { print \$4 }")
     expectedTeamID="VB5E2TV963"
+detectxswift)
+    name="DetectX Swift"
+    type="zip"
+    downloadURL="https://s3.amazonaws.com/sqwarq.com/PublicZips/DetectX_Swift.app.zip"
+    expectedTeamID="MAJ5XBJSG3"
+autopkgr)
+    name="AutoPkgr"
+    type="dmg"
+    downloadURL=$(curl -fs "https://api.github.com/repos/lindegroup/autopkgr/releases/latest" \
+        | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ && ! /sha256/ { print \$4 }")
+    expectedTeamID="JVY2ZR6SEF"
+    ;;
+airserver)
+    name="AirServer"
+    type="dmg"
+    downloadURL="https://www.airserver.com/download/mac/latest"
+    expectedTeamID="6C755KS5W3"
+vscodium)
+    name="VSCodium"
+    type="dmg"
+    downloadURL=$(curl -fs "https://api.github.com/repos/VSCodium/vscodium/releases/latest" \
+        | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ && ! /sha256/ { print \$4 }")
+    expectedTeamID="C7S3ZQ2B8V"
+    appName="VSCodium.app"
+    blockingProcesses=( Electron )
+keepassxc)
+    name="KeePassXC"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit keepassxreboot keepassxc)"
+    expectedTeamID="G2S7P7J672"
     ;;
 
 
