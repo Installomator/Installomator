@@ -147,7 +147,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
     else
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$filetype/ { print \$4 }")
+    | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4 }")
     fi
     if [ -z "$downloadURL" ]; then
         printlog "could not retrieve download URL for $gitusername/$gitreponame"
