@@ -791,6 +791,14 @@ snagit2020)
     downloadURL="https://download.techsmith.com/snagitmac/releases/Snagit.dmg"
     expectedTeamID="7TQL462TU8"
     ;;
+vscodium)
+    name="VSCodium"
+    type="dmg"
+    downloadURL=$(curl -fs "https://api.github.com/repos/VSCodium/vscodium/releases/latest" \
+        | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ && ! /sha256/ { print \$4 }")
+    expectedTeamID="C7S3ZQ2B8V"
+    appName="VSCodium.app"
+    blockingProcesses=( Electron )
 keepassxc)
     name="KeePassXC"
     type="dmg"
