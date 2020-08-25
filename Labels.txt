@@ -93,6 +93,7 @@ things
 torbrowser
 tunnelbear
 umbrellaroamingclient
+virtualbox
 visualstudiocode
 vlc
 vscodium
