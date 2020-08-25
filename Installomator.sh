@@ -798,6 +798,11 @@ autopkgr)
         | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ && ! /sha256/ { print \$4 }")
     expectedTeamID="JVY2ZR6SEF"
     ;;
+airserver)
+    name="AirServer"
+    type="dmg"
+    downloadURL="https://www.airserver.com/download/mac/latest"
+    expectedTeamID="6C755KS5W3"
 vscodium)
     name="VSCodium"
     type="dmg"
