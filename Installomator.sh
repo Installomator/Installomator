@@ -844,6 +844,7 @@ istatmenus)
     type="zip"
     downloadURL="https://download.bjango.com/istatmenus/"
     expectedTeamID="Y93TK974AT"
+    blockingProcesses=( "iStat Menus" "iStatMenusAgent" "iStat Menus Status" )
     ;;
 
 
