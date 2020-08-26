@@ -839,7 +839,12 @@ keepassxc)
     downloadURL="$(downloadURLFromGit keepassxreboot keepassxc)"
     expectedTeamID="G2S7P7J672"
     ;;
-
+sizeup)
+    name="SizeUp"
+    type="zip"
+    downloadURL="https://www.irradiatedsoftware.com/download/SizeUp.zip"
+    expectedTeamID="GVZ7RF955D"
+    ;;
 
 # MARK: add new labels above here
 
