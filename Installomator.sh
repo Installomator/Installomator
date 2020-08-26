@@ -846,7 +846,19 @@ alfred)
     appName="Alfred 4.app"
     expectedTeamID="XZZXE9SED4"
     ;;
-
+istatmenus)
+    name="iStat Menus"
+    type="zip"
+    downloadURL="https://download.bjango.com/istatmenus/"
+    expectedTeamID="Y93TK974AT"
+    blockingProcesses=( "iStat Menus" "iStatMenusAgent" "iStat Menus Status" )
+    ;;
+sizeup)
+    name="SizeUp"
+    type="zip"
+    downloadURL="https://www.irradiatedsoftware.com/download/SizeUp.zip"
+    expectedTeamID="GVZ7RF955D"
+    ;;
 
 # MARK: add new labels above here
 

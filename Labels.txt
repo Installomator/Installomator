@@ -39,6 +39,7 @@ googlejapaneseinput
 grandperspective
 handbrake
 icons
+istatmenus
 iterm2
 jamfmigrator
 jamfpppcutility
@@ -81,6 +82,7 @@ royaltsx
 santa
 sfsymbols
 signal
+sizeup
 slack
 snagit2020
 sonos
