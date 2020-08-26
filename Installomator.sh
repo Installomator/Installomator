@@ -839,6 +839,13 @@ keepassxc)
     downloadURL="$(downloadURLFromGit keepassxreboot keepassxc)"
     expectedTeamID="G2S7P7J672"
     ;;
+istatmenus)
+    name="iStat Menus"
+    type="zip"
+    downloadURL="https://download.bjango.com/istatmenus/"
+    expectedTeamID="Y93TK974AT"
+    blockingProcesses=( "iStat Menus" "iStatMenusAgent" "iStat Menus Status" )
+    ;;
 sizeup)
     name="SizeUp"
     type="zip"
