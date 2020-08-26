@@ -839,6 +839,13 @@ keepassxc)
     downloadURL="$(downloadURLFromGit keepassxreboot keepassxc)"
     expectedTeamID="G2S7P7J672"
     ;;
+alfred)
+    name="Alfred"
+    type="dmg"
+    downloadURL=$(curl -fs https://www.alfredapp.com | awk -F '"' "/dmg/ {print \$2}" | head -1)
+    appName="Alfred 4.app"
+    expectedTeamID="XZZXE9SED4"
+    ;;
 istatmenus)
     name="iStat Menus"
     type="zip"
