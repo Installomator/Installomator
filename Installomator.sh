@@ -9,7 +9,7 @@
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
 VERSION='0.4'
-VERSIONDATE='20200727'
+VERSIONDATE='20200826'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -840,6 +840,7 @@ keepassxc)
     expectedTeamID="G2S7P7J672"
     ;;
 alfred)
+    # credit: AP Orlebeke (@apizz)
     name="Alfred"
     type="dmg"
     downloadURL=$(curl -fs https://www.alfredapp.com | awk -F '"' "/dmg/ {print \$2}" | head -1)
@@ -847,6 +848,7 @@ alfred)
     expectedTeamID="XZZXE9SED4"
     ;;
 istatmenus)
+    # credit: AP Orlebeke (@apizz)
     name="iStat Menus"
     type="zip"
     downloadURL="https://download.bjango.com/istatmenus/"
@@ -854,6 +856,7 @@ istatmenus)
     blockingProcesses=( "iStat Menus" "iStatMenusAgent" "iStat Menus Status" )
     ;;
 sizeup)
+    # credit: AP Orlebeke (@apizz)
     name="SizeUp"
     type="zip"
     downloadURL="https://www.irradiatedsoftware.com/download/SizeUp.zip"
