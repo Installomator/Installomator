@@ -113,9 +113,54 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #
 
 
-# MARK: functions to help with getting data
+# MARK: Functions
 
-# Logging
+cleanupAndExit() { # $1 = exit code, $2 message
+    if [[ -n $2 && $1 -ne 0 ]]; then
+        printlog "ERROR: $2"
+    fi
+    if [ "$DEBUG" -eq 0 ]; then
+        # remove the temporary working directory when done
+        printlog "Deleting $tmpDir"
+        rm -Rf "$tmpDir"
+    fi
+
+    if [ -n "$dmgmount" ]; then
+        # unmount disk image
+        printlog "Unmounting $dmgmount"
+        hdiutil detach "$dmgmount"
+    fi
+    printlog "################## End Installomator \n\n"
+    exit "$1"
+}
+
+runAsUser() {
+    if [[ $currentUser != "loginwindow" ]]; then
+        uid=$(id -u "$currentUser")
+        launchctl asuser $uid sudo -u $currentUser "$@"
+    fi
+}
+
+displaydialog() { # $1: message $2: title
+    message=${1:-"Message"}
+    title=${2:-"Installomator"}
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
+}
+
+displaynotification() { # $1: message $2: title
+    message=${1:-"Message"}
+    title=${2:-"Notification"}
+    manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
+
+    if [[ -x "$manageaction" ]]; then
+         "$manageaction" -message "$message" -title "$title"
+    else
+        runAsUser osascript -e "display notification \"$message\" with title \"$title\""
+    fi
+}
+
+
+# MARK: Logging
 log_location="/private/var/log/Installomator.log"
 
 printlog(){
@@ -159,6 +204,291 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 }
 
 
+getAppVersion() {
+    # get all apps matching name
+    applist=$(mdfind "kind:application $appName" -0 )
+    if [[ $applist = "" ]]; then        
+        printlog "Spotlight not returning any app, trying manually in /Applications."
+        if [[ -d "/Applications/$appName" ]]; then
+            applist="/Applications/$appName"
+        fi
+    fi
+     
+    appPathArray=( ${(0)applist} )
+
+    if [[ ${#appPathArray} -gt 0 ]]; then
+        filteredAppPaths=( ${(M)appPathArray:#${targetDir}*} )
+        if [[ ${#filteredAppPaths} -eq 1 ]]; then
+            installedAppPath=$filteredAppPaths[1]
+            appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
+            printlog "found app at $installedAppPath, version $appversion"
+        else
+            printlog "could not determine location of $appName"
+        fi
+    else
+        printlog "could not find $appName"
+    fi
+}
+
+checkRunningProcesses() {
+    # don't check in DEBUG mode
+    if [[ $DEBUG -ne 0 ]]; then
+        printlog "DEBUG mode, not checking for blocking processes"
+        return
+    fi
+
+    # try at most 3 times
+    for i in {1..3}; do
+        countedProcesses=0
+        for x in ${blockingProcesses}; do
+            if pgrep -xq "$x"; then
+                printlog "found blocking process $x"
+
+                case $BLOCKING_PROCESS_ACTION in
+                    kill)
+                      printlog "killing process $x"
+                      pkill $x
+                      ;;
+                    prompt_user)
+                      button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
+                      if [[ $button = "Not Now" ]]; then
+                        cleanupAndExit 10 "user aborted update"
+                      else
+                        runAsUser osascript -e "tell app \"$x\" to quit"
+                      fi
+                      ;;
+                    silent_fail)
+                      cleanupAndExit 12 "blocking process '$x' found, aborting"
+                      ;;
+                esac
+
+                countedProcesses=$((countedProcesses + 1))
+            fi
+        done
+
+        if [[ $countedProcesses -eq 0 ]]; then
+            # no blocking processes, exit the loop early
+            break
+        else
+            # give the user a bit of time to quit apps
+            printlog "waiting 30 seconds for processes to quit"
+            sleep 30
+        fi
+    done
+
+    if [[ $countedProcesses -ne 0 ]]; then
+        cleanupAndExit 11 "could not quit all processes, aborting..."
+    fi
+
+    printlog "no more blocking processes, continue with update"
+}
+
+installAppWithPath() { # $1: path to app to install in $targetDir
+    appPath=${1?:"no path to app"}
+
+    # check if app exists
+    if [ ! -e "$appPath" ]; then
+        cleanupAndExit 8 "could not find: $appPath"
+    fi
+
+    # verify with spctl
+    printlog "Verifying: $appPath"
+    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
+        cleanupAndExit 4 "Error verifying $appPath"
+    fi
+
+    printlog "Team ID: $teamID (expected: $expectedTeamID )"
+
+    if [ "$expectedTeamID" != "$teamID" ]; then
+        cleanupAndExit 5 "Team IDs do not match"
+    fi
+
+    # check for root
+    if [ "$(whoami)" != "root" ]; then
+        # not running as root
+        if [ "$DEBUG" -eq 0 ]; then
+            cleanupAndExit 6 "not running as root, exiting"
+        fi
+
+        printlog "DEBUG enabled, skipping copy and chown steps"
+        return 0
+    fi
+
+    # remove existing application
+    if [ -e "$targetDir/$appName" ]; then
+        printlog "Removing existing $targetDir/$appName"
+        rm -Rf "$targetDir/$appName"
+    fi
+
+    # copy app to /Applications
+    printlog "Copy $appPath to $targetDir"
+    if ! ditto "$appPath" "$targetDir/$appName"; then
+        cleanupAndExit 7 "Error while copying"
+    fi
+
+
+    # set ownership to current user
+    if [ "$currentUser" != "loginwindow" ]; then
+        printlog "Changing owner to $currentUser"
+        chown -R "$currentUser" "$targetDir/$appName"
+    else
+        printlog "No user logged in, not changing user"
+    fi
+
+}
+
+mountDMG() {
+    # mount the dmg
+    printlog "Mounting $tmpDir/$archiveName"
+    # always pipe 'Y\n' in case the dmg requires an agreement
+    if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
+    fi
+
+    if [[ ! -e $dmgmount ]]; then
+        printlog "Error mounting $tmpDir/$archiveName"
+        cleanupAndExit 3
+    fi
+
+    printlog "Mounted: $dmgmount"
+}
+
+installFromDMG() {
+    mountDMG
+
+    installAppWithPath "$dmgmount/$appName"
+}
+
+installFromPKG() {
+    # verify with spctl
+    printlog "Verifying: $archiveName"
+    
+    if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then        
+        printlog "Error verifying $archiveName"
+        cleanupAndExit 4
+    fi
+    
+    teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+
+    # Apple signed software has no teamID, grab entire origin instead
+    if [[ -z $teamID ]]; then
+        teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
+    fi
+
+
+    printlog "Team ID: $teamID (expected: $expectedTeamID )"
+
+    if [ "$expectedTeamID" != "$teamID" ]; then
+        printlog "Team IDs do not match!"
+        cleanupAndExit 5
+    fi
+
+    # skip install for DEBUG
+    if [ "$DEBUG" -ne 0 ]; then
+        printlog "DEBUG enabled, skipping installation"
+        return 0
+    fi
+
+    # check for root
+    if [ "$(whoami)" != "root" ]; then
+        # not running as root
+        printlog "not running as root, exiting"
+        cleanupAndExit 6
+    fi
+
+    # install pkg
+    printlog "Installing $archiveName to $targetDir"
+    if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
+        printlog "error installing $archiveName"
+        cleanupAndExit 9
+    fi
+}
+
+installFromZIP() {
+    # unzip the archive
+    printlog "Unzipping $archiveName"
+    
+    # tar -xf "$archiveName"
+
+    # note: when you expand a zip using tar in Mojave the expanded 
+    # app will never pass the spctl check
+    
+    unzip -o -qq "$archiveName"
+    installAppWithPath "$tmpDir/$appName"
+}
+
+installFromTBZ() {
+    # unzip the archive
+    printlog "Unzipping $archiveName"
+    tar -xf "$archiveName"
+    installAppWithPath "$tmpDir/$appName"
+}
+
+installPkgInDmg() {
+    mountDMG
+    # locate pkg in dmg
+    if [[ -z $pkgName ]]; then
+        # find first file ending with 'pkg'
+        findfiles=$(find "$dmgmount" -iname "*.pkg" -maxdepth 1  )
+        filearray=( ${(f)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
+        fi
+        archiveName="${filearray[1]}"
+        printlog "found pkg: $archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromPKG
+        archiveName="$dmgmount/$pkgName"
+    fi
+
+    # installFromPkgs
+    installFromPKG
+}
+
+installPkgInZip() {
+    # unzip the archive
+    printlog "Unzipping $archiveName"
+    tar -xf "$archiveName"
+
+    # locate pkg in zip
+    if [[ -z $pkgName ]]; then
+        # find first file starting with $name and ending with 'pkg'
+        findfiles=$(find "$tmpDir" -iname "*.pkg" -maxdepth 1  )
+        filearray=( ${(f)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 20 "couldn't find pkg in zip $archiveName"
+        fi
+        archiveName="${filearray[1]}"
+        # it is now safe to overwrite archiveName for installFromPKG
+        printlog "found pkg: $archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromPKG
+        archiveName="$tmpDir/$pkgName"
+    fi
+
+    # installFromPkgs
+    installFromPKG
+}
+
+runUpdateTool() {
+    if [[ -x $updateTool ]]; then
+        printlog "running $updateTool $updateToolArguments"
+        if [[ -n $updateToolRunAsCurrentUser ]]; then
+            runAsUser $updateTool ${updateToolArguments}
+        else
+            $updateTool ${updateToolArguments}
+        fi
+        if [[ $? -ne 0 ]]; then
+            cleanupAndExit 15 "Error running $updateTool"
+        fi
+    else
+        printlog "couldn't find $updateTool, continuing normally"
+        return 1
+    fi
+    return 0
+}
+
+
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
@@ -167,15 +497,23 @@ if ! is-at-least 10.14 $(sw_vers -productVersion); then
     exit 98
 fi
 
-# MARK: get the label
+# MARK: argument parsing
 if [[ $# -eq 0 ]]; then
     grep -E '^[a-z0-9\-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^broken' | grep -v -E '^(longversion|version)$' | sort
     exit 0
-elif [[ $# -gt 3 ]]; then
-	# jamf uses $4 for the first custom parameter
+elif [[ $1 == "/" ]]; then
+	# jamf uses sends '/' as the first argument
     printlog "shifting arguments for Jamf"
     shift 3
 fi
+
+# if an argument contains an = character, send it to eval
+while [[ -n $1 && $1 =~ ".*\=.*" ]]; do
+    printlog "setting variable from argument $1"
+    eval $1
+    # shift to next argument
+    shift 1
+done
 
 label=${1:?"no label provided"}
 
@@ -1059,341 +1397,8 @@ brokenteamid)
     ;;
 esac
 
-# MARK: Functions
 
-cleanupAndExit() { # $1 = exit code, $2 message
-    if [[ -n $2 && $1 -ne 0 ]]; then
-        printlog "ERROR: $2"
-    fi
-    if [ "$DEBUG" -eq 0 ]; then
-        # remove the temporary working directory when done
-        printlog "Deleting $tmpDir"
-        rm -Rf "$tmpDir"
-    fi
-
-    if [ -n "$dmgmount" ]; then
-        # unmount disk image
-        printlog "Unmounting $dmgmount"
-        hdiutil detach "$dmgmount"
-    fi
-    printlog "################## End Installomator \n\n"
-    exit "$1"
-}
-
-runAsUser() {
-    if [[ $currentUser != "loginwindow" ]]; then
-        uid=$(id -u "$currentUser")
-        launchctl asuser $uid sudo -u $currentUser "$@"
-    fi
-}
-
-displaydialog() { # $1: message $2: title
-    message=${1:-"Message"}
-    title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
-}
-
-displaynotification() { # $1: message $2: title
-    message=${1:-"Message"}
-    title=${2:-"Notification"}
-    manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
-
-    if [[ -x "$manageaction" ]]; then
-         "$manageaction" -message "$message" -title "$title"
-    else
-        runAsUser osascript -e "display notification \"$message\" with title \"$title\""
-    fi
-}
-
-
-getAppVersion() {
-    # get all apps matching name
-    applist=$(mdfind "kind:application $appName" -0 )
-    if [[ $applist = "" ]]; then        
-        printlog "Spotlight not returning any app, trying manually in /Applications."
-        if [[ -d "/Applications/$appName" ]]; then
-            applist="/Applications/$appName"
-        fi
-    fi
-     
-    appPathArray=( ${(0)applist} )
-
-    if [[ ${#appPathArray} -gt 0 ]]; then
-        filteredAppPaths=( ${(M)appPathArray:#${targetDir}*} )
-        if [[ ${#filteredAppPaths} -eq 1 ]]; then
-            installedAppPath=$filteredAppPaths[1]
-            appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
-            printlog "found app at $installedAppPath, version $appversion"
-        else
-            printlog "could not determine location of $appName"
-        fi
-    else
-        printlog "could not find $appName"
-    fi
-}
-
-checkRunningProcesses() {
-    # don't check in DEBUG mode
-    if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not checking for blocking processes"
-        return
-    fi
-
-    # try at most 3 times
-    for i in {1..3}; do
-        countedProcesses=0
-        for x in ${blockingProcesses}; do
-            if pgrep -xq "$x"; then
-                printlog "found blocking process $x"
-
-                case $BLOCKING_PROCESS_ACTION in
-                    kill)
-                      printlog "killing process $x"
-                      pkill $x
-                      ;;
-                    prompt_user)
-                      button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
-                      if [[ $button = "Not Now" ]]; then
-                        cleanupAndExit 10 "user aborted update"
-                      else
-                        runAsUser osascript -e "tell app \"$x\" to quit"
-                      fi
-                      ;;
-                    silent_fail)
-                      cleanupAndExit 12 "blocking process '$x' found, aborting"
-                      ;;
-                esac
-
-                countedProcesses=$((countedProcesses + 1))
-            fi
-        done
-
-        if [[ $countedProcesses -eq 0 ]]; then
-            # no blocking processes, exit the loop early
-            break
-        else
-            # give the user a bit of time to quit apps
-            printlog "waiting 30 seconds for processes to quit"
-            sleep 30
-        fi
-    done
-
-    if [[ $countedProcesses -ne 0 ]]; then
-        cleanupAndExit 11 "could not quit all processes, aborting..."
-    fi
-
-    printlog "no more blocking processes, continue with update"
-}
-
-installAppWithPath() { # $1: path to app to install in $targetDir
-    appPath=${1?:"no path to app"}
-
-    # check if app exists
-    if [ ! -e "$appPath" ]; then
-        cleanupAndExit 8 "could not find: $appPath"
-    fi
-
-    # verify with spctl
-    printlog "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
-        cleanupAndExit 4 "Error verifying $appPath"
-    fi
-
-    printlog "Team ID: $teamID (expected: $expectedTeamID )"
-
-    if [ "$expectedTeamID" != "$teamID" ]; then
-        cleanupAndExit 5 "Team IDs do not match"
-    fi
-
-    # check for root
-    if [ "$(whoami)" != "root" ]; then
-        # not running as root
-        if [ "$DEBUG" -eq 0 ]; then
-            cleanupAndExit 6 "not running as root, exiting"
-        fi
-
-        printlog "DEBUG enabled, skipping copy and chown steps"
-        return 0
-    fi
-
-    # remove existing application
-    if [ -e "$targetDir/$appName" ]; then
-        printlog "Removing existing $targetDir/$appName"
-        rm -Rf "$targetDir/$appName"
-    fi
-
-    # copy app to /Applications
-    printlog "Copy $appPath to $targetDir"
-    if ! ditto "$appPath" "$targetDir/$appName"; then
-        cleanupAndExit 7 "Error while copying"
-    fi
-
-
-    # set ownership to current user
-    if [ "$currentUser" != "loginwindow" ]; then
-        printlog "Changing owner to $currentUser"
-        chown -R "$currentUser" "$targetDir/$appName"
-    else
-        printlog "No user logged in, not changing user"
-    fi
-
-}
-
-mountDMG() {
-    # mount the dmg
-    printlog "Mounting $tmpDir/$archiveName"
-    # always pipe 'Y\n' in case the dmg requires an agreement
-    if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
-        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
-    fi
-
-    if [[ ! -e $dmgmount ]]; then
-        printlog "Error mounting $tmpDir/$archiveName"
-        cleanupAndExit 3
-    fi
-
-    printlog "Mounted: $dmgmount"
-}
-
-installFromDMG() {
-    mountDMG
-
-    installAppWithPath "$dmgmount/$appName"
-}
-
-installFromPKG() {
-    # verify with spctl
-    printlog "Verifying: $archiveName"
-    
-    if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then        
-        printlog "Error verifying $archiveName"
-        cleanupAndExit 4
-    fi
-    
-    teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
-
-    # Apple signed software has no teamID, grab entire origin instead
-    if [[ -z $teamID ]]; then
-        teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
-    fi
-
-
-    printlog "Team ID: $teamID (expected: $expectedTeamID )"
-
-    if [ "$expectedTeamID" != "$teamID" ]; then
-        printlog "Team IDs do not match!"
-        cleanupAndExit 5
-    fi
-
-    # skip install for DEBUG
-    if [ "$DEBUG" -ne 0 ]; then
-        printlog "DEBUG enabled, skipping installation"
-        return 0
-    fi
-
-    # check for root
-    if [ "$(whoami)" != "root" ]; then
-        # not running as root
-        printlog "not running as root, exiting"
-        cleanupAndExit 6
-    fi
-
-    # install pkg
-    printlog "Installing $archiveName to $targetDir"
-    if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
-        printlog "error installing $archiveName"
-        cleanupAndExit 9
-    fi
-}
-
-installFromZIP() {
-    # unzip the archive
-    printlog "Unzipping $archiveName"
-    
-    # tar -xf "$archiveName"
-
-    # note: when you expand a zip using tar in Mojave the expanded 
-    # app will never pass the spctl check
-    
-    unzip -o -qq "$archiveName"
-    installAppWithPath "$tmpDir/$appName"
-}
-
-installFromTBZ() {
-    # unzip the archive
-    printlog "Unzipping $archiveName"
-    tar -xf "$archiveName"
-    installAppWithPath "$tmpDir/$appName"
-}
-
-installPkgInDmg() {
-    mountDMG
-    # locate pkg in dmg
-    if [[ -z $pkgName ]]; then
-        # find first file ending with 'pkg'
-        findfiles=$(find "$dmgmount" -iname "*.pkg" -maxdepth 1  )
-        filearray=( ${(f)findfiles} )
-        if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
-        fi
-        archiveName="${filearray[1]}"
-        printlog "found pkg: $archiveName"
-    else
-        # it is now safe to overwrite archiveName for installFromPKG
-        archiveName="$dmgmount/$pkgName"
-    fi
-
-    # installFromPkgs
-    installFromPKG
-}
-
-installPkgInZip() {
-    # unzip the archive
-    printlog "Unzipping $archiveName"
-    tar -xf "$archiveName"
-
-    # locate pkg in zip
-    if [[ -z $pkgName ]]; then
-        # find first file starting with $name and ending with 'pkg'
-        findfiles=$(find "$tmpDir" -iname "*.pkg" -maxdepth 1  )
-        filearray=( ${(f)findfiles} )
-        if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in zip $archiveName"
-        fi
-        archiveName="${filearray[1]}"
-        # it is now safe to overwrite archiveName for installFromPKG
-        printlog "found pkg: $archiveName"
-    else
-        # it is now safe to overwrite archiveName for installFromPKG
-        archiveName="$tmpDir/$pkgName"
-    fi
-
-    # installFromPkgs
-    installFromPKG
-}
-
-runUpdateTool() {
-    if [[ -x $updateTool ]]; then
-        printlog "running $updateTool $updateToolArguments"
-        if [[ -n $updateToolRunAsCurrentUser ]]; then
-            runAsUser $updateTool ${updateToolArguments}
-        else
-            $updateTool ${updateToolArguments}
-        fi
-        if [[ $? -ne 0 ]]; then
-            cleanupAndExit 15 "Error running $updateTool"
-        fi
-    else
-        printlog "couldn't find $updateTool, continuing normally"
-        return 1
-    fi
-    return 0
-}
-
-
-
-# MARK: main code starts here
-
+# MARK: application download and installation starts here
 
 
 # MARK: extract info from data
