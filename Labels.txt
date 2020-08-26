@@ -38,6 +38,7 @@ googlejapaneseinput
 grandperspective
 handbrake
 icons
+istatmenus
 iterm2
 jamfmigrator
 jamfpppcutility
