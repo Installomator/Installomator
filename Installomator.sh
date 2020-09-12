@@ -1032,7 +1032,13 @@ microsoftdefenderatp)
     updateToolArguments=( --install --apps WDAV00 )
     ;;
 
-
+theunarchiver)
+    name="The Unarchiver"
+    type="dmg"
+    downloadURL="https://dl.devmate.com/com.macpaw.site.theunarchiver/TheUnarchiver.dmg"
+    expectedTeamID="S8EX82NJP6"
+    ;;
+    
 # these descriptions exist for testing and are intentionally broken
 brokendownloadurl)
     name="Google Chrome"

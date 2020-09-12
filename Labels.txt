@@ -95,6 +95,7 @@ suspiciouspackage
 swiftruntimeforcommandlinetools
 teamviewer
 textmate
+theunarchiver
 things
 torbrowser
 tunnelbear
