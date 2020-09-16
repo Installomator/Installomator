@@ -107,4 +107,5 @@ webexmeetings
 webexteams
 whatsapp
 wwdcformac
+yubikeymanagerqt
 zoom

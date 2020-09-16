@@ -861,6 +861,11 @@ sizeup)
     type="zip"
     downloadURL="https://www.irradiatedsoftware.com/download/SizeUp.zip"
     expectedTeamID="GVZ7RF955D"
+yubikeymanagerqt)
+    name="YubiKey Manager GUI"
+    type="pkg"
+    downloadURL="https://developers.yubico.com/yubikey-manager-qt/Releases/$(curl -sfL https://api.github.com/repos/Yubico/yubikey-manager-qt/releases/latest | awk -F '"' '/"tag_name"/ { print $4 }')-mac.pkg"
+    expectedTeamID="LQA3CS5MM7"
     ;;
 
 # MARK: add new labels above here
