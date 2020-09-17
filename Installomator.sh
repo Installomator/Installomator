@@ -862,6 +862,13 @@ sizeup)
     downloadURL="https://www.irradiatedsoftware.com/download/SizeUp.zip"
     expectedTeamID="GVZ7RF955D"
     ;;
+tunnelblick)
+    name="Tunnelblick"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit TunnelBlick Tunnelblick )
+    expectedTeamID="Z2SG5H3HC8"
+    ;;
+
 
 # MARK: add new labels above here
 
