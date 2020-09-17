@@ -507,15 +507,18 @@ elif [[ $1 == "/" ]]; then
     shift 3
 fi
 
-# if an argument contains an = character, send it to eval
-while [[ -n $1 && $1 =~ ".*\=.*" ]]; do
-    printlog "setting variable from argument $1"
-    eval $1
+while [[ -n $1 ]]; do
+    if [[ $1 =~ ".*\=.*" ]]; then
+        # if an argument contains an = character, send it to eval
+        printlog "setting variable from argument $1"
+        eval $1
+    else
+        # assume it's a label
+        label=$1
+    fi
     # shift to next argument
     shift 1
 done
-
-label=${1:?"no label provided"}
 
 printlog "################## Start Installomator"
 printlog "################## $label"
