@@ -982,7 +982,7 @@ brave)
     name="Brave Browser"
     type="dmg"
     downloadURL="https://laptop-updates.brave.com/latest/osx"
-    expectedTeamID="9BNSXJN65R"
+    expectedTeamID="KL8N8XSYF4"
     ;;
 umbrellaroamingclient)
     # credit: Tadayuki Onishi (@kenchan0130)
