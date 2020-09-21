@@ -83,6 +83,7 @@ santa
 sfsymbols
 signal
 sizeup
+skitch
 slack
 snagit2020
 sonos
@@ -98,6 +99,7 @@ textmate
 things
 torbrowser
 tunnelbear
+tunnelblick
 umbrellaroamingclient
 virtualbox
 visualstudiocode
@@ -107,4 +109,5 @@ webexmeetings
 webexteams
 whatsapp
 wwdcformac
+yubikeymanagerqt
 zoom

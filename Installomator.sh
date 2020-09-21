@@ -499,7 +499,7 @@ fi
 
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
-    grep -E '^[a-z0-9\-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^broken' | grep -v -E '^(longversion|version)$' | sort
+    grep -E '^[a-z0-9\-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
     exit 0
 elif [[ $1 == "/" ]]; then
 	# jamf uses sends '/' as the first argument
