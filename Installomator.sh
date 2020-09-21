@@ -1216,7 +1216,14 @@ yubikeymanagerqt)
     downloadURL="https://developers.yubico.com/yubikey-manager-qt/Releases/$(curl -sfL https://api.github.com/repos/Yubico/yubikey-manager-qt/releases/latest | awk -F '"' '/"tag_name"/ { print $4 }')-mac.pkg"
     expectedTeamID="LQA3CS5MM7"
     ;;
-
+skitch)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+    name="Skitch"
+    type="zip"
+    downloadURL=$(curl -fs -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15" https://evernote.com/products/skitch | grep -o "https://.*zip")
+    expectedTeamID="J8RPQ294UB"
+    Company="Evernote"
+    ;;
 
 # MARK: add new labels above here
 
