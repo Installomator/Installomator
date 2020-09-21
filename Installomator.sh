@@ -413,7 +413,12 @@ installFromZIP() {
     # note: when you expand a zip using tar in Mojave the expanded 
     # app will never pass the spctl check
     
-    unzip -o -qq "$archiveName"
+    # unzip -o -qq "$archiveName"
+    
+    # note: githubdesktop fails spctl verification when expanded
+    # with unzip
+    
+    ditto -x -k "$archiveName" "$tmpDir"
     installAppWithPath "$tmpDir/$appName"
 }
 
