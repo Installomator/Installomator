@@ -305,6 +305,27 @@ Depending on the application or pkg there are a few more variables you can or ne
 - `updateToolRunAsCurrentUser`:
   When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and 
 
+### Configuration from Arguments
+
+You can provide a configuration variable, such as `DEBUG` or `NOTIFY` as an argument in the form `VAR=value`. For example:
+
+```
+./Installomator.sh desktoppr DEBUG=0 NOTIFY=silent
+```
+
+Providing variables this way will override any variables set in the script.
+
+You can even provide _all_ the variables necessary for download and installation. Of course, without a label the argument parsing will fail, so I created a special label `valuesfromarguments` which only checks if the four required values are present:
+
+```
+./Installomator.sh name=desktoppr type=pkg downloadURL=https://github.com/scriptingosx/desktoppr/releases/download/v0.3/desktoppr-0.3.pkg expectedTeamID=JME5BW3F3R valuesfromarguments
+```
+
+The order of the variables and label is not relevant. But, when you provide more than one label, all but the _last_ label will be ignored.
+
+Providing all the variables this way might be useful for certain downloads that have a customized URL for each vendor/customer (like customized TeamView or Watchman Monitoring) or are local downloads.
+
+
 ## Frequently Asked Questions
 
 ### What if the latest version of the app is already installed?
