@@ -986,7 +986,7 @@ brave)
     # credit: @securitygeneration
     name="Brave Browser"
     type="dmg"
-    downloadURL="https://laptop-updates.brave.com/latest/osx"
+    downloadURL=$(curl --location --fail --silent "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="KL8N8XSYF4"
     ;;
 umbrellaroamingclient)
