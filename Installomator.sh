@@ -35,6 +35,9 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   - silent_fail  exit script without prompt or installation
 #   - prompt_user  show a user dialog for each blocking process found
 #                  abort after three attempts to quit
+#   - prompt_user_then_kill
+#                  show a user dialog for each blocking process found,
+#                  attempt to quit two times, kill the process finally
 #   - kill         kill process without prompting or giving the user a chance to save
 
 
@@ -249,12 +252,18 @@ checkRunningProcesses() {
                       printlog "killing process $x"
                       pkill $x
                       ;;
-                    prompt_user)
+                    prompt_user|prompt_user_then_kill)
                       button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update"
                       else
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        if [[ $i = 3 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
+                          printlog "killing process $x"
+                          pkill $x
+                        else
+                          printlog "telling app $x to quit"
+                          runAsUser osascript -e "tell app \"$x\" to quit"
+                        fi
                       fi
                       ;;
                     silent_fail)
