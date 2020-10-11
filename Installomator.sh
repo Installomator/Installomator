@@ -250,7 +250,11 @@ checkRunningProcesses() {
                       pkill $x
                       ;;
                     prompt_user)
-                      button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
+                      # prompt the user once
+                      if [[ $button = "" ]]; then
+                        button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
+                      fi
+
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update"
                       else
