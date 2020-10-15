@@ -23,6 +23,7 @@ cyberduck
 depnotify
 desktoppr
 detectxswift
+dialpad
 discord
 docker
 dropbox
