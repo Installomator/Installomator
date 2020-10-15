@@ -1229,6 +1229,12 @@ skitch)
     expectedTeamID="J8RPQ294UB"
     Company="Evernote"
     ;;
+dialpad)
+    name="Dialpad"
+    type="dmg"
+    downloadURL="https://storage.googleapis.com/dialpad_native/osx/Dialpad.dmg"
+    expectedTeamID="9V29MQSZ9M"
+    ;;
 
 # MARK: add new labels above here
 
