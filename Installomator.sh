@@ -204,6 +204,16 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 }
 
 
+xpath() {
+	# the xpath tool changes in Big Sur and now requires the `-e` option	
+	if [[ $(sw_vers -buildVersion) > "20A" ]]; then
+		/usr/bin/xpath -e $@
+	else
+		/usr/bin/xpath $@
+	fi
+}
+
+
 getAppVersion() {
     # get all apps matching name
     applist=$(mdfind "kind:application $appName" -0 )
