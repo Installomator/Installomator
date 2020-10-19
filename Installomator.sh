@@ -1121,9 +1121,9 @@ r)
     ;; 
 8x8)
     # credit: #D-A-James from MacAdmins Slack and Isaac Ordonez, Mann consulting (@mannconsulting)
-    name="8x8 - Virtual Office"
+    name="8x8 Work"
     type="dmg"
-    downloadURL=$(curl -fs https://support.8x8.com/cloud-phone-service/voice/virtual-office-desktop/download-virtual-office-desktop | grep -m 1 -o "http.*VOD.*.dmg")
+    downloadURL=$(curl -fs -L https://support.8x8.com/cloud-phone-service/voice/work-desktop/download-8x8-work-for-desktop | grep -m 1 -o "https.*dmg")
     expectedTeamID="FC967L3QRG"
     ;;
 egnyte)
