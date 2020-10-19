@@ -1253,6 +1253,12 @@ amazonworkspaces)
 	downloadURL="https://d2td7dqidlhjx7.cloudfront.net/prod/global/osx/WorkSpaces.pkg"
 	expectedTeamID="94KV3E626L"
 	;;
+apparency)
+    name="Apparency"
+    type="dmg"
+    downloadURL="https://www.mothersruin.com/software/downloads/Apparency.dmg"
+    expectedTeamID="936EB786NH"
+    ;;
 
 
 # MARK: add new labels above here
