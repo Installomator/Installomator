@@ -1,4 +1,13 @@
-## v0.3 - 2020-07-
+## v0.4 - 2020-10-19
+
+- you can now set script variables as an argument in the form `VARIABLE=value`. More detail on this in the README file, 'Configuration from Arguments.' (#26, #50, #72, and #73)
+- change `downloadFromGit` to match file types better (#58)
+- implemented a workaround for changed behavior of `xpath` in Big Sur (#80)
+- added an option `prompt_user_the_kill` to `BLOCKING_PROCESS_ACTION` which will kill the process after the third unsuccessful attempt to quit (#78, thanks Patrick Atoon @raptor399)
+- added several new labels for total of 116
+
+
+## v0.3 - 2020-07-23
 
 - added several new labels for total of 98
 - removed the powershell labels, since the installer is not notarized
