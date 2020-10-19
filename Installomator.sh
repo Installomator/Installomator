@@ -1246,6 +1246,14 @@ dialpad)
     downloadURL="https://storage.googleapis.com/dialpad_native/osx/Dialpad.dmg"
     expectedTeamID="9V29MQSZ9M"
     ;;
+amazonworkspaces)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+	name="Workspaces"
+	type="pkg"
+	downloadURL="https://d2td7dqidlhjx7.cloudfront.net/prod/global/osx/WorkSpaces.pkg"
+	expectedTeamID="94KV3E626L"
+	;;
+
 
 # MARK: add new labels above here
 
