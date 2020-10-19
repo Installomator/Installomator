@@ -9,7 +9,7 @@
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
 VERSION='0.4'
-VERSIONDATE='20200826'
+VERSIONDATE='20201019'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 

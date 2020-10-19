@@ -1,6 +1,8 @@
 ## v0.4 - 2020-
 
+- you can now set script variables as an argument in the form `VARIABLE=value`. More detail on this in the README file, 'Configuration from Arguments.' (#26, #50, #72, and #73)
 - change `downloadFromGit` to match file types better (#58)
+- implemented a workaround for changed behavior of `xpath` in Big Sur (#80)
 
 ## v0.3 - 2020-07-23
 
