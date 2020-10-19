@@ -1230,6 +1230,7 @@ skitch)
     Company="Evernote"
     ;;
 dialpad)
+    # credit: @ehosaka
     name="Dialpad"
     type="dmg"
     downloadURL="https://storage.googleapis.com/dialpad_native/osx/Dialpad.dmg"
