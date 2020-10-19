@@ -201,11 +201,12 @@ Debug mode is useful to test the download and verification process without havin
 
 The `BLOCKING_PROCESS_ACTION` variable controls the behavior of the script when it finds a blocking process running.
 
-There are four options:
+There are five options:
 
 - `ignore`:       continue even when blocking processes are found
 - `silent_fail`:  exit script without prompt or installation
 - `prompt_user`:  show a user dialog for each blocking process found abort after three attempts to quit
+- `prompt_user_then_kill`: show a user dialog for each blocking process found, attempt to quit two times, kill the process finally
 - `kill`:         kill process without prompting or giving the user a chance to save
 
 The default is `prompt_user`.
