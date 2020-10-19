@@ -5,6 +5,8 @@ adobereaderdc-install
 adobereaderdc-update
 airserver
 alfred
+amazonworkspaces
+apparency
 appcleaner
 aquaskk
 atom
