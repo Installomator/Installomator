@@ -249,7 +249,7 @@ checkRunningProcesses() {
                       printlog "killing process $x"
                       pkill $x
                       ;;
-                    prompt_user)
+                    prompt_user|prompt_user_then_kill)
                       # prompt the user once
                       if [[ $button = "" ]]; then
                         button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
