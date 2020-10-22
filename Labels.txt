@@ -73,6 +73,7 @@ nomad
 omnifocus3
 omnigraffle7
 openvpnconnect
+openvpnconnectv3
 pacifist
 plisteditpro
 postman
