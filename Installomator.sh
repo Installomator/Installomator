@@ -782,6 +782,12 @@ openvpnconnect)
     downloadURL="https://openvpn.net/downloads/openvpn-connect-v2-macos.dmg"
     expectedTeamID="ACV7L3WCD8"
     ;;
+openvpnconnectv3)
+    name="OpenVPN Connect"
+    type="pkgInDmg"
+    downloadURL="https://openvpn.net/downloads/openvpn-connect-v3-macos.dmg"
+    expectedTeamID="ACV7L3WCD8"
+    ;;
 pacifist)
     name="Pacifist"
     type="dmg"
