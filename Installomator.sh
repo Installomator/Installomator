@@ -1286,6 +1286,7 @@ skype)
 	expectedTeamID="AL798K98FX"
 	;;
 bluejeans)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
 	name="BlueJeans"
 	type="pkg"
 	downloadURL=$(curl -fs "https://www.bluejeans.com/downloads" | xmllint --html --format - 2>/dev/null | grep -o "https://.*BlueJeansInstaller.dmg" | sed 's/dmg/pkg/g')
