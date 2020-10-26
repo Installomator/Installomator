@@ -1285,6 +1285,13 @@ skype)
 	downloadURL="https://get.skype.com/go/getskype-skypeformac"
 	expectedTeamID="AL798K98FX"
 	;;
+bluejeans)
+	name="BlueJeans"
+	type="pkg"
+	downloadURL=$(curl -fs "https://www.bluejeans.com/downloads" | xmllint --html --format - 2>/dev/null | grep -o "https://.*BlueJeansInstaller.dmg" | sed 's/dmg/pkg/g')
+	expectedTeamID="HE4P42JBGN"
+	;;
+
 
 # MARK: add new labels above here
 
