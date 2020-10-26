@@ -1277,7 +1277,14 @@ apparency)
     downloadURL="https://www.mothersruin.com/software/downloads/Apparency.dmg"
     expectedTeamID="936EB786NH"
     ;;
-
+skype)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+	# CONSUMER version of skype, business version is `microsoftskypeforbusiness`
+	name="Skype"
+	type="dmg"
+	downloadURL="https://get.skype.com/go/getskype-skypeformac"
+	expectedTeamID="AL798K98FX"
+	;;
 
 # MARK: add new labels above here
 
