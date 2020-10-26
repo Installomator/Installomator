@@ -15,6 +15,7 @@ autopkgr
 aviatrix
 bbedit
 bettertouchtool
+bluejeans
 boxdrive
 brave
 camtasia
