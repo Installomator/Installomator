@@ -43,6 +43,7 @@ googlejapaneseinput
 grandperspective
 handbrake
 icons
+inkscape
 istatmenus
 iterm2
 jamfmigrator
