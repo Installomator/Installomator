@@ -1116,7 +1116,7 @@ torbrowser)
     # credit: Søren Theilgaard (@theilgaard)
     name="Tor Browser"
     type="dmg"
-    downloadURL=https://www.torproject.org$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | cut -d '"' -f 4)
+    downloadURL=https://www.torproject.org$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep -m 1 dmg | cut -d '"' -f 4)
     appNewVersion=$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | cut -d '"' -f 4 | cut -d / -f 4)
     expectedTeamID="MADPSAYN6T"
     ;;
