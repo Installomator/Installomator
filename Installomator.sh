@@ -376,8 +376,20 @@ mountDMG() {
 
 installFromDMG() {
     mountDMG
-
-    installAppWithPath "$dmgmount/$appName"
+	
+	applicationPath="$dmgmount/$appname"
+	if [[ -d $applicationPath ]]; then
+        # find first file ending with 'app'
+        findfiles=$(find "$dmgmount" -iname "*.app" -maxdepth 1  )
+        filearray=( ${(f)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 21 "couldn't find app in dmg $archiveName"
+        fi
+        applicationPath="${filearray[1]}"
+        printlog "found app: $applicationPath"
+	fi
+	
+    installAppWithPath "$applicationPath"
 }
 
 installFromPKG() {
@@ -1300,7 +1312,7 @@ ricohpsprinters)
 	expectedTeamID="5KACUT3YX8"
 	;;
 ringcentralphone)
-    # credit: Eric Gjerde, When I Work (@ericgjerde)
+    # credit: Eric Gjerde, When I Work (@ericgjerde on MacAdmins Slack)
     # note: the DMG says RingCentral Phone, the installed app says RingCentral Phone, but the app in the DMG is 'RingCentral for Mac.app'
     name="RingCentral for Mac"
     type="dmg"
@@ -1309,12 +1321,21 @@ ringcentralphone)
     blockingProcesses=( "RingCentral Phone" )
     ;;
 inkscape)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
     name="Inkscape"
     type="dmg"
     downloadURL=https://inkscape.org$(inkscapemacurl=$(curl -s -L "https://inkscape.org/release/" | grep -Eio '/release/inkscape-(.*)/mac-os-x/([0-9]*)-([0-9]*)/dl/') && curl -s -L "https://inkscape.org$inkscapemacurl" | grep -Eio 'href="/gallery/item/([0-9]*)/(.*).dmg' | cut -c7-)
     expectedTeamID="SW3D6BB6A6"
     ;;    
-    
+gimp)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="GIMP"
+    type="dmg"
+    downloadURL=https://$(curl -s -L "https://www.gimp.org/downloads/" | grep -Eio 'download.gimp.org/mirror/pub/gimp/v.*/osx/(.*).dmg')
+    expectedTeamID="T25BQ8HSJF"
+    ;;
+
+
 # MARK: add new labels above here
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
