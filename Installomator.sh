@@ -1308,7 +1308,12 @@ ringcentralphone)
     expectedTeamID="M932RC5J66"
     blockingProcesses=( "RingCentral Phone" )
     ;;
-    
+inkscape)
+    name="Inkscape"
+    type="dmg"
+    downloadURL=https://inkscape.org$(inkscapemacurl=$(curl -s -L "https://inkscape.org/release/" | grep -Eio '/release/inkscape-(.*)/mac-os-x/([0-9]*)-([0-9]*)/dl/') && curl -s -L "https://inkscape.org$inkscapemacurl" | grep -Eio 'href="/gallery/item/([0-9]*)/(.*).dmg' | cut -c7-)
+    expectedTeamID="SW3D6BB6A6"
+    ;;    
     
 # MARK: add new labels above here
 
