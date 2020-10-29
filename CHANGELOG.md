@@ -1,6 +1,6 @@
 ## v0.5 - 2020-
 
-- 
+- when Installomator cannot find an app in a dmg with the given appName it will now use the first .app in the root dir. This is for applications which contain the version number in the application name. Note: this might lead to multiple versions of the app in the /Applications directory. You will have to find a different means to clean these up when necessary
 
 
 ## v0.4 - 2020-10-19
@@ -21,6 +21,7 @@
 - improved logging in some statements
 - several more minor improvements
 
+
 ## v0.2 - 2020-06-09
 
 - many fixes for broken URLs and other bugs
@@ -29,5 +30,6 @@
 - Apple signed installers and apps that don’t have a Team ID are verified correctly now
 improved logging
 - several new applications: count increased from 62 in 0.1 to 87 in 0.2
+
 
 ## v0.1 - 2020-05-12

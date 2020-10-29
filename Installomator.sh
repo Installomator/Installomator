@@ -377,10 +377,11 @@ mountDMG() {
 installFromDMG() {
     mountDMG
 	
-	applicationPath="$dmgmount/$appname"
-	if [[ -d $applicationPath ]]; then
+	applicationPath="$dmgmount/$appName"
+	printlog "looking for app: $applicationPath"
+	if [[ ! -d $applicationPath ]]; then
         # find first file ending with 'app'
-        findfiles=$(find "$dmgmount" -iname "*.app" -maxdepth 1  )
+        findfiles=$(find "$dmgmount" -iname "*.app" -maxdepth 1 -mindepth 1 )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 21 "couldn't find app in dmg $archiveName"
@@ -467,7 +468,7 @@ installPkgInDmg() {
     # locate pkg in dmg
     if [[ -z $pkgName ]]; then
         # find first file ending with 'pkg'
-        findfiles=$(find "$dmgmount" -iname "*.pkg" -maxdepth 1  )
+        findfiles=$(find "$dmgmount" -iname "*.pkg" -maxdepth 1 -mindepth 1 )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
@@ -1334,7 +1335,13 @@ gimp)
     downloadURL=https://$(curl -s -L "https://www.gimp.org/downloads/" | grep -Eio 'download.gimp.org/mirror/pub/gimp/v.*/osx/(.*).dmg')
     expectedTeamID="T25BQ8HSJF"
     ;;
-
+qgis-macos-pr)
+    # credit: Rob Smithers (@SmithersJr on MacAdmins Slack)
+    name="QGIS"
+    type="dmg"
+    downloadURL="https://qgis.org/downloads/macos/qgis-macos-pr.dmg"
+    expectedTeamID="4F7N4UDA22"
+    ;;
 
 # MARK: add new labels above here
 
