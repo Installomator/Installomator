@@ -1299,7 +1299,17 @@ ricohpsprinters)
 	downloadURL=$(curl -fs https://support.ricoh.com//bb/html/dr_ut_e/rc3/model/mpc3004ex/mpc3004exen.htm | xmllint --html --format - 2>/dev/null | grep -m 1 -o "https://.*.dmg" | cut -d '"' -f 1)
 	expectedTeamID="5KACUT3YX8"
 	;;
-
+ringcentralphone)
+    # credit: Eric Gjerde, When I Work (@ericgjerde)
+    # note: the DMG says RingCentral Phone, the installed app says RingCentral Phone, but the app in the DMG is 'RingCentral for Mac.app'
+    name="RingCentral for Mac"
+    type="dmg"
+    downloadURL="https://downloads.ringcentral.com/sp/RingCentralForMac"
+    expectedTeamID="M932RC5J66"
+    blockingProcesses=( "RingCentral Phone" )
+    ;;
+    
+    
 # MARK: add new labels above here
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
