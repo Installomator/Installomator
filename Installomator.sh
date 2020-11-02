@@ -1343,12 +1343,19 @@ qgis-macos-pr)
     expectedTeamID="4F7N4UDA22"
     ;;
 osxfuse)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
     name="FUSE for macOS"
     type="pkgInDmg"
     downloadURL=$(downloadURLFromGit osxfuse osxfuse)
     expectedTeamID="3T5GSNBU6W"
     ;;
-
+veracrypt)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="VeraCrypt"
+    type="pkgInDmg"
+    downloadURL=$(curl -s -L "https://www.veracrypt.fr/en/Downloads.html" | grep -Eio 'href="https://launchpad.net/veracrypt/trunk/(.*)/&#43;download/VeraCrypt_([0-9].*).dmg"' | cut -c7- | sed -e 's/"$//' | sed "s/&#43;/+/g")
+    expectedTeamID="Z933746L2S"
+    ;;
 
 # MARK: add new labels above here
 
