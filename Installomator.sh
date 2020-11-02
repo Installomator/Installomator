@@ -1356,6 +1356,14 @@ veracrypt)
     downloadURL=$(curl -s -L "https://www.veracrypt.fr/en/Downloads.html" | grep -Eio 'href="https://launchpad.net/veracrypt/trunk/(.*)/&#43;download/VeraCrypt_([0-9].*).dmg"' | cut -c7- | sed -e 's/"$//' | sed "s/&#43;/+/g")
     expectedTeamID="Z933746L2S"
     ;;
+cryptomator)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="Cryptomator"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit cryptomator cryptomator)
+    expectedTeamID="YZQJQUHA3L"
+    ;;
+
 
 # MARK: add new labels above here
 
