@@ -1342,6 +1342,13 @@ qgis-macos-pr)
     downloadURL="https://qgis.org/downloads/macos/qgis-macos-pr.dmg"
     expectedTeamID="4F7N4UDA22"
     ;;
+osxfuse)
+    name="FUSE for macOS"
+    type="pkgInDmg"
+    downloadURL=$(downloadURLFromGit osxfuse osxfuse)
+    expectedTeamID="3T5GSNBU6W"
+    ;;
+
 
 # MARK: add new labels above here
 
