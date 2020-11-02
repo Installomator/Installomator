@@ -22,6 +22,7 @@ camtasia
 citrixworkspace
 code42
 coderunner
+cryptomator
 cyberduck
 depnotify
 desktoppr
@@ -77,10 +78,14 @@ omnifocus3
 omnigraffle7
 openvpnconnect
 openvpnconnectv3
+osxfuse
 pacifist
 plisteditpro
 postman
+prism7
+prism8
 privileges
+qgis-macos-pr
 r
 resiliosynchome
 ricohpsprinters
@@ -111,6 +116,7 @@ torbrowser
 tunnelbear
 tunnelblick
 umbrellaroamingclient
+veracrypt
 virtualbox
 visualstudiocode
 vlc
