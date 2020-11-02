@@ -1363,6 +1363,20 @@ cryptomator)
     downloadURL=$(downloadURLFromGit cryptomator cryptomator)
     expectedTeamID="YZQJQUHA3L"
     ;;
+prism7)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="Prism 7"
+    type="dmg"
+    downloadURL="http://cdn.graphpad.com/downloads/prism/7/InstallPrism7.dmg"
+    expectedTeamID="YQ2D36NS9M"
+    ;;
+prism8)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="Prism 8"
+    type="dmg"
+    downloadURL="http://cdn.graphpad.com/downloads/prism/8/InstallPrism8.dmg"
+    expectedTeamID="YQ2D36NS9M"
+    ;;
 
 
 # MARK: add new labels above here
