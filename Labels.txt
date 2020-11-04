@@ -55,6 +55,7 @@ karabinerelements
 keepassxc
 krisp
 malwarebytes
+mattermost
 microsoftautoupdate
 microsoftcompanyportal
 microsoftdefenderatp
@@ -101,6 +102,7 @@ skitch
 skype
 slack
 snagit2020
+snapgeneviewer
 sonos
 sonoss1
 sonoss2
