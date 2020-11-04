@@ -1377,7 +1377,14 @@ prism8)
     downloadURL="http://cdn.graphpad.com/downloads/prism/8/InstallPrism8.dmg"
     expectedTeamID="YQ2D36NS9M"
     ;;
-
+snapgeneviewer)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="SnapGene Viewer"
+    type="dmg"
+    downloadURL="https://www.snapgene.com/local/targets/download.php?variant=viewer&os=mac&majorRelease=latest&minorRelease=latest"
+    expectedTeamID="WVCV9Q8Y78"
+    ;;
+    
 
 # MARK: add new labels above here
 
