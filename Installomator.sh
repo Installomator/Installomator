@@ -1384,7 +1384,13 @@ snapgeneviewer)
     downloadURL="https://www.snapgene.com/local/targets/download.php?variant=viewer&os=mac&majorRelease=latest&minorRelease=latest"
     expectedTeamID="WVCV9Q8Y78"
     ;;
-    
+mattermost)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="Mattermost"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit mattermost desktop)
+    expectedTeamID="UQ8HT4Q2XM"
+    ;;    
 
 # MARK: add new labels above here
 
