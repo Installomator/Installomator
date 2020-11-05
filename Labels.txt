@@ -15,6 +15,7 @@ autopkgr
 aviatrix
 bbedit
 bettertouchtool
+bitwarden
 bluejeans
 boxdrive
 brave
@@ -94,6 +95,7 @@ ringcentralapp
 ringcentralmeetings
 ringcentralphone
 royaltsx
+rstudio
 santa
 sfsymbols
 signal
@@ -114,6 +116,8 @@ swiftruntimeforcommandlinetools
 teamviewer
 textmate
 things
+thunderbird
+tigervnc
 torbrowser
 tunnelbear
 tunnelblick
