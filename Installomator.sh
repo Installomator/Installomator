@@ -1391,6 +1391,15 @@ mattermost)
     downloadURL=$(downloadURLFromGit mattermost desktop)
     expectedTeamID="UQ8HT4Q2XM"
     ;;    
+thunderbird)
+    # credit: @N on MacAdmins Slack
+    name="Thunderbird"
+    type="dmg"
+    downloadURL="https://download.mozilla.org/?product=thunderbird-latest&os=osx&lang=en-US"
+    expectedTeamID="43AQ936H96"
+    blockingProcesses=( thunderbird )
+    ;;
+
 
 # MARK: add new labels above here
 
