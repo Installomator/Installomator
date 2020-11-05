@@ -1413,6 +1413,14 @@ bitwarden)
     downloadURL=$(downloadURLFromGit bitwarden desktop )
     expectedTeamID="LTZ2PFU5D6"
     ;;
+rstudio)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="RStudio"
+    type="dmg"
+    downloadURL=$(curl -s -L "https://rstudio.com/products/rstudio/download/" | grep -m 1 -Eio 'href="https://download1.rstudio.org/desktop/macos/RStudio-(.*).dmg"' | cut -c7- | sed -e 's/"$//')
+    expectedTeamID="FYF2F5GFX4"
+    ;;
+
 
 # MARK: add new labels above here
 
