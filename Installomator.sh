@@ -1406,6 +1406,13 @@ tigervnc)
     downloadURL=https://dl.bintray.com/tigervnc/stable/$(curl -s -l https://dl.bintray.com/tigervnc/stable/ | grep .dmg | sed 's/<pre><a onclick="navi(event)" href="://' | sed 's/".*//' | sort -V | tail -1)
     expectedTeamID="S5LX88A9BW"
     ;;
+bitwarden)
+    # credit: @N on MacAdmins Slack
+    name="Bitwarden"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit bitwarden desktop )
+    expectedTeamID="LTZ2PFU5D6"
+    ;;
 
 # MARK: add new labels above here
 
