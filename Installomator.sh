@@ -1420,7 +1420,13 @@ rstudio)
     downloadURL=$(curl -s -L "https://rstudio.com/products/rstudio/download/" | grep -m 1 -Eio 'href="https://download1.rstudio.org/desktop/macos/RStudio-(.*).dmg"' | cut -c7- | sed -e 's/"$//')
     expectedTeamID="FYF2F5GFX4"
     ;;
-
+keka)
+    # credit: Adrian Bühler (@midni9ht)
+    name="Keka"
+    type="dmg"
+    downloadURL="https://d.keka.io"
+    expectedTeamID="4FG648TM2A"
+    ;;
 
 # MARK: add new labels above here
 
