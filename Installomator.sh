@@ -1596,6 +1596,28 @@ microsoftdefenderatp)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps WDAV00 )
     ;;
+gpgsuite)
+    # credit: Micah Lee (@micahflee)
+    name="GPG Suite"
+    type="pkgInDmg"
+    pkgName="Install.pkg"
+    downloadURL=$(curl -s https://gpgtools.org/ | grep https://releases.gpgtools.org/GPG_Suite- | grep Download | cut -d'"' -f4)
+    expectedTeamID="PKV8ZPD836"
+    ;;
+gpgsync)
+    # credit: Micah Lee (@micahflee)
+    name="GPG Sync"
+    type="pkg"
+    downloadURL="https://github.com$(curl -s -L https://github.com/firstlookmedia/gpgsync/releases/latest | grep /firstlookmedia/gpgsync/releases/download | grep \.pkg | cut -d'"' -f2)"
+    expectedTeamID="P24U45L8P5"
+    ;;
+dangerzone)
+    # credit: Micah Lee (@micahflee)
+    name="Dangerzone"
+    type="dmg"
+    downloadURL=$(curl -s https://dangerzone.rocks/ | grep https://github.com/firstlookmedia/dangerzone/releases/download | grep \.dmg | cut -d'"' -f2)
+    expectedTeamID="P24U45L8P5"
+    ;;
 
 # this description is so you can provide all variables as arguments
 # it will only check if the required variables are setting
