@@ -55,6 +55,7 @@ jamfreenroller
 karabinerelements
 keepassxc
 krisp
+libreoffice
 malwarebytes
 mattermost
 microsoftautoupdate
