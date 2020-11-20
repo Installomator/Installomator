@@ -1427,6 +1427,14 @@ keka)
     downloadURL="https://d.keka.io"
     expectedTeamID="4FG648TM2A"
     ;;
+dbeaverce)
+    # credit: Adrian Bühler (@midni9ht)
+    name="DBeaver"
+    type="pkg"
+    downloadURL="https://dbeaver.io/files/dbeaver-ce-latest-installer.pkg"
+    expectedTeamID="42B6MDKMW8"
+    blockingProcesses=( dbeaver )
+    ;;
 
 # MARK: add new labels above here
 
