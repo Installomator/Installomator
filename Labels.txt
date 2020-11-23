@@ -25,6 +25,7 @@ code42
 coderunner
 cryptomator
 cyberduck
+dangerzone
 depnotify
 desktoppr
 detectxswift
@@ -43,6 +44,8 @@ googlechrome
 googlechromepkg
 googledrivefilestream
 googlejapaneseinput
+gpgsuite
+gpgsync
 grandperspective
 handbrake
 icons
