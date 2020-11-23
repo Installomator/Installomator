@@ -1440,7 +1440,14 @@ pymol)
     type="dmg"
     downloadURL=$(curl -s -L "https://pymol.org/" | grep -m 1 -Eio 'href="https://pymol.org/installers/PyMOL-(.*)-MacOS(.*).dmg"' | cut -c7- | sed -e 's/"$//')
     expectedTeamID="26SDDJ756N"
-    ;;    
+    ;;
+prism9)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="Prism 9"
+    type="dmg"
+    downloadURL="http://cdn.graphpad.com/downloads/prism/9/InstallPrism9.dmg"
+    expectedTeamID="YQ2D36NS9M"
+    ;;  
     
 # MARK: add new labels above here
 
