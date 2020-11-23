@@ -1427,12 +1427,19 @@ keka)
     downloadURL="https://d.keka.io"
     expectedTeamID="4FG648TM2A"
     ;;
+onlyofficedesktop)
+    # credit: Adrian Bühler (@midni9ht)
+    name="ONLYOFFICE"
+    type="dmg"
+    downloadURL="https://download.onlyoffice.com/install/desktop/editors/mac/distrib/onlyoffice/ONLYOFFICE.dmg"
+    expectedTeamID="2WH24U26GJ"
+    ;;
 googleearth)
     # credit: David Chatton (@mdmmac on MacAdmins Slack)
     name="Google Earth Pro"
     type="pkgInDmg"
     downloadURL="https://dl.google.com/earth/client/advanced/current/GoogleEarthProMac-Intel.dmg"
-	expectedTeamID="EQHXZ8M8AV"
+	  expectedTeamID="EQHXZ8M8AV"
     ;;
 pymol)
     # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
@@ -1478,6 +1485,7 @@ libreoffice)
     expectedTeamID="7P5S3ZLCN7"
     ;;
     
+
 # MARK: add new labels above here
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
