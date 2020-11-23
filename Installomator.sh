@@ -1470,6 +1470,13 @@ dangerzone)
     downloadURL=$(curl -s https://dangerzone.rocks/ | grep https://github.com/firstlookmedia/dangerzone/releases/download | grep \.dmg | cut -d'"' -f2)
     expectedTeamID="P24U45L8P5"
     ;;
+libreoffice)
+    # credit: Micah Lee (@micahflee)
+    name="LibreOffice"
+    type="dmg"
+    downloadURL="https://download.documentfoundation.org/libreoffice/stable/$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)/mac/x86_64/LibreOffice_$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)_MacOS_x86-64.dmg"
+    expectedTeamID="7P5S3ZLCN7"
+    ;;
     
 # MARK: add new labels above here
 
@@ -1639,6 +1646,7 @@ microsoftdefenderatp)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps WDAV00 )
     ;;
+
 
 # this description is so you can provide all variables as arguments
 # it will only check if the required variables are setting

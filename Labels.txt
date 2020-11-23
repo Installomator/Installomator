@@ -60,6 +60,7 @@ karabinerelements
 keepassxc
 keka
 krisp
+libreoffice
 malwarebytes
 mattermost
 microsoftautoupdate
