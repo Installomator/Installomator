@@ -1427,7 +1427,15 @@ keka)
     downloadURL="https://d.keka.io"
     expectedTeamID="4FG648TM2A"
     ;;
-
+googleearth)
+    # credit: David Chatton (@mdmmac on MacAdmins Slack)
+    name="Google Earth Pro"
+    type="pkgInDmg"
+    downloadURL="https://dl.google.com/earth/client/advanced/current/GoogleEarthProMac-Intel.dmg"
+	expectedTeamID="EQHXZ8M8AV"
+    ;;
+    
+    
 # MARK: add new labels above here
 
 # NOTE: Packages is signed but _not_ notarized, so spctl will reject it
