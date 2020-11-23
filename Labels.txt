@@ -25,6 +25,7 @@ code42
 coderunner
 cryptomator
 cyberduck
+dangerzone
 depnotify
 desktoppr
 detectxswift
@@ -42,7 +43,10 @@ githubdesktop
 googlechrome
 googlechromepkg
 googledrivefilestream
+googleearth
 googlejapaneseinput
+gpgsuite
+gpgsync
 grandperspective
 handbrake
 icons
@@ -54,7 +58,9 @@ jamfpppcutility
 jamfreenroller
 karabinerelements
 keepassxc
+keka
 krisp
+libreoffice
 malwarebytes
 mattermost
 microsoftautoupdate
@@ -86,7 +92,9 @@ plisteditpro
 postman
 prism7
 prism8
+prism9
 privileges
+pymol
 qgis-macos-pr
 r
 resiliosynchome
