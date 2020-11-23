@@ -6,6 +6,7 @@ adobereaderdc-update
 airserver
 alfred
 amazonworkspaces
+androidfiletransfer
 apparency
 appcleaner
 aquaskk
@@ -26,6 +27,7 @@ coderunner
 cryptomator
 cyberduck
 dangerzone
+dbeaverce
 depnotify
 desktoppr
 detectxswift
@@ -84,6 +86,7 @@ netnewswire
 nomad
 omnifocus3
 omnigraffle7
+onlyofficedesktop
 openvpnconnect
 openvpnconnectv3
 osxfuse
@@ -122,6 +125,7 @@ sublimetext
 suspiciouspackage
 swiftruntimeforcommandlinetools
 teamviewer
+teamviewerqs
 textmate
 things
 thunderbird
