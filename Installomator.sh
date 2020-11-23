@@ -1434,6 +1434,72 @@ androidfiletransfer)
     downloadURL="https://dl.google.com/dl/androidjumper/mtp/current/AndroidFileTransfer.dmg"
     expectedTeamID="EQHXZ8M8AV"
     ;;
+dbeaverce)
+    # credit: Adrian Bühler (@midni9ht)
+    name="DBeaver"
+    type="pkg"
+    downloadURL="https://dbeaver.io/files/dbeaver-ce-latest-installer.pkg"
+    expectedTeamID="42B6MDKMW8"
+    blockingProcesses=( dbeaver )
+    ;;
+onlyofficedesktop)
+    # credit: Adrian Bühler (@midni9ht)
+    name="ONLYOFFICE"
+    type="dmg"
+    downloadURL="https://download.onlyoffice.com/install/desktop/editors/mac/distrib/onlyoffice/ONLYOFFICE.dmg"
+    expectedTeamID="2WH24U26GJ"
+    ;;
+googleearth)
+    # credit: David Chatton (@mdmmac on MacAdmins Slack)
+    name="Google Earth Pro"
+    type="pkgInDmg"
+    downloadURL="https://dl.google.com/earth/client/advanced/current/GoogleEarthProMac-Intel.dmg"
+	  expectedTeamID="EQHXZ8M8AV"
+    ;;
+pymol)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="PyMOL"
+    type="dmg"
+    downloadURL=$(curl -s -L "https://pymol.org/" | grep -m 1 -Eio 'href="https://pymol.org/installers/PyMOL-(.*)-MacOS(.*).dmg"' | cut -c7- | sed -e 's/"$//')
+    expectedTeamID="26SDDJ756N"
+    ;;
+prism9)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="Prism 9"
+    type="dmg"
+    downloadURL="http://cdn.graphpad.com/downloads/prism/9/InstallPrism9.dmg"
+    expectedTeamID="YQ2D36NS9M"
+    ;;  
+gpgsuite)
+    # credit: Micah Lee (@micahflee)
+    name="GPG Suite"
+    type="pkgInDmg"
+    pkgName="Install.pkg"
+    downloadURL=$(curl -s https://gpgtools.org/ | grep https://releases.gpgtools.org/GPG_Suite- | grep Download | cut -d'"' -f4)
+    expectedTeamID="PKV8ZPD836"
+    ;;
+gpgsync)
+    # credit: Micah Lee (@micahflee)
+    name="GPG Sync"
+    type="pkg"
+    downloadURL="https://github.com$(curl -s -L https://github.com/firstlookmedia/gpgsync/releases/latest | grep /firstlookmedia/gpgsync/releases/download | grep \.pkg | cut -d'"' -f2)"
+    expectedTeamID="P24U45L8P5"
+    ;;
+dangerzone)
+    # credit: Micah Lee (@micahflee)
+    name="Dangerzone"
+    type="dmg"
+    downloadURL=$(curl -s https://dangerzone.rocks/ | grep https://github.com/firstlookmedia/dangerzone/releases/download | grep \.dmg | cut -d'"' -f2)
+    expectedTeamID="P24U45L8P5"
+    ;;
+libreoffice)
+    # credit: Micah Lee (@micahflee)
+    name="LibreOffice"
+    type="dmg"
+    downloadURL="https://download.documentfoundation.org/libreoffice/stable/$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)/mac/x86_64/LibreOffice_$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)_MacOS_x86-64.dmg"
+    expectedTeamID="7P5S3ZLCN7"
+    ;;
+    
 
 # MARK: add new labels above here
 
@@ -1603,6 +1669,7 @@ microsoftdefenderatp)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps WDAV00 )
     ;;
+
 
 # this description is so you can provide all variables as arguments
 # it will only check if the required variables are setting
