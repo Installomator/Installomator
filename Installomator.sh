@@ -1434,7 +1434,13 @@ googleearth)
     downloadURL="https://dl.google.com/earth/client/advanced/current/GoogleEarthProMac-Intel.dmg"
 	expectedTeamID="EQHXZ8M8AV"
     ;;
-    
+pymol)
+    # credit: Fredrik Larsson (@fredrik_l on MacAdmins Slack)
+    name="PyMOL"
+    type="dmg"
+    downloadURL=$(curl -s -L "https://pymol.org/" | grep -m 1 -Eio 'href="https://pymol.org/installers/PyMOL-(.*)-MacOS(.*).dmg"' | cut -c7- | sed -e 's/"$//')
+    expectedTeamID="26SDDJ756N"
+    ;;    
     
 # MARK: add new labels above here
 
