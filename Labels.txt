@@ -43,6 +43,7 @@ githubdesktop
 googlechrome
 googlechromepkg
 googledrivefilestream
+googleearth
 googlejapaneseinput
 gpgsuite
 gpgsync
@@ -57,6 +58,7 @@ jamfpppcutility
 jamfreenroller
 karabinerelements
 keepassxc
+keka
 krisp
 malwarebytes
 mattermost
@@ -89,7 +91,9 @@ plisteditpro
 postman
 prism7
 prism8
+prism9
 privileges
+pymol
 qgis-macos-pr
 r
 resiliosynchome
