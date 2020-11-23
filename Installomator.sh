@@ -939,6 +939,12 @@ teamviewer)
     downloadURL="https://download.teamviewer.com/download/TeamViewer.dmg"
     expectedTeamID="H7UGFBUGV6"
     ;;
+teamviewerqs)
+	name="TeamViewerQS"
+	type="dmg"
+	downloadURL="https://download.teamviewer.com/download/TeamViewerQS.dmg"
+	expectedTeamID="H7UGFBUGV6"
+	;;
 iterm2)
     name="iTerm"
     type="zip"
