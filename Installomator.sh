@@ -1505,7 +1505,13 @@ libreoffice)
     downloadURL="https://download.documentfoundation.org/libreoffice/stable/$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)/mac/x86_64/LibreOffice_$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)_MacOS_x86-64.dmg"
     expectedTeamID="7P5S3ZLCN7"
     ;;
-    
+sketch)
+	# credit: Alex L. (@aloew on MacAdmins Slack)
+    name="Sketch"
+    type="zip"
+    downloadURL="http://download.sketchapp.com/sketch.zip"
+    expectedTeamID="WUGMZZ5K46"
+    ;;    
 
 # MARK: add new labels above here
 
