@@ -1,5 +1,6 @@
 1password7
 8x8
+abstract
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
@@ -111,6 +112,7 @@ santa
 sfsymbols
 signal
 sizeup
+sketch
 skitch
 skype
 slack

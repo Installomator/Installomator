@@ -1511,7 +1511,14 @@ sketch)
     type="zip"
     downloadURL="http://download.sketchapp.com/sketch.zip"
     expectedTeamID="WUGMZZ5K46"
-    ;;    
+    ;;
+abstract)
+	# credit: Alex L. (@aloew on MacAdmins Slack)
+    name="Abstract"
+    type="zip"
+    downloadURL="https://api.goabstract.com/releases/latest/download"
+    expectedTeamID="77MZLZE47D"
+    ;;  
 
 # MARK: add new labels above here
 
