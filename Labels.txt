@@ -15,6 +15,7 @@ atom
 autodmg
 autopkgr
 aviatrix
+balenaetcher
 bbedit
 bettertouchtool
 bitwarden
