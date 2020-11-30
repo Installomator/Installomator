@@ -1519,6 +1519,13 @@ abstract)
     downloadURL="https://api.goabstract.com/releases/latest/download"
     expectedTeamID="77MZLZE47D"
     ;;  
+toggltrack)
+    # credit: Adrian Bühler (@midni9ht)
+    name="Toggl Track"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit toggl-open-source toggldesktop )
+    expectedTeamID="B227VTMZ94"
+    ;;
 
 # MARK: add new labels above here
 
