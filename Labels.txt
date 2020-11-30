@@ -132,6 +132,7 @@ textmate
 things
 thunderbird
 tigervnc
+toggltrack
 torbrowser
 tunnelbear
 tunnelblick
