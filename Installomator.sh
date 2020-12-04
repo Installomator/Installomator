@@ -18,7 +18,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-DEBUG=1
+DEBUG=0
 
 
 # notify behavior
@@ -43,6 +43,9 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #                  kill the process immediately
 #   - kill         kill process without prompting or giving the user a chance to save
 
+# timeout for dialog box
+SADNESS_TIMER=1800
+# integer values, please
 
 # NOTE: How labels work
 
@@ -150,7 +153,7 @@ runAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Not Now\" giving up after $SADNESS_TIMER)"
 }
 
 displaynotification() { # $1: message $2: title
@@ -271,6 +274,8 @@ checkRunningProcesses() {
                       button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update"
+                      elif [[ $button = "" ]]; then
+                        cleanupAndExit 10 "dialog timed out"
                       else
                         if [[ $i = 3 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" || $BLOCKING_PROCESS_ACTION = "prompt_user_instakill" ]]; then
                           printlog "killing process $x"
