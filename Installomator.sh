@@ -1547,6 +1547,78 @@ figma)
     downloadURL="https://www.figma.com/download/desktop/mac/"
     expectedTeamID="T8RA8NE3B7"
     ;;
+jetbrainsidea)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains IntelliJ Idea"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=IIU&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=IIU&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;;
+jetbrainspycharm)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains PyCharm"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;; 
+jetbrainsrubymine)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains RubyMine"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=RM&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=RM&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;; 
+jetbrainswebstorm)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains Webstorm"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=WS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=WS&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;; 
+jetbrainsdatagrip)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains DataGrip"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=DG&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=DG&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;; 
+jetbrainsclion)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains CLion"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=CL&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=CL&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;; 
+jetbrainsgoland)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains GoLand"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=GO&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=GO&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;; 
+jetbrainsrider)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains Rider"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=RD&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=RD&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;;
+jetbrainsappcode)
+	# credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
+    name="JetBrains AppCode"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=AC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=AC&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;;  
 
 # MARK: add new labels above here
 

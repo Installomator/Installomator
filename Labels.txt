@@ -39,6 +39,7 @@ docker
 dropbox
 egnyte
 eraseinstall
+figma
 firefox
 firefoxesrpkg
 firefoxpkg
@@ -60,6 +61,15 @@ iterm2
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jetbrainsappcode
+jetbrainsclion
+jetbrainsdatagrip
+jetbrainsgoland
+jetbrainsidea
+jetbrainspycharm
+jetbrainsrider
+jetbrainsrubymine
+jetbrainswebstorm
 karabinerelements
 keepassxc
 keka
