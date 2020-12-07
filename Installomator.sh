@@ -1519,6 +1519,14 @@ abstract)
     downloadURL="https://api.goabstract.com/releases/latest/download"
     expectedTeamID="77MZLZE47D"
     ;;  
+musescore)
+    # credit: @marcelclaus on MacAdmins Slack
+    name="MuseScore 3"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit musescore MuseScore)
+    expectedTeamID="6EPAF2X3PR"
+    ;;
+
 
 # MARK: add new labels above here
 

@@ -83,6 +83,7 @@ microsoftsharepointplugin
 microsoftskypeforbusiness
 microsoftteams
 microsoftword
+musescore
 netnewswire
 nomad
 omnifocus3
