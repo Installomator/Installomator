@@ -1527,6 +1527,20 @@ musescore)
     expectedTeamID="6EPAF2X3PR"
     ;;
 
+toggltrack)
+    # credit: Adrian Bühler (@midni9ht)
+    name="Toggl Track"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit toggl-open-source toggldesktop )
+    expectedTeamID="B227VTMZ94"
+    ;;
+balenaetcher)
+    # credit: Adrian Bühler (@midni9ht)
+    name="balenaEtcher"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit balena-io etcher )
+    expectedTeamID="66H43P8FRG"
+    ;;
 
 # MARK: add new labels above here
 
