@@ -15,6 +15,7 @@ atom
 autodmg
 autopkgr
 aviatrix
+balenaetcher
 bbedit
 bettertouchtool
 bitwarden
@@ -133,6 +134,7 @@ textmate
 things
 thunderbird
 tigervnc
+toggltrack
 torbrowser
 tunnelbear
 tunnelblick
