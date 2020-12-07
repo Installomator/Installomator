@@ -1140,7 +1140,7 @@ nomad)
     name="NoMAD"
     type="pkg"
     downloadURL="https://files.nomad.menu/NoMAD.pkg"
-    expectedTeamID="AAPZK3CB24"
+    expectedTeamID="VRPY9KHGX6"
     ;;
 bettertouchtool)
     # credit: Tadayuki Onishi (@kenchan0130)
@@ -1526,7 +1526,6 @@ musescore)
     downloadURL=$(downloadURLFromGit musescore MuseScore)
     expectedTeamID="6EPAF2X3PR"
     ;;
-
 toggltrack)
     # credit: Adrian Bühler (@midni9ht)
     name="Toggl Track"
@@ -1540,6 +1539,13 @@ balenaetcher)
     type="dmg"
     downloadURL=$(downloadURLFromGit balena-io etcher )
     expectedTeamID="66H43P8FRG"
+    ;;
+figma)
+	# credit: Alex L. (@aloew on MacAdmins Slack)
+    name="Figma"
+    type="zip"
+    downloadURL="https://www.figma.com/download/desktop/mac/"
+    expectedTeamID="T8RA8NE3B7"
     ;;
 
 # MARK: add new labels above here
