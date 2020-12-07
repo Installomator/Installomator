@@ -1619,6 +1619,7 @@ jetbrainsappcode)
     #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=AC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=AC&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
     ;;  
+jetbrainsideace|\
 intellijideace)
 	# credit: Alex L. (@aloew on MacAdmins Slack)
     name="IntelliJ IDEA CE"
@@ -1626,7 +1627,14 @@ intellijideace)
     downloadURL="https://download.jetbrains.com/product?code=IIC&latest&distribution=mac"
     expectedTeamID="2ZEFAR8TH3"
     ;;
-
+jetbrainspycharmce|\
+pycharmce)
+	# credit: Alex L. (@aloew on MacAdmins Slack)
+    name="PyCharm CE"
+    type="dmg"
+    downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
 
 
 # MARK: add new labels above here
