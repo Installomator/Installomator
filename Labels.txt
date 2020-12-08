@@ -85,6 +85,7 @@ krisp
 libreoffice
 malwarebytes
 mattermost
+menumeters
 microsoftautoupdate
 microsoftcompanyportal
 microsoftdefenderatp

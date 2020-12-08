@@ -1677,6 +1677,13 @@ hyper)
     downloadURL=$(downloadURLFromGit vercel hyper )
     expectedTeamID="JW6Y669B67"
     ;;
+menumeters)
+    # credit: Adrian Bühler (@midni9ht)
+    name="MenuMeters"
+    type="zip"
+    downloadURL=$(downloadURLFromGit yujitach MenuMeters )
+    expectedTeamID="95AQ7YKR5A"
+    ;;
 
 # MARK: add new labels above here
 
