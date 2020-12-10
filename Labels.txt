@@ -158,6 +158,7 @@ virtualbox
 visualstudiocode
 vlc
 vscodium
+webex
 webexmeetings
 webexteams
 whatsapp

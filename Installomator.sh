@@ -821,9 +821,10 @@ webexmeetings)
     downloadURL="https://akamaicdn.webex.com/client/webexapp.dmg"
     expectedTeamID="DE8Y96K9QP"
     ;;
+webex|\
 webexteams)
     # credit: Erik Stam (@erikstam)
-    name="Webex Teams"
+    name="Webex"
     type="dmg"
     downloadURL="https://binaries.webex.com/WebexTeamsDesktop-MACOS-Gold/WebexTeams.dmg"
     expectedTeamID="DE8Y96K9QP"
