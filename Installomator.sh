@@ -1643,6 +1643,13 @@ pitch)
     downloadURL="https://desktop.pitch.com/mac/Pitch.dmg"
     expectedTeamID="KUCN8NUU6Z"
     ;;
+sidekick)
+	#credit: @evil mwnci on MacAdmins Slack
+    name="Sidekick"
+    type="dmg"
+    downloadURL="https://api.meetsidekick.com/downloads/df/mac"
+    expectedTeamID="N975558CUS"
+    ;;
 
 # MARK: add new labels above here
 
