@@ -821,9 +821,10 @@ webexmeetings)
     downloadURL="https://akamaicdn.webex.com/client/webexapp.dmg"
     expectedTeamID="DE8Y96K9QP"
     ;;
+webex|\
 webexteams)
     # credit: Erik Stam (@erikstam)
-    name="Webex Teams"
+    name="Webex"
     type="dmg"
     downloadURL="https://binaries.webex.com/WebexTeamsDesktop-MACOS-Gold/WebexTeams.dmg"
     expectedTeamID="DE8Y96K9QP"
@@ -1683,6 +1684,19 @@ menumeters)
     type="zip"
     downloadURL=$(downloadURLFromGit yujitach MenuMeters )
     expectedTeamID="95AQ7YKR5A"
+pitch)
+	#credit: @evil mwnci on MacAdmins Slack
+    name="Pitch"
+    type="dmg"
+    downloadURL="https://desktop.pitch.com/mac/Pitch.dmg"
+    expectedTeamID="KUCN8NUU6Z"
+    ;;
+sidekick)
+	#credit: @evil mwnci on MacAdmins Slack
+    name="Sidekick"
+    type="dmg"
+    downloadURL="https://api.meetsidekick.com/downloads/df/mac"
+    expectedTeamID="N975558CUS"
     ;;
 
 # MARK: add new labels above here

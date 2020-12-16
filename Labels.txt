@@ -113,6 +113,7 @@ openvpnconnect
 openvpnconnectv3
 osxfuse
 pacifist
+pitch
 plisteditpro
 postman
 prism7
@@ -133,6 +134,7 @@ royaltsx
 rstudio
 santa
 sfsymbols
+sidekick
 signal
 sizeup
 sketch
@@ -165,6 +167,7 @@ virtualbox
 visualstudiocode
 vlc
 vscodium
+webex
 webexmeetings
 webexteams
 whatsapp
