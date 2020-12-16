@@ -1636,7 +1636,13 @@ pycharmce)
     downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
     expectedTeamID="2ZEFAR8TH3"
     ;;
-
+pitch)
+	#credit: @evil mwnci on MacAdmins Slack
+    name="Pitch"
+    type="dmg"
+    downloadURL="https://desktop.pitch.com/mac/Pitch.dmg"
+    expectedTeamID="KUCN8NUU6Z"
+    ;;
 
 # MARK: add new labels above here
 
