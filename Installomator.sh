@@ -1289,6 +1289,7 @@ amazonworkspaces)
 	name="Workspaces"
 	type="pkg"
 	downloadURL="https://d2td7dqidlhjx7.cloudfront.net/prod/global/osx/WorkSpaces.pkg"
+	# appNewVersion=$(curl -fs https://d2td7dqidlhjx7.cloudfront.net/prod/iad/osx/WorkSpacesAppCast_macOS_20171023.xml | grep -o "Version*.*<" | head -1 | cut -d " " -f2 | cut -d "<" -f1)
 	expectedTeamID="94KV3E626L"
 	;;
 apparency)
@@ -1651,11 +1652,77 @@ sidekick)
     expectedTeamID="N975558CUS"
     ;;
 aircall)
+    # credit: @kris-anderson
     name="Aircall"
     type="dmg"
     downloadURL="https://electron.aircall.io/download/osx"
     expectedTeamID="3ML357Q795"
     ;; 
+plantronicshub)
+    name="Plantronics Hub"
+    type="pkgInDmg"
+    pkgName="Plantronics Software.pkg"
+    downloadURL="https://www.poly.com/content/dam/www/software/PlantronicsHubInstaller.dmg"
+    expectedTeamID="SKWK2Q7JJV"
+    #appNewVersion=$(curl -fs "https://www.poly.com/in/en/support/knowledge-base/kb-article-page?lang=en_US&urlName=Hub-Release-Notes&type=Product_Information__kav" | grep -o "(*.*<span>)" | head -1 | cut -d "(" -f2 | sed 's/\<\/span\>//g' | cut -d "<" -f1)
+    ;;
+jabradirect)
+    name="Jabra Direct"
+    type="pkgInDmg"
+    pkgName="JabraDirectSetup.pkg"
+    downloadURL="https://jabraxpressonlineprdstor.blob.core.windows.net/jdo/JabraDirectSetup.dmg"
+    expectedTeamID="55LV32M29R"
+    #appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -o "Jabra Direct macOS:*.*<" | head -1 | cut -d ":" -f2 | cut -d " " -f2 | cut -d "<" -f1)
+    ;;
+fsmonitor)
+     # credit: Adrian Bühler (@midni9ht)
+     name="FSMonitor"
+     type="zip"
+     downloadURL=$(curl --location --fail --silent "https://fsmonitor.com/FSMonitor/Archives/appcast2.xml" | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
+     expectedTeamID="V85GBYB7B9"
+     ;;
+ ramboxce)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Rambox"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit ramboxapp community-edition )
+     expectedTeamID="7F292FPD69"
+     ;;
+ adobebrackets)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Brackets"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit adobe brackets )
+     expectedTeamID="JQ525L2MZD"
+     ;;
+ debookee)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Debookee"
+     type="zip"
+     downloadURL=$(curl --location --fail --silent "https://www.iwaxx.com/debookee/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
+     expectedTeamID="AATLWWB4MZ"
+     ;;
+ ferdi)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Ferdi"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit getferdi ferdi )
+     expectedTeamID="B6J9X9DWFL"
+     ;;
+ hyper)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Hyper"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit vercel hyper )
+     expectedTeamID="JW6Y669B67"
+     ;;
+menumeters)
+     # credit: Adrian Bühler (@midni9ht)
+     name="MenuMeters"
+     type="zip"
+     downloadURL=$(downloadURLFromGit yujitach MenuMeters )
+     expectedTeamID="95AQ7YKR5A"
+     ;;
 
 # MARK: add new labels above here
 
@@ -1825,6 +1892,14 @@ microsoftdefenderatp)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps WDAV00 )
     ;;
+microsoftlicenseremovaltool)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+	name="Microsoft License Removal Tool"
+	type="pkg"
+	downloadURL="https://go.microsoft.com/fwlink/?linkid=849815"
+	expectedTeamID="QGS93ZLCU7"
+	# appNewVersion=$(curl -is "$downloadURL" | grep ocation: | grep -o "Microsoft_.*pkg" | cut -d "_" -f 5 | cut -d "." -f1-2)
+	;;
 
 
 # this description is so you can provide all variables as arguments

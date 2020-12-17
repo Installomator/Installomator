@@ -44,6 +44,7 @@ figma
 firefox
 firefoxesrpkg
 firefoxpkg
+fsmonitor
 gimp
 githubdesktop
 googlechrome
@@ -60,6 +61,7 @@ inkscape
 intellijideace
 istatmenus
 iterm2
+jabradirect
 jamfmigrator
 jamfpppcutility
 jamfreenroller
@@ -81,12 +83,14 @@ krisp
 libreoffice
 malwarebytes
 mattermost
+menumeters
 microsoftautoupdate
 microsoftcompanyportal
 microsoftdefenderatp
 microsoftedgeconsumerstable
 microsoftedgeenterprisestable
 microsoftexcel
+microsoftlicenseremovaltool
 microsoftoffice365
 microsoftofficebusinesspro
 microsoftonedrive
@@ -109,6 +113,7 @@ openvpnconnectv3
 osxfuse
 pacifist
 pitch
+plantronicshub
 plisteditpro
 postman
 prism7
