@@ -1659,6 +1659,7 @@ aircall)
     expectedTeamID="3ML357Q795"
     ;; 
 plantronicshub)
+    # credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
     name="Plantronics Hub"
     type="pkgInDmg"
     pkgName="Plantronics Software.pkg"
@@ -1667,6 +1668,7 @@ plantronicshub)
     #appNewVersion=$(curl -fs "https://www.poly.com/in/en/support/knowledge-base/kb-article-page?lang=en_US&urlName=Hub-Release-Notes&type=Product_Information__kav" | grep -o "(*.*<span>)" | head -1 | cut -d "(" -f2 | sed 's/\<\/span\>//g' | cut -d "<" -f1)
     ;;
 jabradirect)
+    # credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
     name="Jabra Direct"
     type="pkgInDmg"
     pkgName="JabraDirectSetup.pkg"
