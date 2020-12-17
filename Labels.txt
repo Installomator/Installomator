@@ -1,6 +1,7 @@
 1password7
 8x8
 abstract
+adobebrackets
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
@@ -31,6 +32,7 @@ cryptomator
 cyberduck
 dangerzone
 dbeaverce
+debookee
 depnotify
 desktoppr
 detectxswift
@@ -40,6 +42,7 @@ docker
 dropbox
 egnyte
 eraseinstall
+ferdi
 figma
 firefox
 firefoxesrpkg
@@ -56,6 +59,7 @@ gpgsuite
 gpgsync
 grandperspective
 handbrake
+hyper
 icons
 inkscape
 intellijideace
@@ -124,6 +128,7 @@ pycharmce
 pymol
 qgis-macos-pr
 r
+ramboxce
 resiliosynchome
 ricohpsprinters
 ringcentralapp
