@@ -1819,6 +1819,14 @@ microsoftdefenderatp)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps WDAV00 )
     ;;
+microsoftlicenseremovaltool)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
+	name="Microsoft License Removal Tool"
+	type="pkg"
+	downloadURL="https://go.microsoft.com/fwlink/?linkid=849815"
+	expectedTeamID="QGS93ZLCU7"
+	# appNewVersion=$(curl -is "$downloadURL" | grep ocation: | grep -o "Microsoft_.*pkg" | cut -d "_" -f 5 | cut -d "." -f1-2)
+	;;
 
 
 # this description is so you can provide all variables as arguments
