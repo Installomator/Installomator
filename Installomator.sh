@@ -1651,6 +1651,13 @@ sidekick)
     downloadURL="https://api.meetsidekick.com/downloads/df/mac"
     expectedTeamID="N975558CUS"
     ;;
+aircall)
+    # credit: @kris-anderson
+    name="Aircall"
+    type="dmg"
+    downloadURL="https://electron.aircall.io/download/osx"
+    expectedTeamID="3ML357Q795"
+    ;; 
 plantronicshub)
     name="Plantronics Hub"
     type="pkgInDmg"
