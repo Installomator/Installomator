@@ -1725,6 +1725,15 @@ menumeters)
     downloadURL=$(downloadURLFromGit yujitach MenuMeters )
     expectedTeamID="95AQ7YKR5A"
     ;;
+vagrant)
+    # credit: AP Orlebeke (@apizz)
+    name="Vagrant"
+    type="pkgInDmg"
+    pkgName="vagrant.pkg"
+    downloadURL=$(curl -fs https://www.vagrantup.com/downloads.html \
+        | tr '><' '\n' | awk -F'"' '/x86_64.dmg/ {print $6}' | head -1)
+    expectedTeamID="D38WU7D763"
+    ;;
 
 # MARK: add new labels above here
 
