@@ -4,6 +4,7 @@ abstract
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
+aircall
 airserver
 alfred
 amazonworkspaces
