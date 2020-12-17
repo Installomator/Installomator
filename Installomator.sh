@@ -1650,6 +1650,12 @@ sidekick)
     downloadURL="https://api.meetsidekick.com/downloads/df/mac"
     expectedTeamID="N975558CUS"
     ;;
+aircall)
+    name="Aircall"
+    type="dmg"
+    downloadURL="https://electron.aircall.io/download/osx"
+    expectedTeamID="3ML357Q795"
+    ;; 
 
 # MARK: add new labels above here
 
