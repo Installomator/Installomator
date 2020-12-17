@@ -1667,7 +1667,55 @@ jabradirect)
     expectedTeamID="55LV32M29R"
     #appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -o "Jabra Direct macOS:*.*<" | head -1 | cut -d ":" -f2 | cut -d " " -f2 | cut -d "<" -f1)
     ;;
-
+fsmonitor)
+     # credit: Adrian Bühler (@midni9ht)
+     name="FSMonitor"
+     type="zip"
+     downloadURL=$(curl --location --fail --silent "https://fsmonitor.com/FSMonitor/Archives/appcast2.xml" | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
+     expectedTeamID="V85GBYB7B9"
+     ;;
+ ramboxce)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Rambox"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit ramboxapp community-edition )
+     expectedTeamID="7F292FPD69"
+     ;;
+ adobebrackets)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Brackets"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit adobe brackets )
+     expectedTeamID="JQ525L2MZD"
+     ;;
+ debookee)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Debookee"
+     type="zip"
+     downloadURL=$(curl --location --fail --silent "https://www.iwaxx.com/debookee/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
+     expectedTeamID="AATLWWB4MZ"
+     ;;
+ ferdi)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Ferdi"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit getferdi ferdi )
+     expectedTeamID="B6J9X9DWFL"
+     ;;
+ hyper)
+     # credit: Adrian Bühler (@midni9ht)
+     name="Hyper"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit vercel hyper )
+     expectedTeamID="JW6Y669B67"
+     ;;
+menumeters)
+     # credit: Adrian Bühler (@midni9ht)
+     name="MenuMeters"
+     type="zip"
+     downloadURL=$(downloadURLFromGit yujitach MenuMeters )
+     expectedTeamID="95AQ7YKR5A"
+     ;;
 
 # MARK: add new labels above here
 

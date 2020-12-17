@@ -43,6 +43,7 @@ figma
 firefox
 firefoxesrpkg
 firefoxpkg
+fsmonitor
 gimp
 githubdesktop
 googlechrome
@@ -81,6 +82,7 @@ krisp
 libreoffice
 malwarebytes
 mattermost
+menumeters
 microsoftautoupdate
 microsoftcompanyportal
 microsoftdefenderatp
