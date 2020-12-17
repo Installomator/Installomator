@@ -1289,6 +1289,7 @@ amazonworkspaces)
 	name="Workspaces"
 	type="pkg"
 	downloadURL="https://d2td7dqidlhjx7.cloudfront.net/prod/global/osx/WorkSpaces.pkg"
+	# appNewVersion=$(curl -fs https://d2td7dqidlhjx7.cloudfront.net/prod/iad/osx/WorkSpacesAppCast_macOS_20171023.xml | grep -o "Version*.*<" | head -1 | cut -d " " -f2 | cut -d "<" -f1)
 	expectedTeamID="94KV3E626L"
 	;;
 apparency)
@@ -1650,6 +1651,23 @@ sidekick)
     downloadURL="https://api.meetsidekick.com/downloads/df/mac"
     expectedTeamID="N975558CUS"
     ;;
+plantronicshub)
+    name="Plantronics Hub"
+    type="pkgInDmg"
+    pkgName="Plantronics Software.pkg"
+    downloadURL="https://www.poly.com/content/dam/www/software/PlantronicsHubInstaller.dmg"
+    expectedTeamID="SKWK2Q7JJV"
+    #appNewVersion=$(curl -fs "https://www.poly.com/in/en/support/knowledge-base/kb-article-page?lang=en_US&urlName=Hub-Release-Notes&type=Product_Information__kav" | grep -o "(*.*<span>)" | head -1 | cut -d "(" -f2 | sed 's/\<\/span\>//g' | cut -d "<" -f1)
+    ;;
+jabradirect)
+    name="Jabra Direct"
+    type="pkgInDmg"
+    pkgName="JabraDirectSetup.pkg"
+    downloadURL="https://jabraxpressonlineprdstor.blob.core.windows.net/jdo/JabraDirectSetup.dmg"
+    expectedTeamID="55LV32M29R"
+    #appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -o "Jabra Direct macOS:*.*<" | head -1 | cut -d ":" -f2 | cut -d " " -f2 | cut -d "<" -f1)
+    ;;
+
 
 # MARK: add new labels above here
 

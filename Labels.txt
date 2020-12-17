@@ -59,6 +59,7 @@ inkscape
 intellijideace
 istatmenus
 iterm2
+jabradirect
 jamfmigrator
 jamfpppcutility
 jamfreenroller
@@ -86,6 +87,7 @@ microsoftdefenderatp
 microsoftedgeconsumerstable
 microsoftedgeenterprisestable
 microsoftexcel
+microsoftlicenseremovaltool
 microsoftoffice365
 microsoftofficebusinesspro
 microsoftonedrive
@@ -108,6 +110,7 @@ openvpnconnectv3
 osxfuse
 pacifist
 pitch
+plantronicshub
 plisteditpro
 postman
 prism7
