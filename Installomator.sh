@@ -1732,6 +1732,14 @@ jamfconnect)
     downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
     expectedTeamID="483DWKW443"
     ;;
+etrecheck)
+    #credit: David Schultz (@dvsjr on MacAdmins Slack)
+    name="EtreCheckPro"
+    type="zip"
+    downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
+    expectedTeamID="U87NE528LC"
+    ;;
+
 
 # MARK: add new labels above here
 
