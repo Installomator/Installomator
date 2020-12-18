@@ -42,6 +42,7 @@ docker
 dropbox
 egnyte
 eraseinstall
+etrecheck
 ferdi
 figma
 firefox
@@ -66,6 +67,7 @@ intellijideace
 istatmenus
 iterm2
 jabradirect
+jamfconnect
 jamfmigrator
 jamfpppcutility
 jamfreenroller
@@ -166,6 +168,7 @@ torbrowser
 tunnelbear
 tunnelblick
 umbrellaroamingclient
+vagrant
 veracrypt
 virtualbox
 visualstudiocode
