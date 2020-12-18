@@ -1734,6 +1734,21 @@ vagrant)
         | tr '><' '\n' | awk -F'"' '/x86_64.dmg/ {print $6}' | head -1)
     expectedTeamID="D38WU7D763"
     ;;
+jamfconnect)
+    #credit: @marcelclaus on MacAdmins Slack
+    name="JamfConnect"
+    type="pkgInDmg"
+    downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
+    expectedTeamID="483DWKW443"
+    ;;
+etrecheck)
+    #credit: David Schultz (@dvsjr on MacAdmins Slack)
+    name="EtreCheckPro"
+    type="zip"
+    downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
+    expectedTeamID="U87NE528LC"
+    ;;
+
 
 # MARK: add new labels above here
 
