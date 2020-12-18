@@ -1725,6 +1725,13 @@ menumeters)
     downloadURL=$(downloadURLFromGit yujitach MenuMeters )
     expectedTeamID="95AQ7YKR5A"
     ;;
+jamfconnect)
+    #credit: @marcelclaus on MacAdmins Slack
+    name="JamfConnect"
+    type="pkgInDmg"
+    downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
+    expectedTeamID="483DWKW443"
+    ;;
 
 # MARK: add new labels above here
 
