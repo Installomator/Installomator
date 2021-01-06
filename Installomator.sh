@@ -509,6 +509,31 @@ installPkgInZip() {
     installFromPKG
 }
 
+installAppInDmgInZip() {
+    # unzip the archive
+    printlog "Unzipping $archiveName"
+    tar -xf "$archiveName"
+
+    # locate dmg in zip
+    if [[ -z $pkgName ]]; then
+        # find first file ending with 'dmg'
+        findfiles=$(find "$tmpDir" -iname "*.dmg" -maxdepth 2  )
+        filearray=( ${(f)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 20 "couldn't find dmg in zip $archiveName"
+        fi
+        archiveName="$(basename ${filearray[1]})"
+        # it is now safe to overwrite archiveName for installFromDMG
+        printlog "found dmg: $tmpDir/$archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromDMG
+        archiveName="$pkgName"
+    fi
+
+    # installFromDMG, DMG expected to include an app (will not work with pkg)
+    installFromDMG
+}
+
 runUpdateTool() {
     if [[ -x $updateTool ]]; then
         printlog "running $updateTool $updateToolArguments"
@@ -1989,7 +2014,7 @@ if [ -z "$archiveName" ]; then
         pkgInDmg)
             archiveName="${name}.dmg"
             ;;
-        pkgInZip)
+        *InZip)
             archiveName="${name}.zip"
             ;;
         *)
@@ -2006,7 +2031,7 @@ fi
 
 if [ -z "$targetDir" ]; then
     case $type in
-        dmg|zip|tbz)
+        dmg|zip|tbz|app*)
             targetDir="/Applications"
             ;;
         pkg*)
@@ -2100,6 +2125,9 @@ case $type in
         ;;
     pkgInZip)
         installPkgInZip
+        ;;
+    appInDmgInZip)
+        installAppInDmgInZip
         ;;
     *)
         printlog "Cannot handle type $type"
