@@ -1748,7 +1748,8 @@ etrecheck)
     downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
     expectedTeamID="U87NE528LC"
     ;;
-devonthink) # It's a zipped dmg file, needs function installAppInDmgInZip
+devonthink)
+    # It's a zipped dmg file, needs function installAppInDmgInZip
     # credit: Søren Theilgaard (@theilgaard)
     name="DEVONthink 3"
     type="appInDmgInZip"
