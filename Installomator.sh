@@ -1031,10 +1031,15 @@ docker)
     expectedTeamID="9BNSXJN65R"
     ;;
 brave)
-    # credit: @securitygeneration
+    # credit: Søren Theilgaard @theilgaard
     name="Brave Browser"
     type="dmg"
-    downloadURL=$(curl --location --fail --silent "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=$(curl -fsIL https://laptop-updates.brave.com/latest/osxarm64/release | grep -i "^location" | awk '{print $2}' | tr -d '\r\n')
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL=$(curl -fsIL https://laptop-updates.brave.com/latest/osx/release | grep -i "^location" | awk '{print $2}' | tr -d '\r\n')
+    fi
+    appNewVersion=$(curl --location --fail --silent "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath '//rss/channel/item[last()]/enclosure/@sparkle:shortVersionString' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="KL8N8XSYF4"
     ;;
 umbrellaroamingclient)
