@@ -491,8 +491,8 @@ installPkgInZip() {
 
     # locate pkg in zip
     if [[ -z $pkgName ]]; then
-        # find first file starting with $name and ending with 'pkg'
-        findfiles=$(find "$tmpDir" -iname "*.pkg" -maxdepth 1  )
+        # find first file ending with 'pkg'
+        findfiles=$(find "$tmpDir" -iname "*.pkg" -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in zip $archiveName"
