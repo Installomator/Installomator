@@ -98,7 +98,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #   When a workflow has no blocking processes, use
 #     blockingProcesses=( NONE )
 #
-# - pkgName: (optional, only used for pkgInDmg and dmgInZip)
+# - pkgName: (optional, only used for dmgInPkg and dmgInZip)
 #   File name of the pkg file _inside_ the dmg or zip
 #   When not given the pkgName is derived from the $name
 #
