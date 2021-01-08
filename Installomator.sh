@@ -593,7 +593,14 @@ autodmg)
 googlechrome)
     name="Google Chrome"
     type="dmg"
-    downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+    if [[ $(arch) != "i386" ]]; then
+        printlog "Architecture: arm64 (not i386)"
+        downloadURL="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
+    else
+        printlog "Architecture: i386"
+        downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+    fi
+    appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac,stable/{print $3; exit}') # Credit: William Smith (@meck)
     expectedTeamID="EQHXZ8M8AV"
     ;;
 googlechromepkg)
