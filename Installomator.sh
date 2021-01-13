@@ -1044,14 +1044,13 @@ umbrellaroamingclient)
     downloadURL=https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )
     expectedTeamID="7P7HQ8H646"
     ;;
-# TODO: vmwarefusion installation process needs testing
-# vmwarefusion)
-#     # credit: Erik Stam (@erikstam)
-#     name="VMware Fusion"
-#     type="dmg"
-#     downloadURL="https://www.vmware.com/go/getfusion"
-#     expectedTeamID="EG7KH642X6"
-#     ;;
+vmwarefusion)
+    # credit: Erik Stam (@erikstam)
+    name="VMware Fusion"
+    type="dmg"
+    downloadURL="https://www.vmware.com/go/getfusion"
+    expectedTeamID="EG7KH642X6"
+    ;;
 
 # NOTE: powershell installers are not notarized
 # powershell)
