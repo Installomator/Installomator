@@ -1926,6 +1926,13 @@ microsoftlicenseremovaltool)
     expectedTeamID="QGS93ZLCU7"
     # appNewVersion=$(curl -is "$downloadURL" | grep ocation: | grep -o "Microsoft_.*pkg" | cut -d "_" -f 5 | cut -d "." -f1-2)
     ;;
+wireshark)
+    # credit: Clint H. (@clint5047 on MacAdmins Slack)
+    name="Wireshark"
+    type="dmg"
+    downloadURL="https://1.na.dl.wireshark.org/osx/Wireshark%20Latest%20Intel%2064.dmg"
+    expectedTeamID="7Z6EMTD2C6"
+    ;;
 
 
 # this description is so you can provide all variables as arguments

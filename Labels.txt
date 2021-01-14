@@ -178,6 +178,7 @@ webex
 webexmeetings
 webexteams
 whatsapp
+wireshark
 wwdcformac
 yubikeymanagerqt
 zoom
