@@ -1973,6 +1973,12 @@ launchbar)
     appNewVersion=$( echo ${downloadURL} | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="MLZF7K7B5R"
     ;;
+telegram)
+	name="Telegram"
+	type="dmg"
+	downloadURL="https://telegram.org/dl/macos"
+	expectedTeamID="6N38VWS5BX"
+	;;
 # this description is so you can provide all variables as arguments
 # it will only check if the required variables are setting
 valuesfromarguments)
