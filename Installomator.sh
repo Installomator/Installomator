@@ -1748,6 +1748,51 @@ etrecheck)
     downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
     expectedTeamID="U87NE528LC"
     ;;
+obsidian)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="Obsidian"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=$( downloadURLFromGit obsidianmd obsidian-releases | grep "arm64" )
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL=$( downloadURLFromGit obsidianmd obsidian-releases | grep -v "arm64" )
+    fi
+    printlog $downloadURL
+    appNewVersion=$(versionFromGit obsidianmd obsidian-releases)
+    expectedTeamID="6JSW4SJWN9"
+    ;;
+wickrme)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="WickrMe"
+    type="dmg"
+    downloadURL=$( curl -fs https://me-download.wickr.com/api/download/me/download/mac | tr '"' '\n' | grep -e '^https://' )
+    appNewVersion=$( echo ${downloadURL} | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    expectedTeamID="W8RC3R952A"
+    ;;
+wickrpro)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="WickrPro"
+    type="dmg"
+    downloadURL=$( curl -fs https://me-download.wickr.com/api/download/pro/download/mac | tr '"' '\n' | grep -e '^https://' )
+    appNewVersion=$( echo ${downloadURL} | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    expectedTeamID="W8RC3R952A"
+    ;;
+exelbanstats)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="Stats"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit exelban stats)
+    appNewVersion=$(versionFromGit exelban stats)
+    expectedTeamID="RP2S87B72W"
+    ;;
+onionshare)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="OnionShare"
+    type="pkg"
+    downloadURL="https://onionshare.org$(curl -fs https://onionshare.org | grep "button.*pkg" | tr '"' '\n' | grep ".pkg")"
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    expectedTeamID="N9B95FDWH4"
+    ;;
 
 
 # MARK: add new labels above here
