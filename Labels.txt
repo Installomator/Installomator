@@ -87,6 +87,7 @@ keepassxc
 keka
 krisp
 libreoffice
+loom
 malwarebytes
 mattermost
 menumeters
