@@ -1926,7 +1926,31 @@ microsoftlicenseremovaltool)
     expectedTeamID="QGS93ZLCU7"
     # appNewVersion=$(curl -is "$downloadURL" | grep ocation: | grep -o "Microsoft_.*pkg" | cut -d "_" -f 5 | cut -d "." -f1-2)
     ;;
-
+rocketchat)
+    name="Rocket.Chat"
+    type="dmg"
+    downloadURL=https://github.com/$(curl -fsL https://github.com/RocketChat/Rocket.Chat.Electron/releases/latest | grep ".dmg\"" | cut -d"\"" -f2)
+    expectedTeamID="S6UPZG7ZR3"
+    appName="Rocket.Chat.app"
+    blockingProcesses=( Rocket.Chat )
+    ;;
+fontexplorerxpro)
+    name="FontExplorer X Pro"
+    type="dmg"
+    # Diese URL scheint immer das letzte FEX anzusteuern
+    downloadURL=https://www.fontexplorerx.com/download/free-trial
+    expectedTeamID="2V7G2B7WG4"
+    appName="FontExplorer X Pro.app"
+    blockingProcesses=( FontExplorer X Pro )
+    ;;
+ nextcloud)
+    name="nextcloud"
+    type="pkg"
+    downloadURL=https://github.com/$(curl -fsL https://github.com/nextcloud/desktop/releases/latest | grep ".pkg\"" | cut -d"\"" -f2)
+    expectedTeamID="NKUJUXUJ3B"
+    appName="nextcloud.app"
+    blockingProcesses=( nextcloud )
+    ;;
 
 # this description is so you can provide all variables as arguments
 # it will only check if the required variables are setting
