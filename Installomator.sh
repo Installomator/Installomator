@@ -1748,7 +1748,13 @@ etrecheck)
     downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
     expectedTeamID="U87NE528LC"
     ;;
-
+element)
+    # credit: Adrian Bühler (@midni9ht)
+    name="Element"
+    type="dmg"
+    downloadURL="https://packages.riot.im/desktop/install/macos/Element.dmg"
+    expectedTeamID="7J4U792NQT"
+    ;;
 
 # MARK: add new labels above here
 
