@@ -41,6 +41,7 @@ discord
 docker
 dropbox
 egnyte
+element
 eraseinstall
 etrecheck
 ferdi
