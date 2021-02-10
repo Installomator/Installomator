@@ -1,0 +1,13 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# Unix-style newlines and whitespace cleanup
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# shell formatting
+[*.{sh,bash,zsh}]
+indent_style = space
+indent_size = 4
