@@ -855,7 +855,7 @@ googledrivefilestream)
     name="Google Drive File Stream"
     type="pkgInDmg"
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg"
-    pkgName="GoogleDriveFileStream.pkg"
+    pkgName="GoogleDrive.pkg"
     expectedTeamID="EQHXZ8M8AV"
     ;;
 plisteditpro)
