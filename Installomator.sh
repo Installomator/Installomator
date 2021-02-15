@@ -724,11 +724,7 @@ version)
     ;;
 longversion)
     # print the script version
-    printlog "Installomator location:"
-    printlog "${SELFLOCATION}/${SELF}"
-    printlog "Labels file:"
-    printlog "$labelFile"
-    printlog "Version $VERSION ($VERSIONDATE), branch $VERSIONBRANCH, Labels file version $labelsVERSION"
+    printlog "Installomater: version $VERSION ($VERSIONDATE)"
     exit 0
     ;;
 
