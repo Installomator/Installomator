@@ -1443,10 +1443,10 @@ androidfiletransfer)
     expectedTeamID="EQHXZ8M8AV"
     ;;
 dbeaverce)
-    # credit: Adrian Bühler (@midni9ht)
+    # credit: Adrian Bühler (@midni9ht) @ Gabe Marchan (darklink87)
     name="DBeaver"
-    type="pkg"
-    downloadURL="https://dbeaver.io/files/dbeaver-ce-latest-installer.pkg"
+    type="dmg"
+    downloadURL="https://dbeaver.io/files/dbeaver-ce-latest-macos.dmg"
     expectedTeamID="42B6MDKMW8"
     blockingProcesses=( dbeaver )
     ;;
