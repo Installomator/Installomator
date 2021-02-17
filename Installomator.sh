@@ -8,8 +8,8 @@
 # inspired by the download scripts from William Smith and Sander Schram
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
-VERSION='0.4.19'
-VERSIONDATE='2021-02-15'
+VERSION='0.4.20'
+VERSIONDATE='2021-02-17'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
