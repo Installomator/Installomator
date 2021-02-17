@@ -1870,6 +1870,13 @@ sublimetext)
     appNewVersion=$(curl -fs https://www.sublimetext.com/3 | grep 'class="latest"' | cut -d '>' -f 4 | sed -E 's/ (.*[0-9]*)<.*/\1/g')
     #appNewVersion=$(curl -Is https://download.sublimetext.com/latest/stable/osx | grep "Location:" | sed -n -e 's/^.*Sublime Text //p' | sed 's/.dmg//g' | sed $'s/[^[:print:]\t]//g') # Alternative from @Oh4sh0
     expectedTeamID="Z6D26JE4Y4"
+dbeaverce)
+    # credit: Adrian Bühler (@midni9ht) @ Gabe Marchan (darklink87)
+    name="DBeaver"
+    type="dmg"
+    downloadURL="https://dbeaver.io/files/dbeaver-ce-latest-macos.dmg"
+    expectedTeamID="42B6MDKMW8"
+    blockingProcesses=( dbeaver )
     ;;
 suspiciouspackage)
     # credit: Mischa van der Bent (@mischavdbent)
