@@ -2296,6 +2296,13 @@ xeroxphaser7800)
     #Company=Xerox
     #PatchSkip=YES
     ;;
+zappy)
+    name="Zappy"
+    type="appInDmgInZip"
+    downloadURL="https://zappy.zapier.com/releases/zappy-latest.zip"
+    expectedTeamID="6LS97Q5E79"
+    #Company="Zapier"
+    ;;
 zoom)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Zoom.us"
