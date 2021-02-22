@@ -9,7 +9,7 @@
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
 VERSION='0.4.20'
-VERSIONDATE='2021-02-17'
+VERSIONDATE='2021-02-22'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -232,14 +232,14 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     
     if [ -n "$archiveName" ]; then
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$archiveName/ { print \$4 }")
+    | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
     else
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4 }")
+    | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
     fi
     if [ -z "$downloadURL" ]; then
-        printlog "could not retrieve download URL for $gitusername/$gitreponame"
-        exit 9
+        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame"
+        #exit 9
     else
         echo "$downloadURL"
         return 0
@@ -304,7 +304,8 @@ getAppVersion() {
         filteredAppPaths=( ${(M)appPathArray:#${targetDir}*} )
         if [[ ${#filteredAppPaths} -eq 1 ]]; then
             installedAppPath=$filteredAppPaths[1]
-            appversion=$(defaults read $installedAppPath/Contents/Info.plist CFBundleShortVersionString) #Not dependant on Spotlight indexing, Armin: appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
+            #appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
+            appversion=$(defaults read $installedAppPath/Contents/Info.plist CFBundleShortVersionString) #Not dependant on Spotlight indexing
             printlog "found app at $installedAppPath, version $appversion"
         else
             printlog "could not determine location of $appName"
@@ -456,15 +457,16 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         printlog "Downloaded version of $name is $appNewVersion (replacing version $appversion)."
     fi
 
+    # skip install for DEBUG
+    if [ "$DEBUG" -ne 0 ]; then
+        printlog "DEBUG enabled, skipping remove, copy and chown steps"
+        return 0
+    fi
+
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
-        if [ "$DEBUG" -eq 0 ]; then
-            cleanupAndExit 6 "not running as root, exiting"
-        fi
-
-        printlog "DEBUG enabled, skipping copy and chown steps"
-        return 0
+        cleanupAndExit 6 "not running as root, exiting"
     fi
 
     # remove existing application
@@ -545,8 +547,7 @@ installFromPKG() {
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
-        printlog "not running as root, exiting"
-        cleanupAndExit 6
+        cleanupAndExit 6 "not running as root, exiting"
     fi
 
     # install pkg
