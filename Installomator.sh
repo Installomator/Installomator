@@ -850,11 +850,11 @@ icons)
     downloadURL=$(downloadURLFromGit sap macOS-icon-generator )
     expectedTeamID="7R5ZEU67FQ"
     ;;
-googledrivefilestream)
-    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
-    name="Google Drive File Stream"
+googledrive)
+    # credit: Isaac Ordonez, Mann consulting (@mannconsulting) & Gabe Marchan (gabemarchan.com)
+    name="Google Drive"
     type="pkgInDmg"
-    downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg"
+    downloadURL="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
     pkgName="GoogleDriveFileStream.pkg"
     expectedTeamID="EQHXZ8M8AV"
     ;;
