@@ -684,8 +684,8 @@ fi
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
     printlog "no label provided, printing labels"
-    grep -E '^[a-z0-9\-_]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
-    #grep -E '^[a-z0-9\-_]*(\)|\|\\)$' "${labelFile}" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
+    grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
+    #grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "${labelFile}" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
     exit 0
 elif [[ $1 == "/" ]]; then
     # jamf uses sends '/' as the first argument
