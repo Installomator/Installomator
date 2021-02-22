@@ -1690,6 +1690,13 @@ omniplan3)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
+omniplan4)
+    name="OmniPlan"
+    type="dmg"
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPlan4" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    expectedTeamID="34YW5XSRB7"
+    ;;
 omnipresence)
     name="OmniPresence"
     type="dmg"
@@ -1700,8 +1707,8 @@ omnipresence)
 onionshare)
     # credit: Søren Theilgaard (@theilgaard)
     name="OnionShare"
-    type="pkg"
-    downloadURL="https://onionshare.org$(curl -fs https://onionshare.org | grep "button.*pkg" | tr '"' '\n' | grep ".pkg")"
+    type="dmg"
+    downloadURL="https://onionshare.org$(curl -fs https://onionshare.org | grep "button.*dmg" | tr '"' '\n' | grep ".dmg")"
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="N9B95FDWH4"
     ;;
