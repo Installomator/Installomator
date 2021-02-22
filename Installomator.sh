@@ -1620,7 +1620,14 @@ jetbrainsappcode)
     expectedTeamID="2ZEFAR8TH3"
     #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=AC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=AC&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
-    ;;  
+    ;;
+intellijidea)
+    # credit: Gabe Marchan (www.gabemarchan.com)
+    name="IntelliJ IDEA"
+    type="dmg"
+    downloadURL="https://download.jetbrains.com/product?code=II&latest&distribution=mac"
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
 jetbrainsideace|\
 intellijideace)
     # credit: Alex L. (@aloew on MacAdmins Slack)
