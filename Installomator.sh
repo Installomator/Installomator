@@ -1581,6 +1581,14 @@ jetbrainswebstorm)
     #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=WS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=WS&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
     ;; 
+jetbrainsphpstorm)
+    # credit: Casey Jensen (@cajenson01 on MacAdmins Slack)Appended by Skylar Damiano @catdad on MacAdmins Slack
+    name="JetBrains PHPStorm"
+    type="dmg"
+    expectedTeamID="2ZEFAR8TH3"
+    #appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    ;; 
 jetbrainsdatagrip)
     # credit: Casey Jensen (@cajenson01 on MacAdmins Slack)
     name="JetBrains DataGrip"
