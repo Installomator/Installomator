@@ -1027,7 +1027,7 @@ docker)
     # credit: @securitygeneration      
     name="Docker"
     type="dmg"
-    downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
+    downloadURL="https://desktop.docker.com/mac/stable/amd64/Docker.dmg"
     expectedTeamID="9BNSXJN65R"
     ;;
 brave)
