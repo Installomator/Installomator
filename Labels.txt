@@ -24,6 +24,7 @@ bitwarden
 bluejeans
 boxdrive
 brave
+cakebrew
 camtasia
 citrixworkspace
 code42
