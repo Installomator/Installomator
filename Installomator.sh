@@ -1748,7 +1748,13 @@ etrecheck)
     downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
     expectedTeamID="U87NE528LC"
     ;;
-
+cakebrew)
+    # credit: Adrian Bühler (@midni9ht)
+    name="Cakebrew"
+    type="zip"
+    downloadURL=$(curl --location --fail --silent "https://www.cakebrew.com/appcast/profileInfo.php" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
+    expectedTeamID="R85D3K8ATT"
+    ;;
 
 # MARK: add new labels above here
 
