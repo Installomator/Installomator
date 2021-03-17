@@ -1,4 +1,5 @@
 #!/bin/zsh
+label="" # if no label is sent to the script, this will be used
 
 # Installomator
 #
@@ -8,7 +9,7 @@
 # inspired by the download scripts from William Smith and Sander Schram
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
-VERSION='0.4.22'
+VERSION='0.4.23'
 VERSIONDATE='2021-??-??'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
@@ -19,7 +20,6 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
 DEBUG=1
-
 
 # notify behavior
 NOTIFY=success
@@ -176,7 +176,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
         hdiutil detach "$dmgmount"
     fi
     # If we closed any processes, reopen the app again
-    #reopenClosedProcess
+    reopenClosedProcess
     printlog "################## End Installomator, exit code $1 \n\n"
     exit "$1"
 }
@@ -548,6 +548,28 @@ installFromPKG() {
         cleanupAndExit 5
     fi
 
+    # Check version of pkg to be installed if packageID is set
+    if [[ $packageID != "" && $appversion != "" ]]; then
+        printlog "Checking package version."
+        pkgutil --expand "$archiveName" "$archiveName"_pkg
+        appNewVersion=$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | grep "$packageID" | tr ' ' '\n' | grep version | sed -E 's/.*\"([0-9.]*)\".*/\1/g')
+        rm -r "$archiveName"_pkg
+        printlog "Downloaded package $packageID version $appNewVersion"
+        if [[ $appversion == $appNewVersion ]]; then
+            printlog "Downloaded version of $name is the same as installed."
+            if [[ $INSTALL != "force" ]]; then
+                message="$name, version $appNewVersion, is  the latest version."
+                if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
+                    printlog "notifying"
+                    displaynotification "$message" "No update for $name!"
+                fi
+                cleanupAndExit 0 "No new version to install"
+            else
+                printlog "Using force to install anyway."
+            fi
+        fi
+    fi
+    
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
         printlog "DEBUG enabled, skipping installation"
@@ -693,10 +715,12 @@ fi
 
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
-    printlog "no label provided, printing labels"
-    grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
-    #grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "${labelFile}" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
-    exit 0
+    if [[ -z $label ]]; then # check if label is set inside script
+        printlog "no label provided, printing labels"
+        grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
+        #grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "${labelFile}" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
+        exit 0
+    fi
 elif [[ $1 == "/" ]]; then
     # jamf uses sends '/' as the first argument
     printlog "shifting arguments for Jamf"
@@ -1382,6 +1406,20 @@ hazel)
     appNewVersion=$(curl -fsI https://www.noodlesoft.com/Products/Hazel/download | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
     expectedTeamID="86Z3GCJ4MF"
     ;;
+hpeasyadmin)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="HP Easy Admin"
+    type="zip"
+    downloadURL="https://ftp.hp.com/pub/softlib/software12/HP_Quick_Start/osx/Applications/HP_Easy_Admin.app.zip"
+    expectedTeamID="6HB5Y2QTA3"
+    ;;
+hpeasystart)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="HP Easy Start"
+    type="zip"
+    downloadURL="https://ftp.hp.com/pub/softlib/software12/HP_Quick_Start/osx/Applications/HP_Easy_Start.app.zip"
+    expectedTeamID="6HB5Y2QTA3"
+    ;;
 hyper)
     # credit: Adrian Bühler (@midni9ht)
     name="Hyper"
@@ -1666,6 +1704,15 @@ obsidian)
     appNewVersion=$(versionFromGit obsidianmd obsidian-releases)
     expectedTeamID="6JSW4SJWN9"
     ;;
+odrive)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="odrive"
+    type="pkg"
+    packageID="com.oxygen.odrive.installer-prod.pkg"
+    # https://docs.odrive.com/docs/odrive-usage-guide#install-desktop-sync
+    downloadURL="https://www.odrive.com/downloaddesktop?platform=mac"
+    expectedTeamID="N887K88VYZ"
+    ;;
 omnidisksweeper)
     name="OmniDiskSweeper"
     type="dmg"
@@ -1757,6 +1804,13 @@ pacifist)
     type="dmg"
     downloadURL="https://charlessoft.com/cgi-bin/pacifist_download.cgi?type=dmg"
     expectedTeamID="HRLUCP7QP4"
+    ;;
+pdfsam)
+    name="PDFsam Basic"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit torakiki pdfsam)
+    appNewVersion=$(versionFromGit torakiki pdfsam)
+    expectedTeamID="8XM3GHX436"
     ;;
 pitch)
     name="Pitch"
