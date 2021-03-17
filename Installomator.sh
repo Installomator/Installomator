@@ -8,8 +8,8 @@
 # inspired by the download scripts from William Smith and Sander Schram
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
-VERSION='0.4.20'
-VERSIONDATE='2021-02-22'
+VERSION='0.4.22'
+VERSIONDATE='2021-??-??'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -51,6 +51,16 @@ BLOCKING_PROCESS_ACTION=prompt_user
 #                  Show dialog 2 times, and if the quitting fails, the
 #                  blocking processes will be killed.
 #   - kill         kill process without prompting or giving the user a chance to save
+
+
+# logo-icon used in dialog boxes if app is blocking
+LOGO=appstore
+# options:
+#   - appstore      Icon is Apple App Store (default)
+#   - jamf          JAMF Pro
+#   - mosyleb       Mosyle Business
+#   - mosylem       Mosyle Manager (Education)
+# path can also be set in the command call, and if file exists, it will be used, like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"' (spaces are escaped).
 
 
 # install behavior
@@ -166,7 +176,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
         hdiutil detach "$dmgmount"
     fi
     # If we closed any processes, reopen the app again
-    reopenClosedProcess
+    #reopenClosedProcess
     printlog "################## End Installomator, exit code $1 \n\n"
     exit "$1"
 }
@@ -181,13 +191,13 @@ runAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon caution)"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
 }
 
 displaydialogContinue() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon stop)"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
 }
 
 displaynotification() { # $1: message $2: title
@@ -1017,6 +1027,14 @@ citrixworkspace)
     downloadURL="https:"$(curl -s -L "https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html#ctx-dl-eula-external" | grep "dmg?" | sed "s/.*rel=.\(.*\)..id=.*/\1/") # http://downloads.citrix.com/18823/CitrixWorkspaceApp.dmg?__gda__=1605791892_edc6786a90eb5197fb226861a8e27aa8
     appNewVersion=$(curl -fs https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html | grep "<p>Version" | head -1 | cut -d " " -f1 | cut -d ";" -f2 | cut -d "." -f 1-3)
     expectedTeamID="S272Y5R93J"
+    ;;
+clevershare2)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="Clevershare"
+    type="dmg"
+    downloadURL=$(curl -fs https://archive.clevertouch.com/clevershare2g | grep -i "_Mac" | tr '"' "\n" | grep "^http.*dmg")
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z-]*_Mac\.([0-9.]*)\.[0-9]*\.dmg$/\1/g' )
+    expectedTeamID="P76M9BE8DQ"
     ;;
 code42)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
@@ -2725,6 +2743,39 @@ esac
 
 printlog "BLOCKING_PROCESS_ACTION=${BLOCKING_PROCESS_ACTION}"
 printlog "NOTIFY=${NOTIFY}"
+
+# Finding LOGO to use in dialogs
+case $LOGO in
+    appstore)
+        # Apple App Store on Mac
+        if [[ $(sw_vers -buildVersion) > "19" ]]; then
+            LOGO="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+        else
+            LOGO="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+        fi
+        ;;
+    jamf)
+        # Jamf Pro
+        LOGO="/Library/Application Support/JAMF/Jamf.app/Contents/Resources/AppIcon.icns"
+        #LOGO="/Library/Application Support/JAMF/Logos/Logo512.png"
+        ;;
+    mosyleb)
+        # Mosyle Business
+        LOGO="/Applications/Business.app/Contents/Resources/AppIcon.icns"
+        ;;
+    mosylem)
+        # Mosyle Manager (education)
+        LOGO="/Applications/Manager.app/Contents/Resources/AppIcon.icns"
+        ;;
+esac
+if [[ ! -a "${LOGO}" ]]; then
+    if [[ $(sw_vers -buildVersion) > "19" ]]; then
+        LOGO="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+    else
+        LOGO="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+    fi
+fi
+printlog "LOGO=${LOGO}"
 
 # MARK: extract info from data
 if [ -z "$archiveName" ]; then
