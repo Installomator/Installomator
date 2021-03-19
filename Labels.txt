@@ -171,6 +171,7 @@ umbrellaroamingclient
 vagrant
 veracrypt
 virtualbox
+viscosity
 visualstudiocode
 vlc
 vscodium
