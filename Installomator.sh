@@ -9,7 +9,7 @@ label="" # if no label is sent to the script, this will be used
 # inspired by the download scripts from William Smith and Sander Schram
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 
-VERSION='0.4.23'
+VERSION='0.4.24'
 VERSIONDATE='2021-??-??'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
@@ -423,7 +423,10 @@ reopenClosedProcess() {
     
     if [[ $appClosed == 1 ]]; then
         printlog "Telling app $name to open"
-        runAsUser osascript -e "tell app \"$name\" to open"
+        #runAsUser osascript -e "tell app \"$name\" to open"
+        runAsUser open -a "${name}"
+        processuser=$(ps aux | grep -i "${name}")
+        printlog "Reopened ${name} as $processuser"
     fi
 }
 
@@ -552,7 +555,8 @@ installFromPKG() {
     if [[ $packageID != "" && $appversion != "" ]]; then
         printlog "Checking package version."
         pkgutil --expand "$archiveName" "$archiveName"_pkg
-        appNewVersion=$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | grep "$packageID" | tr ' ' '\n' | grep version | sed -E 's/.*\"([0-9.]*)\".*/\1/g')
+        #printlog "$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null)"
+        appNewVersion=$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | grep -i "$packageID" | tr ' ' '\n' | grep -i version | cut -d \" -f 2) #sed -E 's/.*\"([0-9.]*)\".*/\1/g'
         rm -r "$archiveName"_pkg
         printlog "Downloaded package $packageID version $appNewVersion"
         if [[ $appversion == $appNewVersion ]]; then
@@ -2820,6 +2824,10 @@ case $LOGO in
     mosylem)
         # Mosyle Manager (education)
         LOGO="/Applications/Manager.app/Contents/Resources/AppIcon.icns"
+        ;;
+    addigy)
+        # Addigy
+        LOGO="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
