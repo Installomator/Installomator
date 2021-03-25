@@ -20,7 +20,7 @@ fi
 
 # download the URL
 echo "Downloading $downloadURL"
-if ! archivePath=$(curl -fsL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}"); then
+if ! downloadOut="$(curl -fsL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
     echo "error downloading $downloadURL"
     exit 2
 fi
@@ -36,10 +36,36 @@ xpath() {
     fi
 }
 
-#archivePath=$(find $tmpDir -print )
+pkgInvestigation() {
+    echo "Package found"
+    teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
+    echo "For PKGs it's advised to find packageID for version checking"
+    
+    pkgutil --expand "$pkgPath" "$archiveName"_pkg
+    cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null
+    packageID="$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | tr ' ' '\n' | grep -i "id" | cut -d \" -f 2)"
+    rm -r "$archiveName"_pkg
+    echo "$packageID"
+    echo "Above is the possible packageIDs that can be used, and the correct one is probably one of those with a version number. More investigation might be needed to figure out correct packageID if several are displayed."
+}
+appInvestigation() {
+    appName=${appPath##*/}
+
+    # verify with spctl
+    echo "Verifying: $appPath"
+    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' ); then
+        echo "Error verifying $appPath"
+        exit 4
+    fi
+}
+echo "downloadOut: ${downloadOut}"
+archiveTempName=$( echo "${downloadOut}" | head -1 )
+echo "archiveTempName: $archiveTempName"
+archivePath=$( echo "${downloadOut}" | tail -1 )
 echo "archivePath: $archivePath"
 archiveName=${archivePath##*/}
 echo "archiveName: $archiveName"
+mv $archiveTempName $archiveName
 name=${archiveName%.*}
 echo "name: $name"
 archiveExt=${archiveName##*.}
@@ -48,15 +74,8 @@ identifier=$(echo $name | tr '[:upper:]' '[:lower:]')
 echo "identifier: $identifier"
 
 if [ "$archiveExt" = "pkg" ]; then
-    echo "Package found"
-    teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
-    echo "For PKGs it's advised to find packageID for version checking"
-    pkgutil --expand "$archiveName" "$archiveName"_pkg
-    cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null
-    packageID="$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | tr ' ' '\n' | grep -i "id" | cut -d \" -f 2)"
-    rm -r "$archiveName"_pkg
-    echo "$packageID"
-    echo "Above is the possible packageIDs that can be used, and the correct one is probably one of those with a version number. More investigation might be needed to figure out correct packageID if several are displayed."
+    pkgPath="$archiveName"
+    pkgInvestigation
 elif [ "$archiveExt" = "dmg" ]; then
     echo "Diskimage found"
     # mount the dmg
@@ -66,16 +85,16 @@ elif [ "$archiveExt" = "dmg" ]; then
         exit 3
     fi
     echo "Mounted: $dmgmount"
-    # check if app exists
     
+    # check if app og pkg exists
     appPath=$(find "$dmgmount" -name "*.app" -maxdepth 1 -print )
-    appName=${appPath##*/}
-
-    # verify with spctl
-    echo "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' ); then
-        echo "Error verifying $appPath"
-        exit 4
+    pkgPath=$(find "$dmgmount" -name "*.pkg" -maxdepth 1 -print )
+    
+    if [[ $appPath != "" ]]; then
+        appInvestigation
+    elif [[ $pkgPath != "" ]]; then
+        archiveExt="pkgInDmg"
+        pkgInvestigation
     fi
     
     hdiutil detach "$dmgmount"
@@ -84,20 +103,21 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
     # unzip the archive
     tar -xf "$archiveName"
     
-    # check if app exists
+    # check if app og pkg exists
     appPath=$(find "$tmpDir" -name "*.app" -maxdepth 2 -print )
-    appName=${appPath##*/}
-    # verify with spctl
-    echo "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' ); then
-        echo "Error verifying $appPath"
-        exit 4
+    pkgPath=$(find "$tmpDir" -name "*.pkg" -maxdepth 2 -print )
+    
+    if [[ $appPath != "" ]]; then
+        appInvestigation
+    elif [[ $pkgPath != "" ]]; then
+        archiveExt="pkgInZip"
+        pkgInvestigation
     fi
 
 fi
 
 echo
-echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, but also on a web page."
+echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, but also on a web page. See archivePath above if link contains information about this."
 echo
 echo "$identifier)"
 echo "    name=\"$name\""
