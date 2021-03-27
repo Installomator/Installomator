@@ -8,9 +8,10 @@ label="" # if no label is sent to the script, this will be used
 #
 # inspired by the download scripts from William Smith and Sander Schram
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
+# and help from Søren Theilgaard (theilgaard.dk)
 
-VERSION='0.4.24'
-VERSIONDATE='2021-03-23'
+VERSION='0.4.25'
+VERSIONDATE='2021-??-??'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -996,6 +997,13 @@ bitwarden)
     appNewVersion=$(versionFromGit bitwarden desktop )
     expectedTeamID="LTZ2PFU5D6"
     ;;
+blender)
+    name="blender"
+    type="dmg"
+    downloadURL=$(redirect=$(curl -sfL https://www.blender.org/download/ | sed 's/.*href="//' | sed 's/".*//' | grep .dmg) && curl -sfL "$redirect" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g' )
+    expectedTeamID="68UA947AUU"
+    ;;
 bluejeans)
     name="BlueJeans"
     type="pkg"
@@ -1008,7 +1016,12 @@ boxdrive)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Box"
     type="pkg"
-    downloadURL="https://e3.boxcdn.net/box-installers/desktop/releases/mac/Box.pkg"
+    if [[ $(arch) == "arm64" ]]; then
+        #Note: https://support.box.com/hc/en-us/articles/1500004479962-Box-Drive-support-on-devices-with-M1-chips
+        downloadURL="https://e3.boxcdn.net/desktop/pre-releases/mac/BoxDrive.2.20.140-M1-beta.pkg"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://e3.boxcdn.net/box-installers/desktop/releases/mac/Box.pkg"
+    fi
     expectedTeamID="M683GB7CPW"
     ;;
 brave)
@@ -1799,6 +1812,13 @@ openvpnconnectv3)
     downloadURL="https://openvpn.net/downloads/openvpn-connect-v3-macos.dmg"
     expectedTeamID="ACV7L3WCD8"
     ;;
+opera)
+    name="Opera"
+    type="dmg"
+    downloadURL="https://get.geo.opera.com/ftp/pub/opera/desktop/"$( curl -fs "https://get.geo.opera.com/ftp/pub/opera/desktop/" | grep href | tail -1 | tr '"' '\n' | grep "/" | head -1 )"mac/Opera_"$( curl -fs "https://get.geo.opera.com/ftp/pub/opera/desktop/" | grep href | tail -1 | tr '"' '\n' | grep "/" | head -1 | sed -E 's/^([0-9.]*)\//\1/g' )"_Setup.dmg"
+    appNewVersion="$( curl -fs "https://get.geo.opera.com/ftp/pub/opera/desktop/" | grep href | tail -1 | tr '"' '\n' | grep "/" | head -1 | sed -E 's/^([0-9]*\.[0-9]*).*\//\1/g' )"
+    expectedTeamID="A2P9LX4JPN"
+    ;;
 pacifist)
     name="Pacifist"
     type="dmg"
@@ -1921,6 +1941,13 @@ resiliosynchome)
     downloadURL="https://download-cdn.resilio.com/stable/osx/Resilio-Sync.dmg"
     expectedTeamID="2953Z5SZSK"
     ;;
+retrobatch)
+    name="Retrobatch"
+    type="zip"
+    downloadURL="https://flyingmeat.com/download/Retrobatch.zip"
+    appNewVersion=$(curl -fs "https://flyingmeat.com/retrobatch/" | grep -i download | grep -i zip | grep -iv Documentation | sed -E 's/.*Download.*href.*https.*zip.*Retrobatch ([0-9.]*)<.*/\1/g')
+    expectedTeamID="WZCN9HJ4VP"
+    ;;
 ricohpsprinters)
     name="Ricoh Printers"
     type="pkgInDmg"
@@ -1964,6 +1991,12 @@ ringcentralphone)
     blockingProcesses=( "RingCentral Phone" )
     #Company="RingCentral"
     ;;
+rocket)
+    name="Rocket"
+    type="dmg"
+    downloadURL="https://macrelease.matthewpalmer.net/Rocket.dmg"
+    expectedTeamID="Z4JV2M65MH"
+    ;;
 royaltsx)
     name="Royal TSX"
     type="dmg"
@@ -1987,6 +2020,12 @@ santa)
     downloadURL=$(downloadURLFromGit google santa)
     appNewVersion=$(versionFromGit google santa)
     expectedTeamID="EQHXZ8M8AV"
+    ;;
+screamingfrogseospider)
+    name="Screaming Frog SEO Spider"
+    type="dmg"
+    downloadURL="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-14.3.dmg"
+    expectedTeamID="CAHEVC3HZC"
     ;;
 sfsymbols)
     name="SF Symbols"
@@ -2124,6 +2163,13 @@ swiftruntimeforcommandlinetools)
     downloadURL="https://updates.cdn-apple.com/2019/cert/061-41823-20191025-5efc5a59-d7dc-46d3-9096-396bb8cb4a73/SwiftRuntimeForCommandLineTools.dmg"
     expectedTeamID="Software Update"
     ;;
+tableaureader)
+    name="Tableau Reader"
+    type="pkgInDmg"
+    packageID="com.tableausoftware.reader.app"
+    downloadURL="https://www.tableau.com/downloads/reader/mac"
+    expectedTeamID="QJ4XPRK37C"
+    ;;
 taskpaper)
     # credit: Drew Diver (@grumpydrew on MacAdmins Slack)
     name="TaskPaper"
@@ -2134,7 +2180,7 @@ taskpaper)
 teamviewer)
     name="TeamViewer"
     type="pkgInDmg"
-    pkgName="Install TeamViewer.pkg"
+    pkgName="Install TeamViewer.app/Contents/Resources/Install TeamViewer.pkg"
     downloadURL="https://download.teamviewer.com/download/TeamViewer.dmg"
     expectedTeamID="H7UGFBUGV6"
     ;;
@@ -2142,7 +2188,7 @@ teamviewerhost)
     name="TeamViewerHost"
     type="pkgInDmg"
     packageID="com.teamviewer.teamviewerhost"
-    downloadURL="https://download.teamviewer.com/download/TeamViewerHost.dmg"
+    pkgName="Install TeamViewerHost.app/Contents/Resources/Install TeamViewerHost.pkg"    downloadURL="https://download.teamviewer.com/download/TeamViewerHost.dmg"
     expectedTeamID="H7UGFBUGV6"
     #blockingProcessesMaxCPU="5" # Future feature
     #Company="TeamViewer GmbH"
@@ -2811,7 +2857,6 @@ case $LOGO in
     jamf)
         # Jamf Pro
         LOGO="/Library/Application Support/JAMF/Jamf.app/Contents/Resources/AppIcon.icns"
-        #LOGO="/Library/Application Support/JAMF/Logos/Logo512.png"
         ;;
     mosyleb)
         # Mosyle Business
