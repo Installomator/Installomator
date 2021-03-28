@@ -10,8 +10,8 @@ label="" # if no label is sent to the script, this will be used
 # with additional ideas and contribution from Isaac Ordonez, Mann consulting
 # and help from Søren Theilgaard (theilgaard.dk)
 
-VERSION='0.4.25'
-VERSIONDATE='2021-??-??'
+VERSION='0.5.0'
+VERSIONDATE='2021-03-28'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -1608,7 +1608,7 @@ lexarrecoverytool)
     # credit: Søren Theilgaard (@theilgaard)
     name="Lexar Recovery Tool"
     type="appInDmgInZip"
-    downloadURL="https://www.lexar.com$( curl -fs https://www.lexar.com/support/downloads/ | grep -i "mac" | grep -i "recovery" | head -1 | tr '"' '\n' | grep -i ".zip"  )"
+    downloadURL="https://www.lexar.com$( curl -fs "https://www.lexar.com/support/downloads/" | grep -i "mac" | grep -i "recovery" | head -1 | tr '"' '\n' | grep -i ".zip" )"
     #appNewVersion=""
     expectedTeamID="Y8HM6WR2DV"
     ;;
@@ -1764,7 +1764,8 @@ omnioutliner5)
 omniplan3)
     name="OmniPlan"
     type="dmg"
-    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPlan3" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    #downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPlan3" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    downloadURL=$(curl -fs "https://www.omnigroup.com/download" | grep -i "OmniPlan-3" | head -1 | sed 's/.*href="//' | sed 's/".*//')
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
@@ -2073,14 +2074,6 @@ sketch)
      appNewVersion=$(curl -fs https://www.sketch.com/updates/ | grep "Sketch Version" | head -1 | sed -E 's/.*Version ([0-9.]*)<.*/\1/g') # version from update page
      expectedTeamID="WUGMZZ5K46"
      ;;
-skitch)
-    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
-    name="Skitch"
-    type="zip"
-    downloadURL=$(curl -fs -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15" https://evernote.com/products/skitch | grep -o "https://.*zip")
-    expectedTeamID="J8RPQ294UB"
-    Company="Evernote"
-    ;;
 skype)
     name="Skype"
     type="dmg"
