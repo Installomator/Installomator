@@ -87,7 +87,7 @@ INSTALL=""
 #     - pkg
 #     - zip
 #     - pkgInDmg
-#     - pkgInZip (not yet tested)
+#     - pkgInZip
 #     - appInDmgInZip
 #
 # - packageID: (optional)
