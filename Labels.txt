@@ -189,6 +189,7 @@ rstudio
 santa
 screamingfrogseospider
 sfsymbols
+shield
 sidekick
 signal
 silnite
