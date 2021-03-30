@@ -1048,6 +1048,14 @@ brave)
     appNewVersion=$(curl --location --fail --silent "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath '//rss/channel/item[last()]/enclosure/@sparkle:shortVersionString' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="KL8N8XSYF4"
     ;;
+cakebrew)
+    # credit: Adrian Bühler (@midni9ht)
+    name="Cakebrew"
+    type="zip"
+    downloadURL=$(curl -fsL "https://www.cakebrew.com/appcast/profileInfo.php" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
+    appNewVersion=$( curl -fsL "https://www.cakebrew.com/appcast/profileInfo.php" | xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2 )
+    expectedTeamID="R85D3K8ATT"
+    ;;
 calibre)
     # credit: Drew Diver (@grumpydrew on MacAdmins Slack)
     name="calibre"
@@ -1568,11 +1576,20 @@ jamfreenroller)
     #appNewVersion=$(versionFromGit jamf ReEnroller)
     expectedTeamID="PS2F6S478M"
     ;;
+jetbrainsintellijidea)
+    # credit: Gabe Marchan (www.gabemarchan.com)
+    name="IntelliJ IDEA"
+    type="dmg"
+    downloadURL="https://download.jetbrains.com/product?code=II&latest&distribution=mac"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=II&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
 jetbrainsintellijideace|\
 intellijideace)
     name="IntelliJ IDEA CE"
     type="dmg"
     downloadURL="https://download.jetbrains.com/product?code=IIC&latest&distribution=mac"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=IIC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     expectedTeamID="2ZEFAR8TH3"
     #Company="JetBrains"
     ;;
@@ -1744,6 +1761,17 @@ netnewswire)
         | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2)
     appNewVersion=$(curl -fs https://ranchero.com/downloads/netnewswire-release.xml | xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2)
     expectedTeamID="M8L2WTLA8W"
+    ;;
+nextcloud)
+    name="nextcloud"
+    type="pkg"
+    #packageID="com.nextcloud.desktopclient"
+    downloadURL=$(downloadURLFromGit nextcloud desktop)
+    #appNewVersion=$(versionFromGit nextcloud desktop)
+    # The version of the app is not equal to the version listed on GitHub.
+    # App version something like "3.1.3git (build 4850)" but web page lists as "3.1.3"
+    # Also it does not math packageID version "3.1.34850"
+    expectedTeamID="NKUJUXUJ3B"
     ;;
 nomad)
     # credit: Tadayuki Onishi (@kenchan0130)
@@ -2069,6 +2097,14 @@ rocket)
     type="dmg"
     downloadURL="https://macrelease.matthewpalmer.net/Rocket.dmg"
     expectedTeamID="Z4JV2M65MH"
+    ;;
+rocketchat)
+    name="Rocket.Chat"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit RocketChat Rocket.Chat.Electron)
+    appNewVersion=$(versionFromGit RocketChat Rocket.Chat.Electron)
+    expectedTeamID="S6UPZG7ZR3"
+    blockingProcesses=( Rocket.Chat )
     ;;
 royaltsx)
     name="Royal TSX"

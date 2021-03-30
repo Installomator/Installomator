@@ -30,6 +30,7 @@ blender
 bluejeans
 boxdrive
 brave
+cakebrew
 calibre
 camostudio
 camtasia
@@ -100,6 +101,7 @@ jamfconnect
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jetbrainsintellijidea
 jetbrainsintellijideace
 jetbrainsphpstorm
 karabinerelements
@@ -141,6 +143,7 @@ microsoftword
 microsoftyammer
 musescore
 netnewswire
+nextcloud)
 nomad
 nomadlogin
 notion
@@ -184,6 +187,7 @@ ringcentralclassicapp
 ringcentralmeetings
 ringcentralphone
 rocket
+rocketchat
 royaltsx
 rstudio
 santa
