@@ -949,6 +949,15 @@ aviatrix)
     expectedTeamID="32953Z7NBN"
     #Company=Aviatrix
     ;;
+awscli2)
+    # credit: Bilal Habib (@Pro4TLZZ)
+    name="AWSCLI"
+    type="pkg"
+    packageID="com.amazon.aws.cli2"
+    downloadURL="https://awscli.amazonaws.com/AWSCLIV2.pkg"
+    appNewVersion=$( curl -fs "https://raw.githubusercontent.com/aws/aws-cli/v2/CHANGELOG.rst" | grep -i "CHANGELOG" -a4 | grep "[0-9.]" )
+    expectedTeamID="94KV3E626L"
+    ;;
 awsvpnclient)
     name="AWS VPN Client"
     type="pkg"
@@ -1100,6 +1109,13 @@ cormorant)
     appNewVersion=$(curl -fs https://eclecticlight.co/downloads/ | grep zip | grep -o -E "$name [0-9.]*" | awk '{print $2}')
     expectedTeamID="QWY4LRW926"
     ;;
+cryptomator)
+    name="Cryptomator"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit cryptomator cryptomator)
+    appNewVersion=$(versionFromGit cryptomator cryptomator)
+    expectedTeamID="YZQJQUHA3L"
+    ;;
 cyberduck)
     name="Cyberduck"
     type="zip"
@@ -1179,7 +1195,7 @@ docker)
     # credit: @securitygeneration
     name="Docker"
     type="dmg"
-    downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
+    downloadURL="https://download.docker.com/mac/stable/Docker.dmg" # downloadURL="https://desktop.docker.com/mac/stable/amd64/Docker.dmg"
     appNewVersion=$(curl -ifs https://docs.docker.com/docker-for-mac/release-notes/ | grep ">Docker Desktop Community" | head -1 | sed -n -e 's/^.*Community //p' | cut -d '<' -f1)
     expectedTeamID="9BNSXJN65R"
     ;;
@@ -1386,6 +1402,13 @@ googlejapaneseinput)
     downloadURL="https://dl.google.com/japanese-ime/latest/GoogleJapaneseInput.dmg"
     expectedTeamID="EQHXZ8M8AV"
     ;;
+gotomeeting)
+    # credit: @matins
+    name="GoToMeeting"
+    type="dmg"
+    downloadURL="https://link.gotomeeting.com/latest-dmg"
+    expectedTeamID="GFNFVT632V"
+    ;;
 gpgsuite)
     # credit: Micah Lee (@micahflee)
     name="GPG Suite"
@@ -1406,6 +1429,23 @@ grandperspective)
     type="dmg"
     downloadURL="https://sourceforge.net/projects/grandperspectiv/files/latest/download"
     expectedTeamID="3Z75QZGN66"
+    ;;
+gyazo)
+    # credit: @matins
+    name="Gyazo"
+    type="dmg"
+    appNewVersion=$(curl -is "https://formulae.brew.sh/cask/gyazo" | grep 'Current version:' | grep -o "Gyazo.*dmg" | cut -d "-" -f 2 | awk -F ".dmg" '{print $1}')
+    downloadURL="https://files.gyazo.com/setup/Gyazo-${appNewVersion}.dmg"
+    expectedTeamID="9647Y3B7A4"
+    ;;
+gyazogif)
+    # credit: @matins
+    # This is identical to gyazo, but the download contains two apps on the DMG
+    name="Gyazo GIF"
+    type="dmg"
+    appNewVersion=$(curl -is "https://formulae.brew.sh/cask/gyazo" | grep 'Current version:' | grep -o "Gyazo.*dmg" | cut -d "-" -f 2 | awk -F ".dmg" '{print $1}')
+    downloadURL="https://files.gyazo.com/setup/Gyazo-${appNewVersion}.dmg"
+    expectedTeamID="9647Y3B7A4"
     ;;
 handbrake)
     name="HandBrake"
@@ -1471,13 +1511,6 @@ installomator_st)
     expectedTeamID="L8W73B6AH3"
     blockingProcesses=( NONE )
     ;;
-intellijideace)
-    name="IntelliJ IDEA CE"
-    type="dmg"
-    downloadURL="https://download.jetbrains.com/product?code=IIC&latest&distribution=mac"
-    expectedTeamID="2ZEFAR8TH3"
-    #Company="JetBrains"
-    ;;
 istatmenus)
     # credit: AP Orlebeke (@apizz)
     name="iStat Menus"
@@ -1535,6 +1568,22 @@ jamfreenroller)
     #appNewVersion=$(versionFromGit jamf ReEnroller)
     expectedTeamID="PS2F6S478M"
     ;;
+jetbrainsintellijideace|\
+intellijideace)
+    name="IntelliJ IDEA CE"
+    type="dmg"
+    downloadURL="https://download.jetbrains.com/product?code=IIC&latest&distribution=mac"
+    expectedTeamID="2ZEFAR8TH3"
+    #Company="JetBrains"
+    ;;
+jetbrainsphpstorm)
+    # credit: Casey Jensen (@cajenson01 on MacAdmins Slack)Appended by Skylar Damiano @catdad on MacAdmins Slack
+    name="JetBrains PHPStorm"
+    type="dmg"
+    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
 karabinerelements)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="Karabiner-Elements"
@@ -1590,6 +1639,14 @@ krisp)
     downloadURL="https://download.krisp.ai/mac"
     expectedTeamID="U5R26XM5Z2"
     ;;
+krita)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="krita"
+    type="dmg"
+    downloadURL=$( curl -fs "https://krita.org/en/download/krita-desktop/" | grep ".*https.*stable.*dmg.*" | head -1 | sed -E 's/.*(https.*dmg).*/\1/g' )
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    expectedTeamID="5433B4KXM8"
+    ;;
 lastpass)
     name="LastPass"
     type="dmg"
@@ -1642,6 +1699,13 @@ lulu)
     downloadURL=$( curl -fs "https://objective-see.com/products/lulu.html" | grep https | grep "$type" | head -1 | tr '"' "\n" | grep "^http" )
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*)\..*/\1/g' )
     expectedTeamID="VBG97UB4TA"
+    ;;
+macfuse)
+    name="FUSE for macOS"
+    type="pkgInDmg"
+    downloadURL=$(downloadURLFromGit osxfuse osxfuse)
+    appNewVersion=$(versionFromGit osxfuse osxfuse)
+    expectedTeamID="3T5GSNBU6W"
     ;;
 malwarebytes)
     name="Malwarebytes"
@@ -1708,6 +1772,14 @@ notion)
     fi
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr -d '\r\n' | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="LBQJ96FQ8D"
+    ;;
+nvivo)
+    name="NVivo"
+    type="dmg"
+    downloadURL="https://download.qsrinternational.com/Software/NVivoforMac/NVivo.dmg"
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr '/' '\n' | grep "[0-9]" | cut -d "." -f1-3 )
+    expectedTeamID="A66L57342X"
+    blockingProcesses=( NVivo NVivoHelper )
     ;;
 obsidian)
     # credit: Søren Theilgaard (@theilgaard)
@@ -2102,6 +2174,13 @@ snagit2020)
     downloadURL="https://download.techsmith.com/snagitmac/releases/Snagit.dmg"
     expectedTeamID="7TQL462TU8"
     ;;
+snapgeneviewer)
+    name="SnapGene Viewer"
+    type="dmg"
+    downloadURL="https://www.snapgene.com/local/targets/download.php?variant=viewer&os=mac&majorRelease=latest&minorRelease=latest"
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr '/' '\n' | grep -i "dmg" | sed -E 's/[a-zA-Z_]*_([0-9.]*)_mac\.dmg/\1/g' )
+    expectedTeamID="WVCV9Q8Y78"
+    ;;
 sonos|\
 sonoss1)
     # credit: Erik Stam (@erikstam)
@@ -2294,6 +2373,14 @@ vanilla)
     type="dmg"
     downloadURL="https://macrelease.matthewpalmer.net/Vanilla.dmg"
     expectedTeamID="Z4JV2M65MH"
+    ;;
+veracrypt)
+    name="VeraCrypt"
+    type="pkgInDmg"
+    #downloadURL=$(curl -s -L "https://www.veracrypt.fr/en/Downloads.html" | grep -Eio 'href="https://launchpad.net/veracrypt/trunk/(.*)/&#43;download/VeraCrypt_([0-9].*).dmg"' | cut -c7- | sed -e 's/"$//' | sed "s/&#43;/+/g")
+    downloadURL=$(curl -fs "https://www.veracrypt.fr/en/Downloads.html" | grep "https.*\.dmg" | grep -vi "legacy" | tr '"' '\n' | grep "^https.*" | grep -vi ".sig" | sed "s/&#43;/+/g")
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*.*)\.dmg/\1/g' )
+    expectedTeamID="Z933746L2S"
     ;;
 virtualbox)
     # credit: AP Orlebeke (@apizz)
