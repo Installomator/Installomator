@@ -220,7 +220,7 @@ Debug mode is useful to test the download and verification process without havin
 
 The `BLOCKING_PROCESS_ACTION` variable controls the behavior of the script when it finds a blocking process running.
 
-There are five options:
+There are eight options:
 
 - `ignore`: continue even when blocking processes are found.
 - `silent_fail`: exit script without prompt or installation.
