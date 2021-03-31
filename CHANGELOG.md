@@ -12,6 +12,7 @@
 - If your MDM cannot call a script with parameters, the label can be set in the top of the script.
 - If your MDM is not Jamf Pro, and you need the script to be installed locally on your managed machines, then take a look at [Theiles fork](https://github.com/Theile/Installomator/). This fork can be called from the MDM using a small script.
 - Script `buildCaseStatement.sh` to help with creating labels have been improved.
+- Added variable `TIMEOUT` that can be set to the number of seconds after which the dialogue box will give up waiting for a button click. This prevents the script from blocking other processes while the user ignores the dialogue box for a prolonged period of time.
 
 
 ## v0.4 - 2020-10-19
