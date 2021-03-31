@@ -2680,15 +2680,6 @@ zulujdk15)
 #     | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep lts)
 #     expectedTeamID="UBF8T346G9"
 #     ;;
-#shield)
-#    # credit: Søren Theilgaard (@theilgaard)
-#    # 2021-01-13 Currently Pre-release and we cant get latest version
-#    name="Shield"
-#    type="zip"
-#    downloadURL=$(downloadURLFromGit theevilbit Shield)
-#    appNewVersion=$(versionFromGit theevilbit Shield)
-#    expectedTeamID="33YRLYRBYV"
-#    ;;
 # vmwarefusion)
 # TODO: vmwarefusion installation process needs testing
 #     # credit: Erik Stam (@erikstam)
