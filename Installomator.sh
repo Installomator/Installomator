@@ -1327,7 +1327,7 @@ fsmonitor)
     expectedTeamID="V85GBYB7B9"
     ;;
 gimp)
-    name="GIMP"
+    name="GIMP-2.10"
     type="dmg"
     downloadURL=https://$(curl -fs https://www.gimp.org/downloads/ | grep -m 1 -o "download.*gimp-.*.dmg")
     appNewVersion=$(echo $downloadURL | cut -d "-" -f 2)
@@ -2203,11 +2203,12 @@ skype)
 slack)
     name="Slack"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://slack.com/ssb/download-osx-silicon"
-    elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://slack.com/ssb/download-osx"
-    fi
+    downloadURL="https://slack.com/ssb/download-osx-universal" # Universal
+#    if [[ $(arch) == "arm64" ]]; then
+#        downloadURL="https://slack.com/ssb/download-osx-silicon"
+#    elif [[ $(arch) == "i386" ]]; then
+#        downloadURL="https://slack.com/ssb/download-osx"
+#    fi
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr -d '\r\n' | sed -E 's/.*macos\/([0-9.]*)\/.*/\1/g' )
     expectedTeamID="BQR82RBBHL"
     ;;
