@@ -284,7 +284,8 @@ The display name of the installed application without the `.app` extensions.
 The type of installation. Possible values:
      - `dmg`: application in disk image file (drag'n drop installation)
      - `pkg`: flat pkg download
-     - `zip`: application in zip archive (`zip` or `tbz` extension)
+     - `zip`: application in zip archive (`zip` extension)
+     - `tbz`: application in tbz archive (`tbz` extension)
      - `pkgInDmg`: a pkg file inside a disk image
      - `pkgInZip`: a pkg file inside a zip
      - `appInDmgInZip`: an app in a dmg file that has been zip'ed
