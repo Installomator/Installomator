@@ -235,6 +235,7 @@ veracrypt
 virtualbox
 viscosity
 visualstudiocode
+vivaldi
 vlc
 vmwarehorizonclient
 vscodium
