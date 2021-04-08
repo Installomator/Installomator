@@ -1139,6 +1139,14 @@ dangerzone)
     downloadURL=$(curl -s https://dangerzone.rocks/ | grep https://github.com/firstlookmedia/dangerzone/releases/download | grep \.dmg | cut -d'"' -f2)
     expectedTeamID="P24U45L8P5"
     ;;
+darktable)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="darktable"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit darktable-org darktable)
+    appNewVersion=$(versionFromGit darktable-org darktable)
+    expectedTeamID="85Q3K4KQRY"
+    ;;
 dbeaverce)
     # credit: Adrian Bühler (@midni9ht)
     name="DBeaver"
