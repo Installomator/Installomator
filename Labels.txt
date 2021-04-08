@@ -93,6 +93,7 @@ hyper
 icons
 inkscape
 installomator_st
+installomator_theile
 intellijideace
 istatmenus
 iterm2
@@ -141,6 +142,7 @@ microsoftskypeforbusiness
 microsoftteams
 microsoftword
 microsoftyammer
+miro
 musescore
 netnewswire
 nextcloud)
