@@ -43,6 +43,7 @@ cormorant
 cryptomator
 cyberduck
 dangerzone
+darktable
 dbeaverce
 debookee
 depnotify
