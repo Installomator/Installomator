@@ -1611,6 +1611,27 @@ jetbrainsphpstorm)
     appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     expectedTeamID="2ZEFAR8TH3"
     ;;
+jetbrainspycharm)
+    # credit: Adrian Bühler (@midni9ht)
+    name="PyCharm"
+    type="dmg"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == i386 ]]; then
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+    elif [[ $(arch) == arm64 ]]; then
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "macM1*.*.dmg" | cut -d '"' -f5)
+    fi
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
+jetbrainspycharmce|\
+pycharmce)
+    name="PyCharm CE"
+    type="dmg"
+    downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
+    expectedTeamID="2ZEFAR8TH3"
+    #Company="JetBrains"
+    ;;
 karabinerelements)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="Karabiner-Elements"
@@ -2006,13 +2027,6 @@ promiseutilityr)
     downloadURL="https://www.promise.com/DownloadFile.aspx?DownloadFileUID=6533"
     expectedTeamID="268CCUR4WN"
     #Company="Promise"
-    ;;
-pycharmce)
-    name="PyCharm CE"
-    type="dmg"
-    downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
-    expectedTeamID="2ZEFAR8TH3"
-    #Company="JetBrains"
     ;;
 pymol)
     name="PyMOL"
