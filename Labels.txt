@@ -106,6 +106,8 @@ jamfreenroller
 jetbrainsintellijidea
 jetbrainsintellijideace
 jetbrainsphpstorm
+jetbrainspycharm
+jetbrainspycharmce
 karabinerelements
 keepassxc
 keka
@@ -176,8 +178,6 @@ prism9
 privileges
 proctortrack
 promiseutilityr
-pycharm
-pycharmce
 pymol
 r
 ramboxce
