@@ -1617,11 +1617,10 @@ jetbrainspycharm)
     type="dmg"
     appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     if [[ $(arch) == i386 ]]; then
-        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+      downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=mac"
     elif [[ $(arch) == arm64 ]]; then
-        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "macM1*.*.dmg" | cut -d '"' -f5)
+      downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=macM1"
     fi
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     expectedTeamID="2ZEFAR8TH3"
     ;;
 jetbrainspycharmce|\
