@@ -12,6 +12,7 @@
 - If your MDM cannot call a script with parameters, the label can be set in the top of the script.
 - If your MDM is not Jamf Pro, and you need the script to be installed locally on your managed machines, then take a look at [Theiles fork](https://github.com/Theile/Installomator/). This fork can be called from the MDM using a small script.
 - Script `buildCaseStatement.sh` to help with creating labels have been improved.
+- Fixed a bug in a variable name that prevented updateTool to be used
 
 
 ## v0.4 - 2020-10-19

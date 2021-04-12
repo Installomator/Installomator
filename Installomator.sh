@@ -693,6 +693,7 @@ installAppInDmgInZip() {
 }
 
 runUpdateTool() {
+    printlog "Function called: runUpdateTool"
     if [[ -x $updateTool ]]; then
         printlog "running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
@@ -708,6 +709,25 @@ runUpdateTool() {
         return 1
     fi
     return 0
+}
+
+finishing() {
+    printlog "Finishing…"
+    sleep 10 # wait a moment to let spotlight catch up
+    getAppVersion
+
+    if [[ -z $appversion ]]; then
+        message="Installed $name"
+    else
+        message="Installed $name, version $appversion"
+    fi
+
+    printlog "$message"
+
+    if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
+        printlog "notifying"
+        displaynotification "$message" "$name update/installation complete!"
+    fi
 }
 
 
@@ -2932,8 +2952,8 @@ microsoftteams)
     # Still using macadmin.software for version, as the path does not contain the version in a matching format. packageID can be used, but version is the same.
     expectedTeamID="UBF8T346G9"
     blockingProcesses=( Teams "Microsoft Teams Helper" )
-    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    #updateToolArguments=( --install --apps TEAM01 )
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps TEAM01 )
     ;;
 microsoftvisualstudiocode|\
 visualstudiocode)
@@ -3117,11 +3137,14 @@ if ! cd "$tmpDir"; then
     cleanupAndExit 1
 fi
 
-# MARK: check if this is an Update
+# MARK: check if this is an Update and we can use updateTool
 getAppVersion
-if [[ -n $appVersion ]]; then
+printlog "appversion: $appversion"
+if [[ -n $appversion && -n "$updateTool" ]]; then
+    printlog "appversion & updateTool"
     if [[ $DEBUG -eq 0 ]]; then
         if runUpdateTool; then
+            finishing
             cleanupAndExit 0
         fi # otherwise continue
     else
@@ -3223,22 +3246,8 @@ case $type in
         ;;
 esac
 
-# MARK: print installed application location and version
-sleep 10 # wait a moment to let spotlight catch up
-getAppVersion
-
-if [[ -z $appversion ]]; then
-    message="Installed $name"
-else
-    message="Installed $name, version $appversion"
-fi
-
-printlog "$message"
-
-if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
-    printlog "notifying"
-    displaynotification "$message" "$name update/installation complete!"
-fi
+# MARK: Finishing — print installed application location and version
+finishing
 
 # all done!
 cleanupAndExit 0
