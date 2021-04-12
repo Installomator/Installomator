@@ -1613,6 +1613,8 @@ jetbrainsphpstorm)
     ;;
 jetbrainspycharm)
     # credit: Adrian Bühler (@midni9ht)
+    # This is the Pro version of PyCharm.
+    # Do not confuse with PyCharm CE.
     name="PyCharm"
     type="dmg"
     appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
