@@ -2647,17 +2647,18 @@ zulujdk15)
 
 # MARK: Add new labels after this line (let us sort them in the list)
 
-pycharm)
+jetbrainspycharm)
     # credit: Adrian Bühler (@midni9ht)
     name="PyCharm"
     type="dmg"
-    expectedTeamID="2ZEFAR8TH3"
     appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     if [[ $(arch) == i386 ]]; then
-      downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "macM1*.*.dmg" | cut -d '"' -f5)
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o "macM1*.*.dmg" | cut -d '"' -f5)
     fi
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    expectedTeamID="2ZEFAR8TH3"
     ;;
 
 # MARK: add new labels above here
