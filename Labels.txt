@@ -176,6 +176,7 @@ prism9
 privileges
 proctortrack
 promiseutilityr
+pycharm
 pycharmce
 pymol
 r
