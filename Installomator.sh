@@ -11,7 +11,7 @@ label="" # if no label is sent to the script, this will be used
 # and help from Søren Theilgaard (theilgaard.dk)
 
 VERSION='0.5.0'
-VERSIONDATE='2021-03-28'
+VERSIONDATE='2021-04-13'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
