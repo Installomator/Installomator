@@ -36,7 +36,6 @@ camostudio
 camtasia
 citrixworkspace
 clevershare2
-clickshare
 code42
 coderunner
 cormorant
@@ -131,6 +130,7 @@ microsoftautoupdate
 microsoftcompanyportal
 microsoftdefenderatp
 microsoftedge
+microsoftedgeconsumerstable
 microsoftedgeenterprisestable
 microsoftexcel
 microsoftlicenseremovaltool
@@ -150,7 +150,7 @@ microsoftyammer
 miro
 musescore
 netnewswire
-nextcloud)
+nextcloud
 nomad
 nomadlogin
 notion
@@ -180,6 +180,7 @@ prism9
 privileges
 proctortrack
 promiseutilityr
+pycharmce
 pymol
 r
 ramboxce
@@ -234,6 +235,7 @@ torbrowser
 tunnelbear
 tunnelblick
 umbrellaroamingclient
+universaltypeclient
 universaltypeclient
 vagrant
 vanilla
