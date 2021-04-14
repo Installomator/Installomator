@@ -179,7 +179,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
         hdiutil detach "$dmgmount"
     fi
     # If we closed any processes, reopen the app again
-    reopenClosedProcess
+    #reopenClosedProcess # We skip this again, not all apps work correctly when opened like this
     printlog "################## End Installomator, exit code $1 \n\n"
     exit "$1"
 }
