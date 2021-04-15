@@ -20,7 +20,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-DEBUG=0
+DEBUG=1
 
 # notify behavior
 NOTIFY=success
