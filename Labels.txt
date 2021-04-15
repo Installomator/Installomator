@@ -91,6 +91,7 @@ hpeasyadmin
 hpeasystart
 hyper
 icons
+imazingprofileeditor
 inkscape
 installomator_st
 installomator_theile
