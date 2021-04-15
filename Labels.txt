@@ -15,6 +15,7 @@ androidfiletransfer
 apparency
 appcleaner
 aquaskk
+arq7
 atom
 autodmg
 autopkgr

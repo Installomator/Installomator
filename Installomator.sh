@@ -2993,6 +2993,14 @@ microsoftyammer)
     #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     #updateToolArguments=( --install --apps ?????? )
     ;;
+arq7)
+    # credit: Micah Lee (@micahflee)
+    name="Arq 7"
+    type="pkg"
+    downloadURL=https://arqbackup.com/download/arqbackup/Arq7.pkg
+    expectedTeamID="48ZCSDVL96"
+    ;;
+
 
 # this description is so you can provide all variables as arguments
 # it will only check if the required variables are setting
