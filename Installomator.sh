@@ -20,7 +20,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-DEBUG=1
+DEBUG=0
 
 # notify behavior
 NOTIFY=success
@@ -1485,6 +1485,14 @@ gyazogif)
     downloadURL="https://files.gyazo.com/setup/Gyazo-${appNewVersion}.dmg"
     expectedTeamID="9647Y3B7A4"
     ;;
+hancock)
+    # Credit: Bilal Habib @Pro4TLZZZ
+    name="Hancock"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit JeremyAgost Hancock )
+    appNewVersion=$(versionFromGit JeremyAgost Hancock )
+    expectedTeamID="SWD2B88S58"
+    ;;
 handbrake)
     name="HandBrake"
     type="dmg"
@@ -1531,12 +1539,13 @@ icons)
     appNewVersion=$(versionFromGit sap macOS-icon-generator )
     expectedTeamID="7R5ZEU67FQ"
     ;;
-iMazing Profile Editor:
 imazingprofileeditor)
+    # Credit: Bilal Habib @Pro4TLZZZ
     name="iMazing Profile Editor"
     type="dmg"
     downloadURL="https://downloads.imazing.com/mac/iMazing-Profile-Editor/iMazingProfileEditorMac.dmg"
     expectedTeamID="J5PR93692Y"
+    ;;
 inkscape)
     # credit: Søren Theilgaard (@theilgaard)
     name="Inkscape"
