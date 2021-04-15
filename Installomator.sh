@@ -1531,6 +1531,12 @@ icons)
     appNewVersion=$(versionFromGit sap macOS-icon-generator )
     expectedTeamID="7R5ZEU67FQ"
     ;;
+iMazing Profile Editor:
+imazingprofileeditor)
+    name="iMazing Profile Editor"
+    type="dmg"
+    downloadURL="https://downloads.imazing.com/mac/iMazing-Profile-Editor/iMazingProfileEditorMac.dmg"
+    expectedTeamID="J5PR93692Y"
 inkscape)
     # credit: Søren Theilgaard (@theilgaard)
     name="Inkscape"
