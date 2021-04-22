@@ -13,8 +13,8 @@ assemble.sh
 This will put together the fragments and labels from the default location (`fragments` and `fragments/labels`) and write it to `build/Installomator.sh`
 
 ```
-assemble.sh -- <label>
-assemnle.sh -- <label> <VAR=value>...
+assemble.sh <label>
+assemnle.sh <label> <VAR=value>...
 ```
 
 This will put together the fragments and labels from the default location, create the script in `build/Installomator.sh` and immediately run it with the given arguments. (Note: the script will run in debug mode, unless you specifically override this with `DEBUG=0`.)
