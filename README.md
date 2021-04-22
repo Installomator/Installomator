@@ -24,6 +24,7 @@ There are a few interesting post on Installomator on my weblog:
 
 - [Introducing Installomator](https://scriptingosx.com/2020/05/introducing-installomator/)
 - [Using Installomator with Jamf Pro](https://scriptingosx.com/2020/06/using-installomator-with-jamf-pro/) by Mischa van der Bent
+- [Using another MDM than Jamf and you might want a local installation](https://github.com/Theile/Installomator/) By Søren Theilgaard
 
 ## Background
 
@@ -102,28 +103,41 @@ When used to install software, Installomator has a single argument: the label or
 
 ```
 ./Installomator.sh firefox
+./Installomator.sh firefox LOGO=jamf BLOCKING_PROCESS_ACTION=tell_user_then_kill NOTIFY=all
 ```
 
 There is a debug mode and one other setting that can be controlled with variables in the code. This simplifies the actual use of the script from within a management system.
 
 ### Extensible
 
-As of this writing, Installomator knows how to download and install more than 50 different applications. You can add more by adding a block to the _long_ `case` statement starting on line 160. Some of them are more elaborate, but most of them just need this information:
+As of this writing, Installomator knows how to download and install more than 238 different applications. You can add more by adding a block to the _long_ `case` statement starting on line 758. Some of them are more elaborate, but most of them (just) need this information (not really "just" in this case, as we have to differentiate between arm64 and i386 versions for both `downloadURL` and `appNewVersion`):
 
 ```
 googlechrome)
     name="Google Chrome"
     type="dmg"
-    downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+    if [[ $(arch) != "i386" ]]; then
+        printlog "Architecture: arm64 (not i386)"
+        downloadURL="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
+        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}') # Credit: William Smith (@meck)
+    else
+        printlog "Architecture: i386"
+        downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac,stable/{print $3; exit}') # Credit: William Smith (@meck)
+    fi
     expectedTeamID="EQHXZ8M8AV"
     ;;
 ```
 
 When you know how to extract these pieces of information from the application and/or download, then you can add an application to Installomator.
 
+The script buildCaseStatement.sh can help with the label creation.
+
 ### Not specific to a management system
 
 I wrote this script mainly for use with Jamf Pro, because that is what we use. For testing, you can run the script interactively from the command line. However, I have tried to keep anything that is specific to Jamf optional, or so flexible that it will work anywhere. Even if it does not work with your management system 'out of the box,' the adaptations should be straightforward.
+
+Not all MDMs can include the full script, for those MDMs it might be more useful to install it on the client machines, and run it from there. See [Using another MDM than Jamf and you might want a local installation](https://github.com/Theile/Installomator/) By Søren Theilgaard.
 
 ### No dependencies
 
@@ -141,15 +155,19 @@ The argument can be `version` or `longversion` which will print the script's ver
 
 ```
 > ./Installomator.sh version
-0.1
+2021-03-28 10:03:42 version ################## Start Installomator v. 0.5.0
+2021-03-28 10:03:42 version ################## version
+2021-03-28 10:03:42 version 0.5.0
 > ./Installomator.sh longversion
-Installomater: version 0.1 (20200506)
+2021-03-28 10:04:16 longversion ################## Start Installomator v. 0.5.0
+2021-03-28 10:04:16 longversion ################## longversion
+2021-03-28 10:04:16 longversion Installomater: version 0.5.0 (2021-03-28)
 ```
 
 Other than the version arguments, the argument can be any of the labels listed in the Labels.txt file. Each of the labels will download and install the latest version of the application, or suite of applications. Since the script will have to run the `installer` command or copy the application to the `/Applications` folder, it will have to be run as root.
 
 ```
-> sudo ./Installomator.sh desktoppr
+> sudo ./Installomator.sh desktoppr DEBUG=0
 ```
 
 (Since Jamf Pro always provides the mount point, computer name, and user name as the first three arguments for policy scripts, the script will use argument `$4` when there are more than three arguments.)
@@ -174,8 +192,9 @@ Then you can use the Installomator script in a policy and choose the application
 
 When it runs with a known label, the script will perform the following:
 
-- when the application is running, prompt the user to quit or cancel
+- Check the version installed with the version online. Only continue if it's different
 - download the latest version from the vendor
+- when the application is running, prompt the user to quit or cancel
 - dmg or zip archives:
     - extract the application and copy it to /Applications
     - change the owner of the application to the current user
@@ -201,23 +220,51 @@ Debug mode is useful to test the download and verification process without havin
 
 The `BLOCKING_PROCESS_ACTION` variable controls the behavior of the script when it finds a blocking process running.
 
-There are five options:
+There are eight options:
 
-- `ignore`:       continue even when blocking processes are found
-- `silent_fail`:  exit script without prompt or installation
-- `prompt_user`:  show a user dialog for each blocking process found abort after three attempts to quit
-- `prompt_user_then_kill`: show a user dialog for each blocking process found, attempt to quit two times, kill the process finally
-- `kill`:         kill process without prompting or giving the user a chance to save
+- `ignore`: continue even when blocking processes are found.
+- `silent_fail`: exit script without prompt or installation.
+- `prompt_user`: (default) show a user dialog for each blocking process found abort after three attempts to quit (only if user accepts to quit the apps, otherwise the update is cancelled).
+- `prompt_user_then_kill`: show a user dialog for each blocking process found, attempt to quit two times, kill the process finally.
+- `prompt_user_loop`: Like prompt-user, but clicking "Not Now", will just wait an hour, and then it will ask again.
+- `tell_user`: User will be showed a notification about the important update, but user is only allowed to quit and continue, and then we ask the app to quit.
+- `tell_user_then_kill`: Show dialog 2 times, and if the quitting fails, the blocking processes will be killed.
+- `kill`: kill process without prompting or giving the user a chance to save.
 
-The default is `prompt_user`.
+If any process was closed, Installomator will try to open the app again, after the update process is done. 
 
 ### Notification
 
-The `NOTIFY` variable controls the notifications shown to the user. As of now, there are two options: `success` (default) and `silent`.
+The `NOTIFY` variable controls the notifications shown to the user. As of now, there are three options:
 
-- `success`:   notify the user after a successful install
+- `success`:   (default) notify the user after a successful install
 - `silent`:    no notifications
+- `all`:       all notifications (great for Self Service installation)
 
+### Logo
+
+The `LOGO` variable is used for the icon shown in dialog boxes. There are these options:
+
+- `appstore`:    Icon is Apple App Store (default)
+- `jamf`:        JAMF Pro
+- `mosyleb`:     Mosyle Business
+- `mosylem`:     Mosyle Manager (Education)
+- `addigy`:      Addigy
+Path can also be set in the command call, and if file exists, it will be used, like `LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"` (spaces are escaped).
+
+### Install behavior (force installation)
+
+Since we now make a version checking, and only installs the software if the version is different, an `INSTALL` variable can be used to force the installation:
+
+- ``:            When not set, software is only installed if it is newer/different in version (default)
+- `force`:       Install even if it’s the same version
+
+### Re-opening of closed app
+
+The `REOPEN` can be used to prevent the reopening of a closed app
+
+- `yes`:   (default) app will be reopened if it was closed
+- `no`:    app not reopened
 
 ### Adding applications/label blocks
 
@@ -243,13 +290,25 @@ The display name of the installed application without the `.app` extensions.
 The type of installation. Possible values:
      - `dmg`: application in disk image file (drag'n drop installation)
      - `pkg`: flat pkg download
-     - `zip`: application in zip archive (`zip` or `tbz` extension)
+     - `zip`: application in zip archive (`zip` extension)
+     - `tbz`: application in tbz archive (`tbz` extension)
      - `pkgInDmg`: a pkg file inside a disk image
      - `pkgInZip`: a pkg file inside a zip
+     - `appInDmgInZip`: an app in a dmg file that has been zip'ed
 
 - `downloadURL`:
 The URL from which to download the archive.
 The URL can be generated by a series of commands, for example when you need to parse an xml file for the latest URL. (See `bbedit`, `desktoppr`, or `omnigraffle` for examples.)
+Sometimes version differs between Intel and Apple Silicon versions. (See `brave`,  `obsidian`, `omnidisksweeper`, or `notion`).
+
+- `appNewVersion` (optional, but recommended):
+Version of the downloaded software.
+If given, it will be compared to installed version, to see if download is different.
+It does not check for newer or not, only different.
+Not always easy to figure out how to make this. Sometimes this is listed on the downloads page, sometimes in other places. And how can we isolate it in a genral manner? (See `abstract`, `bbedit`, `brave`, `desktoppr`, `googlechrome`, or `omnidisksweeper`).
+
+- `packageID` (optional, but recommended for pkgs without an app)
+This variable is for pkg bundle IDs. Very usefull if a pkg only install command line tools, or the like that does not install an app. (See label `desktoppr`, `golang`, `installomator_st`, `odrive`, or `teamviewerhost`).
 
 - `expectedTeamID`:
 The 10-character Developer Team ID with which the application or pkg is signed and notarized.
@@ -274,6 +333,7 @@ Depending on the application or pkg there are a few more variables you can or ne
 - `appName`: (optional)
   File name of the app bundle in the dmg to verify and copy (include the `.app`).
   When not given, the `appName` is set to `$name.app`.
+  This is also the name of the app that will get reopned, if we closed any `blockingProcesses` (see further down)
 
 - `targetDir`: (optional)
   dmg or zip:

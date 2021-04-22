@@ -1,6 +1,19 @@
-## v0.5 - 2020-
+## v0.5 - 2021-04-13
 
-- when Installomator cannot find an app in a dmg with the given appName it will now use the first .app in the root dir. This is for applications which contain the version number in the application name. Note: this might lead to multiple versions of the app in the /Applications directory. You will have to find a different means to clean these up when necessary
+- Major update and now with help from @Theile and @Isaac
+- Added additional `BLOCKING_PROCESS_ACTION` handlings
+- Added additional `NOTIFY=all`. Usuful if used in Self Service, as the user will be notified before download, before install as well as when it is done.
+- Added variable `LOGO` for icons i dialogs, use `LOGO=appstore` (or `jamf` or `mosyleb` or `mosylem` or `addigy`). It's also possible to set it to a direct path to a specific icon. Default is `appstore`. 
+- Added variable `INSTALL` that can be set to `INSTALL=force` if software needs to be installed even though latest version is already installed (it will be a reinstall).
+- Version control now included. The variable `appNewVersion` in a label can be used to tell what the latest version from the web is. If this is not given, version checking is done after download.
+- For a label that only installs a pkg without an app in it, a variable `packageID` can be used for version checking. 
+- Labels now sorted alphabetically, except for the Microsoft ones (that are at the end of the list). A bunch of new labels added, and lots of them have either been changed or improved (with `appNewVersion` og `packageID`).
+- If an app is asked to be closed down, it will now be opened again after the update.
+- If your MDM cannot call a script with parameters, the label can be set in the top of the script.
+- If your MDM is not Jamf Pro, and you need the script to be installed locally on your managed machines, then take a look at [Theiles fork](https://github.com/Theile/Installomator/). This fork can be called from the MDM using a small script.
+- Script `buildCaseStatement.sh` to help with creating labels have been improved.
+- Fixed a bug in a variable name that prevented updateTool to be used
+- added `type` variable for value `"updateronly"` if the label should only run an updater tool.
 
 
 ## v0.4 - 2020-10-19

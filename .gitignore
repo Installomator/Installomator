@@ -10,5 +10,4 @@ scratch/
 *.tbz
 
 # do include Installomator .pkg files
-!Installomator-*.pkg
-
+#!Installomator-*.pkg
