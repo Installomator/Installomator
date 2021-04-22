@@ -1,5 +1,35 @@
 #!/bin/zsh
 
+# parse arguments
+
+zparseopts -D -E -a opts s -script p -pkg n -notarize h -help -labels+:=label_args l+:=label_args
+
+if (( ${opts[(I)(-h|--help)]} )); then
+  echo "usage: assemble.sh [--script|--pkg|--notarize] [-labels path/to/labels ...] [arguments...]"
+  echo 
+  echo "builds and runs the installomator script from the fragements."
+  echo "additional arguments are passed into the Installomator script for testing."
+  exit
+fi
+
+if (( ${opts[(I)(-s|--script)]} )); then
+    buildScript=1
+fi
+
+if (( ${opts[(I)(-p|--pkg)]} )); then
+    buildScript=1
+    buildPkg=1
+fi
+
+if (( ${opts[(I)(-n|--notarize)]} )); then
+    buildScript=1
+    buildPkg=1
+    notarizePkg=1
+fi
+
+label_flags=( -l --labels )
+# array substraction
+label_paths=${label_args:|label_flags}
 
 #setup some folders
 script_dir=$(dirname ${0:A})
@@ -8,6 +38,9 @@ build_dir="$repo_dir/build"
 destination_file="$build_dir/Installomator.sh"
 fragments_dir="$repo_dir/fragments"
 labels_dir="$fragments_dir/labels"
+
+# add default labels_dir to label_paths
+label_paths+=$labels_dir
 
 fragment_files=( header.txt version.txt functions.txt arguments.txt main.txt )
 
@@ -44,11 +77,27 @@ cat "$fragments_dir/functions.txt" >> $destination_file
 cat "$fragments_dir/arguments.txt" >> $destination_file
 
 # all the labels
-cat "$labels_dir"/*.txt >> $destination_file
+for lpath in $label_paths; do
+    if [[ -d $lpath ]]; then
+        cat "$lpath"/*.txt >> $destination_file
+    else
+        echo "$lpath not a directory, skipping..."
+    fi
+done
 
 # add the footer
 cat "$fragments_dir/main.txt" >> $destination_file
 
 # set the executable bit
 chmod +x $destination_file
+
+# run script with remaining arguments
+$destination_file "$@"
+
+# TODO: build copy the script to root of repo when flag is set
+
+# TODO: build a pkg when flag is set
+
+# TODO: notarize when flag is set
+
 
