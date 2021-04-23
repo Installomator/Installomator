@@ -37,8 +37,8 @@ done
 # lowercase the label
 label=${label:l}
 
-printlog "################## Start Installomator v. $VERSION"
-printlog "################## $label"
+printlog "################## Start Installomator v. $VERSION" REQ
+printlog "################## $label" REQ
 
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
