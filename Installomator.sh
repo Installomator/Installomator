@@ -2715,6 +2715,13 @@ zulujdk15)
     #PatchSkip="YES"
     ;;
 
+adobecc)
+    name="Creative Cloud"
+    type="dmg"
+    downloadURL="https://prod-rel-ffc-ccm.oobesaas.adobe.com/adobe-ffc-external/core/v1/wam/download?sapCode=KCCC&productName=Creative%20Cloud&os=mac&guid=3cda2676-f4fc-4260-8b61-f9d820105e29&contextParams=%7B%22component%22%3A%22cc-home%22%2C%22visitor_guid%22%3A%2219436244748138622232565995318656911370%22%2C%22browser%22%3A%22Safari%22%2C%22context_guid%22%3A%226a5696ea-4858-48cd-bc83-694698f4d2a0%22%2C%22planCodeList%22%3A%22%22%2C%22installerWaitTime%22%3A30%2C%22Product_ID_Promoted%22%3A%22KCCC%22%2C%22contextComName%22%3A%22ACom%3ACCH%22%2C%22contextSvcName%22%3A%22NO-CCD%22%2C%22contextOrigin%22%3A%22ACom%3ACCH%22%2C%22aam_uuid%22%3A%2223074960036023656461797120837856430647%22%2C%22gpv%22%3A%22helpx.adobe.com%3Adownload-install%3Akb%3Acreative-cloud-desktop-app-download%22%2C%22creative-cloud-referrer%22%3A%22https%3A%2F%2Fhelpx.adobe.com%2Fdownload-install%2Fkb%2Fcreative-cloud-desktop-app-download.html%22%2C%22AMCV_D6FAAFAD54CA9F560A4C98A5%2540AdobeOrg%22%3A%22102365995%257CMCMID%257C19436244748138622232565995318656911370%257CMCAAMLH-1620249276%257C9%257CMCAAMB-1620249276%257C6G1ynYcLPuiQxYZrsz_pkqfLG9yMXBpb2zX5dvJdYQJzPXImdj0y%257CMCOPTOUT-1619651676s%257CNONE%257CMCSYNCSOP%257C411-18753%257CvVersion%257C2.2.0%22%2C%22mid%22%3A%2223275764998481040001781260498026036921%22%2C%22aid%22%3A%22%22%2C%22AppMeasurementVersion%22%3A%222.20.0%22%2C%22kaizenTrialDuration%22%3A7%7D&wamFeature=nuj-live&environment=prod&api_key=CCHomeWeb1"
+    expectedTeamID="JQ525L2MZD"
+	;;
+
 # MARK: Add new labels after this line (let us sort them in the list)
 
 
