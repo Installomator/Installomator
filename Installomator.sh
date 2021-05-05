@@ -166,7 +166,17 @@ REOPEN="yes"
 # - updateToolRunAsCurrentUser:
 #   When this variable is set (any value), $updateTool will be run as the current user.
 #
+VM_LICENCE=""
+VM_VERSION=""
 
+# MATH: Functions
+applyVmwareLicence(){ 
+    echo "Installation de la license"
+    sudo /Applications/VMware\ Fusion.app/Contents/Library/licenses/vmware-licenseTool enter "$VM_LICENCE" "DépartementInformatique" "Cegep Shawinigan" "$VM_VERSION" "Vmware Fusion for Mac OS" ""
+    echo "Installation des droits de lapplications"
+    sudo /Applications/VMware\ Fusion.app/Contents/Library/Initialize\ VMware\ Fusion.tool set
+    echo "All installations completed"
+}
 
 # MARK: Functions
 
@@ -800,7 +810,6 @@ printlog "################## $label"
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
-
 # MARK: labels in case statement
 case $label in
 version)
@@ -824,6 +833,10 @@ longversion)
     blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password (Safari)" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
     #forcefulQuit=YES
     #Company="Agilebits"
+    ;;
+vmware_licence)
+    #VM_LICENCE et VM_VERSION must not be empty
+    applyVmwareLicence()
     ;;
 8x8)
     # credit: #D-A-James from MacAdmins Slack and Isaac Ordonez, Mann consulting (@mannconsulting)
@@ -2601,6 +2614,14 @@ wickrme)
     appNewVersion=$( echo ${downloadURL} | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="W8RC3R952A"
     ;;
+eclipse)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="Eclipse"
+    type="dmg"
+    appNewVersion=$( curl -fs https://www.eclipse.org/downloads/ | grep "Download x86_64" | cut -d "/" -f 8)
+    downloadURL="https://www.eclipse.org/downloads/download.php?file=/oomph/epp/${appNewVersion}/R/eclipse-inst-jre-mac64.dmg"
+    expectedTeamID="W8RC3R952A"
+    ;;
 wickrpro)
     # credit: Søren Theilgaard (@theilgaard)
     name="WickrPro"
@@ -2775,15 +2796,15 @@ zulujdk15)
 #     | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep lts)
 #     expectedTeamID="UBF8T346G9"
 #     ;;
-# vmwarefusion)
+vmwarefusion)
 # TODO: vmwarefusion installation process needs testing
 #     # credit: Erik Stam (@erikstam)
-#     name="VMware Fusion"
-#     type="dmg"
-#     downloadURL="https://www.vmware.com/go/getfusion"
-#     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*Fusion-([0-9.]*)-.*/\1/g' )
-#     expectedTeamID="EG7KH642X6"
-#     ;;
+     name="VMware Fusion"
+     type="dmg"
+     downloadURL="https://www.vmware.com/go/getfusion"
+     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*Fusion-([0-9.]*)-.*/\1/g' )
+     expectedTeamID="EG7KH642X6"
+     ;;
 #wordmat)
 #    # WordMat currently not signed
 #    # credit: Søren Theilgaard (@theilgaard)
