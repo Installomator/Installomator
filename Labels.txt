@@ -155,6 +155,7 @@ nomad
 nomadlogin
 notion
 nvivo
+nyfonts
 obsidian
 odrive
 omnidisksweeper
@@ -199,6 +200,9 @@ royaltsx
 rstudio
 santa
 screamingfrogseospider
+sfcompact
+sfmono
+sfpro
 sfsymbols
 shield
 sidekick
