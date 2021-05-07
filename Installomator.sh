@@ -949,6 +949,34 @@ appcleaner)
     expectedTeamID="X85ZX835W9"
     #Company=FreeMacSoft
     ;;
+applenyfonts)
+    name="Apple New York Font Collection"
+    type="pkgInDmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/NY-Font.dmg"
+    packageID="com.apple.pkg.NYFonts"
+    expectedTeamID="Development Update"
+    ;;
+applesfpro)
+    name="San Francisco Pro"
+    type="pkgInDmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Font-Pro.dmg"
+    packageID="com.apple.pkg.SanFranciscoPro"
+    expectedTeamID="Development Update"
+    ;;
+applesfmono)
+    name="San Francisco Mono"
+    type="pkgInDmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg"
+    packageID="com.apple.pkg.SFMonoFonts"
+    expectedTeamID="Software Update"
+    ;;
+applesfcompact)
+    name="San Francisco Compact"
+    type="pkgInDmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Font-Compact.dmg"
+    packageID="com.apple.pkg.SanFranciscoCompact"
+    expectedTeamID="Development Update"
+    ;;
 aquaskk)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="aquaskk"
