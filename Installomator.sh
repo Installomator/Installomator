@@ -2801,8 +2801,9 @@ vmwarefusion)
 #     # credit: Erik Stam (@erikstam)
      name="VMware Fusion"
      type="dmg"
-     downloadURL="https://www.vmware.com/go/getfusion"
-     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*Fusion-([0-9.]*)-.*/\1/g' )
+     infoURL="https://my.vmware.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=FUS-1211&productId=1040"
+     downloadURL="https://download3.vmware.com/software/fusion/file/$( curl -fsSL "${infoURL}" | python3 -c "import sys, json; print(json.loads(sys.stdin.read())['downloadFiles'][0]['fileName'])" )"
+     appNewVersion=$( curl -fsSL "${infoURL}" | python3 -c "import sys, json; print(json.loads(sys.stdin.read())['downloadFiles'][0]['version'])" )
      expectedTeamID="EG7KH642X6"
      ;;
 #wordmat)
