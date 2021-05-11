@@ -334,11 +334,18 @@ getAppVersion() {
     fi
     
     # get all apps matching name
-    applist=$(mdfind "kind:application $appName" -0 )
+    # check if we rename app
+    if [[ -z $appRename ]]; then
+        localAppName=$appName
+    else
+        localAppName=$appRename
+    fi
+
+    applist=$(mdfind "kind:application $localAppName" -0 )
     if [[ $applist = "" ]]; then
         printlog "Spotlight not returning any app, trying manually in /Applications."
-        if [[ -d "/Applications/$appName" ]]; then
-            applist="/Applications/$appName"
+        if [[ -d "/Applications/$localAppName" ]]; then
+            applist="/Applications/$localAppName"
         fi
     fi
      
@@ -352,10 +359,10 @@ getAppVersion() {
             appversion=$(defaults read $installedAppPath/Contents/Info.plist CFBundleShortVersionString) #Not dependant on Spotlight indexing
             printlog "found app at $installedAppPath, version $appversion"
         else
-            printlog "could not determine location of $appName"
+            printlog "could not determine location of $localAppName"
         fi
     else
-        printlog "could not find $appName"
+        printlog "could not find $localAppName"
     fi
 }
 
@@ -524,6 +531,14 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     if [ "$(whoami)" != "root" ]; then
         # not running as root
         cleanupAndExit 6 "not running as root, exiting"
+    fi
+    
+    # check if we rename app
+    if [[ -z $appRename ]]; then
+        printlog "app will not be renamed"
+    else
+        printlog "App will be renamed: ${appRename}"
+        appName=$appRename
     fi
 
     # remove existing application
@@ -2617,13 +2632,59 @@ wickrme)
     appNewVersion=$( echo ${downloadURL} | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="W8RC3R952A"
     ;;
-eclipse)
-    # credit: Søren Theilgaard (@theilgaard)
+eclipse-ide)
+    # credit: Mathieu (@mathieu244)
     name="Eclipse"
     type="dmg"
-    appNewVersion=$( curl -fs https://www.eclipse.org/downloads/ | grep "Download x86_64" | cut -d "/" -f 8)
-    downloadURL="https://www.eclipse.org/downloads/download.php?file=/oomph/epp/${appNewVersion}/R/eclipse-inst-jre-mac64.dmg"
-    expectedTeamID="W8RC3R952A"
+    appNewVersion=$( curl -fsL https://download.eclipse.org/eclipse/downloads | grep "Latest Release" | cut -d ">" -f 2 | cut -d "L" -f 1 )
+    dateSpaceURL=$( curl -fs https://www.eclipse.org/downloads/ | grep "Download x86_64" | cut -d "/" -f 8)
+    downloadURL="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/${dateSpaceURL}/R/eclipse-committers-${dateSpaceURL}-R-macosx-cocoa-x86_64.dmg&r=1"
+    #targetDir="/Applications/Eclipse"
+    expectedTeamID="JCDTMS22B4"
+    ;;
+eclipse-java)
+    # credit: Mathieu (@mathieu244)
+    name="Eclipse"
+    appRename="Eclipse-java.app"
+    type="dmg"
+    appNewVersion=$( curl -fsL https://download.eclipse.org/eclipse/downloads | grep "Latest Release" | cut -d ">" -f 2 | cut -d "L" -f 1 )
+    dateSpaceURL=$( curl -fs https://www.eclipse.org/downloads/ | grep "Download x86_64" | cut -d "/" -f 8)
+    downloadURL="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/${dateSpaceURL}/R/eclipse-java-${dateSpaceURL}-R-macosx-cocoa-x86_64.dmg&r=1"
+    #targetDir="/Applications/Eclipse"
+    expectedTeamID="JCDTMS22B4"
+    ;;
+eclipse-jee)
+    # credit: Mathieu (@mathieu244)
+    name="Eclipse"
+    appRename="Eclipse-jee.app"
+    type="dmg"
+    appNewVersion=$( curl -fsL https://download.eclipse.org/eclipse/downloads | grep "Latest Release" | cut -d ">" -f 2 | cut -d "L" -f 1 )
+    dateSpaceURL=$( curl -fs https://www.eclipse.org/downloads/ | grep "Download x86_64" | cut -d "/" -f 8)
+    downloadURL="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/${dateSpaceURL}/R/eclipse-jee-${dateSpaceURL}-R-macosx-cocoa-x86_64.dmg&r=1"
+    #targetDir="/Applications/Eclipse"
+    expectedTeamID="JCDTMS22B4"
+    ;;
+eclipse-cpp)
+    # credit: Mathieu (@mathieu244)
+    name="Eclipse"
+    appRename="Eclipse-cpp.app"
+    type="dmg"
+    appNewVersion=$( curl -fsL https://download.eclipse.org/eclipse/downloads | grep "Latest Release" | cut -d ">" -f 2 | cut -d "L" -f 1 )
+    dateSpaceURL=$( curl -fs https://www.eclipse.org/downloads/ | grep "Download x86_64" | cut -d "/" -f 8)
+    downloadURL="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/${dateSpaceURL}/R/eclipse-cpp-${dateSpaceURL}-R-macosx-cocoa-x86_64.dmg&r=1"
+    #targetDir="/Applications/Eclipse"
+    expectedTeamID="JCDTMS22B4"
+    ;;
+eclipse-modeling)
+    # credit: Mathieu (@mathieu244)
+    name="Eclipse"
+    appRename="Eclipse-modeling.app"
+    type="dmg"
+    appNewVersion=$( curl -fsL https://download.eclipse.org/eclipse/downloads | grep "Latest Release" | cut -d ">" -f 2 | cut -d "L" -f 1 )
+    dateSpaceURL=$( curl -fs https://www.eclipse.org/downloads/ | grep "Download x86_64" | cut -d "/" -f 8)
+    downloadURL="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/${dateSpaceURL}/R/eclipse-modeling-${dateSpaceURL}-R-macosx-cocoa-x86_64.dmg&r=1"
+    #targetDir="/Applications/Eclipse"
+    expectedTeamID="JCDTMS22B4"
     ;;
 wickrpro)
     # credit: Søren Theilgaard (@theilgaard)
@@ -3224,7 +3285,7 @@ fi
 # credit: Søren Theilgaard (@theilgaard)
 if [[ -n $appNewVersion ]]; then
     printlog "Latest version of $name is $appNewVersion"
-    if [[ $appversion == $appNewVersion ]]; then
+    if [[ $appversion == *"${appNewVersion}"* ]]; then
         if [[ $DEBUG -eq 0 ]]; then
             printlog "There is no newer version available."
             if [[ $INSTALL != "force" ]]; then
