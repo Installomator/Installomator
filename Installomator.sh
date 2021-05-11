@@ -134,6 +134,11 @@ REOPEN="yes"
 #   File name of the app bundle in the dmg to verify and copy (include .app).
 #   When not given, the appName is derived from the $name.
 #
+# - appRename: (optional)
+#   File name in the destination folder(include .app).
+#   Usefull when app in dmg is the same but you want all version like eclipse-ide eclipse-java etc
+#   When not given, the appName is used.
+#
 # - targetDir: (optional)
 #   dmg or zip:
 #     Applications will be copied to this directory.
