@@ -171,6 +171,14 @@ VM_VERSION=""
 
 # MATH: Functions
 applyVmwareLicence(){ 
+    if [[ -z $VM_LICENCE ]]; then
+        printlog "need to provide 'VM_LICENCE'"
+        exit 1
+    fi
+    if [[ -z $VM_VERSION ]]; then
+        printlog "need to provide 'VM_VERSION'"
+        exit 1
+    fi
     echo "Installation de la license"
     sudo /Applications/VMware\ Fusion.app/Contents/Library/licenses/vmware-licenseTool enter "$VM_LICENCE" "DépartementInformatique" "Cegep Shawinigan" "$VM_VERSION" "Vmware Fusion for Mac OS" ""
     echo "Installation des droits de lapplications"
@@ -833,10 +841,6 @@ longversion)
     blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password (Safari)" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
     #forcefulQuit=YES
     #Company="Agilebits"
-    ;;
-vmware_licence)
-    #VM_LICENCE et VM_VERSION must not be empty
-    applyVmwareLicence()
     ;;
 8x8)
     # credit: #D-A-James from MacAdmins Slack and Isaac Ordonez, Mann consulting (@mannconsulting)
@@ -2805,6 +2809,7 @@ vmwarefusion)
      downloadURL="https://download3.vmware.com/software/fusion/file/$( curl -fsSL "${infoURL}" | python3 -c "import sys, json; print(json.loads(sys.stdin.read())['downloadFiles'][0]['fileName'])" )"
      appNewVersion=$( curl -fsSL "${infoURL}" | python3 -c "import sys, json; print(json.loads(sys.stdin.read())['downloadFiles'][0]['version'])" )
      expectedTeamID="EG7KH642X6"
+     licence="applyVmwareLicence"
      ;;
 #wordmat)
 #    # WordMat currently not signed
@@ -3310,8 +3315,18 @@ case $type in
         ;;
 esac
 
+if [[ (-n $licence ) ]]; then
+    printlog "Install licence"
+    if [[ $DEBUG -eq 0 ]]; then
+        $licence
+    else
+        printlog "DEBUG mode enabled, not running update tool"
+    fi
+fi
+
 # MARK: Finishing — print installed application location and version
 finishing
 
 # all done!
 cleanupAndExit 0
+update
