@@ -167,7 +167,6 @@ REOPEN="yes"
 #   When this variable is set (any value), $updateTool will be run as the current user.
 #
 VM_LICENCE=""
-VM_VERSION=""
 
 # MATH: Functions
 applyVmwareLicence(){ 
@@ -175,12 +174,12 @@ applyVmwareLicence(){
         printlog "need to provide 'VM_LICENCE'"
         exit 1
     fi
-    if [[ -z $VM_VERSION ]]; then
-        printlog "need to provide 'VM_VERSION'"
-        exit 1
-    fi
+    #if [[ -z $VM_VERSION ]]; then
+    #    printlog "need to provide 'VM_VERSION'"
+    #    exit 1
+    #fi
     echo "Installation de la license"
-    sudo /Applications/VMware\ Fusion.app/Contents/Library/licenses/vmware-licenseTool enter "$VM_LICENCE" "DépartementInformatique" "Cegep Shawinigan" "$VM_VERSION" "Vmware Fusion for Mac OS" ""
+    sudo /Applications/VMware\ Fusion.app/Contents/Library/licenses/vmware-licenseTool enter "$VM_LICENCE" "DépartementInformatique" "Cegep Shawinigan" "$appNewVersion" "Vmware Fusion for Mac OS" ""
     echo "Installation des droits de lapplications"
     sudo /Applications/VMware\ Fusion.app/Contents/Library/Initialize\ VMware\ Fusion.tool set
     echo "All installations completed"
