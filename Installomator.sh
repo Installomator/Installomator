@@ -2458,6 +2458,14 @@ torbrowser)
     appNewVersion=$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | head -1 | cut -d '"' -f 4 | cut -d / -f 4)
     expectedTeamID="MADPSAYN6T"
     ;;
+trex)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="TRex"
+    type="zip"
+    downloadURL=$(downloadURLFromGit amebalabs TRex)
+    appNewVersion=$(versionFromGit amebalabs TRex)
+    expectedTeamID="X93LWC49WV"
+    ;;
 tunnelbear)
     name="TunnelBear"
     type="zip"
