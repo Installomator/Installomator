@@ -2351,6 +2351,15 @@ sublimetext)
     #appNewVersion=$(curl -Is https://download.sublimetext.com/latest/stable/osx | grep "Location:" | sed -n -e 's/^.*Sublime Text //p' | sed 's/.dmg//g' | sed $'s/[^[:print:]\t]//g') # Alternative from @Oh4sh0
     expectedTeamID="Z6D26JE4Y4"
     ;;
+supportapp)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="SupportApp"
+    type="pkg"
+    packageID="nl.root3.support"
+    downloadURL=$(downloadURLFromGit root3nl SupportApp)
+    appNewVersion=$(versionFromGit root3nl SupportApp)
+    expectedTeamID="98LJ4XBGYK"
+    ;;
 suspiciouspackage)
     # credit: Mischa van der Bent (@mischavdbent)
     name="Suspicious Package"
