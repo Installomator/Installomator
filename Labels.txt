@@ -14,10 +14,6 @@ amazonworkspaces
 androidfiletransfer
 apparency
 appcleaner
-applenyfonts
-applesfcompact
-applesfmono
-applesfpro
 aquaskk
 atom
 autodmg
@@ -40,7 +36,6 @@ camostudio
 camtasia
 citrixworkspace
 clevershare2
-clickshare
 code42
 coderunner
 cormorant
@@ -69,7 +64,9 @@ ferdi
 figma
 firefox
 firefox_da
+firefox_intl
 firefoxesr
+firefoxesr_intl
 firefoxesrpkg
 firefoxpkg
 front
