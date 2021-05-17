@@ -2639,6 +2639,14 @@ wireshark)
     appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep "Stable Release" | grep -o "(.*.)" | cut -f2 | head -1 | awk -F '[()]' '{print $2}')
     expectedTeamID="7Z6EMTD2C6"
     ;;
+wwdc)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="WWDC"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit insidegui WWDC)
+    appNewVersion=$(versionFromGit insidegui WWDC)
+    expectedTeamID="8C7439RJLG"
+    ;;
 xink)
     name="Xink"
     type="zip"
