@@ -2354,7 +2354,7 @@ sublimetext)
     ;;
 supportapp)
     # credit: Søren Theilgaard (@theilgaard)
-    name="SupportApp"
+    name="Support"
     type="pkg"
     packageID="nl.root3.support"
     downloadURL=$(downloadURLFromGit root3nl SupportApp)
