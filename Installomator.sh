@@ -1383,7 +1383,7 @@ firefoxesrpkg)
     ;;
 firefoxesr_intl)
     name="Firefox"
-    type="pkg"
+    type="dmg"
     userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLocale | cut -c 1-2)
     printlog "Found language $userLanguage to be used for Firefox."
     if [[ "$userLanguage" == "en" ]]; then
