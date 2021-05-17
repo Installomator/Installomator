@@ -14,6 +14,10 @@ amazonworkspaces
 androidfiletransfer
 apparency
 appcleaner
+applenyfonts
+applesfcompact
+applesfmono
+applesfpro
 aquaskk
 atom
 autodmg
@@ -36,6 +40,7 @@ camostudio
 camtasia
 citrixworkspace
 clevershare2
+clickshare
 code42
 coderunner
 cormorant
@@ -218,6 +223,7 @@ sonoss2
 sourcetree
 spotify
 sublimetext
+supportapp
 suspiciouspackage
 swiftruntimeforcommandlinetools
 tableaureader
@@ -232,10 +238,10 @@ thunderbird
 tigervnc
 toggltrack
 torbrowser
+trex
 tunnelbear
 tunnelblick
 umbrellaroamingclient
-universaltypeclient
 universaltypeclient
 vagrant
 vanilla
@@ -253,6 +259,7 @@ whatsapp
 wickrme
 wickrpro
 wireshark
+wwdc
 xeroxphaser7800
 xink
 yubikeymanagerqt
