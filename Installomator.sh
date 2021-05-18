@@ -1356,6 +1356,8 @@ firefox_da)
     blockingProcesses=( firefox )
     ;;
 firefox_intl)
+    # This label will try to figure out the selected language of the user, 
+    # and install corrosponding version of Firefox
     name="Firefox"
     type="dmg"
     userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLocale)
@@ -1386,6 +1388,8 @@ firefoxesrpkg)
     blockingProcesses=( firefox )
     ;;
 firefoxesr_intl)
+    # This label will try to figure out the selected language of the user, 
+    # and install corrosponding version of Firefox ESR
     name="Firefox"
     type="dmg"
     userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLocale)
