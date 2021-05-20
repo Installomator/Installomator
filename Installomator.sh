@@ -1415,11 +1415,59 @@ firefox_da)
     expectedTeamID="43AQ936H96"
     blockingProcesses=( firefox )
     ;;
+firefox_intl)
+    # This label will try to figure out the selected language of the user, 
+    # and install corrosponding version of Firefox
+    name="Firefox"
+    type="dmg"
+    userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLocale)
+    printlog "Found language $userLanguage to be used for Firefox."
+    if ! curl -fs "https://ftp.mozilla.org/pub/firefox/releases/latest/README.txt" | grep -o "=$userLanguage"; then
+        userLanguage=$(echo $userLanguage | cut -c 1-2)
+        if ! curl -fs "https://ftp.mozilla.org/pub/firefox/releases/latest/README.txt" | grep "=$userLanguage"; then
+            userLanguage="en_US"
+        fi
+    fi
+    printlog "Using language $userLanguage for download."
+    downloadURL="https://download.mozilla.org/?product=firefox-latest&amp;os=osx&amp;lang=$userLanguage"
+    if ! curl -sfL --output /dev/null -r 0-0 "$downloadURL" ; then
+        printlog "Download not found for that language. Using en-US"
+        downloadURL="https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US"
+    fi
+    appNewVersion=$(/usr/bin/curl -sl https://www.mozilla.org/en-US/firefox/releases/ | /usr/bin/grep '<html' | /usr/bin/awk -F\" '{ print $8 }') # Credit: William Smith (@meck)
+    expectedTeamID="43AQ936H96"
+    blockingProcesses=( firefox )
+    ;;
 firefoxesr|\
 firefoxesrpkg)
     name="Firefox"
     type="pkg"
     downloadURL="https://download.mozilla.org/?product=firefox-esr-pkg-latest-ssl&os=osx"
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*releases\/([0-9.]*)esr.*/\1/g')
+    expectedTeamID="43AQ936H96"
+    blockingProcesses=( firefox )
+    ;;
+firefoxesr_intl)
+    # This label will try to figure out the selected language of the user, 
+    # and install corrosponding version of Firefox ESR
+    name="Firefox"
+    type="dmg"
+    userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLocale)
+    printlog "Found language $userLanguage to be used for Firefox."
+    if ! curl -fs "https://ftp.mozilla.org/pub/firefox/releases/latest-esr/README.txt" | grep -o "=$userLanguage"; then
+        userLanguage=$(echo $userLanguage | cut -c 1-2)
+        if ! curl -fs "https://ftp.mozilla.org/pub/firefox/releases/latest-esr/README.txt" | grep "=$userLanguage"; then
+            userLanguage="en_US"
+        fi
+    fi
+    printlog "Using language $userLanguage for download."
+    downloadURL="https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=osx&lang=$userLanguage"
+    # https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=osx&lang=en-US
+    if ! curl -sfL --output /dev/null -r 0-0 "$downloadURL" ; then
+        printlog "Download not found for that language. Using en-US"
+        downloadURL="https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US"
+    fi
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*releases\/([0-9.]*)esr.*/\1/g')
     expectedTeamID="43AQ936H96"
     blockingProcesses=( firefox )
     ;;
@@ -1922,10 +1970,11 @@ nextcloud)
     type="pkg"
     #packageID="com.nextcloud.desktopclient"
     downloadURL=$(downloadURLFromGit nextcloud desktop)
-    #appNewVersion=$(versionFromGit nextcloud desktop)
+    appNewVersion=$(versionFromGit nextcloud desktop)
     # The version of the app is not equal to the version listed on GitHub.
     # App version something like "3.1.3git (build 4850)" but web page lists as "3.1.3"
     # Also it does not math packageID version "3.1.34850"
+    appCustomVersion(){defaults read /Applications/nextcloud.app/Contents/Info.plist CFBundleShortVersionString | sed -E 's/^([0-9.]*)git.*/\1/g'}
     expectedTeamID="NKUJUXUJ3B"
     ;;
 nomad)
@@ -2420,6 +2469,15 @@ sublimetext)
     #appNewVersion=$(curl -Is https://download.sublimetext.com/latest/stable/osx | grep "Location:" | sed -n -e 's/^.*Sublime Text //p' | sed 's/.dmg//g' | sed $'s/[^[:print:]\t]//g') # Alternative from @Oh4sh0
     expectedTeamID="Z6D26JE4Y4"
     ;;
+supportapp)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="Support"
+    type="pkg"
+    packageID="nl.root3.support"
+    downloadURL=$(downloadURLFromGit root3nl SupportApp)
+    appNewVersion=$(versionFromGit root3nl SupportApp)
+    expectedTeamID="98LJ4XBGYK"
+    ;;
 suspiciouspackage)
     # credit: Mischa van der Bent (@mischavdbent)
     name="Suspicious Package"
@@ -2492,6 +2550,14 @@ textmate)
     appNewVersion=$(versionFromGit "textmate" "textmate")
     expectedTeamID="45TL96F76G"
     ;;
+theunarchiver)
+    name="The Unarchiver"
+    type="dmg"
+    downloadURL="https://dl.devmate.com/com.macpaw.site.theunarchiver/TheUnarchiver.dmg"
+    #appNewVersion=""
+    expectedTeamID="S8EX82NJP6"
+    appName="The Unarchiver.app"
+    ;;
 things)
     name="Things"
     type="zip"
@@ -2526,6 +2592,14 @@ torbrowser)
     downloadURL=https://www.torproject.org$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | head -1 | cut -d '"' -f 4)
     appNewVersion=$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | head -1 | cut -d '"' -f 4 | cut -d / -f 4)
     expectedTeamID="MADPSAYN6T"
+    ;;
+trex)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="TRex"
+    type="zip"
+    downloadURL=$(downloadURLFromGit amebalabs TRex)
+    appNewVersion=$(versionFromGit amebalabs TRex)
+    expectedTeamID="X93LWC49WV"
     ;;
 tunnelbear)
     name="TunnelBear"
@@ -2689,6 +2763,14 @@ wireshark)
     downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Intel%2064.dmg"
     appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep "Stable Release" | grep -o "(.*.)" | cut -f2 | head -1 | awk -F '[()]' '{print $2}')
     expectedTeamID="7Z6EMTD2C6"
+    ;;
+wwdc)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="WWDC"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit insidegui WWDC)
+    appNewVersion=$(versionFromGit insidegui WWDC)
+    expectedTeamID="8C7439RJLG"
     ;;
 xink)
     name="Xink"
