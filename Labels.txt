@@ -70,7 +70,9 @@ ferdi
 figma
 firefox
 firefox_da
+firefox_intl
 firefoxesr
+firefoxesr_intl
 firefoxesrpkg
 firefoxpkg
 front
@@ -225,6 +227,7 @@ sonoss2
 sourcetree
 spotify
 sublimetext
+supportapp
 suspiciouspackage
 swiftruntimeforcommandlinetools
 tableaureader
@@ -234,15 +237,16 @@ teamviewerhost
 teamviewerqs
 telegram
 textmate
+theunarchiver
 things
 thunderbird
 tigervnc
 toggltrack
 torbrowser
+trex
 tunnelbear
 tunnelblick
 umbrellaroamingclient
-universaltypeclient
 universaltypeclient
 vagrant
 vanilla
@@ -260,6 +264,7 @@ whatsapp
 wickrme
 wickrpro
 wireshark
+wwdc
 xeroxphaser7800
 xink
 yubikeymanagerqt
