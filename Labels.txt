@@ -19,6 +19,7 @@ applesfcompact
 applesfmono
 applesfpro
 aquaskk
+arq7
 atom
 autodmg
 autopkgr
