@@ -974,6 +974,34 @@ appcleaner)
     expectedTeamID="X85ZX835W9"
     #Company=FreeMacSoft
     ;;
+applenyfonts)
+    name="Apple New York Font Collection"
+    type="pkgInDmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/NY-Font.dmg"
+    packageID="com.apple.pkg.NYFonts"
+    expectedTeamID="Development Update"
+    ;;
+applesfpro)
+    name="San Francisco Pro"
+    type="pkgInDmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Font-Pro.dmg"
+    packageID="com.apple.pkg.SanFranciscoPro"
+    expectedTeamID="Development Update"
+    ;;
+applesfmono)
+    name="San Francisco Mono"
+    type="pkgInDmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg"
+    packageID="com.apple.pkg.SFMonoFonts"
+    expectedTeamID="Software Update"
+    ;;
+applesfcompact)
+    name="San Francisco Compact"
+    type="pkgInDmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Font-Compact.dmg"
+    packageID="com.apple.pkg.SanFranciscoCompact"
+    expectedTeamID="Development Update"
+    ;;
 aquaskk)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="aquaskk"
@@ -1140,7 +1168,7 @@ camostudio)
     name="Camo Studio"
     type="zip"
     downloadURL="https://reincubate.com/res/labs/camo/camo-macos-latest.zip"
-    #appNewVersion=$(  ) # Can't find any versioniing on web server
+    appNewVersion=$(curl -s -L  https://reincubate.com/support/camo/release-notes/ | grep -m2 "has-m-t-0" | head -1 | cut -d ">" -f2 | cut -d " " -f1)
     expectedTeamID="Q248YREB53"
     ;;
 camtasia)
@@ -2111,6 +2139,13 @@ promiseutilityr)
     expectedTeamID="268CCUR4WN"
     #Company="Promise"
     ;;
+proxyman)
+		name="Proxyman"
+		type="dmg"
+		downloadURL="https://proxyman.io/release/osx/Proxyman_latest.dmg"
+		expectedTeamID="3X57WP8E8V"
+		appNewVersion=$(curl -s -L https://github.com/ProxymanApp/Proxyman | grep -o 'releases/tag/.*\>' | awk -F '/' '{print $3}')
+		;;
 pymol)
     name="PyMOL"
     type="dmg"
