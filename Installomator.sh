@@ -1631,6 +1631,14 @@ gyazogif)
     downloadURL="https://files.gyazo.com/setup/Gyazo-${appNewVersion}.dmg"
     expectedTeamID="9647Y3B7A4"
     ;;
+hancock)
+    # Credit: Bilal Habib @Pro4TLZZZ
+    name="Hancock"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit JeremyAgost Hancock )
+    appNewVersion=$(versionFromGit JeremyAgost Hancock )
+    expectedTeamID="SWD2B88S58"
+    ;;
 handbrake)
     name="HandBrake"
     type="dmg"
@@ -1676,6 +1684,13 @@ icons)
     downloadURL=$(downloadURLFromGit sap macOS-icon-generator )
     appNewVersion=$(versionFromGit sap macOS-icon-generator )
     expectedTeamID="7R5ZEU67FQ"
+    ;;
+imazingprofileeditor)
+    # Credit: Bilal Habib @Pro4TLZZZ
+    name="iMazing Profile Editor"
+    type="dmg"
+    downloadURL="https://downloads.imazing.com/mac/iMazing-Profile-Editor/iMazingProfileEditorMac.dmg"
+    expectedTeamID="J5PR93692Y"
     ;;
 inkscape)
     # credit: Søren Theilgaard (@theilgaard)
@@ -2154,7 +2169,7 @@ pitch)
     ;;
 plantronicshub)
     name="Plantronics Hub"
-    type="dmg"
+    type="pkgInDmg"
     downloadURL="https://www.poly.com/content/dam/www/software/PlantronicsHubInstaller.dmg"
     expectedTeamID="SKWK2Q7JJV"
     appNewVersion=$(curl -fs "https://www.poly.com/in/en/support/knowledge-base/kb-article-page?lang=en_US&urlName=Hub-Release-Notes&type=Product_Information__kav" | grep -o "(*.*<span>)" | head -1 | cut -d "(" -f2 | sed 's/\<\/span\>//g' | cut -d "<" -f1)
