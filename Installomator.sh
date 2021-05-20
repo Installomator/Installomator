@@ -115,6 +115,18 @@ REOPEN="yes"
 #   If given, it will be compared to installed version, to see if download is different.
 #   It does not check for newer or not, only different.
 #
+# - versionKey: (optional)
+#   How we get version number from app. Possible values:
+#     - CFBundleShortVersionString
+#     - CFBundleVersion
+#   Not all software titles uses fields the same. 
+#   See Opera label.
+#
+# - appCustomVersion(){}: (optional function)
+#   This function can be added to your label, if a specific custom
+#   mechanism hs to be used for getting the installed version.
+#   See labels zulujdk11, zulujdk13, zulujdk15
+#
 # - expectedTeamID: (required)
 #   10-digit developer team ID.
 #   Obtain the team ID by running:
@@ -305,7 +317,15 @@ xpath() {
 
 
 getAppVersion() {
-    # modified by: Søren Theilgaard (@theilgaard)
+    # modified by: Søren Theilgaard (@theilgaard) and Isaac Ordonez
+
+    # If label contain function appCustomVersion, we use that and return
+    if type 'appCustomVersion' 2>/dev/null | grep -q 'function'; then
+        appversion=$(appCustomVersion)
+        printlog "Custom App Version detection is used, found $appversion"
+        return
+    fi
+    
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
         appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
@@ -333,7 +353,7 @@ getAppVersion() {
         if [[ ${#filteredAppPaths} -eq 1 ]]; then
             installedAppPath=$filteredAppPaths[1]
             #appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
-            appversion=$(defaults read $installedAppPath/Contents/Info.plist CFBundleShortVersionString) #Not dependant on Spotlight indexing
+            appversion=$(defaults read $installedAppPath/Contents/Info.plist $versionKey) #Not dependant on Spotlight indexing
             printlog "found app at $installedAppPath, version $appversion"
         else
             printlog "could not determine location of $appName"
@@ -481,7 +501,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # versioncheck
     # credit: Søren Theilgaard (@theilgaard)
-    appNewVersion=$(defaults read $appPath/Contents/Info.plist CFBundleShortVersionString)
+    appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
     if [[ $appversion == $appNewVersion ]]; then
         printlog "Downloaded version of $name is $appNewVersion, same as installed."
         if [[ $INSTALL != "force" ]]; then
@@ -797,6 +817,10 @@ label=${label:l}
 
 printlog "################## Start Installomator v. $VERSION"
 printlog "################## $label"
+
+# How we get version number from app
+# (alternative is "CFBundleVersion", that can be used in labels)
+versionKey="CFBundleShortVersionString"
 
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
@@ -1577,6 +1601,7 @@ installomator_st)
     packageID="dk.theilgaard.pkg.Installomator"
     downloadURL=$(downloadURLFromGit theile Installomator )
     appNewVersion=$(versionFromGit theile Installomator )
+    #appCustomVersion(){/usr/local/bin/Installomator.sh version | tail -1 | awk '{print $4}'}
     expectedTeamID="L8W73B6AH3"
     blockingProcesses=( NONE )
     ;;
@@ -2010,8 +2035,9 @@ openvpnconnectv3)
 opera)
     name="Opera"
     type="dmg"
-    downloadURL="https://get.geo.opera.com/ftp/pub/opera/desktop/"$( curl -fs "https://get.geo.opera.com/ftp/pub/opera/desktop/" | grep href | tail -1 | tr '"' '\n' | grep "/" | head -1 )"mac/Opera_"$( curl -fs "https://get.geo.opera.com/ftp/pub/opera/desktop/" | grep href | tail -1 | tr '"' '\n' | grep "/" | head -1 | sed -E 's/^([0-9.]*)\//\1/g' )"_Setup.dmg"
-    appNewVersion="$( curl -fs "https://get.geo.opera.com/ftp/pub/opera/desktop/" | grep href | tail -1 | tr '"' '\n' | grep "/" | head -1 | sed -E 's/^([0-9]*\.[0-9]*).*\//\1/g' )"
+    downloadURL=$(curl -fsIL "$(curl -fs "$(curl -fsIL "https://download.opera.com/download/get/?partner=www&opsys=MacOS" | grep -i "^location" | cut -d " " -f2 | tail -1 | tr -d '\r')" | grep download.opera.com | grep -io "https.*yes" | sed 's/\&amp;/\&/g')" | grep -i "^location" | cut -d " " -f2 | tr -d '\r')
+    appNewVersion="$(curl -fs "https://get.geo.opera.com/ftp/pub/opera/desktop/" | grep "href=\"\d" | sort -V | tail -1 | tr '"' '\n' | grep "/" | head -1 | tr -d '/')"
+	versionKey="CFBundleVersion"
     expectedTeamID="A2P9LX4JPN"
     ;;
 pacifist)
@@ -2619,7 +2645,7 @@ wireshark)
     name="Wireshark"
     type="dmg"
     downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Intel%2064.dmg"
-    appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep "Stable Release" | grep -o "(.*.)" | cut -f2 | head -1 | awk -F'[()]' '{print $2}')
+    appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep "Stable Release" | grep -o "(.*.)" | cut -f2 | head -1 | awk -F '[()]' '{print $2}')
     expectedTeamID="7Z6EMTD2C6"
     ;;
 xink)
@@ -2684,8 +2710,8 @@ zulujdk11)
       downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu11.*ca-jdk11.*aarch64.dmg" | sed 's/\\//g')
     fi
     expectedTeamID="TDTHCUPYFR"
-    #appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
-    #appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
+    appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
     #Company="Azul"
     #PatchSkip="YES"
     ;;
@@ -2699,8 +2725,8 @@ zulujdk13)
         downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu13.*ca-jdk13.*aarch64.dmg" | sed 's/\\//g')
     fi
     expectedTeamID="TDTHCUPYFR"
-    #appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
-    #appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
+    appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
     #Company="Azul"
     #PatchSkip="YES"
     ;;
@@ -2714,8 +2740,8 @@ zulujdk15)
         downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu15.*ca-jdk15.*aarch64.dmg" | sed 's/\\//g')
     fi
     expectedTeamID="TDTHCUPYFR"
-    #appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
-    #appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
+    appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
     #Company="Azul"
     #PatchSkip="YES"
     ;;
@@ -2989,7 +3015,7 @@ microsoftteams)
     type="pkg"
     #packageID="com.microsoft.teams"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.teams.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.teams.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
     # Still using macadmin.software for version, as the path does not contain the version in a matching format. packageID can be used, but version is the same.
     expectedTeamID="UBF8T346G9"
     blockingProcesses=( Teams "Microsoft Teams Helper" )
@@ -3182,23 +3208,9 @@ if ! cd "$tmpDir"; then
     cleanupAndExit 1
 fi
 
-# MARK: check if this is an Update and we can use updateTool
+# MARK: get installed version
 getAppVersion
 printlog "appversion: $appversion"
-if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
-    printlog "appversion & updateTool"
-    if [[ $DEBUG -eq 0 ]]; then
-        if runUpdateTool; then
-            finishing
-            cleanupAndExit 0
-        elif [[ $type == "updateronly" ]];then
-            printlog "type is $type so we end here."
-            cleanupAndExit 0
-        fi # otherwise continue
-    else
-        printlog "DEBUG mode enabled, not running update tool"
-    fi
-fi
 
 # MARK: Exit if new version is the same as installed version (appNewVersion specified)
 # credit: Søren Theilgaard (@theilgaard)
@@ -3215,7 +3227,8 @@ if [[ -n $appNewVersion ]]; then
                 fi
                 cleanupAndExit 0 "No newer version."
             else
-                printlog "Using force to install anyway."
+                printlog "Using force to install anyway. Not using updateTool."
+                updateTool=""
             fi
         else
             printlog "DEBUG mode enabled, not exiting, but there is no new version of app."
@@ -3223,6 +3236,26 @@ if [[ -n $appNewVersion ]]; then
     fi
 else
     printlog "Latest version not specified."
+    if [[ $INSTALL == "force" ]]; then
+        printlog "Using force to install, so not using updateTool."
+        updateTool=""
+    fi
+fi
+
+# MARK: check if this is an Update and we can use updateTool
+if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
+    printlog "appversion & updateTool"
+    if [[ $DEBUG -eq 0 ]]; then
+        if runUpdateTool; then
+            finishing
+            cleanupAndExit 0
+        elif [[ $type == "updateronly" ]];then
+            printlog "type is $type so we end here."
+            cleanupAndExit 0
+        fi # otherwise continue
+    else
+        printlog "DEBUG mode enabled, not running update tool"
+    fi
 fi
 
 # MARK: download the archive
