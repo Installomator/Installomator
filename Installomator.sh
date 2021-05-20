@@ -1319,6 +1319,13 @@ docker)
     appNewVersion=$(curl -ifs https://docs.docker.com/docker-for-mac/release-notes/ | grep ">Docker Desktop Community" | head -1 | sed -n -e 's/^.*Community //p' | cut -d '<' -f1)
     expectedTeamID="9BNSXJN65R"
     ;;
+drift)
+    # credit Elena Ackley (@elenaelago)
+    name="Drift"
+    type="dmg"
+    downloadURL="https://drift-prod-desktop-installers.s3.amazonaws.com/mac/Drift-latest.dmg"
+    expectedTeamID="78559WUUR9"
+    ;;
 dropbox)
     name="Dropbox"
     type="dmg"
