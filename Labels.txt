@@ -230,6 +230,7 @@ teamviewerhost
 teamviewerqs
 telegram
 textmate
+theunarchiver
 things
 thunderbird
 tigervnc

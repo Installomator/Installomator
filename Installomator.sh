@@ -2481,6 +2481,14 @@ textmate)
     appNewVersion=$(versionFromGit "textmate" "textmate")
     expectedTeamID="45TL96F76G"
     ;;
+theunarchiver)
+    name="The Unarchiver"
+    type="dmg"
+    downloadURL="https://dl.devmate.com/com.macpaw.site.theunarchiver/TheUnarchiver.dmg"
+    #appNewVersion=""
+    expectedTeamID="S8EX82NJP6"
+    appName="The Unarchiver.app"
+    ;;
 things)
     name="Things"
     type="zip"
