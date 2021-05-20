@@ -56,6 +56,7 @@ devonthink
 dialpad
 discord
 docker
+drift
 dropbox
 easeusdatarecoverywizard
 egnyte
