@@ -2910,6 +2910,15 @@ zulujdk15)
 
 # MARK: Add new labels after this line (let us sort them in the list)
 
+aldente)
+    # credit: Adrian Bühler (@midni9ht)
+    name="AlDente"
+    type="zip"
+    downloadURL=$(downloadURLFromGit davidwernhart AlDente)
+    appNewVersion=$(versionFromGit davidwernhart AlDente)
+    expectedTeamID="3WVC84GB99"
+    blockingProcesses=( zoom.us )
+    ;;
 
 # MARK: add new labels above here
 
