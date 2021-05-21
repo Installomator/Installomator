@@ -2917,7 +2917,6 @@ aldente)
     downloadURL=$(downloadURLFromGit davidwernhart AlDente)
     appNewVersion=$(versionFromGit davidwernhart AlDente)
     expectedTeamID="3WVC84GB99"
-    blockingProcesses=( zoom.us )
     ;;
 
 # MARK: add new labels above here
