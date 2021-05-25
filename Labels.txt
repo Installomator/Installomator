@@ -225,6 +225,7 @@ taskpaper
 teamviewer
 teamviewerhost
 teamviewerqs
+techsmithcapture
 telegram
 textmate
 things
