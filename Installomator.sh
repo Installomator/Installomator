@@ -1205,6 +1205,13 @@ clevershare2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z-]*_Mac\.([0-9.]*)\.[0-9]*\.dmg$/\1/g' )
     expectedTeamID="P76M9BE8DQ"
     ;;
+clickshare)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="ClickShare"
+    type="appInDmgInZip"
+    downloadURL=https://www.barco.com$(curl -fs "https://www.barco.com/en/clickshare/app" | grep -E -o '(\/\S*Download\?FileNumber=R3306192\S*ShowDownloadPage=False)' | tail -1)
+    expectedTeamID="P6CDJZR997"
+    ;;
 code42)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Code42"
@@ -1704,8 +1711,7 @@ inkscape)
     #appNewVersion=$(curl -fsJL https://inkscape.org/release/  | grep "<h2>Inkscape" | cut -d '>' -f 3 | cut -d '<' -f 1 | sed 's/[^0-9.]*//g') # Can't figure out where exact new version is found. Currently returns 1.0, but version is "1.0.0 (4035a4f)"
     expectedTeamID="SW3D6BB6A6"
     ;;
-installomator_theile|\
-installomator_st)
+installomator_theile)
     # credit: Søren Theilgaard (@theilgaard)
     name="Installomator"
     type="pkg"
@@ -1713,7 +1719,7 @@ installomator_st)
     downloadURL=$(downloadURLFromGit theile Installomator )
     appNewVersion=$(versionFromGit theile Installomator )
     #appCustomVersion(){/usr/local/bin/Installomator.sh version | tail -1 | awk '{print $4}'}
-    expectedTeamID="L8W73B6AH3"
+    expectedTeamID="FXW6QXBFW5"
     blockingProcesses=( NONE )
     ;;
 istatmenus)
@@ -2657,13 +2663,6 @@ umbrellaroamingclient)
 universaltypeclient)
     name="Universal Type Client"
     type="pkgInZip"
-    downloadURL=https://bin.extensis.com/$( curl -fs https://www.extensis.com/support/universal-type-server-7/ | grep -o "UTC-[0-9].*M.zip" )
-    expectedTeamID="J6MMHGD9D6"
-    Company="Extensis"
-    ;;
-universaltypeclient)
-    name="Universal Type Client"
-    type="pkgInZip"
     #packageID="com.extensis.UniversalTypeClient.universalTypeClient70.Info.pkg" # Does not contain the real version of the download
     downloadURL=https://bin.extensis.com/$( curl -fs https://www.extensis.com/support/universal-type-server-7/ | grep -o "UTC-[0-9].*M.zip" )
     expectedTeamID="J6MMHGD9D6"
@@ -2911,7 +2910,7 @@ zulujdk15)
 # MARK: Add new labels after this line (let us sort them in the list)
 
 
-# MARK: add new labels above here
+# MARK: Add new labels above here
 
 #cdef)
 #    # cdef currently not signed
@@ -2988,14 +2987,6 @@ zulujdk15)
 #    appNewVersion=$(versionFromGit Eduap-com WordMat)
 #    #curl -fs "https://api.github.com/repos/Eduap-com/WordMat/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g'
 #    expectedTeamID=""
-#    ;;
-
-#wwdcformac)
-#    this label looks like software/site is gone
-#    name="WWDC"
-#    type="zip"
-#    downloadURL="https://cdn.wwdc.io/WWDC_latest.zip"
-#    expectedTeamID="8C7439RJLG"
 #    ;;
 
 
@@ -3181,9 +3172,9 @@ microsoftteams)
     # Still using macadmin.software for version, as the path does not contain the version in a matching format. packageID can be used, but version is the same.
     expectedTeamID="UBF8T346G9"
     blockingProcesses=( Teams "Microsoft Teams Helper" )
-    # commenting out msupdate as it is not really supported *yet* for teams
-    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    #updateToolArguments=( --install --apps TEAM01 )
+    # Commenting out msupdate as it is not really supported *yet* for teams
+    # updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    # updateToolArguments=( --install --apps TEAM01 )
     ;;
 microsoftvisualstudiocode|\
 visualstudiocode)
