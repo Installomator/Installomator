@@ -19,6 +19,7 @@ applesfcompact
 applesfmono
 applesfpro
 aquaskk
+arq7
 atom
 autodmg
 autopkgr
@@ -56,6 +57,7 @@ devonthink
 dialpad
 discord
 docker
+drift
 dropbox
 easeusdatarecoverywizard
 egnyte
@@ -68,7 +70,9 @@ ferdi
 figma
 firefox
 firefox_da
+firefox_intl
 firefoxesr
+firefoxesr_intl
 firefoxesrpkg
 firefoxpkg
 front
@@ -89,12 +93,14 @@ gpgsync
 grandperspective
 gyazo
 gyazogif
+hancock
 handbrake
 hazel
 hpeasyadmin
 hpeasystart
 hyper
 icons
+imazingprofileeditor
 inkscape
 installomator_st
 installomator_theile
@@ -223,6 +229,7 @@ sonoss2
 sourcetree
 spotify
 sublimetext
+supportapp
 suspiciouspackage
 swiftruntimeforcommandlinetools
 tableaureader
@@ -232,15 +239,16 @@ teamviewerhost
 teamviewerqs
 telegram
 textmate
+theunarchiver
 things
 thunderbird
 tigervnc
 toggltrack
 torbrowser
+trex
 tunnelbear
 tunnelblick
 umbrellaroamingclient
-universaltypeclient
 universaltypeclient
 vagrant
 vanilla
@@ -258,6 +266,7 @@ whatsapp
 wickrme
 wickrpro
 wireshark
+wwdc
 xeroxphaser7800
 xink
 yubikeymanagerqt
