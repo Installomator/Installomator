@@ -109,6 +109,7 @@ istatmenus
 iterm2
 jabradirect
 jamfconnect
+jamfconnectconfiguration
 jamfmigrator
 jamfpppcutility
 jamfreenroller
@@ -226,6 +227,7 @@ snapgeneviewer
 sonos
 sonoss1
 sonoss2
+soundsource
 sourcetree
 spotify
 sublimetext
