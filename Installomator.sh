@@ -1640,6 +1640,13 @@ jamfconnect)
     #Company="Jamf"
     #PatchSkip="YES"
     ;;
+jamfconnectconfiguration)
+		name="Jamf Connect Configuration"
+		type="dmg"
+		packageID="com.jamf.connect"
+		downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
+		expectedTeamID="483DWKW443"
+		;;
 jamfmigrator)
     # credit: Mischa van der Bent
     name="jamf-migrator"
@@ -2360,6 +2367,13 @@ sonoss2)
     type="dmg"
     downloadURL="https://www.sonos.com/redir/controller_software_mac2"
     expectedTeamID="2G4LW83Q3E"
+    ;;
+soundsource)
+    name="SoundSource"
+    type="zip"
+    downloadURL="https://rogueamoeba.com/soundsource/download/SoundSource.zip"
+    appNewVersion=$(curl -s -L 'https://rogueamoeba.com/support/knowledgebase/?showCategory=SoundSource' | grep -o -A1 "Current Version" | tail -1 | awk -F "\t" '{print $5}')
+    expectedTeamID="7266XEXAPM"
     ;;
 sourcetree)
     name="Sourcetree"
