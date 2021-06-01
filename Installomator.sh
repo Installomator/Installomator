@@ -1741,10 +1741,10 @@ iterm2)
     ;;
 jabradirect)
     name="Jabra Direct"
-    type="dmg"
+    type="pkgInDmg"
     downloadURL="https://jabraxpressonlineprdstor.blob.core.windows.net/jdo/JabraDirectSetup.dmg"
     expectedTeamID="55LV32M29R"
-    appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -o "Jabra Direct macOS:*.*<" | head -1 | cut -d ":" -f2 | cut -d " " -f2 | cut -d "<" -f1)
+    appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -A1 'Release version:' | head -1 | cut -c 38-46)
     ;;
 jamfconnect)
     name="Jamf Connect"
@@ -1756,12 +1756,12 @@ jamfconnect)
     #PatchSkip="YES"
     ;;
 jamfconnectconfiguration)
-		name="Jamf Connect Configuration"
-		type="dmg"
-		packageID="com.jamf.connect"
-		downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
-		expectedTeamID="483DWKW443"
-		;;
+    name="Jamf Connect Configuration"
+    type="dmg"
+    packageID="com.jamf.connect"
+    downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
+    expectedTeamID="483DWKW443"
+    ;;
 jamfmigrator)
     # credit: Mischa van der Bent
     name="jamf-migrator"
