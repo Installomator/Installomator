@@ -53,6 +53,7 @@ dialpad
 discord
 docker
 dropbox
+duodevicehealth
 easeusdatarecoverywizard
 egnyte
 element

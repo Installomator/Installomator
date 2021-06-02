@@ -2717,6 +2717,13 @@ zulujdk15)
 
 # MARK: Add new labels after this line (let us sort them in the list)
 
+duodevicehealth)
+    name="Duo Device Health"
+    type="pkgInDmg"
+    packageID="com.duosecurity.duo-device-health"
+    downloadURL="https://dl.duosecurity.com/DuoDeviceHealth-latest.dmg"
+    expectedTeamID="FNN8Z5JMFP"
+    ;;
 
 # MARK: add new labels above here
 
