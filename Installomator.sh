@@ -2547,6 +2547,13 @@ tableaureader)
     downloadURL="https://www.tableau.com/downloads/reader/mac"
     expectedTeamID="QJ4XPRK37C"
     ;;
+tageditor)
+    name"Tag Editor"
+    type="dmg"
+    downloadURL="https://amvidia.com/downloads/tag-editor-mac.dmg"
+    appNewVersion="curl -sf "https://amvidia.com/tag-editor" | grep -o -E '"softwareVersion":.'"{8}" | sed 's/\"//g' | awk -F ': ' '{print $2}'"
+    expectedTeamID="F2TH9XX9CJ"
+    ;;
 taskpaper)
     # credit: Drew Diver (@grumpydrew on MacAdmins Slack)
     name="TaskPaper"
@@ -2638,6 +2645,13 @@ toggltrack)
     downloadURL=$(downloadURLFromGit toggl-open-source toggldesktop )
     appNewVersion=$(versionFromGit toggl-open-source toggldesktop )
     expectedTeamID="B227VTMZ94"
+    ;;
+tom4aconverter)
+    name"To M4A Converter"
+    type="dmg"
+    downloadURL="https://amvidia.com/downloads/to-m4a-converter-mac.dmg"
+    appNewVersion="curl -sf "https://amvidia.com/to-m4a-converter" | grep -o -E '"softwareVersion":.'"{8}" | sed 's/\"//g' | awk -F ': ' '{print $2}'"
+    expectedTeamID="F2TH9XX9CJ"
     ;;
 torbrowser)
     # credit: Søren Theilgaard (@theilgaard)
