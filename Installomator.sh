@@ -2876,9 +2876,21 @@ vmwarefusion)
 
      infoURL="https://my.vmware.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=${fullVersionCode}&productId=1040"
      downloadURL="https://download3.vmware.com/software/fusion/file/$( curl -fsSL "${infoURL}" | python3 -c "import sys, json; print(json.loads(sys.stdin.read())['downloadFiles'][0]['fileName'])" )"
+    #${variable:offset:length}
      appNewVersion="${fullVersionCode:4:2}.${fullVersionCode:6:1}.${fullVersionCode:7:1}"
      expectedTeamID="EG7KH642X6"
      licence="applyVmwareLicence"
+     ;;
+androidstudio)
+#     # credit: Mathieu St-Yves (@mathieu244)
+     name="Android Studio"
+     type="dmg"
+     finalPath=$(curl -fsSL "https://developer.android.com/studio" | grep "android-studio-ide-*.*-mac.dmg" | cut -d ">" -f1 | head -2 )
+     appNewVersion="${echo $finalPath | cut -d "/" -f8}"
+     filename= "${echo $finalPath | cut -d "/" -f9}"
+     downloadURL="https://dl.google.com/dl/android/studio/install/${appNewVersion}/${filename}"
+    #${variable:offset:length}
+     expectedTeamID="EG7KH642X6"
      ;;
 #wordmat)
 #    # WordMat currently not signed
