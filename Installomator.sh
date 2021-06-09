@@ -188,6 +188,7 @@ applyVmwareLicence(){
     echo "Installation des droits de lapplications"
     sudo /Applications/VMware\ Fusion.app/Contents/Library/Initialize\ VMware\ Fusion.tool set
     echo "All installations completed"
+    
 }
 
 # MARK: Functions
@@ -2870,9 +2871,12 @@ vmwarefusion)
 #     # credit: Erik Stam (@erikstam)
      name="VMware Fusion"
      type="dmg"
-     infoURL="https://my.vmware.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=FUS-1211&productId=1040"
+     latestMajorVersion=$(curl -fsSL "https://my.vmware.com/channel/public/api/v1.0/products/getProductHeader?locale=fr_FR&category=desktop_end_user_computing&product=vmware_fusion&version=11_0" |  python3 -c "import sys, json; print(json.loads(sys.stdin.read())['versions'][0]['id'])")
+     fullVersionCode=$(curl -fsSL "https://my.vmware.com/channel/public/api/v1.0/products/getRelatedDLGList?locale=fr_FR&category=desktop_end_user_computing&product=vmware_fusion&version=${latestMajorVersion}&dlgType=PRODUCT_BINARY" |  python3 -c "import sys, json; print(json.loads(sys.stdin.read())['dlgEditionsLists'][0]['dlgList'][0]['code'])")
+
+     infoURL="https://my.vmware.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=${fullVersionCode}&productId=1040"
      downloadURL="https://download3.vmware.com/software/fusion/file/$( curl -fsSL "${infoURL}" | python3 -c "import sys, json; print(json.loads(sys.stdin.read())['downloadFiles'][0]['fileName'])" )"
-     appNewVersion=$( curl -fsSL "${infoURL}" | python3 -c "import sys, json; print(json.loads(sys.stdin.read())['downloadFiles'][0]['version'])" )
+     appNewVersion="${fullVersionCode:4:2}.${fullVersionCode:6:1}.${fullVersionCode:7:1}"
      expectedTeamID="EG7KH642X6"
      licence="applyVmwareLicence"
      ;;
