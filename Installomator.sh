@@ -2969,8 +2969,9 @@ microsoftexcel)
     #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.excel.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
     appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
     expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps XCEL2019 )
+    # MS update stuck on user agreement
+    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    #updateToolArguments=( --install --apps XCEL2019 )
     ;;
 microsoftlicenseremovaltool)
     # credit: Isaac Ordonez (@isaac) macadmins slack
@@ -2992,8 +2993,9 @@ microsoftoffice365)
     # using MS PowerPoint as the 'stand-in' for the entire suite
     #appName="Microsoft PowerPoint.app"
     blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "OneDrive" )
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install )
+    # MS update stuck on user agreement
+    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    #updateToolArguments=( --install )
     ;;
 microsoftofficebusinesspro)
     name="MicrosoftOfficeBusinessPro"
@@ -3013,8 +3015,9 @@ microsoftonedrive)
     #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.onedrive.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
     appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | cut -d "/" -f 6 | cut -d "." -f 1-3)
     expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps ONDR18 )
+    # MS update stuck on user agreement
+    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    #updateToolArguments=( --install --apps ONDR18 )
     ;;
 microsoftonenote)
     name="Microsoft OneNote"
@@ -3023,8 +3026,9 @@ microsoftonenote)
     #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.onenote.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
     appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
     expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps ONMC2019 )
+    # MS update stuck on user agreement
+#    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+#    updateToolArguments=( --install --apps ONMC2019 )
     ;;
 microsoftoutlook)
     name="Microsoft Outlook"
@@ -3033,8 +3037,9 @@ microsoftoutlook)
     #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.outlook.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
     appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
     expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps OPIM2019 )
+    # MS update stuck on user agreement
+#    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+#    updateToolArguments=( --install --apps OPIM2019 )
     ;;
 microsoftpowerpoint)
     name="Microsoft PowerPoint"
@@ -3043,8 +3048,9 @@ microsoftpowerpoint)
     #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.powerpoint.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
     appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
     expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps PPT32019 )
+    # MS update stuck on user agreement
+#    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+#    updateToolArguments=( --install --apps PPT32019 )
     ;;
 microsoftremotedesktop)
     name="Microsoft Remote Desktop"
@@ -3084,8 +3090,9 @@ microsoftteams)
     # Still using macadmin.software for version, as the path does not contain the version in a matching format. packageID can be used, but version is the same.
     expectedTeamID="UBF8T346G9"
     blockingProcesses=( Teams "Microsoft Teams Helper" )
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps TEAM01 )
+    # MS update stuck on user agreement
+#    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+#    updateToolArguments=( --install --apps TEAM01 )
     ;;
 microsoftvisualstudiocode|\
 visualstudiocode)
@@ -3105,8 +3112,9 @@ microsoftword)
     #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.word.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
     appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
     expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps MSWD2019 )
+    # MS update stuck on user agreement
+#    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+#    updateToolArguments=( --install --apps MSWD2019 )
     ;;
 microsoftyammer)
     name="Yammer"
