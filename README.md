@@ -12,7 +12,7 @@ I have put a lot of work into making it stable and safe, but I cannot - of cours
 
 ## Support and Contributing
 
-Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins Slack](https:/macadmins.org). Go there for support questions.
+Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Go there for support questions.
 
 Do not create an issue just when you have a questions, but do file an issue or pull request for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
 
