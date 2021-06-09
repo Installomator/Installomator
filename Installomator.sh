@@ -2889,7 +2889,7 @@ androidstudio)
      filename=$(curl -fsSL "https://developer.android.com/studio" | grep "android-studio-ide-*.*-mac.dmg" | cut -d ">" -f1 | head -2 | cut -d "/" -f9 | sed 's/\"//' | xargs)
      downloadURL="https://dl.google.com/dl/android/studio/install/${appNewVersion}/${filename}"
     #${variable:offset:length}
-     expectedTeamID="EG7KH642X6"
+     expectedTeamID="EQHXZ8M8AV"
      ;;
 #wordmat)
 #    # WordMat currently not signed
