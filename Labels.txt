@@ -13,6 +13,7 @@ androidfiletransfer
 apparency
 appcleaner
 aquaskk
+asana
 atom
 autodmg
 autopkgr
