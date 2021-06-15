@@ -259,6 +259,12 @@ Since we now make a version checking, and only installs the software if the vers
 - ``:            When not set, software is only installed if it is newer/different in version (default)
 - `force`:       Install even if it’s the same version
 
+### Re-opening of closed app
+
+The `REOPEN` can be used to prevent the reopening of a closed app
+
+- `yes`:   (default) app will be reopened if it was closed
+- `no`:    app not reopened
 
 ### Adding applications/label blocks
 
@@ -284,7 +290,8 @@ The display name of the installed application without the `.app` extensions.
 The type of installation. Possible values:
      - `dmg`: application in disk image file (drag'n drop installation)
      - `pkg`: flat pkg download
-     - `zip`: application in zip archive (`zip` or `tbz` extension)
+     - `zip`: application in zip archive (`zip` extension)
+     - `tbz`: application in tbz archive (`tbz` extension)
      - `pkgInDmg`: a pkg file inside a disk image
      - `pkgInZip`: a pkg file inside a zip
      - `appInDmgInZip`: an app in a dmg file that has been zip'ed
@@ -326,6 +333,7 @@ Depending on the application or pkg there are a few more variables you can or ne
 - `appName`: (optional)
   File name of the app bundle in the dmg to verify and copy (include the `.app`).
   When not given, the `appName` is set to `$name.app`.
+  This is also the name of the app that will get reopned, if we closed any `blockingProcesses` (see further down)
 
 - `targetDir`: (optional)
   dmg or zip:

@@ -82,6 +82,9 @@ fi
 cp ${scriptfolder}/Installomator.sh ${payloadfolder}
 chmod 755 ${payloadfolder}/Installomator.sh
 
+# set the DEBUG variable to 0
+sed -i '' -e 's/^DEBUG=1$/DEBUG=0/g' ${payloadfolder}/Installomator.sh
+
 # build the component package
 pkgpath="${scriptfolder}/${pkgname}.pkg"
 

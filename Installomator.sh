@@ -11,7 +11,7 @@ label="" # if no label is sent to the script, this will be used
 # and help from Søren Theilgaard (theilgaard.dk)
 
 VERSION='0.5.0'
-VERSIONDATE='2021-03-28'
+VERSIONDATE='2021-04-13'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -77,6 +77,13 @@ INSTALL=""
 # TIMEOUT=300 # wait 5 minutes for user to confirm before giving up
 TIMEOUT=
 
+# Re-opening of closed app
+REOPEN="yes"
+# options:
+#  - yes           App wil be reopened if it was closed
+#  - no            App not reopened
+
+
 # NOTE: How labels work
 
 # Each workflow label needs to be listed in the case statement below.
@@ -91,9 +98,11 @@ TIMEOUT=
 #     - dmg
 #     - pkg
 #     - zip
+#     - tbz
 #     - pkgInDmg
 #     - pkgInZip
 #     - appInDmgInZip
+#     - updateronly     This last one is for labels that should only run an updateTool (see below)
 #
 # - packageID: (optional)
 #   The package ID of a pkg
@@ -244,6 +253,13 @@ timeout_text() {
     fi
 
     echo "${hours_text}${minutes_text}"
+}
+
+reloadAsUser() {
+    if [[ $currentUser != "loginwindow" ]]; then
+        uid=$(id -u "$currentUser")
+        su - $currentUser -c "${@}"
+    fi
 }
 
 displaydialog() { # $1: message $2: title
@@ -504,6 +520,12 @@ reopenClosedProcess() {
     # If Installomator closed any processes, let's get the app opened again
     # credit: Søren Theilgaard (@theilgaard)
     
+    # don't reopen if REOPEN is not "yes"
+    if [[ $REOPEN != yes ]]; then
+        printlog "REOPEN=no, not reopening anything"
+        return
+    fi
+
     # don't reopen in DEBUG mode
     if [[ $DEBUG -ne 0 ]]; then
         printlog "DEBUG mode, not reopening anything"
@@ -511,11 +533,15 @@ reopenClosedProcess() {
     fi
     
     if [[ $appClosed == 1 ]]; then
-        printlog "Telling app $name to open"
-        #runAsUser osascript -e "tell app \"$name\" to open"
-        runAsUser open -a "${name}"
-        processuser=$(ps aux | grep -i "${name}")
-        printlog "Reopened ${name} as $processuser"
+        printlog "Telling app $appName to open"
+        #runAsUser osascript -e "tell app \"$appName\" to open"
+        #runAsUser open -a "${appName}"
+        reloadAsUser "open -a \"${appName}\""
+        #reloadAsUser "open \"${(0)applist}\""
+        processuser=$(ps aux | grep -i "${appName}" | grep -vi "grep" | awk '{print $1}')
+        printlog "Reopened ${appName} as $processuser"
+    else
+        printlog "App not closed, so no reopen."
     fi
 }
 
@@ -780,6 +806,7 @@ installAppInDmgInZip() {
 }
 
 runUpdateTool() {
+    printlog "Function called: runUpdateTool"
     if [[ -x $updateTool ]]; then
         printlog "running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
@@ -795,6 +822,25 @@ runUpdateTool() {
         return 1
     fi
     return 0
+}
+
+finishing() {
+    printlog "Finishing…"
+    sleep 10 # wait a moment to let spotlight catch up
+    getAppVersion
+
+    if [[ -z $appversion ]]; then
+        message="Installed $name"
+    else
+        message="Installed $name, version $appversion"
+    fi
+
+    printlog "$message"
+
+    if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
+        printlog "notifying"
+        displaynotification "$message" "$name update/installation complete!"
+    fi
 }
 
 
@@ -863,8 +909,8 @@ longversion)
     downloadURL="https://app-updates.agilebits.com/download/OPM7"
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[0-9a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="2BUA8C4S2C"
-    blockingProcesses=( "1Password Extension Helper" "1Password 7" )
-    forcefulQuit=YES
+    blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password (Safari)" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
+    #forcefulQuit=YES
     #Company="Agilebits"
     ;;
 8x8)
@@ -1226,6 +1272,14 @@ dangerzone)
     downloadURL=$(curl -s https://dangerzone.rocks/ | grep https://github.com/firstlookmedia/dangerzone/releases/download | grep \.dmg | cut -d'"' -f2)
     expectedTeamID="P24U45L8P5"
     ;;
+darktable)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="darktable"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit darktable-org darktable)
+    appNewVersion=$(versionFromGit darktable-org darktable)
+    expectedTeamID="85Q3K4KQRY"
+    ;;
 dbeaverce)
     # credit: Adrian Bühler (@midni9ht)
     name="DBeaver"
@@ -1291,7 +1345,12 @@ docker)
     # credit: @securitygeneration
     name="Docker"
     type="dmg"
-    downloadURL="https://download.docker.com/mac/stable/Docker.dmg" # downloadURL="https://desktop.docker.com/mac/stable/amd64/Docker.dmg"
+    #downloadURL="https://download.docker.com/mac/stable/Docker.dmg"
+    if [[ $(arch) == arm64 ]]; then
+     downloadURL="https://desktop.docker.com/mac/stable/arm64/Docker.dmg"
+    elif [[ $(arch) == i386 ]]; then
+     downloadURL="https://desktop.docker.com/mac/stable/amd64/Docker.dmg"
+    fi
     appNewVersion=$(curl -ifs https://docs.docker.com/docker-for-mac/release-notes/ | grep ">Docker Desktop Community" | head -1 | sed -n -e 's/^.*Community //p' | cut -d '<' -f1)
     expectedTeamID="9BNSXJN65R"
     ;;
@@ -1414,7 +1473,7 @@ fsmonitor)
     expectedTeamID="V85GBYB7B9"
     ;;
 gimp)
-    name="GIMP"
+    name="GIMP-2.10"
     type="dmg"
     downloadURL=https://$(curl -fs https://www.gimp.org/downloads/ | grep -m 1 -o "download.*gimp-.*.dmg")
     appNewVersion=$(echo $downloadURL | cut -d "-" -f 2)
@@ -1597,6 +1656,7 @@ inkscape)
     #appNewVersion=$(curl -fsJL https://inkscape.org/release/  | grep "<h2>Inkscape" | cut -d '>' -f 3 | cut -d '<' -f 1 | sed 's/[^0-9.]*//g') # Can't figure out where exact new version is found. Currently returns 1.0, but version is "1.0.0 (4035a4f)"
     expectedTeamID="SW3D6BB6A6"
     ;;
+installomator_theile|\
 installomator_st)
     # credit: Søren Theilgaard (@theilgaard)
     name="Installomator"
@@ -1688,6 +1748,33 @@ jetbrainsphpstorm)
     downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
     appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     expectedTeamID="2ZEFAR8TH3"
+    ;;
+jetbrainspycharm)
+    # credit: Adrian Bühler (@midni9ht)
+    # This is the Pro version of PyCharm.
+    # Do not confuse with PyCharm CE.
+    name="PyCharm"
+    type="dmg"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == i386 ]]; then
+      downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=mac"
+    elif [[ $(arch) == arm64 ]]; then
+      downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=macM1"
+    fi
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
+jetbrainspycharmce|\
+pycharmce)
+    name="PyCharm CE"
+    type="dmg"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == i386 ]]; then
+      downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
+    elif [[ $(arch) == arm64 ]]; then
+      downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=macM1"
+    fi
+    expectedTeamID="2ZEFAR8TH3"
+    #Company="JetBrains"
     ;;
 karabinerelements)
     # credit: Tadayuki Onishi (@kenchan0130)
@@ -1834,6 +1921,13 @@ menumeters)
     appNewVersion=$(versionFromGit yujitach MenuMeters )
     expectedTeamID="95AQ7YKR5A"
     ;;
+miro)
+    # credit: @matins
+    name="Miro"
+    type="dmg"
+    downloadURL="https://desktop.miro.com/platforms/darwin/Miro.dmg"
+    expectedTeamID="M3GM7MFY7U"
+    ;;
 musescore)
     name="MuseScore 3"
     type="dmg"
@@ -1917,57 +2011,56 @@ odrive)
 omnidisksweeper)
     name="OmniDiskSweeper"
     type="dmg"
-    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniDiskSweeper" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniDiskSweeper" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
 omnifocus3)
     name="OmniFocus"
     type="dmg"
-    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniFocus3" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniFocus3" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
 omnigraffle6)
     name="OmniGraffle"
     type="dmg"
-    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniGraffle6" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | cut -d '"' -f 2)
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniGraffle6" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
 omnigraffle7)
     name="OmniGraffle"
     type="dmg"
-    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniGraffle7" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | cut -d '"' -f 2)
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniGraffle7" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
 omnioutliner5)
     name="OmniOutliner"
     type="dmg"
-    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniOutliner5" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniOutliner5" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
 omniplan3)
     name="OmniPlan"
     type="dmg"
-    #downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPlan3" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
-    downloadURL=$(curl -fs "https://www.omnigroup.com/download" | grep -i "OmniPlan-3" | head -1 | sed 's/.*href="//' | sed 's/".*//')
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPlan3" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
 omniplan4)
     name="OmniPlan"
     type="dmg"
-    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPlan4" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPlan4" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
 omnipresence)
     name="OmniPresence"
     type="dmg"
-    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPresence" | xpath '//rss/channel/item[1]/enclosure[1]/@url' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniPresence" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
@@ -2078,13 +2171,6 @@ promiseutilityr)
     downloadURL="https://www.promise.com/DownloadFile.aspx?DownloadFileUID=6533"
     expectedTeamID="268CCUR4WN"
     #Company="Promise"
-    ;;
-pycharmce)
-    name="PyCharm CE"
-    type="dmg"
-    downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
-    expectedTeamID="2ZEFAR8TH3"
-    #Company="JetBrains"
     ;;
 pymol)
     name="PyMOL"
@@ -2290,11 +2376,12 @@ skype)
 slack)
     name="Slack"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://slack.com/ssb/download-osx-silicon"
-    elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://slack.com/ssb/download-osx"
-    fi
+    downloadURL="https://slack.com/ssb/download-osx-universal" # Universal
+#    if [[ $(arch) == "arm64" ]]; then
+#        downloadURL="https://slack.com/ssb/download-osx-silicon"
+#    elif [[ $(arch) == "i386" ]]; then
+#        downloadURL="https://slack.com/ssb/download-osx"
+#    fi
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr -d '\r\n' | sed -E 's/.*macos\/([0-9.]*)\/.*/\1/g' )
     expectedTeamID="BQR82RBBHL"
     ;;
@@ -2532,6 +2619,14 @@ viscosity)
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[a-zA-Z.\-]*%20([0-9.]*)\..*/\1/g' )
     expectedTeamID="34XR7GXFPX"
     ;;
+vivaldi)
+    # credit: Adrian Bühler (@midni9ht)
+    name="Vivaldi"
+    type="tbz"
+    downloadURL=$(curl -fsL "https://update.vivaldi.com/update/1.0/public/mac/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
+    appNewVersion=$(curl -is "https://update.vivaldi.com/update/1.0/public/mac/appcast.xml" | grep sparkle:version | tr ',' '\n' | grep sparkle:version | cut -d '"' -f 4)
+    expectedTeamID="4XF3XNRN6Y"
+    ;;
 vlc)
     name="VLC"
     type="dmg"
@@ -2768,15 +2863,6 @@ zulujdk15)
 #     | awk -F '"' '/browser_download_url/ && /pkg/ { print $4 }' | grep lts)
 #     expectedTeamID="UBF8T346G9"
 #     ;;
-#shield)
-#    # credit: Søren Theilgaard (@theilgaard)
-#    # 2021-01-13 Currently Pre-release and we cant get latest version
-#    name="Shield"
-#    type="zip"
-#    downloadURL=$(downloadURLFromGit theevilbit Shield)
-#    appNewVersion=$(versionFromGit theevilbit Shield)
-#    expectedTeamID="33YRLYRBYV"
-#    ;;
 # vmwarefusion)
 # TODO: vmwarefusion installation process needs testing
 #     # credit: Erik Stam (@erikstam)
@@ -2815,13 +2901,88 @@ zulujdk15)
 
 # download link IDs from: https://macadmin.software
 
+microsoftautoupdate)
+    name="Microsoft AutoUpdate"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=830196"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.autoupdate.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "Microsoft_AutoUpdate.*pkg" | sed -E 's/[a-zA-Z_]*_([0-9.]*)_.*/\1/g' | cut -d "." -f 1-2)
+    expectedTeamID="UBF8T346G9"
+    # commented the updatetool for MSAutoupdate, because when Autoupdate is really
+    # old or broken, you want to force a new install
+    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    #updateToolArguments=( --install --apps MSau04 )
+    ;;
+microsoftcompanyportal)
+    name="Company Portal"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=869655"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.intunecompanyportal.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/CompanyPortal_.*pkg" | cut -d "_" -f 2 | cut -d "-" -f 1)
+    expectedTeamID="UBF8T346G9"
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps IMCP01 )
+    ;;
+microsoftdefenderatp)
+    name="Microsoft Defender ATP"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=2097502"
+    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.defender.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
+    # No version number in download url
+    expectedTeamID="UBF8T346G9"
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps WDAV00 )
+    ;;
+microsoftedge|\
+microsoftedgeconsumerstable)
+    name="Microsoft Edge"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=2069148"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.edge"]/cfbundleversion' 2>/dev/null | sed -E 's/<cfbundleversion>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/MicrosoftEdge.*pkg" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
+    expectedTeamID="UBF8T346G9"
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps EDGE01 )
+    ;;
+microsoftedgeenterprisestable)
+    name="Microsoft Edge"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=2093438"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.edge"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/MicrosoftEdge.*pkg" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
+    expectedTeamID="UBF8T346G9"
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps EDGE01 )
+    ;;
+microsoftexcel)
+    name="Microsoft Excel"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=525135"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.excel.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
+    expectedTeamID="UBF8T346G9"
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps XCEL2019 )
+    ;;
+microsoftlicenseremovaltool)
+    # credit: Isaac Ordonez (@isaac) macadmins slack
+    name="Microsoft License Removal Tool"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=849815"
+    expectedTeamID="QGS93ZLCU7"
+    appNewVersion=$(curl -is "$downloadURL" | grep ocation: | grep -o "Microsoft_.*pkg" | cut -d "_" -f 5 | cut -d "." -f1-2)
+    Company="Microsoft"
+    PatchSkip="YES"
+    ;;
 microsoftoffice365)
     name="MicrosoftOffice365"
     type="pkg"
+    packageID="com.microsoft.pkg.licensing"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=525133"
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3)
     expectedTeamID="UBF8T346G9"
     # using MS PowerPoint as the 'stand-in' for the entire suite
-    appName="Microsoft PowerPoint.app"
+    #appName="Microsoft PowerPoint.app"
     blockingProcesses=( "Microsoft AutoUpdate" "Microsoft Word" "Microsoft PowerPoint" "Microsoft Excel" "Microsoft OneNote" "Microsoft Outlook" "OneDrive" )
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install )
@@ -2837,170 +2998,117 @@ microsoftofficebusinesspro)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install )
     ;;
-microsoftedgeconsumerstable|microsoftedge)
-    name="Microsoft Edge"
+microsoftonedrive)
+    name="OneDrive"
     type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=2069148"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.edge"]/cfbundleversion' 2>/dev/null | sed -E 's/<cfbundleversion>([0-9.]*)<.*/\1/')
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=823060"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.onedrive.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | cut -d "/" -f 6 | cut -d "." -f 1-3)
     expectedTeamID="UBF8T346G9"
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps EDGE01 )
-    ;;
-microsoftcompanyportal)
-    name="Company Portal"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=869655"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.intunecompanyportal.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps IMCP01 )
-    ;;
-microsoftskypeforbusiness)
-    name="Skype for Business"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=832978"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.skypeforbusiness.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps MSFB16 )
-    ;;
-microsoftremotedesktop)
-    name="Microsoft Remote Desktop"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.remotedesktop.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps MSRD10 )
-    ;;
-microsoftteams)
-    name="Microsoft Teams"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.teams.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
-    expectedTeamID="UBF8T346G9"
-    blockingProcesses=( Teams "Microsoft Teams Helper" )
-    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    #updateToolArguments=( --install --apps TEAM01 )
-    ;;
-microsoftyammer)
-    name="Yammer"
-    type="dmg"
-    downloadURL="https://aka.ms/yammer_desktop_mac"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/oldpackage[id="com.microsoft.yammer.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    #updateToolArguments=( --install --apps ?????? )
-    ;;
-microsoftautoupdate)
-    name="Microsoft AutoUpdate"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=830196"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.autoupdate.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    # commented the updatetool for MSAutoupdate, because when Autoupdate is really
-    # old or broken, you want to force a new install
-    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    #updateToolArguments=( --install --apps MSau04 )
-    ;;
-microsoftedgeenterprisestable)
-    name="Microsoft Edge"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=2093438"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.edge"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
-    expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps EDGE01 )
-    ;;
-microsoftword)
-    name="Microsoft Word"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=525134"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.word.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps MSWD2019 )
-    ;;
-microsoftexcel)
-    name="Microsoft Excel"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=525135"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.excel.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps XCEL2019 )
-    ;;
-microsoftpowerpoint)
-    name="Microsoft PowerPoint"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=525136"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.powerpoint.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps PPT32019 )
-    ;;
-microsoftoutlook)
-    name="Microsoft Outlook"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=525137"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.outlook.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    expectedTeamID="UBF8T346G9"
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps OPIM2019 )
+    updateToolArguments=( --install --apps ONDR18 )
     ;;
 microsoftonenote)
     name="Microsoft OneNote"
     type="pkg"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=820886"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.onenote.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.onenote.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
     expectedTeamID="UBF8T346G9"
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps ONMC2019 )
     ;;
-microsoftonedrive)
-    name="OneDrive"
+microsoftoutlook)
+    name="Microsoft Outlook"
     type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=823060"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.onedrive.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=525137"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.outlook.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
     expectedTeamID="UBF8T346G9"
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps ONDR18 )
+    updateToolArguments=( --install --apps OPIM2019 )
+    ;;
+microsoftpowerpoint)
+    name="Microsoft PowerPoint"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=525136"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.powerpoint.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
+    expectedTeamID="UBF8T346G9"
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps PPT32019 )
+    ;;
+microsoftremotedesktop)
+    name="Microsoft Remote Desktop"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.remotedesktop.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_Remote_Desktop.*pkg" | cut -d "_" -f 4)
+    expectedTeamID="UBF8T346G9"
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps MSRD10 )
     ;;
 microsoftsharepointplugin)
+    # Microsoft has marked this "oldpackage", should probably not be used anymore
     name="MicrosoftSharePointPlugin"
     type="pkg"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=800050"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.sharepointplugin.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/oldpackage[id="com.microsoft.sharepointplugin.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
     expectedTeamID="UBF8T346G9"
     # TODO: determine blockingProcesses for SharePointPlugin
     ;;
+microsoftskypeforbusiness)
+    name="Skype for Business"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=832978"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.skypeforbusiness.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
+    expectedTeamID="UBF8T346G9"
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps MSFB16 )
+    ;;
+microsoftteams)
+    name="Microsoft Teams"
+    type="pkg"
+    #packageID="com.microsoft.teams"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
+    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.teams.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
+    # Still using macadmin.software for version, as the path does not contain the version in a matching format. packageID can be used, but version is the same.
+    expectedTeamID="UBF8T346G9"
+    blockingProcesses=( Teams "Microsoft Teams Helper" )
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps TEAM01 )
+    ;;
+microsoftvisualstudiocode|\
 visualstudiocode)
     name="Visual Studio Code"
     type="zip"
-    downloadURL="https://go.microsoft.com/fwlink/?LinkID=620882"
-    appNewVersion=$(curl -fsL "https://code.visualstudio.com/Updates" | grep "/darwin" | grep -oiE ".com/([^>]+)([^<]+)/darwin" | cut -d "/" -f 2 | sed $'s/[^[:print:]\t]//g')
+    #downloadURL="https://go.microsoft.com/fwlink/?LinkID=620882" # Intel only
+    downloadURL="https://go.microsoft.com/fwlink/?LinkID=2156837" # Universal
+    appNewVersion=$(curl -fsL "https://code.visualstudio.com/Updates" | grep "/darwin" | grep -oiE ".com/([^>]+)([^<]+)/darwin" | cut -d "/" -f 2 | sed $'s/[^[:print:]\t]//g' | head -1 )
     expectedTeamID="UBF8T346G9"
     appName="Visual Studio Code.app"
     blockingProcesses=( Electron )
     ;;
-microsoftdefenderatp)
-    name="Microsoft Defender ATP"
+microsoftword)
+    name="Microsoft Word"
     type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=2097502"
-    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.defender.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=525134"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.word.standalone.365"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/Microsoft_.*pkg" | cut -d "_" -f 3 | cut -d "." -f 1-2)
     expectedTeamID="UBF8T346G9"
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps WDAV00 )
+    updateToolArguments=( --install --apps MSWD2019 )
     ;;
-microsoftlicenseremovaltool)
-    # credit: Isaac Ordonez (@isaac) macadmins slack
-    name="Microsoft License Removal Tool"
-    type="pkg"
-    downloadURL="https://go.microsoft.com/fwlink/?linkid=849815"
-    expectedTeamID="QGS93ZLCU7"
-    appNewVersion=$(curl -is "$downloadURL" | grep ocation: | grep -o "Microsoft_.*pkg" | cut -d "_" -f 5 | cut -d "." -f1-2)
-    Company="Microsoft"
-    PatchSkip="YES"
+microsoftyammer)
+    name="Yammer"
+    type="dmg"
+    downloadURL="https://aka.ms/yammer_desktop_mac"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/oldpackage[id="com.microsoft.yammer.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
+    expectedTeamID="UBF8T346G9"
+    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    #updateToolArguments=( --install --apps ?????? )
     ;;
 
 # this description is so you can provide all variables as arguments
@@ -3104,6 +3212,8 @@ if [ -z "$archiveName" ]; then
         *InZip)
             archiveName="${name}.zip"
             ;;
+        updateronly)
+            ;;
         *)
             printlog "Cannot handle type $type"
             cleanupAndExit 99
@@ -3123,6 +3233,8 @@ if [ -z "$targetDir" ]; then
             ;;
         pkg*)
             targetDir="/"
+            ;;
+        updateronly)
             ;;
         *)
             printlog "Cannot handle type $type"
@@ -3149,15 +3261,20 @@ fi
 printlog "Changing directory to $tmpDir"
 if ! cd "$tmpDir"; then
     printlog "error changing directory $tmpDir"
-    #rm -Rf "$tmpDir"
     cleanupAndExit 1
 fi
 
-# MARK: check if this is an Update
+# MARK: check if this is an Update and we can use updateTool
 getAppVersion
-if [[ -n $appVersion ]]; then
+printlog "appversion: $appversion"
+if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
+    printlog "appversion & updateTool"
     if [[ $DEBUG -eq 0 ]]; then
         if runUpdateTool; then
+            finishing
+            cleanupAndExit 0
+        elif [[ $type == "updateronly" ]];then
+            printlog "type is $type so we end here."
             cleanupAndExit 0
         fi # otherwise continue
     else
@@ -3259,22 +3376,8 @@ case $type in
         ;;
 esac
 
-# MARK: print installed application location and version
-sleep 10 # wait a moment to let spotlight catch up
-getAppVersion
-
-if [[ -z $appversion ]]; then
-    message="Installed $name"
-else
-    message="Installed $name, version $appversion"
-fi
-
-printlog "$message"
-
-if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
-    printlog "notifying"
-    displaynotification "$message" "$name update/installation complete!"
-fi
+# MARK: Finishing — print installed application location and version
+finishing
 
 # all done!
 cleanupAndExit 0
