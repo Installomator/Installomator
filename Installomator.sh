@@ -2777,6 +2777,14 @@ xink)
     #appNewVersion=$() # Cannot find version history or release notes on home page
     expectedTeamID="F287823HVS"
     ;;
+xquartz)
+    # credit: AP Orlebeke (@apizz)
+    name="XQuartz"
+    type="pkgInDmg"
+    downloadURL=$(downloadURLFromGit XQuartz XQuartz)
+    appNewVersion=$(versionFromGit XQuartz XQuartz)
+    expectedTeamID="NA574AWV7E"
+    ;;
 yubikeymanagerqt)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="YubiKey Manager GUI"
