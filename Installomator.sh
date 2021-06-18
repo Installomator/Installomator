@@ -119,7 +119,7 @@ REOPEN="yes"
 #   How we get version number from app. Possible values:
 #     - CFBundleShortVersionString
 #     - CFBundleVersion
-#   Not all software titles uses fields the same. 
+#   Not all software titles uses fields the same.
 #   See Opera label.
 #
 # - appCustomVersion(){}: (optional function)
@@ -249,7 +249,7 @@ log_location="/private/var/log/Installomator.log"
 printlog(){
 
     timestamp=$(date +%F\ %T)
-        
+
     if [[ "$(whoami)" == "root" ]]; then
         echo "$timestamp" "$label" "$1" | tee -a $log_location
     else
@@ -261,7 +261,7 @@ printlog(){
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-    
+
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
@@ -269,7 +269,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     else
         filetype=$type
     fi
-    
+
     if [ -n "$archiveName" ]; then
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
     | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
@@ -291,7 +291,7 @@ versionFromGit() {
     # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-        
+
     appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame"
@@ -305,7 +305,7 @@ versionFromGit() {
 
 # Handling of differences in xpath between Catalina and Big Sur
 xpath() {
-	# the xpath tool changes in Big Sur and now requires the `-e` option	
+	# the xpath tool changes in Big Sur and now requires the `-e` option
 	if [[ $(sw_vers -buildVersion) > "20A" ]]; then
 		/usr/bin/xpath -e $@
 		# alternative: switch to xmllint (which is not perl)
@@ -325,7 +325,7 @@ getAppVersion() {
         printlog "Custom App Version detection is used, found $appversion"
         return
     fi
-    
+
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
         appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
@@ -336,7 +336,7 @@ getAppVersion() {
             printlog "No version found using packageID $packageID"
         fi
     fi
-    
+
     # get all apps matching name
     applist=$(mdfind "kind:application $appName" -0 )
     if [[ $applist = "" ]]; then
@@ -345,7 +345,7 @@ getAppVersion() {
             applist="/Applications/$appName"
         fi
     fi
-     
+
     appPathArray=( ${(0)applist} )
 
     if [[ ${#appPathArray} -gt 0 ]]; then
@@ -377,7 +377,7 @@ checkRunningProcesses() {
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
                 appClosed=1
-                
+
                 case $BLOCKING_PROCESS_ACTION in
                     kill)
                       printlog "killing process $x"
@@ -452,7 +452,7 @@ checkRunningProcesses() {
 reopenClosedProcess() {
     # If Installomator closed any processes, let's get the app opened again
     # credit: Søren Theilgaard (@theilgaard)
-    
+
     # don't reopen if REOPEN is not "yes"
     if [[ $REOPEN != yes ]]; then
         printlog "REOPEN=no, not reopening anything"
@@ -464,7 +464,7 @@ reopenClosedProcess() {
         printlog "DEBUG mode, not reopening anything"
         return
     fi
-    
+
     if [[ $appClosed == 1 ]]; then
         printlog "Telling app $appName to open"
         #runAsUser osascript -e "tell app \"$appName\" to open"
@@ -578,12 +578,12 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
-    
+
     if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
         printlog "Error verifying $archiveName"
         cleanupAndExit 4
     fi
-    
+
     teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
 
     # Apple signed software has no teamID, grab entire origin instead
@@ -621,7 +621,7 @@ installFromPKG() {
             fi
         fi
     fi
-    
+
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
         printlog "DEBUG enabled, skipping installation"
@@ -645,17 +645,17 @@ installFromPKG() {
 installFromZIP() {
     # unzip the archive
     printlog "Unzipping $archiveName"
-    
+
     # tar -xf "$archiveName"
 
     # note: when you expand a zip using tar in Mojave the expanded
     # app will never pass the spctl check
 
     # unzip -o -qq "$archiveName"
-    
+
     # note: githubdesktop fails spctl verification when expanded
     # with unzip
-    
+
     ditto -x -k "$archiveName" "$tmpDir"
     installAppWithPath "$tmpDir/$appName"
 }
@@ -1413,7 +1413,7 @@ firefox_da)
     blockingProcesses=( firefox )
     ;;
 firefox_intl)
-    # This label will try to figure out the selected language of the user, 
+    # This label will try to figure out the selected language of the user,
     # and install corrosponding version of Firefox
     name="Firefox"
     type="dmg"
@@ -1445,7 +1445,7 @@ firefoxesrpkg)
     blockingProcesses=( firefox )
     ;;
 firefoxesr_intl)
-    # This label will try to figure out the selected language of the user, 
+    # This label will try to figure out the selected language of the user,
     # and install corrosponding version of Firefox ESR
     name="Firefox"
     type="dmg"
@@ -2822,39 +2822,45 @@ zulujdk11)
     type="pkgInDmg"
     packageID="com.azulsystems.zulu.11"
     if [[ $(arch) == i386 ]]; then
-      downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu11.*ca-jdk11.*x64.dmg" | sed 's/\\//g')
+      downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu11.*ca-jdk11.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu11.*ca-jdk11.*aarch64.dmg" | sed 's/\\//g')
+      downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu11.*ca-jdk11.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
-    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
+    appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Info.plist" "CFBundleName" | sed 's/Zulu //'; fi }
     appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    #Company="Azul"
+    #PatchSkip="YES"
     ;;
 zulujdk13)
     name="Zulu JDK 13"
     type="pkgInDmg"
     packageID="com.azulsystems.zulu.13"
     if [[ $(arch) == i386 ]]; then
-        downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu13.*ca-jdk13.*x64.dmg" | sed 's/\\//g')
+      downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu13.*ca-jdk13.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     elif [[ $(arch) == arm64 ]]; then
-        downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu13.*ca-jdk13.*aarch64.dmg" | sed 's/\\//g')
+      downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu13.*ca-jdk13.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
-    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
+    appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/zulu-13.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/zulu-13.jdk/Contents/Info.plist" "CFBundleName" | sed 's/Zulu //'; fi }
     appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    #Company="Azul"
+    #PatchSkip="YES"
     ;;
 zulujdk15)
     name="Zulu JDK 15"
     type="pkgInDmg"
     packageID="com.azulsystems.zulu.15"
     if [[ $(arch) == i386 ]]; then
-        downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu15.*ca-jdk15.*x64.dmg" | sed 's/\\//g')
+      downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu15.*ca-jdk15.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     elif [[ $(arch) == arm64 ]]; then
-        downloadURL=$(curl -fs "https://www.azul.com/downloads/zulu-community/" | xmllint --html --format - 2>/dev/null | tr , '\n' | grep -o "https:.*/zulu15.*ca-jdk15.*aarch64.dmg" | sed 's/\\//g')
+      downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu15.*ca-jdk15.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
-    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
+    appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Info.plist" "CFBundleName" | sed 's/Zulu //'; fi }
     appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    #Company="Azul"
+    #PatchSkip="YES"
     ;;
 
 # MARK: Add new labels after this line (let us sort them in the list)
