@@ -1814,10 +1814,15 @@ karabinerelements)
     expectedTeamID="G43BCU2T37"
     ;;
 keepassxc)
-    # credit: Patrick Atoon (@raptor399)
     name="KeePassXC"
     type="dmg"
-    downloadURL="$(downloadURLFromGit keepassxreboot keepassxc)"
+    if [[ $(arch) == i386 ]]; then
+      downloadURL=$(curl --silent --fail "https://api.github.com/repos/keepassxreboot/keepassxc/releases/latest" \
+      | awk -F '"' "/browser_download_url/ && /x86_64/ && ! /sig/ && ! /AppImage/ && ! /DIGEST/ { print \$4 }")
+    elif [[ $(arch) == arm64 ]]; then
+      downloadURL=$(curl --silent --fail "https://api.github.com/repos/keepassxreboot/keepassxc/releases/latest" \
+      | awk -F '"' "/browser_download_url/ && /arm64/ && ! /sig/ && ! /AppImage/ && ! /DIGEST/ { print \$4 }")
+    fi
     appNewVersion=$(versionFromGit keepassxreboot keepassxc)
     expectedTeamID="G2S7P7J672"
     ;;
