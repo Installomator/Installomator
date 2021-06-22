@@ -87,6 +87,7 @@ googledrivebackupandsync
 googledrivefilestream
 googleearth
 googlejapaneseinput
+googlesoftwareupdate
 gotomeeting
 gpgsuite
 gpgsync
