@@ -925,6 +925,13 @@ airserver)
     expectedTeamID="6C755KS5W3"
     #Company="App Dynamic ehf"
     ;;
+aldente)
+    name="AlDente"
+    type="zip"
+    downloadURL=$(downloadURLFromGit davidwernhart AlDente)
+    appNewVersion=$(versionFromGit davidwernhart AlDente)
+    expectedTeamID="3WVC84GB99"
+    ;;
 alfred)
     # credit: AP Orlebeke (@apizz)
     name="Alfred"
@@ -2909,14 +2916,6 @@ zulujdk15)
     ;;
 
 # MARK: Add new labels after this line (let us sort them in the list)
-
-aldente)
-    name="AlDente"
-    type="zip"
-    downloadURL=$(downloadURLFromGit davidwernhart AlDente)
-    appNewVersion=$(versionFromGit davidwernhart AlDente)
-    expectedTeamID="3WVC84GB99"
-    ;;
 
 # MARK: add new labels above here
 
