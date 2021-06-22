@@ -2911,7 +2911,6 @@ zulujdk15)
 # MARK: Add new labels after this line (let us sort them in the list)
 
 aldente)
-    # credit: Adrian Bühler (@midni9ht)
     name="AlDente"
     type="zip"
     downloadURL=$(downloadURLFromGit davidwernhart AlDente)
