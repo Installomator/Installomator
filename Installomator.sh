@@ -2452,10 +2452,8 @@ sonoss2)
 sourcetree)
     name="Sourcetree"
     type="zip"
-    downloadURL=$(curl -fs https://product-downloads.atlassian.com/software/sourcetree/Appcast/SparkleAppcastAlpha.xml \
-        | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null \
-        | cut -d '"' -f 2 )
-    appNewVersion=$(curl -fs https://product-downloads.atlassian.com/software/sourcetree/Appcast/SparkleAppcastAlpha.xml | xpath '//rss/channel/item[last()]/title' 2>/dev/null | sed -n -e 's/^.*Version //p' | sed 's/\<\/title\>//' | sed $'s/[^[:print:]\t]//g')
+    downloadURL=$(curl -fs "https://www.sourcetreeapp.com" | grep -i "macURL" | tr '"' '\n' | grep -io "https://.*/Sourcetree.*\.zip" | tail -1)
+    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/Sourcetree_([0-9.]*)_[0-9]*\.zip/\1/g')
     expectedTeamID="UPXU4CQZ5P"
     ;;
 spotify)
