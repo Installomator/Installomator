@@ -20,10 +20,10 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-DEBUG=1
+DEBUG="${DEBUG:-1}"
 
 # notify behavior
-NOTIFY=success
+NOTIFY="${NOTIFY:-success}"
 # options:
 #   - success      notify the user on success
 #   - silent       no notifications
@@ -31,7 +31,7 @@ NOTIFY=success
 
 
 # behavior when blocking processes are found
-BLOCKING_PROCESS_ACTION=prompt_user
+BLOCKING_PROCESS_ACTION="${BLOCKING_PROCESS_ACTION:-prompt_user}"
 # options:
 #   - ignore       continue even when blocking processes are found
 #   - silent_fail  exit script without prompt or installation
@@ -55,7 +55,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 
 # logo-icon used in dialog boxes if app is blocking
-LOGO=appstore
+LOGO="${LOGO:-appstore}"
 # options:
 #   - appstore      Icon is Apple App Store (default)
 #   - jamf          JAMF Pro
@@ -66,7 +66,7 @@ LOGO=appstore
 
 
 # install behavior
-INSTALL=""
+INSTALL="${INSTALL}"
 # options:
 #  -               When not set, software will only be installed
 #                  if it is newer/different in version
@@ -74,7 +74,7 @@ INSTALL=""
 
 
 # Re-opening of closed app
-REOPEN="yes"
+REOPEN="${REOPEN:-yes}"
 # options:
 #  - yes           App wil be reopened if it was closed
 #  - no            App not reopened
