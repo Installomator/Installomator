@@ -103,7 +103,7 @@ When used to install software, Installomator has a single argument: the label or
 
 ```
 ./Installomator.sh firefox
-./Installomator.sh firefox LOGO=jamf BLOCKING_PROCESS_ACTION=tell_user_then_kill NOTIFY=all
+LOGO=jamf BLOCKING_PROCESS_ACTION=tell_user_then_kill NOTIFY=all ./Installomator.sh firefox
 ```
 
 There is a debug mode and one other setting that can be controlled with variables in the code. This simplifies the actual use of the script from within a management system.
@@ -167,7 +167,7 @@ The argument can be `version` or `longversion` which will print the script's ver
 Other than the version arguments, the argument can be any of the labels listed in the Labels.txt file. Each of the labels will download and install the latest version of the application, or suite of applications. Since the script will have to run the `installer` command or copy the application to the `/Applications` folder, it will have to be run as root.
 
 ```
-> sudo ./Installomator.sh desktoppr DEBUG=0
+> DEBUG=0 sudo ./Installomator.sh desktoppr
 ```
 
 (Since Jamf Pro always provides the mount point, computer name, and user name as the first three arguments for policy scripts, the script will use argument `$4` when there are more than three arguments.)
@@ -364,14 +364,14 @@ Depending on the application or pkg there are a few more variables you can or ne
   e.g. `msupdate` (see microsoft installations)
 
 - `updateToolRunAsCurrentUser`:
-  When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and 
+  When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and
 
 ### Configuration from Arguments
 
 You can provide a configuration variable, such as `DEBUG` or `NOTIFY` as an argument in the form `VAR=value`. For example:
 
 ```
-./Installomator.sh desktoppr DEBUG=0 NOTIFY=silent
+DEBUG=0 NOTIFY=silent ./Installomator.sh desktoppr
 ```
 
 Providing variables this way will override any variables set in the script.
@@ -379,7 +379,7 @@ Providing variables this way will override any variables set in the script.
 You can even provide _all_ the variables necessary for download and installation. Of course, without a label the argument parsing will fail, so I created a special label `valuesfromarguments` which only checks if the four required values are present:
 
 ```
-./Installomator.sh name=desktoppr type=pkg downloadURL=https://github.com/scriptingosx/desktoppr/releases/download/v0.3/desktoppr-0.3.pkg expectedTeamID=JME5BW3F3R valuesfromarguments
+name=desktoppr type=pkg downloadURL=https://github.com/scriptingosx/desktoppr/releases/download/v0.3/desktoppr-0.3.pkg expectedTeamID=JME5BW3F3R ./Installomator.sh valuesfromarguments
 ```
 
 The order of the variables and label is not relevant. But, when you provide more than one label, all but the _last_ label will be ignored.
