@@ -42,7 +42,7 @@ labels_dir="$fragments_dir/labels"
 # add default labels_dir to label_paths
 label_paths+=$labels_dir
 
-fragment_files=( header.txt version.txt functions.txt arguments.txt main.txt )
+fragment_files=( header.sh version.sh functions.sh arguments.sh main.sh )
 
 # check if fragment files exist (and are readable)
 for fragment in $fragment_files; do
@@ -61,32 +61,32 @@ fi
 mkdir -p $build_dir
 
 # add the header
-cat "$fragments_dir/header.txt" > $destination_file
+cat "$fragments_dir/header.sh" > $destination_file
 
 # read the version.txt
-version=$(cat "$fragments_dir/version.txt")
+version=$(cat "$fragments_dir/version.sh")
 versiondate=$(date +%F)
 echo "VERSION=\"$version\"" >> $destination_file
 echo "VERSIONDATE=\"$versiondate\"" >> $destination_file
 echo >> $destination_file
 
 # add the functions.txt
-cat "$fragments_dir/functions.txt" >> $destination_file
+cat "$fragments_dir/functions.sh" >> $destination_file
 
 # add the arguments.txt
-cat "$fragments_dir/arguments.txt" >> $destination_file
+cat "$fragments_dir/arguments.sh" >> $destination_file
 
 # all the labels
 for lpath in $label_paths; do
     if [[ -d $lpath ]]; then
-        cat "$lpath"/*.txt >> $destination_file
+        cat "$lpath"/*.sh >> $destination_file
     else
         echo "$lpath not a directory, skipping..."
     fi
 done
 
 # add the footer
-cat "$fragments_dir/main.txt" >> $destination_file
+cat "$fragments_dir/main.sh" >> $destination_file
 
 # set the executable bit
 chmod +x $destination_file
