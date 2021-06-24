@@ -3140,7 +3140,7 @@ visualstudiocode)
     appNewVersion=$(curl -fsL "https://code.visualstudio.com/Updates" | grep "/darwin" | grep -oiE ".com/([^>]+)([^<]+)/darwin" | cut -d "/" -f 2 | sed $'s/[^[:print:]\t]//g' | head -1 )
     expectedTeamID="UBF8T346G9"
     appName="Visual Studio Code.app"
-    blockingProcesses=( Electron )
+    blockingProcesses=( Code )
     ;;
 microsoftword)
     name="Microsoft Word"
