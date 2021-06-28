@@ -12,6 +12,7 @@ alfred
 amazonchime
 amazonworkspaces
 androidfiletransfer
+anydesk
 apparency
 appcleaner
 applenyfonts
