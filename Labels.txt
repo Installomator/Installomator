@@ -218,6 +218,7 @@ shield
 sidekick
 signal
 silnite
+sirimote
 sizeup
 sketch
 skype
