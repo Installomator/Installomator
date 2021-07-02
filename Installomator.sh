@@ -3261,7 +3261,7 @@ case $LOGO in
         ;;
     mosyleb)
         # Mosyle Business
-        LOGO="/Applications/Business.app/Contents/Resources/AppIcon.icns"
+        LOGO="/Applications/Self-Service.app/Contents/Resources/AppIcon.icns"
         ;;
     mosylem)
         # Mosyle Manager (education)
