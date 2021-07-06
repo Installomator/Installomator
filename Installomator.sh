@@ -1939,12 +1939,11 @@ mattermost)
     name="Mattermost"
     type="dmg"
     if [[ $(arch) == i386 ]]; then
-      downloadURL=$(curl --silent --fail "https://api.github.com/repos/mattermost/desktop/releases/latest" \
-      | awk -F '"' "/browser_download_url/ && /mac.dmg/ && ! /blockmap/ { print \$4 }")
+      archiveName="mac.dmg"
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL=$(curl --silent --fail "https://api.github.com/repos/mattermost/desktop/releases/latest" \
-      | awk -F '"' "/browser_download_url/ && /mac-m1.dmg/ && ! /blockmap/ { print \$4 }")
+      archiveName="mac-m1.dmg"
     fi
+    downloadURL=$(downloadURLFromGit mattermost desktop)
     appNewVersion=$(versionFromGit mattermost desktop )
     expectedTeamID="UQ8HT4Q2XM"
     ;;
