@@ -1817,12 +1817,11 @@ keepassxc)
     name="KeePassXC"
     type="dmg"
     if [[ $(arch) == i386 ]]; then
-      downloadURL=$(curl --silent --fail "https://api.github.com/repos/keepassxreboot/keepassxc/releases/latest" \
-      | awk -F '"' "/browser_download_url/ && /x86_64/ && ! /sig/ && ! /AppImage/ && ! /DIGEST/ { print \$4 }")
+      archiveName="x86_64.dmg"
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL=$(curl --silent --fail "https://api.github.com/repos/keepassxreboot/keepassxc/releases/latest" \
-      | awk -F '"' "/browser_download_url/ && /arm64/ && ! /sig/ && ! /AppImage/ && ! /DIGEST/ { print \$4 }")
+      archiveName="arm64.dmg"
     fi
+    downloadURL=$(downloadURLFromGit keepassxreboot keepassxc)
     appNewVersion=$(versionFromGit keepassxreboot keepassxc)
     expectedTeamID="G2S7P7J672"
     ;;
