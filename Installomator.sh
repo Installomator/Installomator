@@ -2513,6 +2513,13 @@ swiftruntimeforcommandlinetools)
     downloadURL="https://updates.cdn-apple.com/2019/cert/061-41823-20191025-5efc5a59-d7dc-46d3-9096-396bb8cb4a73/SwiftRuntimeForCommandLineTools.dmg"
     expectedTeamID="Software Update"
     ;;
+tableaudesktop)
+    name="Tableau Desktop"
+    type="pkgInDmg"
+    packageID="com.tableausoftware.tableaudesktop"
+    downloadURL="https://www.tableau.com/downloads/desktop/mac"
+    expectedTeamID="QJ4XPRK37C"
+    ;;
 tableaureader)
     name="Tableau Reader"
     type="pkgInDmg"
