@@ -918,6 +918,13 @@ airserver)
     #appNewVersion=$() # Cannot find version history or release notes on home page
     expectedTeamID="6C755KS5W3"
     ;;
+aldente)
+    name="AlDente"
+    type="zip"
+    downloadURL=$(downloadURLFromGit davidwernhart AlDente)
+    appNewVersion=$(versionFromGit davidwernhart AlDente)
+    expectedTeamID="3WVC84GB99"
+    ;;
 alfred)
     # credit: AP Orlebeke (@apizz)
     name="Alfred"
