@@ -1917,6 +1917,15 @@ libreoffice)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*)_.*/\1/g' )
     expectedTeamID="7P5S3ZLCN7"
     ;;
+logitechoptions)
+    # credit: AP Orlebeke (@apizz)
+    name="Logitech Options"
+    type="pkgInZip"
+    downloadURL=$(curl -fs -L https://www.logitech.com/en-us/product/options | grep -m 1 -o "https.*zip" | sed 's/\"//' | awk '{print $1}')
+    appNewVersion=$(curl -fs -L https://www.logitech.com/en-us/product/options | grep -m 1 -o "https.*zip" | sed 's/\"//' | awk '{print $1}' | sed -E 's/.*_([0-9\.]*)[-\.].*/\1/' )
+    pkgName="LogiMgr Installer ${appNewVersion}.app/Contents/Resources/LogiMgr.pkg"
+    expectedTeamID="QED4VVPZWA"
+    ;;
 loom)
     # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
     name="Loom"
