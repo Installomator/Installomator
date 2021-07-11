@@ -1301,6 +1301,13 @@ debookee)
     downloadURL=$(curl --location --fail --silent "https://www.iwaxx.com/debookee/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="AATLWWB4MZ"
     ;;
+defaultfolderx)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Default Folder X"
+    type="dmg"
+    downloadURL=$(curl -fs "https://www.stclairsoft.com/cgi-bin/dl.cgi?DX" | awk -F '"' "/dmg/ {print \$4}" | head -2 | tail -1)
+    expectedTeamID="7HK42V8R9D"
+    ;;
 depnotify)
     name="DEPNotify"
     type="zip"
