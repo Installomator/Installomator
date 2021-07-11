@@ -1879,6 +1879,13 @@ karabinerelements)
     appNewVersion=$(versionFromGit pqrs-org Karabiner-Elements)
     expectedTeamID="G43BCU2T37"
     ;;
+keyboardmaestro)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Keyboard Maestro"
+    type="zip"
+    downloadURL="https://download.keyboardmaestro.com/"
+    expectedTeamID="QMHRBA4LGH"
+    ;;
 keepassxc)
     name="KeePassXC"
     type="dmg"
