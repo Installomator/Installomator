@@ -934,6 +934,13 @@ alfred)
     appName="Alfred 4.app"
     expectedTeamID="XZZXE9SED4"
     ;;
+alttab)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="AltTab"
+    type="zip"
+    downloadURL=$(downloadURLFromGit lwouis alt-tab-macos)
+    expectedTeamID="QXD7GW8FHY"
+    ;;
 amazonchime)
     # credit: @dvsjr macadmins slack
     name="Amazon Chime"
