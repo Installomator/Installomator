@@ -2428,6 +2428,13 @@ screamingfrogseospider)
     downloadURL="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-14.3.dmg"
     expectedTeamID="CAHEVC3HZC"
     ;;
+screenflick)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Screenflick"
+    type="zip"
+    downloadURL="https://www.araelium.com/screenflick/downloads/Screenflick.zip"
+    expectedTeamID="28488A87JB"
+    ;;
 sfsymbols)
     name="SF Symbols"
     type="pkgInDmg"
