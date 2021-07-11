@@ -1099,6 +1099,13 @@ balsamiqwireframes)
     downloadURL=https://builds.balsamiq.com/bwd/$(curl -fs "https://builds.balsamiq.com" | awk -F "<Key>bwd/" "/dmg/ {print \$3}" | awk -F "</Key>" "{print \$1}" | sed "s/ /%20/g")
     expectedTeamID="3DPKD72KQ7"
     ;;
+bartender)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Bartender 4"
+    type="dmg"
+    downloadURL="https://www.macbartender.com/B2/updates/B4Latest/Bartender%204.dmg"
+    expectedTeamID="8DD663WDX4"
+    ;;
 basecamp3)
     #credit: @matins
     name="Basecamp 3"
