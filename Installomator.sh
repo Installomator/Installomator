@@ -1021,6 +1021,13 @@ arq7)
     appNewVersion="$(curl -fs "https://arqbackup.com" | grep -io "version .*[0-9.]*.* for macOS" | cut -d ">" -f2 | cut -d "<" -f1)"
     expectedTeamID="48ZCSDVL96"
     ;;
+atext)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="aText"
+    type="dmg"
+    downloadURL="https://trankynam.com/atext/downloads/aText.dmg"
+    expectedTeamID="KHEMQ2FD9E"
+    ;;
 atom)
     name="Atom"
     type="zip"
