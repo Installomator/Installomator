@@ -2714,13 +2714,14 @@ vscodium)
 webexmeetings)
     # credit: Erik Stam (@erikstam)
     name="Cisco Webex Meetings"
-    type="pkg"
-    downloadURL="https://akamaicdn.webex.com/client/Cisco_Webex_Meetings.pkg"
+    type="pkgInDmg"
+    downloadURL="https://akamaicdn.webex.com/client/webexapp.dmg"
     expectedTeamID="DE8Y96K9QP"
     targetDir="/Applications"
     #blockingProcessesMaxCPU="5"
     blockingProcesses=( Webex )
     ;;
+webex|\
 webexteams)
     # credit: Erik Stam (@erikstam)
     name="Webex"
