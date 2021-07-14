@@ -3,15 +3,21 @@ label="" # if no label is sent to the script, this will be used
 
 # Installomator
 #
-# Downloads and installs an Applications
-# 2020 Armin Briegel - Scripting OS X
+# Downloads and installs Applications
+# 2020-2021 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
-# with additional ideas and contribution from Isaac Ordonez, Mann consulting
-# and help from Søren Theilgaard (theilgaard.dk)
+# 
+# Contributers:
+#    Armin Briegel - @scriptingosx
+#    Isaac Ordonez - @issacatmann
+#    Søren Theilgaard - @Theile
+#    Adam Codega - @acodega
+#
+# with contributions from many others
 
-VERSION='0.5.0'
-VERSIONDATE='2021-04-13'
+VERSION='0.6.0'
+VERSIONDATE='2021-07-14'
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
