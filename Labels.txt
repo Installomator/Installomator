@@ -10,6 +10,7 @@ aircall
 airserver
 aldente
 alfred
+alttab
 amazonchime
 amazonworkspaces
 androidfiletransfer
@@ -21,13 +22,17 @@ applesfmono
 applesfpro
 aquaskk
 arq7
+atext
 atom
+audacity
 autodmg
 autopkgr
 aviatrix
 awscli2
 awsvpnclient
 balenaetcher
+balsamiqwireframes
+bartender
 basecamp3
 bbedit
 bettertouchtool
@@ -42,6 +47,7 @@ camostudio
 camtasia
 citrixworkspace
 clevershare2
+clickshare
 code42
 coderunner
 cormorant
@@ -51,6 +57,7 @@ dangerzone
 darktable
 dbeaverce
 debookee
+defaultfolderx
 depnotify
 desktoppr
 detectxswift
@@ -93,6 +100,7 @@ gotomeeting
 gpgsuite
 gpgsync
 grandperspective
+grasshopper
 gyazo
 gyazogif
 hancock
@@ -104,7 +112,6 @@ hyper
 icons
 imazingprofileeditor
 inkscape
-installomator_st
 installomator_theile
 intellijideace
 istatmenus
@@ -123,6 +130,7 @@ karabinerelements
 keepassxc
 keka
 keyboardmaestro
+keyboardmaestro
 klokki
 knockknock
 krisp
@@ -131,6 +139,7 @@ lastpass
 launchbar
 lexarrecoverytool
 libreoffice
+logitechoptions
 loom
 lucifer
 lulu
@@ -167,6 +176,7 @@ nomad
 nomadlogin
 notion
 nvivo
+obs
 obsidian
 odrive
 omnidisksweeper
@@ -212,6 +222,7 @@ royaltsx
 rstudio
 santa
 screamingfrogseospider
+screenflick
 sfsymbols
 shield
 sidekick
@@ -234,6 +245,7 @@ sublimetext
 supportapp
 suspiciouspackage
 swiftruntimeforcommandlinetools
+tableaudesktop
 tableaureader
 taskpaper
 teamviewer
@@ -241,6 +253,7 @@ teamviewerhost
 teamviewerqs
 techsmithcapture
 telegram
+textexpander
 textmate
 theunarchiver
 things
@@ -252,6 +265,7 @@ trex
 tunnelbear
 tunnelblick
 umbrellaroamingclient
+uniconverter
 universaltypeclient
 vagrant
 vanilla
@@ -263,6 +277,7 @@ vivaldi
 vlc
 vmwarehorizonclient
 vscodium
+webex
 webexmeetings
 webexteams
 whatsapp
@@ -272,6 +287,7 @@ wireshark
 wwdc
 xeroxphaser7800
 xink
+xquartz
 yubikeymanagerqt
 zappy
 zoom
