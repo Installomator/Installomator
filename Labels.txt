@@ -1,4 +1,5 @@
 1password7
+4kvideodownloader
 8x8
 abstract
 adobebrackets
@@ -13,6 +14,7 @@ alfred
 amazonchime
 amazonworkspaces
 androidfiletransfer
+anydesk
 apparency
 appcleaner
 applenyfonts
@@ -65,8 +67,10 @@ egnyte
 element
 eraseinstall
 etrecheck
+evernote
 exelbanstats
 fantastical
+favro
 ferdi
 figma
 firefox
@@ -217,6 +221,7 @@ shield
 sidekick
 signal
 silnite
+sirimote
 sizeup
 sketch
 skype
