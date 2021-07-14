@@ -5,6 +5,10 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 downloadURL=${1?:"need to provide a download URL"}
 
 # Note: this tool _very_ experimental and does not work in many cases
+# That being said, it's a great place to start for building up the label in the Case-statement
+
+# Usage
+# ./buildCaseStatement.sh <URL to download software>
 
 
 # create temporary working directory
@@ -20,15 +24,7 @@ fi
 
 # download the URL
 echo "Downloading $downloadURL"
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-if ! archivePath=$(curl -fsL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}"); then
-=======
 if ! downloadOut="$(curl -fsL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
->>>>>>> Stashed changes
-=======
-if ! downloadOut="$(curl -fsL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
->>>>>>> 4932ea6a3186d902d88c9bb5a3774c6ff81b1608
     echo "error downloading $downloadURL"
     exit 2
 fi
@@ -44,13 +40,6 @@ xpath() {
     fi
 }
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-#archivePath=$(find $tmpDir -print )
-echo "archivePath: $archivePath"
-archiveName=${archivePath##*/}
-echo "archiveName: $archiveName"
-=======
 pkgInvestigation() {
     echo "Package found"
     teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
@@ -81,39 +70,6 @@ echo "archivePath: $archivePath"
 archiveName=${archivePath##*/}
 echo "archiveName: $archiveName"
 mv $archiveTempName $archiveName
->>>>>>> Stashed changes
-=======
-pkgInvestigation() {
-    echo "Package found"
-    teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
-    echo "For PKGs it's advised to find packageID for version checking"
-    
-    pkgutil --expand "$pkgPath" "$archiveName"_pkg
-    cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null
-    packageID="$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | tr ' ' '\n' | grep -i "id" | cut -d \" -f 2)"
-    rm -r "$archiveName"_pkg
-    echo "$packageID"
-    echo "Above is the possible packageIDs that can be used, and the correct one is probably one of those with a version number. More investigation might be needed to figure out correct packageID if several are displayed."
-}
-appInvestigation() {
-    appName=${appPath##*/}
-
-    # verify with spctl
-    echo "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' ); then
-        echo "Error verifying $appPath"
-        exit 4
-    fi
-}
-echo "downloadOut: ${downloadOut}"
-archiveTempName=$( echo "${downloadOut}" | head -1 )
-echo "archiveTempName: $archiveTempName"
-archivePath=$( echo "${downloadOut}" | tail -1 )
-echo "archivePath: $archivePath"
-archiveName=${archivePath##*/}
-echo "archiveName: $archiveName"
-mv $archiveTempName $archiveName
->>>>>>> 4932ea6a3186d902d88c9bb5a3774c6ff81b1608
 name=${archiveName%.*}
 echo "name: $name"
 archiveExt=${archiveName##*.}
@@ -122,25 +78,8 @@ identifier=$(echo $name | tr '[:upper:]' '[:lower:]')
 echo "identifier: $identifier"
 
 if [ "$archiveExt" = "pkg" ]; then
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-    echo "Package found"
-    teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
-    echo "For PKGs it's advised to find packageID for version checking"
-    pkgutil --expand "$archiveName" "$archiveName"_pkg
-    cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null
-    packageID="$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | tr ' ' '\n' | grep -i "id" | cut -d \" -f 2)"
-    rm -r "$archiveName"_pkg
-    echo "$packageID"
-    echo "Above is the possible packageIDs that can be used, and the correct one is probably one of those with a version number. More investigation might be needed to figure out correct packageID if several are displayed."
-=======
     pkgPath="$archiveName"
     pkgInvestigation
->>>>>>> Stashed changes
-=======
-    pkgPath="$archiveName"
-    pkgInvestigation
->>>>>>> 4932ea6a3186d902d88c9bb5a3774c6ff81b1608
 elif [ "$archiveExt" = "dmg" ]; then
     echo "Diskimage found"
     # mount the dmg
@@ -182,15 +121,7 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
 fi
 
 echo
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, but also on a web page."
-=======
 echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, but also on a web page. See archivePath above if link contains information about this."
->>>>>>> Stashed changes
-=======
-echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, but also on a web page. See archivePath above if link contains information about this."
->>>>>>> 4932ea6a3186d902d88c9bb5a3774c6ff81b1608
 echo
 echo "$identifier)"
 echo "    name=\"$name\""
