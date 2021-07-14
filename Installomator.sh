@@ -2549,6 +2549,13 @@ teamviewerqs)
     appName="TeamViewerQS.app"
     expectedTeamID="H7UGFBUGV6"
     ;;
+techsmithcapture)
+    # credit Elena Ackley (@elenaelago)
+    name="TechSmith Capture"
+    type="dmg"
+    downloadURL="https://cdn.cloud.techsmith.com/techsmithcapture/mac/TechSmithCapture.dmg"
+    expectedTeamID="7TQL462TU8"
+    ;;
 telegram)
     name="Telegram"
     type="dmg"

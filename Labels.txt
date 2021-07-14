@@ -239,6 +239,7 @@ taskpaper
 teamviewer
 teamviewerhost
 teamviewerqs
+techsmithcapture
 telegram
 textmate
 theunarchiver
