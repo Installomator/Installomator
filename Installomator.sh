@@ -866,7 +866,6 @@ abstract)
     expectedTeamID="77MZLZE47D"
     ;;
 adobebrackets)
-    # credit: Adrian Bühler (@midni9ht)
     name="Brackets"
     type="dmg"
     downloadURL=$(downloadURLFromGit adobe brackets )
@@ -1063,7 +1062,6 @@ awsvpnclient)
     appNewVersion=$(curl -is "https://beta2.communitypatch.com/jamf/v1/ba1efae22ae74a9eb4e915c31fef5dd2/patch/AWSVPNClient" | grep currentVersion | tr ',' '\n' | grep currentVersion | cut -d '"' -f 4)
     ;;
 balenaetcher)
-    # credit: Adrian Bühler (@midni9ht)
     name="balenaEtcher"
     type="dmg"
     downloadURL=$(downloadURLFromGit balena-io etcher )
@@ -1146,7 +1144,6 @@ brave)
     expectedTeamID="KL8N8XSYF4"
     ;;
 cakebrew)
-    # credit: Adrian Bühler (@midni9ht)
     name="Cakebrew"
     type="zip"
     downloadURL=$(curl -fsL "https://www.cakebrew.com/appcast/profileInfo.php" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
@@ -1251,7 +1248,6 @@ darktable)
     expectedTeamID="85Q3K4KQRY"
     ;;
 dbeaverce)
-    # credit: Adrian Bühler (@midni9ht)
     name="DBeaver"
     type="dmg"
     downloadURL="https://dbeaver.io/files/dbeaver-ce-latest-macos.dmg"
@@ -1259,7 +1255,6 @@ dbeaverce)
     blockingProcesses=( dbeaver )
     ;;
 debookee)
-    # credit: Adrian Bühler (@midni9ht)
     name="Debookee"
     type="zip"
     downloadURL=$(curl --location --fail --silent "https://www.iwaxx.com/debookee/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
@@ -1390,7 +1385,6 @@ fantastical)
     expectedTeamID="85C27NK92C"
     ;;
 ferdi)
-    # credit: Adrian Bühler (@midni9ht)
     name="Ferdi"
     type="dmg"
     downloadURL=$(downloadURLFromGit getferdi ferdi )
@@ -1490,7 +1484,6 @@ front)
     Company="FrontApp. Inc."
     ;;
 fsmonitor)
-    # credit: Adrian Bühler (@midni9ht)
     name="FSMonitor"
     type="zip"
     downloadURL=$(curl --location --fail --silent "https://fsmonitor.com/FSMonitor/Archives/appcast2.xml" | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
@@ -1674,7 +1667,6 @@ hpeasystart)
     expectedTeamID="6HB5Y2QTA3"
     ;;
 hyper)
-    # credit: Adrian Bühler (@midni9ht)
     name="Hyper"
     type="dmg"
     downloadURL=$(downloadURLFromGit vercel hyper )
@@ -1795,7 +1787,6 @@ jetbrainsphpstorm)
     expectedTeamID="2ZEFAR8TH3"
     ;;
 jetbrainspycharm)
-    # credit: Adrian Bühler (@midni9ht)
     # This is the Pro version of PyCharm.
     # Do not confuse with PyCharm CE.
     name="PyCharm"
@@ -1841,7 +1832,6 @@ keepassxc)
     expectedTeamID="G2S7P7J672"
     ;;
 keka)
-    # credit: Adrian Bühler (@midni9ht)
     name="Keka"
     type="dmg"
     downloadURL=$(downloadURLFromGit aonez Keka)
@@ -1967,7 +1957,6 @@ mattermost)
     expectedTeamID="UQ8HT4Q2XM"
     ;;
 menumeters)
-    # credit: Adrian Bühler (@midni9ht)
     name="MenuMeters"
     type="zip"
     downloadURL=$(downloadURLFromGit yujitach MenuMeters )
@@ -2126,7 +2115,6 @@ onionshare)
     expectedTeamID="N9B95FDWH4"
     ;;
 onlyofficedesktop)
-    # credit: Adrian Bühler (@midni9ht)
     name="ONLYOFFICE"
     type="dmg"
     downloadURL="https://download.onlyoffice.com/install/desktop/editors/mac/distrib/onlyoffice/ONLYOFFICE.dmg"
@@ -2246,7 +2234,6 @@ r)
     expectedTeamID="VZLD955F6P"
     ;;
 ramboxce)
-    # credit: Adrian Bühler (@midni9ht)
     name="Rambox"
     type="dmg"
     downloadURL=$(downloadURLFromGit ramboxapp community-edition )
@@ -2611,7 +2598,6 @@ tigervnc)
     expectedTeamID="S5LX88A9BW"
     ;;
 toggltrack)
-    # credit: Adrian Bühler (@midni9ht)
     name="Toggl Track"
     type="dmg"
     downloadURL=$(downloadURLFromGit toggl-open-source toggldesktop )
@@ -2671,7 +2657,6 @@ vagrant)
     expectedTeamID="D38WU7D763"
     ;;
 vanilla)
-    # credit: Adrian Bühler (@midni9ht)
     name="Vanilla"
     type="dmg"
     downloadURL="https://macrelease.matthewpalmer.net/Vanilla.dmg"
@@ -2704,7 +2689,6 @@ viscosity)
     expectedTeamID="34XR7GXFPX"
     ;;
 vivaldi)
-    # credit: Adrian Bühler (@midni9ht)
     name="Vivaldi"
     type="tbz"
     downloadURL=$(curl -fsL "https://update.vivaldi.com/update/1.0/public/mac/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
