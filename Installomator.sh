@@ -337,15 +337,16 @@ getAppVersion() {
         fi
     fi
     
-    # get all apps matching name
-    applist=$(mdfind "kind:application $appName" -0 )
-    if [[ $applist = "" ]]; then
-        printlog "Spotlight not returning any app, trying manually in /Applications."
-        if [[ -d "/Applications/$appName" ]]; then
-            applist="/Applications/$appName"
-        fi
+    # get app from /Applications or find using Spotify
+    if [[ -d "/Applications/$appName" ]]; then
+        applist="/Applications/$appName"
+    elif [[ -d "/Applications/Utilities/$appName" ]]; then
+        applist="/Applications/Utilities/$appName"
+    else
+        applist=$(mdfind "kind:application $appName" -0 )
     fi
-     
+    printlog "App(s) found: ${applist}"
+
     appPathArray=( ${(0)applist} )
 
     if [[ ${#appPathArray} -gt 0 ]]; then
