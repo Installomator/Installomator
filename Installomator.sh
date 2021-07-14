@@ -2768,6 +2768,7 @@ webexmeetings)
     #blockingProcessesMaxCPU="5"
     blockingProcesses=( Webex )
     ;;
+webex|\
 webexteams)
     # credit: Erik Stam (@erikstam)
     name="Webex"
