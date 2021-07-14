@@ -949,6 +949,13 @@ alfred)
     appName="Alfred 4.app"
     expectedTeamID="XZZXE9SED4"
     ;;
+alttab)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="AltTab"
+    type="zip"
+    downloadURL=$(downloadURLFromGit lwouis alt-tab-macos)
+    expectedTeamID="QXD7GW8FHY"
+    ;;
 amazonchime)
     # credit: @dvsjr macadmins slack
     name="Amazon Chime"
@@ -1029,6 +1036,13 @@ arq7)
     appNewVersion="$(curl -fs "https://arqbackup.com" | grep -io "version .*[0-9.]*.* for macOS" | cut -d ">" -f2 | cut -d "<" -f1)"
     expectedTeamID="48ZCSDVL96"
     ;;
+atext)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="aText"
+    type="dmg"
+    downloadURL="https://trankynam.com/atext/downloads/aText.dmg"
+    expectedTeamID="KHEMQ2FD9E"
+    ;;
 atom)
     name="Atom"
     type="zip"
@@ -1036,6 +1050,14 @@ atom)
     downloadURL=$(downloadURLFromGit atom atom )
     appNewVersion=$(versionFromGit atom atom)
     expectedTeamID="VEKTX9H2N7"
+    ;;
+audacity)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Audacity"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit audacity audacity)
+    appNewVersion=$(versionFromGit audacity audacity)
+    expectedTeamID="T3N4JQ7YY6"
     ;;
 autodmg)
     # credit: Mischa van der Bent (@mischavdbent)
@@ -1083,6 +1105,20 @@ balenaetcher)
     downloadURL=$(downloadURLFromGit balena-io etcher )
     appNewVersion=$(versionFromGit balena-io etcher )
     expectedTeamID="66H43P8FRG"
+    ;;
+balsamiqwireframes)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Balsamiq Wireframes"
+    type="dmg"
+    downloadURL=https://builds.balsamiq.com/bwd/$(curl -fs "https://builds.balsamiq.com" | awk -F "<Key>bwd/" "/dmg/ {print \$3}" | awk -F "</Key>" "{print \$1}" | sed "s/ /%20/g")
+    expectedTeamID="3DPKD72KQ7"
+    ;;
+bartender)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Bartender 4"
+    type="dmg"
+    downloadURL="https://www.macbartender.com/B2/updates/B4Latest/Bartender%204.dmg"
+    expectedTeamID="8DD663WDX4"
     ;;
 basecamp3)
     #credit: @matins
@@ -1276,6 +1312,13 @@ debookee)
     downloadURL=$(curl --location --fail --silent "https://www.iwaxx.com/debookee/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="AATLWWB4MZ"
     ;;
+defaultfolderx)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Default Folder X"
+    type="dmg"
+    downloadURL=$(curl -fs "https://www.stclairsoft.com/cgi-bin/dl.cgi?DX" | awk -F '"' "/dmg/ {print \$4}" | head -2 | tail -1)
+    expectedTeamID="7HK42V8R9D"
+    ;;
 depnotify)
     name="DEPNotify"
     type="zip"
@@ -1410,7 +1453,7 @@ ferdi)
 figma)
     name="Figma"
     type="zip"
-    downloadURL="https://www.figma.com/download/desktop/mac/"
+    downloadURL="https://desktop.figma.com/mac/Figma.zip"
     expectedTeamID="T8RA8NE3B7"
     ;;
 firefox)
@@ -1627,6 +1670,14 @@ grandperspective)
     downloadURL="https://sourceforge.net/projects/grandperspectiv/files/latest/download"
     expectedTeamID="3Z75QZGN66"
     ;;
+grasshopper)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Grasshopper"
+    type="dmg"
+    downloadURL="https://dl.grasshopper.com/Grasshopper.dmg"
+    pkgName="Grasshopper.dmg"
+    expectedTeamID="KD6L2PTK2Q"
+    ;;
 gyazo)
     # credit: @matins
     name="Gyazo"
@@ -1779,7 +1830,7 @@ jamfreenroller)
     expectedTeamID="PS2F6S478M"
     ;;
 jetbrainsintellijidea)
-    # credit: Gabe Marchan (www.gabemarchan.com)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="IntelliJ IDEA"
     type="dmg"
     downloadURL="https://download.jetbrains.com/product?code=II&latest&distribution=mac"
@@ -1834,6 +1885,13 @@ karabinerelements)
     downloadURL=$(downloadURLFromGit pqrs-org Karabiner-Elements)
     appNewVersion=$(versionFromGit pqrs-org Karabiner-Elements)
     expectedTeamID="G43BCU2T37"
+    ;;
+keyboardmaestro)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Keyboard Maestro"
+    type="zip"
+    downloadURL="https://download.keyboardmaestro.com/"
+    expectedTeamID="QMHRBA4LGH"
     ;;
 keepassxc)
     name="KeePassXC"
@@ -2057,6 +2115,13 @@ nvivo)
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr '/' '\n' | grep "[0-9]" | cut -d "." -f1-3 )
     expectedTeamID="A66L57342X"
     blockingProcesses=( NVivo NVivoHelper )
+    ;;
+obs)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="OBS"
+    type="dmg"
+    downloadURL=$(curl -fs "https://obsproject.com/download" | awk -F '"' "/dmg/ {print \$10}")
+    expectedTeamID="2MMRE5MTB8"
     ;;
 obsidian)
     # credit: Søren Theilgaard (@theilgaard)
@@ -2375,6 +2440,13 @@ screamingfrogseospider)
     downloadURL="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-14.3.dmg"
     expectedTeamID="CAHEVC3HZC"
     ;;
+screenflick)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Screenflick"
+    type="zip"
+    downloadURL="https://www.araelium.com/screenflick/downloads/Screenflick.zip"
+    expectedTeamID="28488A87JB"
+    ;;
 sfsymbols)
     name="SF Symbols"
     type="pkgInDmg"
@@ -2670,6 +2742,13 @@ umbrellaroamingclient)
     type="pkgInZip"
     downloadURL=https://disthost.umbrella.com/roaming/upgrade/mac/production/$( curl -fsL https://disthost.umbrella.com/roaming/upgrade/mac/production/manifest.json | awk -F '"' '/"downloadFilename"/ { print $4 }' )
     expectedTeamID="7P7HQ8H646"
+    ;;
+uniconverter)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="Wondershare UniConverter"
+    type="dmg"
+    downloadURL="http://download.wondershare.com/video-converter-ultimate-mac_full735.dmg"
+    expectedTeamID="YZC2T44ZDX"
     ;;
 universaltypeclient)
     name="Universal Type Client"
