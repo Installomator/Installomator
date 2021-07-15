@@ -1748,13 +1748,6 @@ etrecheck)
     downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
     expectedTeamID="U87NE528LC"
     ;;
-loom)
-    # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
-    name="Loom"
-    type="dmg"
-    downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /dmg/ {print $3}; exit')
-    expectedTeamID="QGD2ZPXZZG"
-    ;;
 asana)
     # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
     name="Asana"
