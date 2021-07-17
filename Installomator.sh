@@ -2479,7 +2479,6 @@ santa)
     expectedTeamID="EQHXZ8M8AV"
     ;;
 scaleft)
-    # credit: Greg Reznik (@imfromthebay)
     name="ScaleFT"
     type="pkg"
     downloadURL="https://dist.scaleft.com/client-tools/mac/latest/ScaleFT.pkg"
