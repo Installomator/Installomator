@@ -1283,6 +1283,14 @@ coderunner)
     downloadURL="https://coderunnerapp.com/download"
     expectedTeamID="R4GD98AJF9"
     ;;
+colourcontrastanalyser)
+    name="Colour Contrast Analyser (CCA)"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit ThePacielloGroup CCAe)
+    appNewVersion=$(versionFromGit ThePacielloGroup CCAe)
+    expectedTeamID="34RS4UC3M6"
+    blockingProcesses=( NONE )
+    ;;
 cormorant)
     # credit: Søren Theilgaard (@theilgaard)
     name="Cormorant"
