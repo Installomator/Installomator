@@ -1216,6 +1216,14 @@ brave)
     appNewVersion=$(curl --location --fail --silent "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath '//rss/channel/item[last()]/enclosure/@sparkle:shortVersionString' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="KL8N8XSYF4"
     ;;
+caffeine)
+    name="Caffeine"
+    type="dmg"
+    downloadURL=$(curl --silent --fail "https://api.github.com/repos/IntelliScape/caffeine/releases/latest" \
+        | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ { print \$4 }")
+    appNewVersion=$(curl -sf "https://api.github.com/repos/IntelliScape/caffeine/releases/latest" | awk -F '"' "/tag_name/ { print \$4 }")
+    expectedTeamID="YD6LEYT6WZ"
+    ;;    
 cakebrew)
     name="Cakebrew"
     type="zip"
