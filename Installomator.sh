@@ -1223,6 +1223,7 @@ caffeine)
         | awk -F '"' "/browser_download_url/ && /dmg/ && ! /sig/ && ! /CLI/ { print \$4 }")
     appNewVersion=$(curl -sf "https://api.github.com/repos/IntelliScape/caffeine/releases/latest" | awk -F '"' "/tag_name/ { print \$4 }")
     expectedTeamID="YD6LEYT6WZ"
+    blockingProcesses=( Caffeine )
     ;;    
 cakebrew)
     name="Cakebrew"
