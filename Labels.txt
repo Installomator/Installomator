@@ -134,7 +134,6 @@ karabinerelements
 keepassxc
 keka
 keyboardmaestro
-keyboardmaestro
 klokki
 knockknock
 krisp
