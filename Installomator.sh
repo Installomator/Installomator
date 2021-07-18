@@ -346,7 +346,7 @@ getAppVersion() {
         fi
     fi
     
-    # get app from /Applications or find using Spotify
+    # get app in /Applications, or /Applications/Utilities, or find using Spotify
     if [[ -d "/Applications/$appName" ]]; then
         applist="/Applications/$appName"
     elif [[ -d "/Applications/Utilities/$appName" ]]; then
