@@ -1017,14 +1017,14 @@ appcleaner)
 applenyfonts)
     name="Apple New York Font Collection"
     type="pkgInDmg"
-    downloadURL="https://devimages-cdn.apple.com/design/resources/download/NY-Font.dmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/NY.dmg"
     packageID="com.apple.pkg.NYFonts"
     expectedTeamID="Development Update"
     ;;
 applesfpro)
     name="San Francisco Pro"
     type="pkgInDmg"
-    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Font-Pro.dmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg"
     packageID="com.apple.pkg.SanFranciscoPro"
     expectedTeamID="Development Update"
     ;;
@@ -1038,9 +1038,16 @@ applesfmono)
 applesfcompact)
     name="San Francisco Compact"
     type="pkgInDmg"
-    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Font-Compact.dmg"
+    downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Compact.dmg"
     packageID="com.apple.pkg.SanFranciscoCompact"
     expectedTeamID="Development Update"
+    ;;
+applesfsymbols|\
+sfsymbols)
+    name="SF Symbols"
+    type="pkgInDmg"
+    downloadURL="https://developer.apple.com/design/downloads/SF-Symbols.dmg"
+    expectedTeamID="Software Update"
     ;;
 aquaskk)
     # credit: Tadayuki Onishi (@kenchan0130)
@@ -2484,12 +2491,6 @@ screenflick)
     type="zip"
     downloadURL="https://www.araelium.com/screenflick/downloads/Screenflick.zip"
     expectedTeamID="28488A87JB"
-    ;;
-sfsymbols)
-    name="SF Symbols"
-    type="pkgInDmg"
-    downloadURL="https://developer.apple.com/design/downloads/SF-Symbols.dmg"
-    expectedTeamID="Software Update"
     ;;
 shield)
     # credit: Søren Theilgaard (@theilgaard)
