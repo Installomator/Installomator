@@ -1480,7 +1480,6 @@ favro)
     expectedTeamID="PUA8Q354ZF"
     ;;
 ferdi)
-    # credit: Adrian Bühler (@midni9ht)
     name="Ferdi"
     type="zip"
     if [[ $(arch) == i386 ]]; then
