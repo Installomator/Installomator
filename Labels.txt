@@ -200,6 +200,7 @@ pacifist
 pdfsam
 pitch
 plantronicshub
+platypus
 plisteditpro
 postman
 prism9
