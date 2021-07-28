@@ -363,8 +363,10 @@ getAppVersion() {
         if [[ ${#filteredAppPaths} -eq 1 ]]; then
             installedAppPath=$filteredAppPaths[1]
             if [[ -d "$installedAppPath"/Contents/_MASReceipt ]];then
-                INSTALL="force"
                 printlog "Installed $appName is from App Store, using INSTALL=force to replace."
+                INSTALL="force"
+                # Maybe we should exit instead
+                # cleanupAndExit 1 "App previously installed from App Store"
             else
                 #appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
                 appversion=$(defaults read $installedAppPath/Contents/Info.plist $versionKey) #Not dependant on Spotlight indexing
