@@ -2106,6 +2106,13 @@ musescore)
     appNewVersion=$(versionFromGit musescore MuseScore)
     expectedTeamID="6EPAF2X3PR"
     ;;
+muzzle)
+    name="Muzzle"
+    type="zip"
+    downloadURL="https://muzzleapp.com/binaries/muzzle.zip"
+    appNewVersion=$(curl -fs https://muzzleapp.com/updates/  | grep -io 'h2.*Version.* [0-9.]*.*h2' | head -1 | sed -E 's/.*ersion *([0-9.]*).*/\1/g')
+    expectedTeamID="49EYHPJ4Q3"
+    ;;
 netnewswire)
     name="NetNewsWire"
     type="zip"
