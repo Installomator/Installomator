@@ -1005,7 +1005,7 @@ apparency)
     name="Apparency"
     type="dmg"
     downloadURL="https://www.mothersruin.com/software/downloads/Apparency.dmg"
-    appNewVersion=$(curl -fs https://mothersruin.com/software/Apparency/get.html | grep 'class="version"' | sed -E 's/.*>([0-9\.]*) \(.*/\1/g')
+    appNewVersion=$(curl -fs https://mothersruin.com/software/Apparency/data/ApparencyVersionInfo.plist | grep -A1 CFBundleShortVersionString | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')
     expectedTeamID="936EB786NH"
     ;;
 appcleaner)
@@ -2635,11 +2635,10 @@ supportapp)
     expectedTeamID="98LJ4XBGYK"
     ;;
 suspiciouspackage)
-    # credit: Mischa van der Bent (@mischavdbent)
     name="Suspicious Package"
     type="dmg"
     downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
-    appNewVersion=$(curl -fs https://mothersruin.com/software/SuspiciousPackage/get.html | grep 'class="version"' | sed -E 's/.*>([0-9\.]*) \(.*/\1/g')
+    appNewVersion=$(curl -fs https://mothersruin.com/software/SuspiciousPackage/data/SuspiciousPackageVersionInfo.plist | grep -A1 CFBundleShortVersionString | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')
     expectedTeamID="936EB786NH"
     ;;
 swiftruntimeforcommandlinetools)
