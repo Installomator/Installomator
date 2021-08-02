@@ -1879,11 +1879,10 @@ jamfreenroller)
     expectedTeamID="PS2F6S478M"
     ;;
 jetbrainsintellijidea)
-    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="IntelliJ IDEA"
     type="dmg"
     downloadURL="https://download.jetbrains.com/product?code=II&latest&distribution=mac"
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=II&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
     ;;
 jetbrainsintellijideace|\
@@ -1891,40 +1890,49 @@ intellijideace)
     name="IntelliJ IDEA CE"
     type="dmg"
     downloadURL="https://download.jetbrains.com/product?code=IIC&latest&distribution=mac"
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=IIC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
     ;;
 jetbrainsphpstorm)
-    # credit: Casey Jensen (@cajenson01 on MacAdmins Slack)Appended by Skylar Damiano @catdad on MacAdmins Slack
-    name="JetBrains PHPStorm"
+    name="PHPStorm"
     type="dmg"
-    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL="https://download.jetbrains.com/product?code=PS&latest&distribution=mac"
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
     ;;
 jetbrainspycharm)
-    # This is the Pro version of PyCharm.
-    # Do not confuse with PyCharm CE.
+    # This is the Pro version of PyCharm. Do not confuse with PyCharm CE.
     name="PyCharm"
     type="dmg"
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     if [[ $(arch) == i386 ]]; then
-      downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=mac"
+        downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=mac"
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=macM1"
+        downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=macM1"
     fi
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
     ;;
 jetbrainspycharmce|\
 pycharmce)
     name="PyCharm CE"
     type="dmg"
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
     if [[ $(arch) == i386 ]]; then
-      downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
+        downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=macM1"
+        downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=macM1"
     fi
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
+jetbrainstoolbox)
+    name="JetBrains Toolbox"
+    type="dmg"
+    if [[ $(arch) == i386 ]]; then
+        downloadURL="https://download.jetbrains.com/product?code=TB&latest&distribution=mac"
+    elif [[ $(arch) == arm64 ]]; then
+        downloadURL="https://download.jetbrains.com/product?code=TB&latest&distribution=macM1"
+    fi
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
     ;;
 karabinerelements)

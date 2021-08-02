@@ -130,6 +130,7 @@ jetbrainsintellijideace
 jetbrainsphpstorm
 jetbrainspycharm
 jetbrainspycharmce
+jetbrainstoolbox
 karabinerelements
 keepassxc
 keka
