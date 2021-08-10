@@ -74,7 +74,8 @@ name=${archiveName%.*}
 echo "name: $name"
 archiveExt=${archiveName##*.}
 echo "archiveExt: $archiveExt"
-identifier=$(echo $name | tr '[:upper:]' '[:lower:]')
+identifier=${name:l}
+identifier=$(echo $identifier | sed -E 's/\%[0-9a-fA-F][0-9a-fA-F]//g' | sed -E 's/[,._*@$()]//g' | sed 's/-//g')
 echo "identifier: $identifier"
 
 if [ "$archiveExt" = "pkg" ]; then
