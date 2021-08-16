@@ -1,3 +1,8 @@
+- Change in finding installed apps. We now look in /Applications and /Applications/Utilities first. If not found there, we use spotligt to find it. (We discovered a problem when a user has Parallels Windows installed with Microsoft Edge in it. Then Installomator wanted to update the app all the time, becaus spotligt found that Windows version of the app that Parallels created.)
+- Added bunch of new labels
+- Improved `buildCaseStatement.sh` a lot. It is a great start when figuring out how to create a new label for an app, or a piece of software.
+- Mosyle changed their app name from Business to Self-Service
+
 ## v0.5 - 2021-04-13
 
 - Major update and now with help from @Theile and @Isaac
