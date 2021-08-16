@@ -5,5 +5,4 @@ ringcentralclassicapp)
     expectedTeamID="M932RC5J66"
     blockingProcesses=( "Glip" )
     #blockingProcessesMaxCPU="5"
-    #Company="RingCentral"
     ;;

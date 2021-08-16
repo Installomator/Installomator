@@ -605,3 +605,5 @@ finishing() {
         displaynotification "$message" "$name update/installation complete!"
     fi
 }
+
+

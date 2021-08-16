@@ -1,5 +1,4 @@
 keka)
-    # credit: Adrian Bühler (@midni9ht)
     name="Keka"
     type="dmg"
     downloadURL=$(downloadURLFromGit aonez Keka)

@@ -5,5 +5,4 @@ ringcentralphone)
     downloadURL="https://downloads.ringcentral.com/sp/RingCentralForMac"
     expectedTeamID="M932RC5J66"
     blockingProcesses=( "RingCentral Phone" )
-    #Company="RingCentral"
     ;;

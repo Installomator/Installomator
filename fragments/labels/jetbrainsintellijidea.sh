@@ -1,5 +1,5 @@
 jetbrainsintellijidea)
-    # credit: Gabe Marchan (www.gabemarchan.com)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="IntelliJ IDEA"
     type="dmg"
     downloadURL="https://download.jetbrains.com/product?code=II&latest&distribution=mac"

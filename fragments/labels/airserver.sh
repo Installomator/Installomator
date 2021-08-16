@@ -5,5 +5,4 @@ airserver)
     downloadURL="https://www.airserver.com/download/mac/latest"
     #appNewVersion=$() # Cannot find version history or release notes on home page
     expectedTeamID="6C755KS5W3"
-    #Company="App Dynamic ehf"
     ;;

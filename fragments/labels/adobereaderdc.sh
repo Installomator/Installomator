@@ -8,7 +8,4 @@ adobereaderdc-install)
     #appNewVersion=$(curl -s -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15)" https://get.adobe.com/reader/ | grep ">Version" | sed -E 's/.*Version 20([0-9.]*)<.*/\1/g') # credit: Søren Theilgaard (@theilgaard)
     expectedTeamID="JQ525L2MZD"
     blockingProcesses=( "AdobeReader" )
-    #Company="Adobe"
-    #PatchName="AcrobatReader"
-    #PatchSkip="YES"
     ;;

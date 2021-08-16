@@ -4,5 +4,4 @@ proctortrack)
     type="zip"
     downloadURL="https://storage.googleapis.com/verificientstatic/ProctortrackApp/Production/Proctortrack.zip"
     expectedTeamID="SNHZD6TJE6"
-    #Company="Verificient Technologies"
     ;;

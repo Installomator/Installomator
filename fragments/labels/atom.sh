@@ -5,5 +5,4 @@ atom)
     downloadURL=$(downloadURLFromGit atom atom )
     appNewVersion=$(versionFromGit atom atom)
     expectedTeamID="VEKTX9H2N7"
-    #Company=GitHub
     ;;

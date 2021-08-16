@@ -1,5 +1,4 @@
 toggltrack)
-    # credit: Adrian Bühler (@midni9ht)
     name="Toggl Track"
     type="dmg"
     downloadURL=$(downloadURLFromGit toggl-open-source toggldesktop )

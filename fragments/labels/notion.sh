@@ -7,7 +7,6 @@ notion)
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://www.notion.so/desktop/mac/download"
     fi
-    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr -d '
-' | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr -d '\r\n' | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="LBQJ96FQ8D"
     ;;
