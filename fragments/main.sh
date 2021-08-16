@@ -27,7 +27,7 @@ case $LOGO in
         ;;
     mosyleb)
         # Mosyle Business
-        LOGO="/Applications/Business.app/Contents/Resources/AppIcon.icns"
+        LOGO="/Applications/Self-Service.app/Contents/Resources/AppIcon.icns"
         ;;
     mosylem)
         # Mosyle Manager (education)
@@ -111,23 +111,9 @@ if ! cd "$tmpDir"; then
     cleanupAndExit 1
 fi
 
-# MARK: check if this is an Update and we can use updateTool
+# MARK: get installed version
 getAppVersion
 printlog "appversion: $appversion"
-if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
-    printlog "appversion & updateTool"
-    if [[ $DEBUG -eq 0 ]]; then
-        if runUpdateTool; then
-            finishing
-            cleanupAndExit 0
-        elif [[ $type == "updateronly" ]];then
-            printlog "type is $type so we end here."
-            cleanupAndExit 0
-        fi # otherwise continue
-    else
-        printlog "DEBUG mode enabled, not running update tool"
-    fi
-fi
 
 # MARK: Exit if new version is the same as installed version (appNewVersion specified)
 # credit: Søren Theilgaard (@theilgaard)
@@ -144,7 +130,8 @@ if [[ -n $appNewVersion ]]; then
                 fi
                 cleanupAndExit 0 "No newer version."
             else
-                printlog "Using force to install anyway."
+                printlog "Using force to install anyway. Not using updateTool."
+                updateTool=""
             fi
         else
             printlog "DEBUG mode enabled, not exiting, but there is no new version of app."
@@ -152,6 +139,26 @@ if [[ -n $appNewVersion ]]; then
     fi
 else
     printlog "Latest version not specified."
+    if [[ $INSTALL == "force" ]]; then
+        printlog "Using force to install, so not using updateTool."
+        updateTool=""
+    fi
+fi
+
+# MARK: check if this is an Update and we can use updateTool
+if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
+    printlog "appversion & updateTool"
+    if [[ $DEBUG -eq 0 ]]; then
+        if runUpdateTool; then
+            finishing
+            cleanupAndExit 0
+        elif [[ $type == "updateronly" ]];then
+            printlog "type is $type so we end here."
+            cleanupAndExit 0
+        fi # otherwise continue
+    else
+        printlog "DEBUG mode enabled, not running update tool"
+    fi
 fi
 
 # MARK: download the archive

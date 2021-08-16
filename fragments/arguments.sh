@@ -1,4 +1,3 @@
-
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
@@ -39,6 +38,10 @@ label=${label:l}
 
 printlog "################## Start Installomator v. $VERSION"
 printlog "################## $label"
+
+# How we get version number from app
+# (alternative is "CFBundleVersion", that can be used in labels)
+versionKey="CFBundleShortVersionString"
 
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')

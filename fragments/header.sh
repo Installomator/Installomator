@@ -3,12 +3,18 @@ label="" # if no label is sent to the script, this will be used
 
 # Installomator
 #
-# Downloads and installs an Applications
-# 2020 Armin Briegel - Scripting OS X
+# Downloads and installs Applications
+# 2020-2021 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
-# with additional ideas and contribution from Isaac Ordonez, Mann consulting
-# and help from Søren Theilgaard (theilgaard.dk)
+# 
+# Contributers:
+#    Armin Briegel - @scriptingosx
+#    Isaac Ordonez - @issacatmann
+#    Søren Theilgaard - @Theile
+#    Adam Codega - @acodega
+#
+# with contributions from many others
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -31,6 +37,9 @@ NOTIFY=success
 BLOCKING_PROCESS_ACTION=prompt_user
 # options:
 #   - ignore       continue even when blocking processes are found
+#   - quit         app will be told to quit nicely, if running
+#   - quit_kill    told to quit twice, then it will be killed
+#                  Could be great for service apps, if they do not respawn
 #   - silent_fail  exit script without prompt or installation
 #   - prompt_user  show a user dialog for each blocking process found
 #                  abort after three attempts to quit
@@ -58,6 +67,7 @@ LOGO=appstore
 #   - jamf          JAMF Pro
 #   - mosyleb       Mosyle Business
 #   - mosylem       Mosyle Manager (Education)
+#   - addigy        Addigy
 # path can also be set in the command call, and if file exists, it will be used, like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"' (spaces are escaped).
 
 
@@ -111,6 +121,18 @@ REOPEN="yes"
 #   If given, it will be compared to installed version, to see if download is different.
 #   It does not check for newer or not, only different.
 #
+# - versionKey: (optional)
+#   How we get version number from app. Possible values:
+#     - CFBundleShortVersionString
+#     - CFBundleVersion
+#   Not all software titles uses fields the same. 
+#   See Opera label.
+#
+# - appCustomVersion(){}: (optional function)
+#   This function can be added to your label, if a specific custom
+#   mechanism hs to be used for getting the installed version.
+#   See labels zulujdk11, zulujdk13, zulujdk15
+#
 # - expectedTeamID: (required)
 #   10-digit developer team ID.
 #   Obtain the team ID by running:
@@ -163,4 +185,3 @@ REOPEN="yes"
 # - updateToolRunAsCurrentUser:
 #   When this variable is set (any value), $updateTool will be run as the current user.
 #
-

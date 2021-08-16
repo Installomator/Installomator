@@ -1,6 +1,0 @@
-
-version)
-    # print the script VERSION
-    printlog "$VERSION"
-    exit 0
-    ;;
