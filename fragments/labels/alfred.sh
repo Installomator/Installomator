@@ -6,5 +6,4 @@ alfred)
     appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*Alfred_([0-9.]*)_.*/\1/')
     appName="Alfred 4.app"
     expectedTeamID="XZZXE9SED4"
-    #Company="Running with Crayons Ltd"
     ;;

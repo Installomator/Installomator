@@ -4,6 +4,4 @@ jamfconnect)
     packageID="com.jamf.connect"
     downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
     expectedTeamID="483DWKW443"
-    #Company="Jamf"
-    #PatchSkip="YES"
     ;;

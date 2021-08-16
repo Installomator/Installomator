@@ -1,5 +1,4 @@
 menumeters)
-    # credit: Adrian Bühler (@midni9ht)
     name="MenuMeters"
     type="zip"
     downloadURL=$(downloadURLFromGit yujitach MenuMeters )

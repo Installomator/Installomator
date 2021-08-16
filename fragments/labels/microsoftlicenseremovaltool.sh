@@ -6,5 +6,4 @@ microsoftlicenseremovaltool)
     expectedTeamID="QGS93ZLCU7"
     appNewVersion=$(curl -is "$downloadURL" | grep ocation: | grep -o "Microsoft_.*pkg" | cut -d "_" -f 5 | cut -d "." -f1-2)
     Company="Microsoft"
-    PatchSkip="YES"
     ;;

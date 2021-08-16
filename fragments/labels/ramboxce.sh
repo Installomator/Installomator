@@ -1,5 +1,4 @@
 ramboxce)
-    # credit: Adrian Bühler (@midni9ht)
     name="Rambox"
     type="dmg"
     downloadURL=$(downloadURLFromGit ramboxapp community-edition )

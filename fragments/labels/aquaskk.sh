@@ -5,6 +5,4 @@ aquaskk)
     downloadURL=$(downloadURLFromGit codefirst aquaskk)
     appNewVersion=$(versionFromGit codefirst aquaskk)
     expectedTeamID="FPZK4WRGW7"
-    #Company="Code First"
-    #PatchSkip="YES"
     ;;

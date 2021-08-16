@@ -9,5 +9,4 @@ pycharmce)
       downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=macM1"
     fi
     expectedTeamID="2ZEFAR8TH3"
-    #Company="JetBrains"
     ;;

@@ -1,5 +1,4 @@
 dbeaverce)
-    # credit: Adrian Bühler (@midni9ht)
     name="DBeaver"
     type="dmg"
     downloadURL="https://dbeaver.io/files/dbeaver-ce-latest-macos.dmg"

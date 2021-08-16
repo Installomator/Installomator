@@ -1,5 +1,4 @@
 vanilla)
-    # credit: Adrian Bühler (@midni9ht)
     name="Vanilla"
     type="dmg"
     downloadURL="https://macrelease.matthewpalmer.net/Vanilla.dmg"

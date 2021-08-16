@@ -1,5 +1,4 @@
 jetbrainspycharm)
-    # credit: Adrian Bühler (@midni9ht)
     # This is the Pro version of PyCharm.
     # Do not confuse with PyCharm CE.
     name="PyCharm"

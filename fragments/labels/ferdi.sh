@@ -1,5 +1,4 @@
 ferdi)
-    # credit: Adrian Bühler (@midni9ht)
     name="Ferdi"
     type="dmg"
     downloadURL=$(downloadURLFromGit getferdi ferdi )

@@ -3,5 +3,4 @@ apparency)
     type="dmg"
     downloadURL="https://www.mothersruin.com/software/downloads/Apparency.dmg"
     expectedTeamID="936EB786NH"
-    #Company="Mother's Ruin Graphics"
     ;;
