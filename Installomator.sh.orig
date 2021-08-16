@@ -17,7 +17,11 @@ label="" # if no label is sent to the script, this will be used
 # with contributions from many others
 
 VERSION='0.6.0'
+<<<<<<< HEAD
+VERSIONDATE='2021-04-20'
+=======
 VERSIONDATE='2021-07-14'
+>>>>>>> dev
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
