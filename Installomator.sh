@@ -96,6 +96,7 @@ REOPEN="yes"
 #     - tbz
 #     - pkgInDmg
 #     - pkgInZip
+#     - bashInZip
 #     - appInDmgInZip
 #     - updateronly     This last one is for labels that should only run an updateTool (see below)
 #
@@ -275,6 +276,8 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
+        filetype="zip"
+    elif [[ $type == "bashInZip" ]]; then
         filetype="zip"
     else
         filetype=$type
@@ -659,6 +662,73 @@ installFromPKG() {
     fi
 }
 
+installFromBash() {
+    # verify with spctl
+    printlog "Verifying: $archiveName"
+    
+    if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
+        printlog "Error verifying $archiveName"
+        cleanupAndExit 4
+    fi
+    
+    teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+
+    # Apple signed software has no teamID, grab entire origin instead
+    if [[ -z $teamID ]]; then
+        teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
+    fi
+
+
+    printlog "Team ID: $teamID (expected: $expectedTeamID )"
+
+    if [ "$expectedTeamID" != "$teamID" ]; then
+        printlog "Team IDs do not match!"
+        cleanupAndExit 5
+    fi
+
+    # Check version of pkg to be installed if packageID is set
+    if [[ $packageID != "" && $appversion != "" ]]; then
+        printlog "Checking package version."
+        pkgutil --expand "$archiveName" "$archiveName"_pkg
+        #printlog "$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null)"
+        appNewVersion=$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | grep -i "$packageID" | tr ' ' '\n' | grep -i version | cut -d \" -f 2) #sed -E 's/.*\"([0-9.]*)\".*/\1/g'
+        rm -r "$archiveName"_pkg
+        printlog "Downloaded package $packageID version $appNewVersion"
+        if [[ $appversion == $appNewVersion ]]; then
+            printlog "Downloaded version of $name is the same as installed."
+            if [[ $INSTALL != "force" ]]; then
+                message="$name, version $appNewVersion, is  the latest version."
+                if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
+                    printlog "notifying"
+                    displaynotification "$message" "No update for $name!"
+                fi
+                cleanupAndExit 0 "No new version to install"
+            else
+                printlog "Using force to install anyway."
+            fi
+        fi
+    fi
+    
+    # skip install for DEBUG
+    if [ "$DEBUG" -ne 0 ]; then
+        printlog "DEBUG enabled, skipping installation"
+        return 0
+    fi
+
+    # check for root
+    if [ "$(whoami)" != "root" ]; then
+        # not running as root
+        cleanupAndExit 6 "not running as root, exiting"
+    fi
+
+    # install pkg
+    printlog "Installing $archiveName to $targetDir"
+    if ! "./$archiveName"; then
+        printlog "error installing $archiveName"
+        cleanupAndExit 9
+    fi
+}
+
 installFromZIP() {
     # unzip the archive
     printlog "Unzipping $archiveName"
@@ -728,6 +798,31 @@ installPkgInZip() {
 
     # installFromPkgs
     installFromPKG
+}
+
+installBashInZip() {
+    # unzip the archive
+    printlog "Unzipping $archiveName"
+    tar -xf "$archiveName"
+
+    # locate pkg in zip
+    if [[ -z $pkgName ]]; then
+        # find first file ending with 'pkg'
+        findfiles=$(find "$tmpDir" -iname "*.sh" -maxdepth 2  )
+        filearray=( ${(f)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 20 "couldn't find sh in zip $archiveName"
+        fi
+        archiveName="${filearray[1]}"
+        # it is now safe to overwrite archiveName for installFromPKG
+        printlog "found pkg: $archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromPKG
+        archiveName="$tmpDir/$pkgName"
+    fi
+
+    # installFromPkgs
+    installFromBash
 }
 
 installAppInDmgInZip() {
@@ -2891,6 +2986,18 @@ androidstudio)
     #${variable:offset:length}
      expectedTeamID="EQHXZ8M8AV"
      ;;
+haxm)
+#     # credit: Mathieu St-Yves (@mathieu244)
+     name="HAXM"
+     type="bashInZip"
+     #https://github.com/intel/haxm/releases/download/v7.7.0/haxm-macosx_v7_7_0.zip
+     appNewVersion=$(curl -fsSL "https://developer.android.com/studio" | grep "android-studio-ide-*.*-mac.dmg" | cut -d ">" -f1 | head -2 | cut -d "/" -f8 | xargs)
+     filename=$(curl -fsSL "https://developer.android.com/studio" | grep "android-studio-ide-*.*-mac.dmg" | cut -d ">" -f1 | head -2 | cut -d "/" -f9 | sed 's/\"//' | xargs)
+     downloadURL="https://dl.google.com/dl/android/studio/install/${appNewVersion}/${filename}"
+    #${variable:offset:length}
+     expectedTeamID="EQHXZ8M8AV"
+     ;;
+
 #wordmat)
 #    # WordMat currently not signed
 #    # credit: Søren Theilgaard (@theilgaard)
@@ -3381,6 +3488,9 @@ case $type in
         ;;
     pkg)
         installFromPKG
+        ;;
+    bash)
+        installFromBash
         ;;
     zip)
         installFromZIP
