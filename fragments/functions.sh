@@ -134,7 +134,15 @@ xpath() {
 
 
 getAppVersion() {
-    # modified by: Søren Theilgaard (@theilgaard)
+    # modified by: Søren Theilgaard (@theilgaard) and Isaac Ordonez
+
+    # If label contain function appCustomVersion, we use that and return
+    if type 'appCustomVersion' 2>/dev/null | grep -q 'function'; then
+        appversion=$(appCustomVersion)
+        printlog "Custom App Version detection is used, found $appversion"
+        return
+    fi
+    
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
         appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
@@ -146,15 +154,16 @@ getAppVersion() {
         fi
     fi
     
-    # get all apps matching name
-    applist=$(mdfind "kind:application $appName" -0 )
-    if [[ $applist = "" ]]; then
-        printlog "Spotlight not returning any app, trying manually in /Applications."
-        if [[ -d "/Applications/$appName" ]]; then
-            applist="/Applications/$appName"
-        fi
+    # get app in /Applications, or /Applications/Utilities, or find using Spotlight
+    if [[ -d "/Applications/$appName" ]]; then
+        applist="/Applications/$appName"
+    elif [[ -d "/Applications/Utilities/$appName" ]]; then
+        applist="/Applications/Utilities/$appName"
+    else
+        applist=$(mdfind "kind:application $appName" -0 )
     fi
-     
+    printlog "App(s) found: ${applist}"
+
     appPathArray=( ${(0)applist} )
 
     if [[ ${#appPathArray} -gt 0 ]]; then
@@ -162,7 +171,7 @@ getAppVersion() {
         if [[ ${#filteredAppPaths} -eq 1 ]]; then
             installedAppPath=$filteredAppPaths[1]
             #appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
-            appversion=$(defaults read $installedAppPath/Contents/Info.plist CFBundleShortVersionString) #Not dependant on Spotlight indexing
+            appversion=$(defaults read $installedAppPath/Contents/Info.plist $versionKey) #Not dependant on Spotlight indexing
             printlog "found app at $installedAppPath, version $appversion"
         else
             printlog "could not determine location of $appName"
@@ -188,6 +197,18 @@ checkRunningProcesses() {
                 appClosed=1
                 
                 case $BLOCKING_PROCESS_ACTION in
+                    quit|quit_kill)
+                        printlog "telling app $x to quit"
+                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
+                          printlog "Changing BLOCKING_PROCESS_ACTION to kill"
+                          BLOCKING_PROCESS_ACTION=kill
+                        else
+                            # give the user a bit of time to quit apps
+                            printlog "waiting 30 seconds for processes to quit"
+                            sleep 30
+                        fi
+                        ;;
                     kill)
                       printlog "killing process $x"
                       pkill $x
@@ -310,7 +331,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # versioncheck
     # credit: Søren Theilgaard (@theilgaard)
-    appNewVersion=$(defaults read $appPath/Contents/Info.plist CFBundleShortVersionString)
+    appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
     if [[ $appversion == $appNewVersion ]]; then
         printlog "Downloaded version of $name is $appNewVersion, same as installed."
         if [[ $INSTALL != "force" ]]; then
@@ -584,4 +605,3 @@ finishing() {
         displaynotification "$message" "$name update/installation complete!"
     fi
 }
-

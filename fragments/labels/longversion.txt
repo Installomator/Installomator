@@ -1,6 +1,0 @@
-
-longversion)
-    # print the script version
-    printlog "Installomater: version $VERSION ($VERSIONDATE)"
-    exit 0
-    ;;
