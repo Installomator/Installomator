@@ -54,8 +54,8 @@ fi
 
 
 label_flags=( -l --labels )
-# array substraction
-label_paths=${label_args:|label_flags}
+# array subtraction to remove options text
+label_paths=(${label_args:|label_flags})
 
 #setup some folders
 script_dir=$(dirname ${0:A})
@@ -67,6 +67,8 @@ labels_dir="$fragments_dir/labels"
 
 # add default labels_dir to label_paths
 label_paths+=$labels_dir
+
+echo "label_paths: $label_paths"
 
 fragment_files=( header.sh version.sh functions.sh arguments.sh main.sh )
 
