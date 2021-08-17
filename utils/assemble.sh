@@ -2,7 +2,7 @@
 
 # parse arguments
 
-zparseopts -D -E -a opts s -script p -pkg n -notarize h -help -labels+:=label_args l+:=label_args
+zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -labels+:=label_args l+:=label_args
 
 if (( ${opts[(I)(-h|--help)]} )); then
   echo "usage: assemble.sh [--script|--pkg|--notarize] [-labels path/to/labels ...] [arguments...]"
@@ -12,20 +12,33 @@ if (( ${opts[(I)(-h|--help)]} )); then
   exit
 fi
 
+# default setting
+runScript=1
+
 if (( ${opts[(I)(-s|--script)]} )); then
+    runScript=0
     buildScript=1
 fi
 
 if (( ${opts[(I)(-p|--pkg)]} )); then
+    runScript=0
     buildScript=1
     buildPkg=1
 fi
 
 if (( ${opts[(I)(-n|--notarize)]} )); then
+    runScript=0
     buildScript=1
     buildPkg=1
     notarizePkg=1
 fi
+
+# -r/--run option overrides default setting
+if (( ${opts[(I)(-r|--run)]} )); then
+    runScript=1
+fi
+
+
 
 label_flags=( -l --labels )
 # array substraction
@@ -47,13 +60,13 @@ fragment_files=( header.sh version.sh functions.sh arguments.sh main.sh )
 # check if fragment files exist (and are readable)
 for fragment in $fragment_files; do
     if [[ ! -e $fragments_dir/$fragment ]]; then
-        echo "$fragments_dir/$fragment not found!"
+        echo "# $fragments_dir/$fragment not found!"
         exit 1
     fi
 done
 
 if [[ ! -d $labels_dir ]]; then
-    echo "$labels_dir not found!"
+    echo "# $labels_dir not found!"
     exit 1
 fi
 
@@ -81,7 +94,7 @@ for lpath in $label_paths; do
     if [[ -d $lpath ]]; then
         cat "$lpath"/*.sh >> $destination_file
     else
-        echo "$lpath not a directory, skipping..."
+        echo "# $lpath not a directory, skipping..."
     fi
 done
 
@@ -92,12 +105,17 @@ cat "$fragments_dir/main.sh" >> $destination_file
 chmod +x $destination_file
 
 # run script with remaining arguments
-$destination_file "$@"
+if [[ $runScript -eq 1 ]]; then
+    $destination_file "$@"
+fi
 
-# TODO: build copy the script to root of repo when flag is set
+# copy the script to root of repo when flag is set
+if [[ $buildScript -eq 1 ]]; then
+    echo "# copying script to $repo_dir/Installomator.sh"
+    cp $destination_file $repo_dir/Installomator.sh
+fi
 
 # TODO: build a pkg when flag is set
 
 # TODO: notarize when flag is set
-
 
