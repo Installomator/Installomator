@@ -4,6 +4,18 @@ Since the Installomator.sh script has grown to over 3000 lines, its management o
 
 The full script is assembled using the `utils/assemble.sh` tool. For convenience, there is a symbolic link in the root of the repository.
 
+## Fragments
+
+These are the fragments in the order they are assembled:
+
+- header.sh
+- version.sh
+- functions.sh
+- arguments.sh
+- (optiona) all labels from locations given with the ``--labels` argument
+- labels/*.sh
+- main.txt
+
 ## assemble.sh Usage
 
 ```
@@ -53,14 +65,4 @@ assemble.sh --notarize
 
 Build the full script, disable Debug mode, sign it, build a signed pkg, and send it to notarization.
 
-## The Fragments
 
-These are the fragments in the order they are assembled:
-
-- header.txt
-- version.txt
-- functions.txt
-- arguments.txt
-- all labels from locations given with the ``--labels` argument
-- labels/*.txt
-- main.txt
