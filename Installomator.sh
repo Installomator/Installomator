@@ -1073,6 +1073,13 @@ arq7)
     appNewVersion="$(curl -fs "https://arqbackup.com" | grep -io "version .*[0-9.]*.* for macOS" | cut -d ">" -f2 | cut -d "<" -f1)"
     expectedTeamID="48ZCSDVL96"
     ;;
+asana)
+     # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
+     name="Asana"
+     type="dmg"
+     downloadURL="https://desktop-downloads.asana.com/darwin_x64/prod/latest/Asana.dmg"
+     expectedTeamID="A679L395M8"
+     ;;
 atext)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="aText"
@@ -1217,7 +1224,12 @@ boxdrive)
     fi
     expectedTeamID="M683GB7CPW"
     ;;
-brave)
+boxtools)
+     name="Box Tools"
+     type="pkg"
+     downloadURL="https://box-installers.s3.amazonaws.com/boxedit/mac/currentrelease/BoxToolsInstaller.pkg"
+     expectedTeamID="M683GB7CPW"
+     ;;brave)
     # credit: @securitygeneration
     name="Brave Browser"
     type="dmg"
@@ -1307,7 +1319,14 @@ coderunner)
     downloadURL="https://coderunnerapp.com/download"
     expectedTeamID="R4GD98AJF9"
     ;;
-cormorant)
+colourcontrastanalyser)
+     name="Colour Contrast Analyser (CCA)"
+     type="dmg"
+     downloadURL=$(downloadURLFromGit ThePacielloGroup CCAe)
+     appNewVersion=$(versionFromGit ThePacielloGroup CCAe)
+     expectedTeamID="34RS4UC3M6"
+     blockingProcesses=( NONE )
+     ;;cormorant)
     # credit: Søren Theilgaard (@theilgaard)
     name="Cormorant"
     type="zip"
@@ -1505,8 +1524,14 @@ favro)
     ;;
 ferdi)
     name="Ferdi"
-    type="dmg"
+    type="zip"
+    if [[ $(arch) == i386 ]]; then
+    downloadURL=$(curl --silent --fail "https://api.github.com/repos/getferdi/ferdi/releases/latest" \
+    | awk -F '"' "/browser_download_url/ && /mac.zip/ && ! /blockmap/ && ! /arm64-mac/ && ! /AppImage/{ print \$4 }")
+    elif [[ $(arch) == arm64 ]]; then
     downloadURL=$(downloadURLFromGit getferdi ferdi )
+    archiveName="arm64-mac.zip"
+    fi    
     appNewVersion=$(versionFromGit getferdi ferdi )
     expectedTeamID="B6J9X9DWFL"
     ;;
@@ -1894,7 +1919,18 @@ jamfreenroller)
     #appNewVersion=$(versionFromGit jamf ReEnroller)
     expectedTeamID="PS2F6S478M"
     ;;
-jetbrainsintellijidea)
+jetbrainsdatagrip)
+     # credit: AP Orlebeke (@apizz)
+     name="DataGrip"
+     type="dmg"
+     appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=DG&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+     if [[ $(arch) == "arm64" ]]; then
+         downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=DG&latest=true&type=release" | grep -o 'macM1*.*,' | cut -d '"' -f5)
+     elif [[ $(arch) == "i386" ]]; then
+         downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=DG&latest=true&type=release" | grep -o 'mac*.*,' | cut -d '"' -f5)
+     fi
+     expectedTeamID="2ZEFAR8TH3"
+     ;;jetbrainsintellijidea)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="IntelliJ IDEA"
     type="dmg"
@@ -2272,10 +2308,12 @@ microsoftskypeforbusiness)
 microsoftteams)
     name="Microsoft Teams"
     type="pkg"
-    #packageID="com.microsoft.teams"
+    packageID="com.microsoft.teams"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=869428"
     #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.teams.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
     # Still using macadmin.software for version, as the path does not contain the version in a matching format. packageID can be used, but version is the same.
+    appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.teams.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
+    # Looks like macadmin.software has package ID version. At least on 2021-05-28 version 1.00.411161 is matched on installed version and homepage.
     expectedTeamID="UBF8T346G9"
     blockingProcesses=( Teams "Microsoft Teams Helper" )
     # Commenting out msupdate as it is not really supported *yet* for teams
@@ -2526,7 +2564,13 @@ plantronicshub)
     expectedTeamID="SKWK2Q7JJV"
     appNewVersion=$(curl -fs "https://www.poly.com/in/en/support/knowledge-base/kb-article-page?lang=en_US&urlName=Hub-Release-Notes&type=Product_Information__kav" | grep -o "(*.*<span>)" | head -1 | cut -d "(" -f2 | sed 's/\<\/span\>//g' | cut -d "<" -f1)
     ;;
-plisteditpro)
+platypus)
+     name="Platypus"
+     type="zip"
+     downloadURL=$(downloadURLFromGit sveinbjornt Platypus)
+     appNewVersion=$(versionFromGit sveinbjornt Platypus)
+     expectedTeamID="55GP2M789L"
+     ;;plisteditpro)
     name="PlistEdit Pro"
     type="zip"
     downloadURL="https://www.fatcatsoftware.com/plisteditpro/PlistEditPro.zip"
@@ -2701,13 +2745,26 @@ santa)
     appNewVersion=$(versionFromGit google santa)
     expectedTeamID="EQHXZ8M8AV"
     ;;
-screamingfrogseospider)
+scaleft)
+     name="ScaleFT"
+     type="pkg"
+     downloadURL="https://dist.scaleft.com/client-tools/mac/latest/ScaleFT.pkg"
+     appNewVersion=$(curl -sf "https://dist.scaleft.com/client-tools/mac/" | awk '/dir/{i++}i==2' | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
+     expectedTeamID="HV2G9Z3RP5"
+     blockingProcesses=( ScaleFT )
+     ;;screamingfrogseospider)
     name="Screaming Frog SEO Spider"
     type="dmg"
     downloadURL="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-14.3.dmg"
     expectedTeamID="CAHEVC3HZC"
     ;;
-screenflick)
+screencloudplayer)
+     # credit: AP Orlebeke (@apizz)
+     name="ScreenCloud Player"
+     type="dmg"
+     downloadURL=$(curl -sL "https://screencloud.com/download" | sed -n 's/^.*"url":"\([^"]*\)".*$/\1/p')
+     expectedTeamID="3C4F953K6P"
+     ;;screenflick)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="Screenflick"
     type="zip"
@@ -3225,7 +3282,11 @@ zoomclient)
     name="zoom.us"
     type="pkg"
     packageID="us.zoom.pkg.videmeeting"
-    downloadURL="https://zoom.us/client/latest/Zoom.pkg"
+    if [[ $(arch) == i386 ]]; then
+       downloadURL="https://zoom.us/client/latest/Zoom.pkg"
+    elif [[ $(arch) == arm64 ]]; then
+       downloadURL="https://zoom.us/client/latest/Zoom.pkg?archType=arm64"
+    fi
     expectedTeamID="BJ4HAAB9B3"
     #appNewVersion=$(curl -is "https://beta2.communitypatch.com/jamf/v1/ba1efae22ae74a9eb4e915c31fef5dd2/patch/zoom.us" | grep currentVersion | tr ',' '\n' | grep currentVersion | cut -d '"' -f 4) # Does not match packageID
     blockingProcesses=( zoom.us )
@@ -3279,6 +3340,19 @@ zulujdk15)
     appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
     appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
     ;;
+zulujdk8)
+     name="Zulu JDK 8"
+     type="pkgInDmg"
+     packageID="com.azulsystems.zulu.8"
+     if [[ $(arch) == i386 ]]; then
+       downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu8.*ca-jdk8.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
+     elif [[ $(arch) == arm64 ]]; then
+       downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu8.*ca-jdk8.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
+     fi
+     expectedTeamID="TDTHCUPYFR"
+     appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Info.plist" "CFBundleName" | sed 's/Zulu //'; fi }
+     appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+     ;;
 *)
     # unknown label
     #printlog "unknown label $label"

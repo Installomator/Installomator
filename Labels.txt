@@ -24,6 +24,7 @@ applesfmono
 applesfpro
 aquaskk
 arq7
+asana
 atext
 atom
 audacity
@@ -42,7 +43,8 @@ bitwarden
 blender
 bluejeans
 boxdrive
-brave
+boxtools
+caffeine
 cakebrew
 calibre
 camostudio
@@ -52,7 +54,7 @@ clevershare2
 clickshare
 code42
 coderunner
-cormorant
+colourcontrastanalyser
 cryptomator
 cyberduck
 dangerzone
@@ -125,7 +127,7 @@ jamfconnect
 jamfmigrator
 jamfpppcutility
 jamfreenroller
-jetbrainsintellijidea
+jetbrainsdatagrip
 jetbrainsintellijideace
 jetbrainsphpstorm
 jetbrainspycharm
@@ -133,7 +135,6 @@ jetbrainspycharmce
 karabinerelements
 keepassxc
 keka
-keyboardmaestro
 keyboardmaestro
 klokki
 knockknock
@@ -200,7 +201,7 @@ pacifist
 pdfsam
 pitch
 plantronicshub
-plisteditpro
+platypus
 postman
 prism9
 privileges
@@ -225,8 +226,8 @@ rocketchat
 royaltsx
 rstudio
 santa
-screamingfrogseospider
-screenflick
+scaleft
+screencloudplayer
 sfsymbols
 shield
 sidekick
@@ -285,6 +286,7 @@ vscodium
 webex
 webexmeetings
 webexteams
+webexteams
 whatsapp
 wickrme
 wickrpro
@@ -301,3 +303,4 @@ zoomrooms
 zulujdk11
 zulujdk13
 zulujdk15
+zulujdk8
