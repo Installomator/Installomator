@@ -1,7 +1,21 @@
+## v0.7 - pre-release
+
+- script is now assembled from fragments. This helps avoid merging conflicts on git and allows the core team to work on the script logic while also accepting new labels. See the "Assemble Script ReadMe" for details.
 - Change in finding installed apps. We now look in /Applications and /Applications/Utilities first. If not found there, we use spotligt to find it. (We discovered a problem when a user has Parallels Windows installed with Microsoft Edge in it. Then Installomator wanted to update the app all the time, becaus spotligt found that Windows version of the app that Parallels created.)
 - Added bunch of new labels
 - Improved `buildCaseStatement.sh` a lot. It is a great start when figuring out how to create a new label for an app, or a piece of software.
 - Mosyle changed their app name from Business to Self-Service
+
+## v0.6 - 2021-07-14
+
+- several new and updated labels, for a total of 302
+- versionKey variable can be used to choose which Info.plist key to get the version from
+- an appCustomVersion() {} function can now be used in a label
+- with INSTALL=force, the script will not be using updateTool, but will reinstall instead
+- added quit and quit_kill options to NOTIFY
+- updated buildCaseStatement.sh
+- updated buildInstallomatorPkg.sh to use notarytool (requires Xcode 13)
+- several minor fixes
 
 ## v0.5 - 2021-04-13
 

@@ -50,6 +50,10 @@ This will put together all the fragments, including your labels in your label fo
 
 Once you are certain that your new custom label works, you can use the code from your _custom_ Installomator.sh script in `build/Installomator.sh`, or even build an installation pkg using the `--pkg` or `--notarize` options.
 
+The `Installomator.sh` script at the root of the repo does not really get involved in your building and testing. Similarly, if you want to apply, test, and contribute changes to the script's logic, you should modify the fragment file in question and test using the assemble script.
+
+Pull requests against the `Installomator.sh` script in the root of the repo will be rejected. (Excepting the backlog of existing PRs.)
+
 ## How do I contribute new or modified labels back to the Installomator project?
 
 ### When you are familiar with git and GitHub
@@ -79,6 +83,29 @@ These are the fragments in the order they are assembled. All files are in the `f
 - (optional) labels from locations given with the ``--labels` argument
 - labels/*.sh
 - main.txt
+
+Even though the fragment files are not functional shell scripts, we decided to use the `.sh` file extension, so that Finder opens the files in the proper application and text editors recognize their file type for code display.
+
+`header.sh` contains all the 'front matter' of the script. This means all the variables that users can change together with all the comment lines explaining them.
+
+The `version.sh` file is special in that is only contains the version string _and nothing else_. The assemble script will use this version to create two line of code that look like this:
+
+```
+VERSION="0.7.0b1"
+VERSIONDATE="2021-08-17"
+```
+
+where the version is from the file and the date is generated dynamically from the current date.
+
+The `functions.sh` fragment contains all the functions used in the script.
+
+The `arguments.sh` fragment contains the argument parsing logic and some other logic that needs to happen before the label is evaluated. This includes the start of the large case statement that evaluates the label and the three 'built-in' labels `version`, `longversion`, and `valuesfromarguments`.
+
+All the contents of the label files in `labels` (and any custom label locations you provide with the `-l`/`--label` option) will be inserted here.
+
+Finally, the `main.sh` fragment contains most of the main logic.
+
+The assemble script does not check _any_ of the files for syntax or completeness. You are responsible that everything fits together properly. (Pay special attention to remember the closing semi-colons `;;` in the label files.)
 
 ## assemble.sh Usage
 
