@@ -1,6 +1,6 @@
 # How to assemble Installomator.sh
 
-Since the Installomator.sh script has grown to over 3000 lines, its management on git has become very unwieldy. The single file with all the logic and the data required to download and install the applications creates constant merge conflicts which add to the workflow on the repo admins.
+Since the Installomator.sh script has grown to over 3000 lines, its management on git has become very unwieldy. The single file with all the logic and the data required to download and install the applications creates constant merge conflicts which add to the workload of the repo admins, especially when part of the team is working on the logic of the script while we still get PRs to add labels.
 
 Because of that we have split the main script into multiple files which are easier to manage. Having multiple files results in less merge conflicts.
 
@@ -46,6 +46,7 @@ This will put together all the fragments, including your labels in your label fo
 
 ```
 > sudo ./assemble.sh -l ~/Documents/InstallomatorLabels desktoppr NOTIFY=silent DEBUG=0
+# NOTE: this _installs_ desktoppr
 ```
 
 Once you are certain that your new custom label works, you can use the code from your _custom_ Installomator.sh script in `build/Installomator.sh`, or even build an installation pkg using the `--pkg` or `--notarize` options.
@@ -58,9 +59,10 @@ Pull requests against the `Installomator.sh` script in the root of the repo will
 
 ### When you are familiar with git and GitHub
 
-- Create a branch in your local Installomator fork repo.
+- Create a new branch in your local Installomator fork repo.
 - Copy the new or modified label file to `fragments/labels`. (replacing the original, when necessary)
 - Create a pull request against the main Installomator dev branch.
+- Don't use this branch for any other modifications, unless you need to update this particular PR. (Pull Requests are against a _branch_, not a particular commit.)
 
 If you have multiple labels you want to contribute, please create a separate local branch and a separate pull request for each label.
 
@@ -80,7 +82,7 @@ These are the fragments in the order they are assembled. All files are in the `f
 - version.sh
 - functions.sh
 - arguments.sh
-- (optional) labels from locations given with the ``--labels` argument
+- (optional) labels from locations given with the `--labels` argument
 - labels/*.sh
 - main.txt
 
