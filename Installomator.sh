@@ -2980,8 +2980,8 @@ androidstudio)
 #     # credit: Mathieu St-Yves (@mathieu244)
      name="Android Studio"
      type="dmg"
-     appNewVersion=$(curl -fsSL "https://developer.android.com/studio" | grep "android-studio-ide-*.*-mac.dmg" | cut -d ">" -f1 | head -2 | cut -d "/" -f8 | xargs)
-     filename=$(curl -fsSL "https://developer.android.com/studio" | grep "android-studio-ide-*.*-mac.dmg" | cut -d ">" -f1 | head -2 | cut -d "/" -f9 | sed 's/\"//' | xargs)
+     appNewVersion=$(curl -fsSL "https://developer.android.com/studio" | grep "android-studio-*.*-mac.dmg" | cut -d ">" -f1 | head -2 | cut -d "/" -f8 | xargs)
+     filename=$(curl -fsSL "https://developer.android.com/studio" | grep "android-studio-*.*-mac.dmg" | cut -d ">" -f1 | head -2 | cut -d "/" -f9 | sed 's/\"//' | xargs)
      downloadURL="https://dl.google.com/dl/android/studio/install/${appNewVersion}/${filename}"
     #${variable:offset:length}
      expectedTeamID="EQHXZ8M8AV"
