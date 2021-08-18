@@ -118,6 +118,7 @@ hyper
 icons
 imazingprofileeditor
 inkscape
+insomnia
 installomator_theile
 intellijideace
 istatmenus

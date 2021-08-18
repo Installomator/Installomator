@@ -1795,6 +1795,13 @@ inkscape)
     #appNewVersion=$(curl -fsJL https://inkscape.org/release/  | grep "<h2>Inkscape" | cut -d '>' -f 3 | cut -d '<' -f 1 | sed 's/[^0-9.]*//g') # Can't figure out where exact new version is found. Currently returns 1.0, but version is "1.0.0 (4035a4f)"
     expectedTeamID="SW3D6BB6A6"
     ;;
+insomnia)
+    name="insomnia"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit kong insomnia)
+    appNewVersion=$(versionFromGit kong insomnia)
+    expectedTeamID="FX44YY62GV"
+    ;;
 installomator_theile)
     name="Installomator"
     type="pkg"
