@@ -54,6 +54,7 @@ clickshare
 code42
 coderunner
 cormorant
+craftmanager
 cryptomator
 cyberduck
 dangerzone
