@@ -2997,7 +2997,15 @@ haxm)
     #${variable:offset:length}
      expectedTeamID="EQHXZ8M8AV"
      ;;
-
+insomnia)
+    # credit: Søren Theilgaard (@theilgaard)
+    name="insomnia"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit kong insomnia)
+    appNewVersion=$(versionFromGit kong insomnia)
+    expectedTeamID="FX44YY62GV"
+    #Company="Linde Group"
+    ;;
 #wordmat)
 #    # WordMat currently not signed
 #    # credit: Søren Theilgaard (@theilgaard)
