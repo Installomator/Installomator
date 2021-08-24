@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -74,7 +74,9 @@ name=${archiveName%.*}
 echo "name: $name"
 archiveExt=${archiveName##*.}
 echo "archiveExt: $archiveExt"
-identifier=$(echo $name | tr '[:upper:]' '[:lower:]')
+identifier=${name:l}
+identifier=${identifier//\%[0-9a-fA-F][0-9a-fA-F]}
+identifier=${identifier//[,._*@$\(\)\-]}
 echo "identifier: $identifier"
 
 if [ "$archiveExt" = "pkg" ]; then
