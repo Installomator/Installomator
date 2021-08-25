@@ -91,7 +91,7 @@ BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
 # Labels with the $(arch) call for different versions for Intel and Apple Silicon should be listed here:
-archLabels=( $(grep "$(arch)" "${pathToLabels}"/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
+archLabels=( $(grep "\$(arch)" "${pathToLabels}"/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
 echo "${BLUE}Labels with \"\$(arch)\" call:${NC}\n${archLabels}\n"
 
 if [[ $# -eq 0 ]]; then
