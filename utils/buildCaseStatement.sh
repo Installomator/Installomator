@@ -12,7 +12,10 @@ downloadURL=${1?:"need to provide a download URL"}
 
 
 # create temporary working directory
-tmpDir=$(mktemp -d )
+# tmpDir=$(mktemp -d ) # create a temporary folder, can be removed in the bottom of script
+# tmpDir=$(dirname "$0") # (REMEMBER to comment out removal of tmpDir in bottom of script)
+
+tmpDir=$(pwd) # use working directory as download folder (REMEMBER to comment out removal of tmpDir in bottom of script)
 
 # change directory to temporary working directory
 echo "Changing directory to $tmpDir"
@@ -147,9 +150,9 @@ echo "Above should be saved in a file with exact same name as label, and given e
 echo "Put this file in folder “fragments/labels”."
 echo
 
-if [ -e "${tmpDir}" ]; then
-    #echo "deleting tmp dir"
-    rm -rf "${tmpDir}"
-fi
+#if [ -e "${tmpDir}" ]; then
+#    #echo "deleting tmp dir"
+#    rm -rf "${tmpDir}"
+#fi
 
 exit 0
