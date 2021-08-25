@@ -6,7 +6,7 @@
 label_re='^([a-z0-9\_-]*)(\)|\|\\)$' 
 endlabel_re='^(    |\t);;$'
 
-label_dir="../fragments/labels"
+label_dir=../"fragments/labels"
 
 IFS=$'\n'
 

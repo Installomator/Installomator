@@ -16,7 +16,7 @@
 # MARK: Constants
 SELF=$(basename $0)
 SELFLOCATION=$(dirname $0)
-pathToLabels="fragments/labels"
+pathToLabels=../"fragments/labels"
 
 #echo "Script: $SELFLOCATION/$SELF\n"
 
