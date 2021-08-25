@@ -122,6 +122,7 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
 
 fi
 
+echo "Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed."
 echo
 echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, but also on a web page. See archivePath above if link contains information about this."
 echo
@@ -140,9 +141,9 @@ fi
 echo "    ;;"
 echo
 
-#if [ -e "${tmpDir}" ]; then
-#    #echo "deleting tmp dir"
-#    rm -rf "${tmpDir}"
-#fi
+if [ -e "${tmpDir}" ]; then
+    #echo "deleting tmp dir"
+    rm -rf "${tmpDir}"
+fi
 
 exit 0
