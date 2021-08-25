@@ -1,9 +1,12 @@
 #!/bin/zsh
 
+# This script will create individual labels files from the original Installomator.sh script
+# Only for internal use
+
 label_re='^([a-z0-9\_-]*)(\)|\|\\)$' 
 endlabel_re='^(    |\t);;$'
 
-label_dir="fragments/labels"
+label_dir="../fragments/labels"
 
 IFS=$'\n'
 
@@ -24,4 +27,4 @@ while read -r line; do
         current_label=""
     fi
     
-done <./Installomator.sh
+done <../Installomator.sh
