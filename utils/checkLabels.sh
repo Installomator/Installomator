@@ -98,7 +98,7 @@ archLabels=( $(grep "\$(arch)" ${pathToLabels}/* | awk '{print $1}' | sed -E 's/
 echo "${BLUE}Labels with \"\$(arch)\" call:${NC}\n${archLabels}\n"
 
 if [[ $# -eq 0 ]]; then
-    allLabels=( $(ls ${pathToLabels}/*.sh | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g') )
+    allLabels=( $(grep -h -E '^([a-z0-9\_-]*)(\)|\|\\)$' ${pathToLabels}/*.sh | tr -d ')|\\' | sort) )
 else
     allLabels=( ${=@} )
 fi
