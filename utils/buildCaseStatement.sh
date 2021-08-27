@@ -12,7 +12,10 @@ downloadURL=${1?:"need to provide a download URL"}
 
 
 # create temporary working directory
-tmpDir=$(dirname $0 )
+# tmpDir=$(mktemp -d ) # create a temporary folder, can be removed in the bottom of script
+# tmpDir=$(dirname "$0") # (REMEMBER to comment out removal of tmpDir in bottom of script)
+
+tmpDir=$(pwd) # use working directory as download folder (REMEMBER to comment out removal of tmpDir in bottom of script)
 
 # change directory to temporary working directory
 echo "Changing directory to $tmpDir"
@@ -123,6 +126,10 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
 fi
 
 echo
+echo "**********"
+echo
+echo "Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed."
+echo
 echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, but also on a web page. See archivePath above if link contains information about this."
 echo
 echo "$identifier)"
@@ -138,6 +145,9 @@ if [ -n "$appName" ] && [ "$appName" != "${name}.app" ]; then
 echo "    appName=\"$appName\""
 fi
 echo "    ;;"
+echo
+echo "Above should be saved in a file with exact same name as label, and given extension “.sh”."
+echo "Put this file in folder “fragments/labels”."
 echo
 
 #if [ -e "${tmpDir}" ]; then
