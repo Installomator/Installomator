@@ -8,7 +8,7 @@ downloadURL=${1?:"need to provide a download URL"}
 # That being said, it's a great place to start for building up the label in the Case-statement
 
 # Usage
-# ./buildCaseStatement.sh <URL to download software>
+# ./buildLabel.sh <URL to download software>
 
 
 # create temporary working directory

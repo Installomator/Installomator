@@ -3,7 +3,7 @@
 - script is now assembled from fragments. This helps avoid merging conflicts on git and allows the core team to work on the script logic while also accepting new labels. See the "Assemble Script ReadMe" for details.
 - Change in finding installed apps. We now look in /Applications and /Applications/Utilities first. If not found there, we use spotligt to find it. (We discovered a problem when a user has Parallels Windows installed with Microsoft Edge in it. Then Installomator wanted to update the app all the time, becaus spotligt found that Windows version of the app that Parallels created.)
 - Added bunch of new labels
-- Improved `buildCaseStatement.sh` a lot. It is a great start when figuring out how to create a new label for an app, or a piece of software.
+- Improved `buildLabel.sh` a lot. It is a great start when figuring out how to create a new label for an app, or a piece of software. Also renamed from `buildCaseStatement.sh`
 - Mosyle changed their app name from Business to Self-Service
 
 ## v0.6 - 2021-07-14
