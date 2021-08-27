@@ -131,7 +131,9 @@ googlechrome)
 
 When you know how to extract these pieces of information from the application and/or download, then you can add an application to Installomator.
 
-The script buildCaseStatement.sh can help with the label creation.
+The script `buildCaseStatement.sh` can help with the label creation.
+
+Please note: Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed.
 
 ### Not specific to a management system
 
