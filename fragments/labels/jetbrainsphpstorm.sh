@@ -1,8 +1,7 @@
 jetbrainsphpstorm)
-    # credit: Casey Jensen (@cajenson01 on MacAdmins Slack)Appended by Skylar Damiano @catdad on MacAdmins Slack
-    name="JetBrains PHPStorm"
+    name="PHPStorm"
     type="dmg"
-    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    downloadURL="https://download.jetbrains.com/product?code=PS&latest&distribution=mac"
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
     ;;
