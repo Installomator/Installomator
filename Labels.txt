@@ -52,6 +52,7 @@ cakebrew
 calibre
 camostudio
 camtasia
+cisdem-documentreader
 citrixworkspace
 clevershare2
 clickshare
@@ -94,6 +95,7 @@ firefoxesr
 firefoxesr_intl
 firefoxesrpkg
 firefoxpkg
+flowjo
 front
 fsmonitor
 gimp
@@ -125,6 +127,7 @@ imazingprofileeditor
 inkscape
 insomnia
 installomator_theile
+installprism9
 intellijideace
 istatmenus
 iterm2
@@ -277,7 +280,6 @@ textmate
 theunarchiver
 things
 thunderbird
-tigervnc
 toggltrack
 torbrowser
 trex
