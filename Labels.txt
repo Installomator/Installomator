@@ -22,6 +22,7 @@ applenyfonts
 applesfcompact
 applesfmono
 applesfpro
+applesfsymbols
 aquaskk
 arq7
 asana
@@ -43,6 +44,7 @@ bitwarden
 blender
 bluejeans
 boxdrive
+boxsync
 boxtools
 brave
 caffeine
@@ -57,6 +59,7 @@ code42
 coderunner
 colourcontrastanalyser
 cormorant
+craftmanager
 cryptomator
 cyberduck
 dangerzone
@@ -120,6 +123,7 @@ hyper
 icons
 imazingprofileeditor
 inkscape
+insomnia
 installomator_theile
 intellijideace
 istatmenus
@@ -135,6 +139,7 @@ jetbrainsintellijideace
 jetbrainsphpstorm
 jetbrainspycharm
 jetbrainspycharmce
+jetbrainstoolbox
 karabinerelements
 keepassxc
 keka
@@ -178,6 +183,7 @@ microsoftword
 microsoftyammer
 miro
 musescore
+muzzle
 netnewswire
 nextcloud
 nomad
@@ -244,6 +250,7 @@ sizeup
 sketch
 skype
 slack
+smartgit
 snagit
 snagit2020
 snagit2021
@@ -291,7 +298,6 @@ vmwarehorizonclient
 vscodium
 webex
 webexmeetings
-webexteams
 webexteams
 whatsapp
 wickrme
