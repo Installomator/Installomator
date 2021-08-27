@@ -29,6 +29,8 @@ if [[ $(sw_vers -buildVersion ) < "18" ]]; then
     exit 98
 fi
 
+currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
+
 
 # MARK: Functions
 
@@ -118,7 +120,7 @@ for label in $allLabels; do
     name=""; type=""; downloadURL=""; appNewVersion=""; expectedTeamID=""; blockingProcesses=""; updateTool=""; updateToolArguments=""; archiveName=""
     
     #caseLabel
-    cat "${pathToLabels}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh
+    if cat "${pathToLabels}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
     source checkLabelCurrent.sh
 
     echo "Name: $name"
@@ -197,7 +199,9 @@ for label in $allLabels; do
     if (($archLabels[(Ie)$label])); then
         secondRoundLabels+=( "$label" )
     fi
-    
+    else
+        echo "Label: ${label} is not it's own file in Labels-folder. Skipping"
+    fi
     echo
 done
 allLabels=( ${=secondRoundLabels} )
