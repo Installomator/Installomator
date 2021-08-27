@@ -1,3 +1,4 @@
+applesfsymbols|\
 sfsymbols)
     name="SF Symbols"
     type="pkgInDmg"
