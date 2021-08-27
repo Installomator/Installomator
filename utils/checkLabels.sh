@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
 # Check Installomator labels from fragments
 # 2020 Søren Theilgaard (@theilgaard)
 
