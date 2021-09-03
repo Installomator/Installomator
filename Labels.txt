@@ -311,6 +311,7 @@ xink
 xquartz
 yubikeymanagerqt
 zappy
+zohoworkdrive
 zoom
 zoomclient
 zoomrooms
