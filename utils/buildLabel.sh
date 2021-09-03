@@ -2,7 +2,7 @@
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-downloadURL=${1?:"need to provide a download URL"}
+downloadURL=${1?:"need to provide a download URL."}
 
 # Note: this tool _very_ experimental and does not work in many cases
 # That being said, it's a great place to start for building up the label in the Case-statement
@@ -10,19 +10,23 @@ downloadURL=${1?:"need to provide a download URL"}
 # Usage
 # ./buildLabel.sh <URL to download software>
 
-tmpDir=$(pwd) # use working directory as download folder (REMEMBER to comment out removal of tmpDir in bottom of script)
+# Use working directory as download folder
+tmpDir=$(date "+%Y-%m-%d-%H-%M-%S")
+# Create a n almost unique folder name
+mkdir $tmpDir
 
 # change directory to temporary working directory
 echo "Changing directory to $tmpDir"
 if ! cd "$tmpDir"; then
-    echo "error changing directory $tmpDir"
-    #rm -Rf "$tmpDir"
+    echo "Error changing directory $tmpDir"
     exit 1
 fi
+echo "Working dir: $(pwd)"
 
 # download the URL
 echo "Downloading $downloadURL"
-if ! downloadOut="$(curl -fsL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
+echo "Redirecting to (maybe this can help us with version):\n$(curl -fsIL "$downloadURL" | grep -i ^location)"
+if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
     echo "error downloading $downloadURL"
     exit 2
 fi
@@ -60,12 +64,25 @@ appInvestigation() {
         exit 4
     fi
 }
-echo "downloadOut: ${downloadOut}"
+
+echo "downloadOut:\n${downloadOut}"
 archiveTempName=$( echo "${downloadOut}" | head -1 )
 echo "archiveTempName: $archiveTempName"
 archivePath=$( echo "${downloadOut}" | tail -1 )
 echo "archivePath: $archivePath"
-archiveName=${archivePath##*/}
+
+try1archiveName=${archiveTempName##*/}
+try2archiveName=${archivePath##*/}
+fileName_re='^([a-zA-Z0-9\_.-]*)\.(dmg|pkg|zip|tbz)$'
+if [[ "${try1archiveName}" =~ $fileName_re ]]; then
+    archiveName=${try1archiveName}
+elif [[ "${try2archiveName}" =~ $fileName_re ]]; then
+    archiveName=${try2archiveName}
+else
+    echo "Could not determine archiveName from “$try1archiveName” and “$try2archiveName”"
+    exit
+fi
+
 echo "archiveName: $archiveName"
 mv $archiveTempName $archiveName
 name=${archiveName%.*}
@@ -125,7 +142,7 @@ echo "**********"
 echo
 echo "Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed."
 echo
-echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, but also on a web page. See archivePath above if link contains information about this."
+echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, sometimes as part of the download redirects, but also on a web page. See redirect and archivePath above if link contains information about this. That is a good place to start"
 echo
 echo "$identifier)"
 echo "    name=\"$name\""

@@ -9,6 +9,7 @@ adobereaderdc-install
 adobereaderdc-update
 aircall
 airserver
+airtame
 aldente
 alfred
 alttab
