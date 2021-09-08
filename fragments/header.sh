@@ -34,7 +34,7 @@ NOTIFY=success
 
 
 # behavior when blocking processes are found
-BLOCKING_PROCESS_ACTION=prompt_user
+BLOCKING_PROCESS_ACTION=tell_user
 # options:
 #   - ignore       continue even when blocking processes are found
 #   - quit         app will be told to quit nicely, if running
