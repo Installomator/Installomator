@@ -210,6 +210,7 @@ openvpnconnect
 openvpnconnectv3
 opera
 pacifist
+parsec
 pdfsam
 pitch
 plantronicshub
@@ -299,6 +300,7 @@ vivaldi
 vlc
 vmwarehorizonclient
 vscodium
+wallyezflash
 webex
 webexmeetings
 webexteams
