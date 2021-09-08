@@ -3,7 +3,7 @@
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # Check Installomator labels from fragments
-# 2020 Søren Theilgaard (@theilgaard)
+# 2021 Søren Theilgaard (@theilgaard)
 
 # This script will test labels and check if download link is active, and if version is defined.
 # If labels are written to the script only those will be tested.
@@ -31,7 +31,7 @@ if [[ $(sw_vers -buildVersion ) < "18" ]]; then
     exit 98
 fi
 
-currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
+currentUser=$(stat -f "%Su" /dev/console)
 
 
 # MARK: Functions
