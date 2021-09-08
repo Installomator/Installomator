@@ -51,6 +51,9 @@ BLOCKING_PROCESS_ACTION=tell_user
 #   - prompt_user_loop
 #                  Like prompt-user, but clicking "Not Now", will just wait an hour,
 #                  and then it will ask again.
+#                  WARNING! It might block the MDM agent on the machine, as
+#                  the scripts gets stuct in waiting until the hour has passed,
+#                  possibly blocking for other management actions in this time.
 #   - tell_user    User will be showed a notification about the important update,
 #                  but user is only allowed to quit and continue, and then we
 #                  ask the app to quit.
