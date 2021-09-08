@@ -31,7 +31,7 @@ if [[ $(sw_vers -buildVersion ) < "18" ]]; then
     exit 98
 fi
 
-currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
+currentUser=$(stat -f "%Su" /dev/console)
 
 
 # MARK: Functions
