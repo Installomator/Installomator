@@ -262,6 +262,7 @@ sonos
 sonoss1
 sonoss2
 sourcetree
+splashtopsos
 spotify
 sublimetext
 supportapp
