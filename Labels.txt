@@ -9,6 +9,7 @@ adobereaderdc-install
 adobereaderdc-update
 aircall
 airserver
+airtame
 aldente
 alfred
 alttab
@@ -209,6 +210,7 @@ openvpnconnect
 openvpnconnectv3
 opera
 pacifist
+parsec
 pdfsam
 pitch
 plantronicshub
@@ -261,6 +263,7 @@ sonos
 sonoss1
 sonoss2
 sourcetree
+splashtopsos
 spotify
 sublimetext
 supportapp
@@ -297,6 +300,7 @@ vivaldi
 vlc
 vmwarehorizonclient
 vscodium
+wallyezflash
 webex
 webexmeetings
 webexteams
@@ -310,6 +314,7 @@ xink
 xquartz
 yubikeymanagerqt
 zappy
+zohoworkdrive
 zoom
 zoomclient
 zoomrooms
