@@ -1919,51 +1919,72 @@ jamfreenroller)
     #appNewVersion=$(versionFromGit jamf ReEnroller)
     expectedTeamID="PS2F6S478M"
     ;;
-jetbrainsdatagrip)
-     # credit: AP Orlebeke (@apizz)
-     name="DataGrip"
-     type="dmg"
-     appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=DG&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
-     if [[ $(arch) == "arm64" ]]; then
-         downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=DG&latest=true&type=release" | grep -o 'macM1*.*,' | cut -d '"' -f5)
-     elif [[ $(arch) == "i386" ]]; then
-         downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=DG&latest=true&type=release" | grep -o 'mac*.*,' | cut -d '"' -f5)
-     fi
-     expectedTeamID="2ZEFAR8TH3"
-     ;;jetbrainsintellijidea)
+jetbrainsdatagrip|\
+datagrip)
+    # credit: AP Orlebeke (@apizz)
+    name="DataGrip"
+    type="dmg"
+    jbApp="DG"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == "i386" ]]; then
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'mac*.*,' | cut -d '"' -f5)
+    else
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'macM1*.*,' | cut -d '"' -f5)
+    fi
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
+jetbrainsintellijidea|\
+intellijidea)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="IntelliJ IDEA"
     type="dmg"
-    downloadURL="https://download.jetbrains.com/product?code=II&latest&distribution=mac"
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=II&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    jbApp="II"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == "i386" ]]; then
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'mac*.*,' | cut -d '"' -f5)
+    else
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'macM1*.*,' | cut -d '"' -f5)
+    fi
     expectedTeamID="2ZEFAR8TH3"
     ;;
 jetbrainsintellijideace|\
 intellijideace)
     name="IntelliJ IDEA CE"
     type="dmg"
-    downloadURL="https://download.jetbrains.com/product?code=IIC&latest&distribution=mac"
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=IIC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    jbApp="IIC"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == "i386" ]]; then
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'mac*.*,' | cut -d '"' -f5)
+    else
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'macM1*.*,' | cut -d '"' -f5)
+    fi
     expectedTeamID="2ZEFAR8TH3"
     ;;
-jetbrainsphpstorm)
-    # credit: Casey Jensen (@cajenson01 on MacAdmins Slack)Appended by Skylar Damiano @catdad on MacAdmins Slack
-    name="JetBrains PHPStorm"
+jetbrainsphpstorm|\
+phpstorm)
+    name="PHPStorm"
     type="dmg"
-    downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o "mac*.*.dmg" | cut -d '"' -f5)
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PS&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    jbApp="PS"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == "i386" ]]; then
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'mac*.*,' | cut -d '"' -f5)
+    else
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'macM1*.*,' | cut -d '"' -f5)
+    fi
     expectedTeamID="2ZEFAR8TH3"
     ;;
-jetbrainspycharm)
+jetbrainspycharm|\
+pycharm)
     # This is the Pro version of PyCharm.
     # Do not confuse with PyCharm CE.
     name="PyCharm"
     type="dmg"
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
-    if [[ $(arch) == i386 ]]; then
-      downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=mac"
-    elif [[ $(arch) == arm64 ]]; then
-      downloadURL="https://download.jetbrains.com/product?code=PCP&latest&distribution=macM1"
+    jbApp="PC"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == "i386" ]]; then
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'mac*.*,' | cut -d '"' -f5)
+    else
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'macM1*.*,' | cut -d '"' -f5)
     fi
     expectedTeamID="2ZEFAR8TH3"
     ;;
@@ -1971,11 +1992,12 @@ jetbrainspycharmce|\
 pycharmce)
     name="PyCharm CE"
     type="dmg"
-    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=PCC&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
-    if [[ $(arch) == i386 ]]; then
-      downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=mac"
-    elif [[ $(arch) == arm64 ]]; then
-      downloadURL="https://download.jetbrains.com/product?code=PCC&latest&distribution=macM1"
+    jbApp="PCC"
+    appNewVersion=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'version*.*,' | cut -d '"' -f3)
+    if [[ $(arch) == "i386" ]]; then
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'mac*.*,' | cut -d '"' -f5)
+    else
+        downloadURL=$(curl -fs "https://data.services.jetbrains.com/products/releases?code=${jbApp}&latest=true&type=release" | grep -o 'macM1*.*,' | cut -d '"' -f5)
     fi
     expectedTeamID="2ZEFAR8TH3"
     ;;
