@@ -30,6 +30,7 @@ asana
 atext
 atom
 audacity
+authydesktop
 autodmg
 autopkgr
 aviatrix
