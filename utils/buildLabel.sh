@@ -73,7 +73,7 @@ echo "archivePath: $archivePath"
 
 try1archiveName=${archiveTempName##*/}
 try2archiveName=${archivePath##*/}
-fileName_re='^([a-zA-Z0-9\_.-]*)\.(dmg|pkg|zip|tbz)$'
+fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz)$'
 if [[ "${try1archiveName}" =~ $fileName_re ]]; then
     archiveName=${try1archiveName}
 elif [[ "${try2archiveName}" =~ $fileName_re ]]; then
