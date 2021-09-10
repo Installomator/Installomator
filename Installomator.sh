@@ -78,11 +78,6 @@ INSTALL=""
 #                  if it is newer/different in version
 #  - force         Install even if it’s the same version
 
-# timeout for dialog box in seconds
-# prevents the script from blocking other processes while the user ignores the
-# dialogue box for a prolonged period of time.
-# TIMEOUT=300 # wait 5 minutes for user to confirm before giving up
-TIMEOUT=
 
 # Re-opening of closed app
 REOPEN="yes"
@@ -223,58 +218,6 @@ runAsUser() {
     fi
 }
 
-# return a human readable text for the TIMEOUT value
-timeout_text() {
-    if [[ -z $TIMEOUT ]]; then
-        echo ""
-        return
-    elif [[ $TIMEOUT -lt 60 ]]; then
-        echo "$TIMEOUT seconds"
-        return
-    elif [[ $TIMEOUT -lt 3600 ]]; then
-        minutes=$(( $TIMEOUT / 60 ))
-        minutes_text="$minutes minute"
-
-        if [[ $minutes != 1 ]]; then
-            minutes_text="${minutes_text}s"
-        fi
-
-        seconds=$(( $TIMEOUT % 60 ))
-        seconds_text=""
-
-        if [[ $seconds -gt 0 ]]; then
-            seconds_text=" and $seconds second"
-
-            if [[ $seconds != 1 ]]; then
-                seconds_text="${seconds_text}s"
-            fi
-        fi
-
-        echo "${minutes_text}${seconds_text}"
-        return
-    fi
-
-    hours=$(( $TIMEOUT / 60 / 60 ))
-    hours_text="$hours hour"
-
-    if [[ $hours != 1 ]]; then
-        hours_text="${hours_text}s"
-    fi
-
-    minutes=$(( $TIMEOUT / 60 % 60 ))
-    minutes_text=""
-
-    if [[ $minutes -gt 0 ]]; then
-        minutes_text=" and $minutes minute"
-
-        if [[ $minutes != 1 ]]; then
-            minutes_text="${minutes_text}s"
-        fi
-    fi
-
-    echo "${hours_text}${minutes_text}"
-}
-
 reloadAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
@@ -285,24 +228,13 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    giving_up=
-
-    if [ -n "$TIMEOUT" ]; then
-        giving_up=" giving up after $TIMEOUT"
-    fi
-
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" $giving_up with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
 }
 
 displaydialogContinue() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-
-    if [ -n "$TIMEOUT" ]; then
-        giving_up=" giving up after $TIMEOUT"
-    fi
-
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" $giving_up with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
 }
 
 displaynotification() { # $1: message $2: title
@@ -452,6 +384,7 @@ checkRunningProcesses() {
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
+                appClosed=1
                 
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
@@ -469,20 +402,12 @@ checkRunningProcesses() {
                     kill)
                       printlog "killing process $x"
                       pkill $x
-                      appClosed=1
                       sleep 5
                       ;;
                     prompt_user|prompt_user_then_kill)
-                      if [ -n "$TIMEOUT" ]; then
-                        timer_message="(This dialogue will close in $(timeout_text))"
-                      else
-                        timer_message="(Leave this dialogue if you want to activate this update later)"
-                      fi
-                      button=$(displaydialog "Quit “$x” to continue updating? $timer_message." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update"
-                      elif [[ $button = "" ]]; then
-                        cleanupAndExit 13 "dialog timed out after $(timeout_text)"
                       else
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
@@ -490,7 +415,6 @@ checkRunningProcesses() {
                         else
                           printlog "telling app $x to quit"
                           runAsUser osascript -e "tell app \"$x\" to quit"
-                          appClosed=1
                           # give the user a bit of time to quit apps
                           printlog "waiting 30 seconds for processes to quit"
                           sleep 30
@@ -498,15 +422,10 @@ checkRunningProcesses() {
                       fi
                       ;;
                     prompt_user_loop)
-                      if [ -n "$TIMEOUT" ]; then
-                        timer_message="(Click “Not Now” to be asked in 1 hour)"
-                      else
-                        timer_message="(Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)"
-                      fi
-                      button=$(displaydialog "Quit “$x” to continue updating? $timer_message." "The application “$x” needs to be updated.")
-                      if [[ $button = "Not Now" || $button = "" ]]; then
+                      button=$(displaydialog "Quit “$x” to continue updating? (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
+                      if [[ $button = "Not Now" ]]; then
                         if [[ $i < 2 ]]; then
-                          printlog "user clicked not now or timed out after $(timeout_text), waiting for an hour"
+                          printlog "user wants to wait an hour"
                           sleep 3600 # 3600 seconds is an hour
                         else
                           printlog "change of BLOCKING_PROCESS_ACTION to tell_user"
@@ -515,22 +434,15 @@ checkRunningProcesses() {
                       else
                         printlog "telling app $x to quit"
                         runAsUser osascript -e "tell app \"$x\" to quit"
-                        appClosed=1
                         # give the user a bit of time to quit apps
                         printlog "waiting 30 seconds for processes to quit"
                         sleep 30
                       fi
                       ;;
                     tell_user|tell_user_then_kill)
-                      if [ -n "$TIMEOUT" ]; then
-                        timer_message="(This important update will automatically proceed in $(timeout_text))"
-                      else
-                        timer_message="(This is an important update)"
-                      fi
-                      button=$(displaydialogContinue "Quit “$x” to continue updating? $timer_message. Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
+                      button=$(displaydialogContinue "Quit “$x” to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
                       printlog "telling app $x to quit"
                       runAsUser osascript -e "tell app \"$x\" to quit"
-                      appClosed=1
                       # give the user a bit of time to quit apps
                       printlog "waiting 30 seconds for processes to quit"
                       sleep 30

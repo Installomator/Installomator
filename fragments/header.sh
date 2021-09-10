@@ -86,6 +86,13 @@ REOPEN="yes"
 #  - no            App not reopened
 
 
+# timeout for dialog box in seconds
+# prevents the script from blocking other processes while the user ignores the
+# dialogue box for a prolonged period of time.
+# TIMEOUT=300 # wait 5 minutes for user to confirm before giving up
+TIMEOUT=
+
+
 # NOTE: How labels work
 
 # Each workflow label needs to be listed in the case statement below.
