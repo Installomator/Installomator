@@ -11,7 +11,7 @@ downloadURL=${1?:"need to provide a download URL."}
 # ./buildLabel.sh <URL to download software>
 
 # Use working directory as download folder
-tmpDir=$(date "+%Y-%m-%d-%H-%M-%S")
+tmpDir="$(pwd)/$(date "+%Y-%m-%d-%H-%M-%S")"
 # Create a n almost unique folder name
 mkdir $tmpDir
 
