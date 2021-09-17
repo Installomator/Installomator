@@ -1,6 +1,10 @@
 figma)
     name="Figma"
     type="zip"
-    downloadURL="https://desktop.figma.com/mac/Figma.zip"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://desktop.figma.com/mac-arm/Figma.zip"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://desktop.figma.com/mac/Figma.zip"
+    fi
     expectedTeamID="T8RA8NE3B7"
     ;;
