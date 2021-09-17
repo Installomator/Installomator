@@ -146,7 +146,6 @@ jetbrainstoolbox
 karabinerelements
 keepassxc
 keka
-keybase
 keyboardmaestro
 klokki
 knockknock
