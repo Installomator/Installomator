@@ -68,7 +68,20 @@ LOGO=appstore
 #   - mosyleb       Mosyle Business
 #   - mosylem       Mosyle Manager (Education)
 #   - addigy        Addigy
-# path can also be set in the command call, and if file exists, it will be used, like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"' (spaces are escaped).
+# path can also be set in the command call, and if file exists, it will be used.
+# Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
+# (spaces have to be escaped).
+
+
+# App Store apps handling
+IGNORE_APP_STORE_APPS=no
+# options:
+#  - no            If installed app is from App Store (which include VPP installed apps)
+#                  it will not be touched, no matter it's version (default)
+#  - yes           Replace App Store (and VPP) version of app and handle future
+#                  updates using Installomator, even if latest version.
+#                  Shouldn’t give any problems for the user in most cases.
+#                  Known bad example: Slack will loose all settings.
 
 
 # install behavior
