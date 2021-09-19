@@ -6,7 +6,7 @@ _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/scriptingosx/Installomator)&nbsp;![](https://img.shields.io/github/downloads/scriptingosx/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/scriptingosx/Installomator)
 
-This script is in the "we find it useful, it is working for us" stage.
+This script is in the “we find it useful, it is working for us” stage.
 
 Your production and deployment environment will be different, please test thoroughly before rolling it out to your production.
 
