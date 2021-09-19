@@ -1,6 +1,6 @@
 # Installomator
 
-__Please note, that if you are contributing to this project with new labels or other suggestions, please change the fragmented files, not the full script. The full script is now a build of the fragments, and will be overwritten.__
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please change the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
 
 _The one installer script to rule them all._
 
