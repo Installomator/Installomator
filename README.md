@@ -22,6 +22,7 @@ If you have added a new label, then please file a pull request. (and Thank you!)
 
 __Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
 
+We try to keep the script as short as possible, and with more than 300 labels, we can save 300 lines in the script, if we do not have credit lines on each of these. So we are thankful for your contribution, but we will be removing these lines in the coming releases.
 
 ## More reading
 
