@@ -1,6 +1,6 @@
 # Installomator
 
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please change the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
 
 _The one installer script to rule them all._
 
@@ -19,6 +19,9 @@ Discussion, support and advice around Installomator happens in the `#installomat
 Do not create an issue just when you have a questions, but do file an issue or pull request for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
 
 If you have added a new label, then please file a pull request. (and Thank you!)
+
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
+
 
 ## More reading
 
