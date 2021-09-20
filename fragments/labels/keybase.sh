@@ -1,5 +1,4 @@
 keybase)
-    # credit: Todd Fleisher
     name="Keybase"
     type="dmg"
     downloadURL=$(curl -s https://keybase.io/docs/the_app/install_macos | grep data-target | cut -d '"' -f2)
