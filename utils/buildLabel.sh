@@ -11,7 +11,7 @@ downloadURL=${1?:"need to provide a download URL."}
 # ./buildLabel.sh <URL to download software>
 
 # Use working directory as download folder
-tmpDir=$(date "+%Y-%m-%d-%H-%M-%S")
+tmpDir="$(pwd)/$(date "+%Y-%m-%d-%H-%M-%S")"
 # Create a n almost unique folder name
 mkdir $tmpDir
 
@@ -65,14 +65,14 @@ appInvestigation() {
     fi
 }
 
-echo "downloadOut:\n${downloadOut}"
+#echo "downloadOut:\n${downloadOut}"
 archiveTempName=$( echo "${downloadOut}" | head -1 )
 echo "archiveTempName: $archiveTempName"
 archivePath=$( echo "${downloadOut}" | tail -1 )
 echo "archivePath: $archivePath"
 
-try1archiveName=${archiveTempName##*/}
-try2archiveName=${archivePath##*/}
+try1archiveName=${${archiveTempName##*/}%%\?*}
+try2archiveName=${${archivePath##*/}%%\?*}
 fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz)$'
 if [[ "${try1archiveName}" =~ $fileName_re ]]; then
     archiveName=${try1archiveName}
@@ -80,10 +80,11 @@ elif [[ "${try2archiveName}" =~ $fileName_re ]]; then
     archiveName=${try2archiveName}
 else
     echo "Could not determine archiveName from “$try1archiveName” and “$try2archiveName”"
+    #echo "Extensions $archiveTempName:t:e $archivePath:t:e"
     exit
 fi
 
-echo "archiveName: $archiveName"
+echo "Calculated archiveName: $archiveName"
 mv $archiveTempName $archiveName
 name=${archiveName%.*}
 echo "name: $name"

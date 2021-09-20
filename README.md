@@ -1,10 +1,12 @@
 # Installomator
 
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
+
 _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/scriptingosx/Installomator)&nbsp;![](https://img.shields.io/github/downloads/scriptingosx/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/scriptingosx/Installomator)
 
-This script is in the "we find it useful, it is working for us" stage.
+This script is in the “we find it useful, it is working for us” stage.
 
 Your production and deployment environment will be different, please test thoroughly before rolling it out to your production.
 
@@ -17,6 +19,10 @@ Discussion, support and advice around Installomator happens in the `#installomat
 Do not create an issue just when you have a questions, but do file an issue or pull request for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
 
 If you have added a new label, then please file a pull request. (and Thank you!)
+
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
+
+We try to keep the script as short as possible, and with more than 300 labels, we can save 300 lines in the script, if we do not have credit lines on each of these. So we are thankful for your contribution, but we will be removing these lines in the coming releases.
 
 ## More reading
 
