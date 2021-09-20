@@ -270,6 +270,7 @@ sublimetext
 supportapp
 suspiciouspackage
 swiftruntimeforcommandlinetools
+sync
 tableaudesktop
 tableaureader
 taskpaper
