@@ -1,4 +1,4 @@
-azurestorageexplorer)
+microsoftazurestorageexplorer)
     name="Microsoft Azure Storage Explorer"
     type="zip"
     downloadURL=$(downloadURLFromGit microsoft AzureStorageExplorer )
