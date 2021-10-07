@@ -5,3 +5,4 @@ dialog)
     appNewVersion=$(versionFromGit bartreardon Dialog-public )
     expectedTeamID="PWA5E9TQ59"
     ;;
+    
