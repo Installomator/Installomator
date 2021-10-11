@@ -76,6 +76,17 @@ LOGO=appstore
 # (spaces have to be escaped).
 
 
+# App Store apps handling
+IGNORE_APP_STORE_APPS=no
+# options:
+#  - no            If installed app is from App Store (which include VPP installed apps)
+#                  it will not be touched, no matter it's version (default)
+#  - yes           Replace App Store (and VPP) version of app and handle future
+#                  updates using Installomator, even if latest version.
+#                  Shouldn’t give any problems for the user in most cases.
+#                  Known bad example: Slack will loose all settings.
+
+
 # install behavior
 INSTALL=""
 # options:
