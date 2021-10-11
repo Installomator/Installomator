@@ -261,6 +261,12 @@ The `LOGO` variable is used for the icon shown in dialog boxes. There are these 
 - `addigy`:      Addigy
 Path can also be set in the command call, and if file exists, it will be used, like `LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"` (spaces are escaped).
 
+### App Store apps handling
+Default is `IGNORE_APP_STORE_APPS=no`
+__options:__
+- `no`: If installed app is from App Store (which include VPP installed apps) it will not be touched, no matter it's version (default)
+- `yes`: Replace App Store (and VPP) version of app and handle future updates using Installomator, even if latest version. Shouldn’t give any problems for the user in most cases. Known bad example: Slack will loose all settings.
+
 ### Install behavior (force installation)
 
 Since we now make a version checking, and only installs the software if the version is different, an `INSTALL` variable can be used to force the installation:
