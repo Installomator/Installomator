@@ -166,6 +166,7 @@ malwarebytes
 mattermost
 menumeters
 microsoftautoupdate
+microsoftazurestorageexplorer
 microsoftcompanyportal
 microsoftdefenderatp
 microsoftedge
