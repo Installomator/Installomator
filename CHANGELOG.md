@@ -7,6 +7,7 @@
 - Added bunch of new labels, and improved others.
 - Renamed `buildCaseStatement.sh` to `buildLabel.sh` and improved it a lot. It is a great start when figuring out how to create a new label for an app, or a piece of software. Look at the tutorials in our wiki.
 - Mosyle changed their app name from Business to Self-Service
+- Added option to not interrupt Do Not Disturb full screen apps like KeyNote or Zoom with `INTERRUPT_DND="no"`.
 
 ## v0.6 - 2021-07-14
 

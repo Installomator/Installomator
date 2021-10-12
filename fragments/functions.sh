@@ -616,4 +616,30 @@ finishing() {
     fi
 }
 
+# Detect if there is an app actively making a display sleep assertion, e.g.
+# KeyNote, PowerPoint, Zoom, or Webex.
+# See: https://developer.apple.com/documentation/iokit/iopmlib_h/iopmassertiontypes
+hasDisplaySleepAssertion() {
+    # Get the names of all apps with active display sleep assertions
+    local apps="$(/usr/bin/pmset -g assertions | /usr/bin/awk '/NoDisplaySleepAssertion | PreventUserIdleDisplaySleep/ && match($0,/\(.+\)/) && ! /coreaudiod/ {gsub(/^.*\(/,"",$0); gsub(/\).*$/,"",$0); print};')"
+
+    if [[ ! "${apps}" ]]; then
+        # No display sleep assertions detected
+        return 1
+    fi
+
+    # Create an array of apps that need to be ignored
+    local ignore_array=("${(@s/,/)IGNORE_DND_APPS}")
+
+    for app in ${(f)apps}; do
+        if (( ! ${ignore_array[(Ie)${app}]} )); then
+            # Relevant app with display sleep assertion detected
+            printlog "Display sleep assertion detected by ${app}."
+            return 0
+        fi
+    done
+
+    # No relevant display sleep assertion detected
+    return 1
+}
 

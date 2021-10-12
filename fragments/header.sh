@@ -102,6 +102,16 @@ REOPEN="yes"
 #  - no            App not reopened
 
 
+# Interrupt Do Not Disturb (DND) full screen apps
+INTERRUPT_DND="yes"
+# options:
+#  - yes           Script will run without checking for DND full screen apps.
+#  - no            Script will exit when an active DND full screen app is detected.
+
+# Comma separated list of app names to ignore when evaluating DND
+IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
+
+
 # NOTE: How labels work
 
 # Each workflow label needs to be listed in the case statement below.

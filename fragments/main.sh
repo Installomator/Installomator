@@ -8,6 +8,13 @@ esac
 
 # MARK: application download and installation starts here
 
+if [[ ${INTERRUPT_DND} = "no" ]]; then
+    # Check if a fullscreen app is active
+    if hasDisplaySleepAssertion; then
+        cleanupAndExit 1 "active display sleep assertion detected, aborting"
+    fi
+fi
+
 printlog "BLOCKING_PROCESS_ACTION=${BLOCKING_PROCESS_ACTION}"
 printlog "NOTIFY=${NOTIFY}"
 
