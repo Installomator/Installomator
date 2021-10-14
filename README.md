@@ -1,7 +1,5 @@
 # Installomator
 
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
-
 _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/scriptingosx/Installomator)&nbsp;![](https://img.shields.io/github/downloads/scriptingosx/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/scriptingosx/Installomator)
@@ -14,13 +12,13 @@ I have put a lot of work into making it stable and safe, but I cannot - of cours
 
 ## Support and Contributing
 
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the REAMDME.md file in the `utils` directory for detailed instructions.__
+
 Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Go there for support questions.
 
 Do not create an issue just when you have a questions, but do file an issue or pull request for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
 
 If you have added a new label, then please file a pull request. (and Thank you!)
-
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
 
 We try to keep the script as short as possible, and with more than 300 labels, we can save 300 lines in the script, if we do not have credit lines on each of these. So we are thankful for your contribution, but we will be removing these lines in the coming releases.
 
@@ -91,7 +89,7 @@ Installomator can work with the following common archive and installer types:
 - dmg: for the common 'drag app to /Applications' installation style
 - zip: the application is just compressed with zip or or tbz
 
-When the download yields a pkg file, Installomator will run `installer` to install it on the current system. 
+When the download yields a pkg file, Installomator will run `installer` to install it on the current system.
 
 Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation.
 
@@ -240,7 +238,7 @@ WARNING! It might block the MDM agent on the machine, as the scripts gets stuct 
 - `tell_user_then_kill`: Show dialog 2 times, and if the quitting fails, the blocking processes will be killed.
 - `kill`: kill process without prompting or giving the user a chance to save.
 
-If any process was closed, Installomator will try to open the app again, after the update process is done. 
+If any process was closed, Installomator will try to open the app again, after the update process is done.
 
 ### Notification
 
@@ -354,7 +352,7 @@ Depending on the application or pkg there are a few more variables you can or ne
   dmg or zip:
     Applications will be copied to this directory.
     Default value is '`/Applications`' for dmg and zip installations.
-  pkg: 
+  pkg:
     `targetDir` is used as the install-location. Default is '`/`'.
 
 - `blockingProcesses`: (optional)
@@ -379,7 +377,7 @@ Depending on the application or pkg there are a few more variables you can or ne
   e.g. `msupdate` (see microsoft installations)
 
 - `updateToolRunAsCurrentUser`:
-  When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and 
+  When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and
 
 ### Configuration from Arguments
 
