@@ -316,12 +316,14 @@ wwdc
 xeroxphaser7800
 xink
 xquartz
+yed
 yubikeymanagerqt
 zappy
 zeplin
 zohoworkdrive
 zoom
 zoomclient
+zoomgov
 zoomrooms
 zulujdk11
 zulujdk13
