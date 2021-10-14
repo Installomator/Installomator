@@ -58,6 +58,7 @@ cisdem-documentreader
 citrixworkspace
 clevershare2
 clickshare
+cloudya
 code42
 coderunner
 colourcontrastanalyser
@@ -74,7 +75,7 @@ depnotify
 desktoppr
 detectxswift
 devonthink
-dialpad
+dialog
 discord
 docker
 drift
@@ -134,9 +135,11 @@ istatmenus
 iterm2
 jabradirect
 jamfconnect
+jamfconnectconfiguration
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jetbrainsclion
 jetbrainsdatagrip
 jetbrainsintellijidea
 jetbrainsintellijideace
@@ -144,6 +147,7 @@ jetbrainsphpstorm
 jetbrainspycharm
 jetbrainspycharmce
 jetbrainstoolbox
+jetbrainswebstorm
 karabinerelements
 keepassxc
 keka
@@ -188,6 +192,7 @@ microsoftvisualstudiocode
 microsoftword
 microsoftyammer
 miro
+montereyblocker
 musescore
 muzzle
 netnewswire
@@ -215,6 +220,7 @@ opera
 pacifist
 parsec
 pdfsam
+perimeter81
 pitch
 plantronicshub
 platypus
@@ -276,6 +282,7 @@ swiftruntimeforcommandlinetools
 sync
 tableaudesktop
 tableaureader
+tageditor
 taskpaper
 teamviewer
 teamviewerhost
@@ -288,6 +295,7 @@ theunarchiver
 things
 thunderbird
 toggltrack
+tom4aconverter
 torbrowser
 trex
 tunnelbear
@@ -295,6 +303,7 @@ tunnelblick
 umbrellaroamingclient
 uniconverter
 universaltypeclient
+utm
 vagrant
 vanilla
 veracrypt
