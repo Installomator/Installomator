@@ -1,10 +1,9 @@
-jetbrainsphpstorm)
-    name="PHPStorm"
+jetbrainsclion)
+    name="CLion"
     type="dmg"
-    jetbrainscode="PS"
-    if [[ $(arch) == i386 ]]; then
-        jetbrainsdistribution="mac"
-    elif [[ $(arch) == arm64 ]]; then
+    jetbrainscode="CL"
+    jetbrainsdistribution="mac"
+    if [[ $(arch) == arm64 ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
