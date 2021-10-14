@@ -171,15 +171,19 @@ else
         printlog "notifying"
         displaynotification "Downloading $name update" "Download in progress …"
     fi
-    if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
-        printlog "error downloading $downloadURL"
+    curldownload=$(curl -v --location --fail --show-error --silent "$downloadURL" -o "$archiveName" 2>&1)
+    curldownloadstatus=$(echo $?)
+    deduplicatelogs "$curldownload"
+
+    if [[ $curldownloadstatus -ne 0 ]]; then
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
             displaynotification "$message" "Error installing/updating $name"
         fi
-        cleanupAndExit 2
+        cleanupAndExit 2 "Error downloading $downloadURL error: $logoutput" ERROR
     fi
+    printlog "curl output was: $logoutput" DEBUG
 fi
 
 # MARK: when user is logged in, and app is running, prompt user to quit app

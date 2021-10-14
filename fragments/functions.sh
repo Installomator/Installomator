@@ -1,9 +1,7 @@
 # MARK: Functions
 
 cleanupAndExit() { # $1 = exit code, $2 message, $3 level
-    if [[ -n $2 && $1 -ne 0 ]]; then
-        printlog "$2" $3
-    fi
+
     if [ "$DEBUG" -eq 0 ]; then
         # remove the temporary working directory when done
         printlog "Deleting $tmpDir" DEBUG
@@ -17,7 +15,10 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     fi
     # If we closed any processes, reopen the app again
     reopenClosedProcess
-    printlog "################## End Installomator, exit code $1 \n\n" CRIT
+    if [[ -n $2 && $1 -ne 0 ]]; then
+        printlog "$2" $3
+    fi
+    printlog "################## End Installomator, exit code $1 \n\n" REQ
     exit "$1"
 }
 
@@ -63,8 +64,9 @@ displaynotification() { # $1: message $2: title
 log_location="/private/var/log/Installomator.log"
 if [[ $DEBUG -eq 1 ]]; then
   LOGGING=DEBUG
-elif [[ -z LOGGING ]]; then
+elif [[ -z $LOGGING ]]; then
   LOGGING=INFO
+  datadogLoggingLevel=INFO
 fi
 
 declare -A levels=(DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4)
@@ -76,6 +78,7 @@ else
 fi
 
 SESSION=$RANDOM
+
 printlog(){
   [ -z "$2" ] && 2=INFO
   log_message=$1
@@ -92,7 +95,7 @@ printlog(){
   if [[ $logrepeat -gt 1 ]];then
     echo "$timestamp" "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : Last Log repeated ${logrepeat} times"
     if [[ ! -z $datadogAPI ]]; then
-      curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $JSSURL : $APPLICATION : $VERSIONDATE : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
+      curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSIONDATE : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
     fi
     logrepeat=0
   fi
@@ -234,7 +237,7 @@ getAppVersion() {
 checkRunningProcesses() {
     # don't check in DEBUG mode
     if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not checking for blocking processes"
+        printlog "DEBUG mode, not checking for blocking processes" DEBUG
         return
     fi
 
@@ -341,7 +344,7 @@ reopenClosedProcess() {
 
     # don't reopen in DEBUG mode
     if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not reopening anything"
+        printlog "DEBUG mode, not reopening anything" DEBUG
         return
     fi
 
@@ -400,7 +403,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
-        printlog "DEBUG enabled, skipping remove, copy and chown steps"
+        printlog "DEBUG enabled, skipping remove, copy and chown steps" DEBUG
         return 0
     fi
 
@@ -504,7 +507,7 @@ installFromPKG() {
 
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
-        printlog "DEBUG enabled, skipping installation"
+        printlog "DEBUG enabled, skipping installation" DEBUG
         return 0
     fi
 
@@ -635,6 +638,25 @@ runUpdateTool() {
         return 1
     fi
     return 0
+}
+
+deduplicatelogs() {
+  loginput=${1:-"Log"}
+  logoutput=""
+  while read log; do
+    if [[ $log == $previous_log ]];then
+      let logrepeat=$logrepeat+1
+      continue
+    fi
+
+    previous_log="$log"
+    if [[ $logrepeat -gt 1 ]];then
+      logoutput+="Last Log repeated ${logrepeat} times\n"
+      logrepeat=0
+    fi
+
+    logoutput+="$log\n"
+  done <<< "$loginput"
 }
 
 finishing() {
