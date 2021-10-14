@@ -19,7 +19,7 @@ zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -labels+:=l
 
 if (( ${opts[(I)(-h|--help)]} )); then
   echo "usage: assemble.sh [--script|--pkg|--notarize] [-labels path/to/labels ...] [arguments...]"
-  echo 
+  echo
   echo "builds and runs the installomator script from the fragements."
   echo "additional arguments are passed into the Installomator script for testing."
   exit
@@ -68,7 +68,7 @@ labels_dir="$fragments_dir/labels"
 # add default labels_dir to label_paths
 label_paths+=$labels_dir
 
-echo "label_paths: $label_paths"
+#echo "label_paths: $label_paths"
 
 fragment_files=( header.sh version.sh functions.sh arguments.sh main.sh )
 
@@ -134,7 +134,7 @@ fi
 # build a pkg when flag is set
 if [[ buildPkg -eq 1 ]]; then
     echo "# building installer package"
-    
+
     tmpfolder=$(mktemp -d)
     payloadfolder="${tmpfolder}/payload"
 
