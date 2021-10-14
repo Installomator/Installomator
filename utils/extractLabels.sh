@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+# This script will create individual labels files from the original Installomator.sh script
+# Only for internal use
+
 label_re='^([a-z0-9\_-]*)(\)|\|\\)$' 
 endlabel_re='^(    |\t);;$'
 
@@ -19,9 +22,9 @@ while read -r line; do
         current_label=$current_label$'\n'$line
     fi
     if [[ $in_label -eq 1 && "$line" =~ $endlabel_re ]]; then
-        echo $current_label > "$label_dir/${label_name}.txt"
+        echo $current_label > "$label_dir/${label_name}.sh"
         in_label=0
         current_label=""
     fi
     
-done <./Installomator.sh
+done <../Installomator.sh

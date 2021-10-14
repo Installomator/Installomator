@@ -4,7 +4,7 @@ _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/scriptingosx/Installomator)&nbsp;![](https://img.shields.io/github/downloads/scriptingosx/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/scriptingosx/Installomator)
 
-This script is in the "we find it useful, it is working for us" stage.
+This script is in the “we find it useful, it is working for us” stage.
 
 Your production and deployment environment will be different, please test thoroughly before rolling it out to your production.
 
@@ -12,11 +12,15 @@ I have put a lot of work into making it stable and safe, but I cannot - of cours
 
 ## Support and Contributing
 
-Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins Slack](https:/macadmins.org). Go there for support questions.
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the REAMDME.md file in the `utils` directory for detailed instructions.__
+
+Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Go there for support questions.
 
 Do not create an issue just when you have a questions, but do file an issue or pull request for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
 
 If you have added a new label, then please file a pull request. (and Thank you!)
+
+We try to keep the script as short as possible, and with more than 300 labels, we can save 300 lines in the script, if we do not have credit lines on each of these. So we are thankful for your contribution, but we will be removing these lines in the coming releases.
 
 ## More reading
 
@@ -85,7 +89,7 @@ Installomator can work with the following common archive and installer types:
 - dmg: for the common 'drag app to /Applications' installation style
 - zip: the application is just compressed with zip or or tbz
 
-When the download yields a pkg file, Installomator will run `installer` to install it on the current system. 
+When the download yields a pkg file, Installomator will run `installer` to install it on the current system.
 
 Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation.
 
@@ -131,7 +135,9 @@ googlechrome)
 
 When you know how to extract these pieces of information from the application and/or download, then you can add an application to Installomator.
 
-The script buildCaseStatement.sh can help with the label creation.
+The script `buildCaseStatement.sh` can help with the label creation.
+
+Please note: Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed.
 
 ### Not specific to a management system
 
@@ -227,11 +233,12 @@ There are eight options:
 - `prompt_user`: (default) show a user dialog for each blocking process found abort after three attempts to quit (only if user accepts to quit the apps, otherwise the update is cancelled).
 - `prompt_user_then_kill`: show a user dialog for each blocking process found, attempt to quit two times, kill the process finally.
 - `prompt_user_loop`: Like prompt-user, but clicking "Not Now", will just wait an hour, and then it will ask again.
+WARNING! It might block the MDM agent on the machine, as the scripts gets stuct in waiting until the hour has passed, possibly blocking for other management actions in this time.
 - `tell_user`: User will be showed a notification about the important update, but user is only allowed to quit and continue, and then we ask the app to quit.
 - `tell_user_then_kill`: Show dialog 2 times, and if the quitting fails, the blocking processes will be killed.
 - `kill`: kill process without prompting or giving the user a chance to save.
 
-If any process was closed, Installomator will try to open the app again, after the update process is done. 
+If any process was closed, Installomator will try to open the app again, after the update process is done.
 
 ### Notification
 
@@ -251,6 +258,12 @@ The `LOGO` variable is used for the icon shown in dialog boxes. There are these 
 - `mosylem`:     Mosyle Manager (Education)
 - `addigy`:      Addigy
 Path can also be set in the command call, and if file exists, it will be used, like `LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"` (spaces are escaped).
+
+### App Store apps handling
+Default is `IGNORE_APP_STORE_APPS=no`
+__options:__
+- `no`: If installed app is from App Store (which include VPP installed apps) it will not be touched, no matter it's version (default)
+- `yes`: Replace App Store (and VPP) version of app and handle future updates using Installomator, even if latest version. Shouldn’t give any problems for the user in most cases. Known bad example: Slack will loose all settings.
 
 ### Install behavior (force installation)
 
@@ -339,7 +352,7 @@ Depending on the application or pkg there are a few more variables you can or ne
   dmg or zip:
     Applications will be copied to this directory.
     Default value is '`/Applications`' for dmg and zip installations.
-  pkg: 
+  pkg:
     `targetDir` is used as the install-location. Default is '`/`'.
 
 - `blockingProcesses`: (optional)
@@ -364,7 +377,7 @@ Depending on the application or pkg there are a few more variables you can or ne
   e.g. `msupdate` (see microsoft installations)
 
 - `updateToolRunAsCurrentUser`:
-  When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and 
+  When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and
 
 ### Configuration from Arguments
 
