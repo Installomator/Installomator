@@ -1,8 +1,7 @@
-jetbrainspycharm)
-    # This is the Pro version of PyCharm. Do not confuse with PyCharm CE.
-    name="PyCharm"
+jetbrainsclion)
+    name="CLion"
     type="dmg"
-    jetbrainscode="PCP"
+    jetbrainscode="CL"
     jetbrainsdistribution="mac"
     if [[ $(arch) == arm64 ]]; then
         jetbrainsdistribution="macM1"
