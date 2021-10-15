@@ -21,6 +21,6 @@ Thank you very much!
 
 ## Issues
 
-If you encounter an issue, please file this, and include the full log of what the bug is.
+Do not create an issue just when you have a questions, but do file an issue or pull request (PR) for bugs or wrong behavior. Include the full log and include the version of Installomator you're running.
 
-Do not use this for support, but use Slack, as described in [README.md](https://github.com/Installomator/Installomator/)
+When in doubt, use the MacAdmins.org Slack as described in [README.md](https://github.com/Installomator/Installomator/)
