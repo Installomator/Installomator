@@ -36,6 +36,12 @@ done
 # lowercase the label
 label=${label:l}
 
+# separate check for 'version' in order to print plain version number without any other information
+if [ $label == "version" ]; then
+    echo "$VERSION"
+    exit 0
+fi
+
 printlog "################## Start Installomator v. $VERSION"
 printlog "################## $label"
 
