@@ -5,6 +5,10 @@
     ;;
 esac
 
+# MARK: check for root
+    if [ "$(whoami)" != "root" ]; then
+        # not running as root
+        cleanupAndExit 6 "not running as root, exiting"
 
 # MARK: application download and installation starts here
 
