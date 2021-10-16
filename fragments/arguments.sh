@@ -55,11 +55,6 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 
 # MARK: labels in case statement
 case $label in
-version)
-    # print the script VERSION
-    printlog "$VERSION"
-    exit 0
-    ;;
 longversion)
     # print the script version
     printlog "Installomater: version $VERSION ($VERSIONDATE)"
