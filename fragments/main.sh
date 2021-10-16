@@ -6,7 +6,7 @@
 esac
 
 # MARK: check for root
-    if [ "$(whoami)" != "root" ]; then
+    if [ "$(whoami)" != "root" || "$DEBUG" -eq 2 ]; then
         # not running as root
         cleanupAndExit 6 "not running as root, exiting"
 
@@ -100,7 +100,7 @@ if [[ -z $blockingProcesses ]]; then
 fi
 
 # MARK: determine tmp dir
-if [ "$DEBUG" -ne 0 ]; then
+if [ "$DEBUG" -eq 1 ]; then
     # for debugging use script dir as working directory
     tmpDir=$(dirname "$0")
 else
@@ -124,7 +124,7 @@ printlog "appversion: $appversion"
 if [[ -n $appNewVersion ]]; then
     printlog "Latest version of $name is $appNewVersion"
     if [[ $appversion == $appNewVersion ]]; then
-        if [[ $DEBUG -eq 0 ]]; then
+        if [[ $DEBUG -ne 1 ]]; then
             printlog "There is no newer version available."
             if [[ $INSTALL != "force" ]]; then
                 message="$name, version $appNewVersion, is  the latest version."
@@ -138,7 +138,7 @@ if [[ -n $appNewVersion ]]; then
                 updateTool=""
             fi
         else
-            printlog "DEBUG mode enabled, not exiting, but there is no new version of app."
+            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app."
         fi
     fi
 else
@@ -152,7 +152,7 @@ fi
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "appversion & updateTool"
-    if [[ $DEBUG -eq 0 ]]; then
+    if [[ $DEBUG -ne 1 ]]; then
         if runUpdateTool; then
             finishing
             cleanupAndExit 0
@@ -161,13 +161,13 @@ if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
             cleanupAndExit 0
         fi # otherwise continue
     else
-        printlog "DEBUG mode enabled, not running update tool"
+        printlog "DEBUG mode 1 enabled, not running update tool"
     fi
 fi
 
 # MARK: download the archive
-if [ -f "$archiveName" ] && [ "$DEBUG" -ne 0 ]; then
-    printlog "$archiveName exists and DEBUG enabled, skipping download"
+if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
+    printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
     # download the dmg
     printlog "Downloading $downloadURL to $archiveName"
