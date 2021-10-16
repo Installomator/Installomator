@@ -20,9 +20,11 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # NOTE: adjust these variables:
 
-# set to 0 for production, 1 for debugging
+# set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
+# debug mode 1 will download to the directory the script is run in, but will not check version 
+# debug mode 2 will download to the temp directory, check for blocking processes, check version, but will not install anything or remove the current version
 DEBUG=1
 
 # notify behavior
