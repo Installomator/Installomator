@@ -366,7 +366,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # skip install for DEBUG 2
     if [ "$DEBUG" -eq 2 ]; then
-        cleanupAndExit 0 "DEBUG mode 2 enabled, exiting"
+        printlog "DEBUG mode 2 enabled, exiting"
+        cleanupAndExit 0
     fi
 
     # remove existing application
@@ -469,7 +470,8 @@ installFromPKG() {
 
     # skip install for DEBUG 2
     if [ "$DEBUG" -eq 2 ]; then
-        cleanupAndExit 0 "DEBUG 2 enabled, exiting"
+        printlog "DEBUG mode 2 enabled, exiting"
+        cleanupAndExit 0 
     fi
 
     # install pkg
