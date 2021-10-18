@@ -109,7 +109,9 @@ INTERRUPT_DND="yes"
 #  - no            Script will exit when an active DND full screen app is detected.
 
 # Comma separated list of app names to ignore when evaluating DND
-IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
+IGNORE_DND_APPS=""
+# example that will ignore browsers when evaluating DND:
+# IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
 
 # NOTE: How labels work
