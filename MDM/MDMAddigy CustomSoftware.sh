@@ -63,9 +63,3 @@ else
     echo "Installed version is the same or newer than ${TARGET_VERSION}."
     exit 1
 fi
-
-# Mark: Removal steps
-pkgutil --forget "dk.theilgaard.pkg.Installomator"
-rm /usr/local/bin/Installomator.sh
-rm /usr/local/bin/InstallomatorLabels.sh
-rm /usr/local/Installomator/Installomator.sh
