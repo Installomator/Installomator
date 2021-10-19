@@ -1,4 +1,5 @@
-installomator)
+installomator|\
+installomator_theile)
     name="Installomator"
     type="pkg"
     packageID="com.scriptingosx.Installomator"
