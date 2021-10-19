@@ -87,6 +87,7 @@ eraseinstall
 etrecheck
 evernote
 exelbanstats
+exifrenamer
 fantastical
 favro
 ferdi
