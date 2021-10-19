@@ -3,6 +3,6 @@ airserver)
     name="AirServer"
     type="dmg"
     downloadURL="https://www.airserver.com/download/mac/latest"
-    #appNewVersion=$() # Cannot find version history or release notes on home page
+    appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i "location" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
     expectedTeamID="6C755KS5W3"
     ;;
