@@ -129,6 +129,7 @@ icons
 imazingprofileeditor
 inkscape
 insomnia
+installomator
 installomator_theile
 intellijideace
 istatmenus
