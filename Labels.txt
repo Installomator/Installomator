@@ -302,6 +302,7 @@ torbrowser
 trex
 tunnelbear
 tunnelblick
+typora
 umbrellaroamingclient
 uniconverter
 universaltypeclient
