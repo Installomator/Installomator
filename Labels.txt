@@ -220,6 +220,7 @@ openvpnconnect
 openvpnconnectv3
 opera
 pacifist
+pandoc
 parsec
 pdfsam
 perimeter81
