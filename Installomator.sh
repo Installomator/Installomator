@@ -1339,6 +1339,13 @@ camtasia)
     downloadURL=https://download.techsmith.com/camtasiamac/releases/Camtasia.dmg
     expectedTeamID="7TQL462TU8"
     ;;
+chatwork)
+    # credit: @wakanayoshizawa
+    name="Chatwork"
+    type="dmg"
+    downloadURL=https://desktop-app.chatwork.com/installer/Chatwork.dmg
+    expectedTeamID="H34A3H2Y54"
+    ;;
 cisdem-documentreader)
     name="cisdem-documentreader"
     type="dmg"
@@ -2116,6 +2123,21 @@ pycharmce)
     jetbrainscode="PCC"
     jetbrainsdistribution="mac"
     if [[ $(arch) == arm64 ]]; then
+        jetbrainsdistribution="macM1"
+    fi
+    downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
+    expectedTeamID="2ZEFAR8TH3"
+    ;;
+jetbrainsrubymine|\
+rubymine)
+    # credit: @wakanayoshizawa
+    name="RubyMine"
+    type="dmg"
+    jetbrainscode="RM"
+    if [[ $(arch) == i386 ]]; then
+        jetbrainsdistribution="mac"
+    elif [[ $(arch) == arm64 ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2991,6 +3013,16 @@ screenflick)
     type="zip"
     downloadURL="https://www.araelium.com/screenflick/downloads/Screenflick.zip"
     expectedTeamID="28488A87JB"
+    ;;
+sequelpro)
+    # credit: @wakanayoshizawa
+    name="Sequel Pro"
+    type="dmg"
+    packageID="com.sequelpro.SequelPro"
+    appNewVersion="$(curl -sfL https://github.com/sequelpro/sequelpro/releases/latest | awk '/title/ { print $2 }' | head -n 1 | cut -d "-" -f2)"
+    downloadURL="https://github.com/sequelpro/sequelpro/releases/download/release-${appNewVersion}/sequel-pro-${appNewVersion}.dmg"
+    #expectedTeamID="Y48LQG59RS"
+    expectedTeamID="Media"
     ;;
 shield)
     # credit: Søren Theilgaard (@theilgaard)
