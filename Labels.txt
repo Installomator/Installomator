@@ -278,6 +278,7 @@ sonoss2
 sourcetree
 splashtopsos
 spotify
+strongsync
 sublimetext
 supportapp
 suspiciouspackage
