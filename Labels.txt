@@ -220,6 +220,7 @@ openvpnconnect
 openvpnconnectv3
 opera
 pacifist
+pandoc
 parsec
 pdfsam
 perimeter81
@@ -302,6 +303,7 @@ torbrowser
 trex
 tunnelbear
 tunnelblick
+typora
 umbrellaroamingclient
 uniconverter
 universaltypeclient
