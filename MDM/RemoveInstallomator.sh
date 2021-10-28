@@ -5,6 +5,7 @@
 # Mark: This fork
 pkgutil --forget "com.scriptingosx.Installomator"
 rm /usr/local/Installomator/Installomator.sh
+rmdir /usr/local/Installomator
 
 # Mark: Theile fork
 pkgutil --forget "dk.theilgaard.pkg.Installomator"

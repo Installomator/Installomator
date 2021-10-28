@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 # Installation using Installomator
 what="microsoftteams microsoftyammer firefox bravebrowser cyberduck vlc signal" # enter the software to install separated with spaces
 

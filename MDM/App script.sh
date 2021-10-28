@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 # Installation using Installomator
 what="brave" # enter the software to install
 
