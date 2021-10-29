@@ -278,6 +278,7 @@ sonoss2
 sourcetree
 splashtopsos
 spotify
+steelseriesengine
 strongsync
 sublimetext
 supportapp
