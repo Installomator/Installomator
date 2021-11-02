@@ -164,6 +164,8 @@ REOPEN="yes"
 # - archiveName: (optional)
 #   The name of the downloaded file.
 #   When not given the archiveName is derived from the $name.
+#   Note: This has to be defined BEFORE calling downloadURLFromGit or
+#   versionFromGit functions in the label.
 #
 # - appName: (optional)
 #   File name of the app bundle in the dmg to verify and copy (include .app).
