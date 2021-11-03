@@ -1276,6 +1276,14 @@ clickshare)
     downloadURL=https://www.barco.com$(curl -fs "https://www.barco.com/en/clickshare/app" | grep -E -o '(\/\S*Download\?FileNumber=R3306192\S*ShowDownloadPage=False)' | tail -1)
     expectedTeamID="P6CDJZR997"
     ;;
+clipy)
+    name="Clipy"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit clipy clipy )
+    appNewVersion=$(versionFromGit clipy clipy)
+    expectedTeamID="BBCHAJ584H"
+    blockingProcesses=( Clipy )
+    ;;
 code42)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Code42"
