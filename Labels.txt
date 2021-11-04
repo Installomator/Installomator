@@ -240,6 +240,8 @@ r
 ramboxce
 rectangle
 redeye
+remotix
+remotixagent
 resiliosynchome
 retrobatch
 ricohpsprinters
