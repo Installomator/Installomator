@@ -25,10 +25,27 @@ echo "Working dir: $(pwd)"
 
 # download the URL
 echo "Downloading $downloadURL"
-echo "Redirecting to (maybe this can help us with version):\n$(curl -fsIL "$downloadURL" | grep -i ^location)"
+echo $(basename $downloadURL)
+#exit
+echo "Redirecting to (maybe this can help us with version):\n$(curl -fsIL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" | grep -i "^[location|x\-amz\-meta\-version]*")"
 if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
-    echo "error downloading $downloadURL"
-    exit 2
+    echo "error downloading $downloadURL using standard headers."
+    echo "result: $downloadOut"
+    echo "Trying all headers…"
+    if ! downloadOut="$(curl -fL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
+        echo "error downloading $downloadURL using all headers."
+        echo "result: $downloadOut"
+        if [[ -n $downloadOut ]]; then
+            echo "Trying output of this…"
+            downloadURL="$(echo $downloadOut | tail -1)"
+            if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
+                echo "error downloading $downloadURL using previous output."
+                echo "result: $downloadOut"
+                echo "No more tries. Cannot continue."
+                exit 1
+            fi
+        fi
+    fi
 fi
 
 xpath() {

@@ -54,6 +54,7 @@ cakebrew
 calibre
 camostudio
 camtasia
+canva
 cisdem-documentreader
 citrixworkspace
 clevershare2
