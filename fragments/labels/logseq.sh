@@ -1,10 +1,11 @@
 logseq)
     name="Logseq"
     type="dmg"
-    if [[ $(arch) == i386 ]]; then
-        downloadURL=$(curl --silent --fail "https://api.github.com/repos/logseq/logseq/releases/latest" \
-        | awk -F '"' "/browser_download_url/ && /logseq-darwin/ && /.dmg/ && ! /arm64/ { print \$4 }") 
-    elif [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="darwin-arm64-[0-9.]*.dmg"
+        downloadURL=$(downloadURLFromGit logseq logseq)
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="darwin-x64-[0-9.]*.dmg"
         downloadURL=$(downloadURLFromGit logseq logseq)
     fi
     appNewVersion=$(versionFromGit logseq logseq)
