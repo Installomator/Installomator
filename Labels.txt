@@ -169,6 +169,7 @@ loom
 lucifer
 lulu
 macfuse
+macports
 malwarebytes
 mattermost
 menumeters
