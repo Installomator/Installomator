@@ -6,8 +6,8 @@
 
 We want to keep this up to date with the upstream. To achieve that, we will
 
-1. check out the latest version of the upstream
-2. rebase our work off of the latest
+1. fetch the latest version of the upstream's master
+2. rebase our work off of the upstream's master
 3. open a pull request with these changes and tag @mattdjerome and @frisson
 4. ec tech will review, update, approve, and merge changes as appropriate.
 
@@ -44,3 +44,7 @@ In github or via the cli (`hub`), create a new pull request.
 | ------------------- | -------------------------------------------------- | ----------------------- |
 | Upstream (original) | https://github.com/Installomator/Installomator     | Original Repo we forked |
 | This Repo           | https://github.com/emersoncollective/Installomator | The repo we modify      |
+
+## Sources
+
+1. https://gist.github.com/ravibhure/a7e0918ff4937c9ea1c456698dcd58aa
