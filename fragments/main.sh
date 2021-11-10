@@ -169,14 +169,22 @@ else
     printlog "Downloading $downloadURL to $archiveName"
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
         printlog "notifying"
-        displaynotification "Downloading $name update" "Download in progress …"
+        if [[ $updateDetected == "YES" ]]; then
+            displaynotification "Downloading $name update" "Download in progress …"
+        else
+            displaynotification "Downloading new $name" "Download in progress …"
+        fi
     fi
     if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
         printlog "error downloading $downloadURL"
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
-            displaynotification "$message" "Error installing/updating $name"
+            if [[ $updateDetected == "YES" ]]; then
+                displaynotification "$message" "Error updating $name"
+            else
+                displaynotification "$message" "Error installing $name"
+            fi
         fi
         cleanupAndExit 2
     fi
@@ -199,7 +207,11 @@ fi
 printlog "Installing $name"
 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
-    displaynotification "Installing $name" "Installation in progress …"
+    if [[ $updateDetected == "YES" ]]; then
+        displaynotification "Updating $name" "Installation in progress …"
+    else
+        displaynotification "Installing $name" "Installation in progress …"
+    fi
 fi
 
 case $type in

@@ -148,6 +148,7 @@ getAppVersion() {
         appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
         if [[ $appversion != "" ]]; then
             printlog "found packageID $packageID installed, version $appversion"
+            updateDetected="YES"
             return
         else
             printlog "No version found using packageID $packageID"
@@ -162,7 +163,11 @@ getAppVersion() {
     else
         applist=$(mdfind "kind:application $appName" -0 )
     fi
-    printlog "App(s) found: ${applist}"
+    if [[ -z applist ]]; then
+        printlog "No previous app found"
+    else
+        printlog "App(s) found: ${applist}"
+    fi
 
     appPathArray=( ${(0)applist} )
 
@@ -173,6 +178,7 @@ getAppVersion() {
             #appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
             appversion=$(defaults read $installedAppPath/Contents/Info.plist $versionKey) #Not dependant on Spotlight indexing
             printlog "found app at $installedAppPath, version $appversion"
+            updateDetected="YES"
             # Is current app from App Store
             if [[ -d "$installedAppPath"/Contents/_MASReceipt ]];then
                 printlog "Installed $appName is from App Store, use “IGNORE_APP_STORE_APPS=yes” to replace."
@@ -612,7 +618,11 @@ finishing() {
 
     if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
         printlog "notifying"
-        displaynotification "$message" "$name update/installation complete!"
+        if [[ $updateDetected == "YES" ]]; then
+            displaynotification "$message" "$name update complete!"
+        else
+            displaynotification "$message" "$name installation complete!"
+        fi
     fi
 }
 
