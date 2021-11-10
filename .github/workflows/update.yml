@@ -18,6 +18,9 @@ jobs:
     steps:
     - name: "[checkout] Checkout Code"
       uses: actions/checkout@v2
+    - name: "add the upstream"
+      run: |
+        git remote add upstream https://github.com/Installomator/Installomator
     - name: "fetch upstream"
       run: |
         git fetch upstream
