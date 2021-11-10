@@ -9,7 +9,7 @@ adobecreativeclouddesktop)
     fi
     #downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o "https*.*dmg" | head -1)
     appNewVersion=$(curl -fs "https://helpx.adobe.com/creative-cloud/release-note/cc-release-notes.html" | grep "mandatory" | head -1 | grep -o "Version *.* released" | cut -d " " -f2)
-    CLIInstaller="Contents/MacOS/Install" # "Install.app/Contents/MacOS/Install"
+    CLIInstaller="Install.app/Contents/MacOS/Install"
     CLIArguments=(--mode=silent)
     expectedTeamID="JQ525L2MZD"
     Company="Adobe"

@@ -393,17 +393,17 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     fi
 
     elif [[ ! -z $CLIInstaller ]]; then
-        #mountname=$(dirname $appPath)
-        printlog "CLIInstaller exists, running installer command $appPath/$CLIInstaller $CLIArguments" #INFO
+        mountname=$(dirname $appPath)
+        printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" #INFO
 
-        CLIoutput=$("$appPath/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
+        CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
         CLIstatus=$(echo $?)
         logoutput="$CLIoutput" # dedupliatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
-            cleanupAndExit 3 "Error installing $appPath/$CLIInstaller $CLIArguments error:\n$logoutput" #ERROR
+            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" #ERROR
         else
-            printlog "Succesfully ran $appPath/$CLIInstaller $CLIArguments"
+            printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments"
         fi
         printlog "Debugging enabled, update tool output was:\n$logoutput" #DEBUG
     fi
