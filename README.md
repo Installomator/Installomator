@@ -372,10 +372,18 @@ Depending on the application or pkg there are a few more variables you can or ne
      `$updateTool $updateArguments`
   Will be run instead of of downloading and installing a complete new version.
   Use this when the `updateTool` does differential and optimized downloads.
-  e.g. `msupdate` (see microsoft installations)
+  e.g. `msupdate` (see various Microsoft installations).
 
 - `updateToolRunAsCurrentUser`:
   When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and
+
+- `CLIInstaller`:
+- `CLIArguments`:
+ If the downloaded dmg is actually an installer that we can call using CLI, we can use these two variables for what to call.
+ We need to define `name` for the installed app (to be version checked), as well as `appName` for the installer binary. So Installomator will add the path to this binary, and it will be called like this:
+     `$CLIInstaller $CLIArguments`
+  We can support a whole range of other software titles by implementing this.
+  See label adobecreativeclouddesktop.
 
 ### Configuration from Arguments
 
