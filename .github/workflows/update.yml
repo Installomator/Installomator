@@ -23,7 +23,7 @@ jobs:
         git remote add upstream https://github.com/Installomator/Installomator
     - name: "fetch upstream"
       run: |
-        git fetch upstream/master
+        git fetch upstream
     - name: "determine and set the BRANCH_NAME"
       run: |
         echo "BRANCH_NAME="automated-updates/`date "+%Y-%m-%d"` >> $GITHUB_ENV
@@ -33,7 +33,7 @@ jobs:
         git checkout -b ${{ env.BRANCH_NAME }}
     - name: "rebase off of upstream"
       run: |
-        git rebase upstream
+        git rebase upstream/master
         # TODO: determine wether or not there are any changes so as to not create unnecessary/emtpy PRs.
     - name: "push this new branch"
       run: |
