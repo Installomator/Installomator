@@ -23,7 +23,7 @@ jobs:
         git remote add upstream https://github.com/Installomator/Installomator
     - name: "fetch upstream"
       run: |
-        git fetch upstream
+        git fetch upstream/master
     - name: "determine and set the BRANCH_NAME"
       run: |
         echo "BRANCH_NAME="automated-updates/`date "+%Y-%m-%d"` >> $GITHUB_ENV
