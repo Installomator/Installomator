@@ -198,8 +198,19 @@ REOPEN="yes"
 #      $updateTool $updateArguments
 #   Will be run instead of of downloading and installing a complete new version.
 #   Use this when the updateTool does differential and optimized downloads.
-#   e.g. msupdate
+#   e.g. msupdate on various Microsoft labels
 #
 # - updateToolRunAsCurrentUser:
 #   When this variable is set (any value), $updateTool will be run as the current user.
+#
+# - CLIInstaller:
+# - CLIArguments:
+#   If the downloaded dmg is actually an installer that we can call using CLI,
+#   we can use these two variables for what to call.
+#   We need to define `name` for the installed app (to be version checked), as well
+#   as `appName` for the installer binary. So Installomator will add the path to this
+#   binary, and it will be called like this:
+#      $CLIInstaller $CLIArguments
+#   We can support a whole range of other software titles by implementing this.
+#   See label adobecreativeclouddesktop
 #
