@@ -4,6 +4,12 @@ name: Rebase from Upstream
 on:
   schedule: # run every monday at 5:03 AM UTC
     - cron: "3 5 * * 1"  # https://crontab.guru/#3_5_*_*_1
+  workflow_dispatch:
+      inputs:
+        message:
+          description: 'Test scenario tags'
+          required: true
+          default: "Manual invocation"
 
 jobs:
   rebase_from_upstream:
