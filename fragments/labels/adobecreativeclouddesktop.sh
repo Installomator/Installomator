@@ -1,6 +1,6 @@
 adobecreativeclouddesktop)
-    appName="Install.app"
     name="Creative Cloud"
+    appName="Install.app"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
         downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o "https*.*macarm64.*dmg" | cut -d '"' -f1 | head -1)
