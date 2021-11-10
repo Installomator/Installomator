@@ -369,7 +369,9 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         # not running as root
         cleanupAndExit 6 "not running as root, exiting"
     fi
-
+    
+    # Test if variable CLIInstaller is set
+    if [[ -z $CLIInstaller ]]; then
     # remove existing application
     if [ -e "$targetDir/$appName" ]; then
         printlog "Removing existing $targetDir/$appName"
@@ -382,13 +384,24 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         cleanupAndExit 7 "Error while copying"
     fi
 
-
     # set ownership to current user
     if [ "$currentUser" != "loginwindow" ]; then
         printlog "Changing owner to $currentUser"
         chown -R "$currentUser" "$targetDir/$appName"
     else
         printlog "No user logged in, not changing user"
+    fi
+
+    elif [[ ! -z $CLIInstaller ]]; then
+        mountname=$(dirname $appPath)
+        printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" #INFO
+
+        CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
+        CLIstatus=$(echo $?)
+        logoutput="$CLIoutput" # dedupliatelogs "$CLIoutput"
+            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error: $logoutput" #ERROR
+        fi
+        printlog "Debugging enabled, update tool output was: $logoutput" #DEBUG
     fi
 
 }
