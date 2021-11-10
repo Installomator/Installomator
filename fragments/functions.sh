@@ -399,6 +399,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
         CLIstatus=$(echo $?)
         logoutput="$CLIoutput" # dedupliatelogs "$CLIoutput"
+
+        if [ $CLIstatus -ne 0 ] ; then
             cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error: $logoutput" #ERROR
         fi
         printlog "Debugging enabled, update tool output was: $logoutput" #DEBUG
