@@ -1,3 +1,7 @@
+## v0.8
+
+- New variables for labels that should be installaed using CLI: `CLIInstaller` and `CLIArguments`. See the label __adobecreativeclouddesktop__ to see it's use.
+
 ## v0.7
 
 - default for `BLOCKING_PROCESS_ACTION`is now `BLOCKING_PROCESS_ACTION=tell_user` and not `prompt_user`. It will demand the user to quit the app to get it updated, and not present any option to skip it. In considering various use cases in different MDM solutions this is the best option going forward. Users usually choose to update, and is most often not bothered much with this information. If it's absoultely a bad time, then they can move the dialog box to the side, and click it when ready.
