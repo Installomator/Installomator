@@ -10,13 +10,12 @@ on:
 jobs:
   sync_latest_from_upstream:
     runs-on: ubuntu-latest
-    name: Sync latest commits from upstream repo
-    - name: Checkout target repo
+    steps:
+    - name: "Checkout target repo"
       uses: actions/checkout@v2
       with:
         ref:  master
         persist-credentials: false
-    steps:
     - name: "[git] determine and set the BRANCH_NAME"
       run: |
         echo "BRANCH_NAME="automated-updates/`date "+%Y-%m-%d"` >> $GITHUB_ENV
@@ -24,7 +23,7 @@ jobs:
       run: |
         echo "Creating a new branch:"${{ env.BRANCH_NAME }}
         git checkout -b ${{ env.BRANCH_NAME }}
-    - name: Sync upstream changes
+    - name: "Sync upstream changes"
       id: sync
       uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
       with:
@@ -41,8 +40,8 @@ jobs:
         commit-message: "Bringing in latest changes from upstream."
         labels: |
           automated
-    - name: No new commits
+    - name: "No new commits"
       if: steps.sync.outputs.has_new_commits == 'false'
       run: echo "There were no new commits."
-    - name: Show value of 'has_new_commits'
+    - name: "Show value of 'has_new_commits'"
       run: echo ${{ steps.sync.outputs.has_new_commits }}
