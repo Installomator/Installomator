@@ -1,21 +1,19 @@
 # About this fork
 
-## What is it?
+| Repo                | URL                                                | Description             |
+| ------------------- | -------------------------------------------------- | ----------------------- |
+| Upstream (original) | https://github.com/Installomator/Installomator     | Original Repo we forked |
+| This Repo           | https://github.com/emersoncollective/Installomator | The repo we modify      |
 
-## Updates
+## Summary
 
-We want to keep this up to date with the upstream. To achieve that, we will
+We want to keep this up to date with the upstream. To achieve that, we leverage
+the
+[actions/upstream-sync](https://github.com/marketplace/actions/upstream-sync)
+github action. This process runs on a schedule and can be triggered manually.
+See [`.github/workflows/update.yml`](.github/workflows/update.yml) for details.
 
-1. fetch the latest version of the upstream's master
-2. rebase our work off of the upstream's master
-3. open a pull request with these changes and tag @mattdjerome and @frisson
-4. ec tech will review, update, approve, and merge changes as appropriate.
-
-This process will be automated using github actions and set to run on a
-schedule. See [`.github/workflows/update.yml`](.github/workflows/update.yml) for
-implementation details.
-
-#### Summary
+#### Manual Mode
 
 From an up to date master branch, run the following.
 
@@ -37,14 +35,3 @@ git push
 ```
 
 In github or via the cli (`hub`), create a new pull request.
-
-### Details
-
-| Repo                | URL                                                | Description             |
-| ------------------- | -------------------------------------------------- | ----------------------- |
-| Upstream (original) | https://github.com/Installomator/Installomator     | Original Repo we forked |
-| This Repo           | https://github.com/emersoncollective/Installomator | The repo we modify      |
-
-## Sources
-
-1. https://gist.github.com/ravibhure/a7e0918ff4937c9ea1c456698dcd58aa
