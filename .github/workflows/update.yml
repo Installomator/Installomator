@@ -2,42 +2,37 @@ name: Rebase from Upstream
 
 # https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#scheduled-events
 on:
-  schedule: # run every monday at 5:03 AM UTC
+  schedule:              # run every monday at 5:03 AM UTC
     - cron: "3 5 * * 1"  # https://crontab.guru/#3_5_*_*_1
-  workflow_dispatch:
-      inputs:
-        message:
-          description: 'Hello!'
-          required: true
-          default: "Manual invocation"
+
+  workflow_dispatch:     # click the button on Github repo!
 
 jobs:
-  rebase_from_upstream:
+  sync_latest_from_upstream:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    name: Sync latest commits from upstream repo
+
     steps:
-    - name: "[checkout] Checkout Code"
-      uses: actions/checkout@v2
-    - name: "add the upstream"
-      run: |
-        git remote add upstream https://github.com/Installomator/Installomator
-    - name: "fetch upstream"
-      run: |
-        git fetch upstream
     - name: "determine and set the BRANCH_NAME"
       run: |
         echo "BRANCH_NAME="automated-updates/`date "+%Y-%m-%d"` >> $GITHUB_ENV
-    - name: "checkout new branch"
-      run: |
-        echo "Creating a new branch:"${{ env.BRANCH_NAME }}
-        git checkout -b ${{ env.BRANCH_NAME }}
-    - name: "rebase off of upstream"
-      run: |
-        git rebase upstream/master
-        # TODO: determine wether or not there are any changes so as to not create unnecessary/emtpy PRs.
-    - name: "push this new branch"
-      run: |
-        git push origin
+    - name: Checkout target repo
+      uses: actions/checkout@v2
+      with:
+        # optional: set the branch to checkout,
+        # sync action checks out your 'target_sync_branch' anyway
+        ref:  master
+        # REQUIRED if your upstream repo is private (see wiki)
+        persist-credentials: false
+    - name: Sync upstream changes
+      id: sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
+      with:
+        target_sync_branch: ${{ env.BRANCH_NAME }}
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        upstream_sync_branch: master
+        upstream_sync_repo: Installomator/Installomator
+        upstream_repo_access_token: ${{ secrets.UPSTREAM_REPO_SECRET }}
     - name: "create pull request"
       uses: peter-evans/create-pull-request@v3
       with:
@@ -46,6 +41,8 @@ jobs:
         commit-message: "Bringing in latest changes from upstream."
         labels: |
           automated
-    - name: "tag admins in PR"
-      run: |
-        echo "TODO"
+    - name: No new commits
+      if: steps.sync.outputs.has_new_commits == 'false'
+      run: echo "There were no new commits."
+    - name: Show value of 'has_new_commits'
+      run: echo ${{ steps.sync.outputs.has_new_commits }}
