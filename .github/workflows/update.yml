@@ -11,19 +11,19 @@ jobs:
   sync_latest_from_upstream:
     runs-on: ubuntu-latest
     name: Sync latest commits from upstream repo
-
-    steps:
-    - name: "determine and set the BRANCH_NAME"
-      run: |
-        echo "BRANCH_NAME="automated-updates/`date "+%Y-%m-%d"` >> $GITHUB_ENV
     - name: Checkout target repo
       uses: actions/checkout@v2
       with:
-        # optional: set the branch to checkout,
-        # sync action checks out your 'target_sync_branch' anyway
         ref:  master
-        # REQUIRED if your upstream repo is private (see wiki)
         persist-credentials: false
+    steps:
+    - name: "[git] determine and set the BRANCH_NAME"
+      run: |
+        echo "BRANCH_NAME="automated-updates/`date "+%Y-%m-%d"` >> $GITHUB_ENV
+    - name: "[git] checkout new branch"
+      run: |
+        echo "Creating a new branch:"${{ env.BRANCH_NAME }}
+        git checkout -b ${{ env.BRANCH_NAME }}
     - name: Sync upstream changes
       id: sync
       uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
