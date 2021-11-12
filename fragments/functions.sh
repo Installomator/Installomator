@@ -428,8 +428,11 @@ mountDMG() {
 
 installFromDMG() {
     mountDMG
-
+    if [[ -z $CLIInstaller ]]; then
     installAppWithPath "$dmgmount/$appName"
+    else
+    installAppWithPath "$dmgmount/$CLIInstaller"
+    fi
 }
 
 installFromPKG() {
