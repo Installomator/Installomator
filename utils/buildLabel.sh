@@ -201,6 +201,7 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
     githubAuthor=$(echo "$downloadURL" | cut -d "/" -f4)
     githubRepo=$(echo "$downloadURL" | cut -d "/" -f5)
     if [[ ! -z $githubAuthor && $githubRepo ]] ; then
+        githubError=9
         echo "Github place: $githubAuthor $githubRepo"
         originalDownloadURL="$downloadURL"
         githubDownloadURL=$(downloadURLFromGit "$githubAuthor" "$githubRepo")
@@ -209,6 +210,7 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
         echo "Latest URL on github: $githubDownloadURL \nLatest version: $githubAppNewVersion"
         if [[ "$originalDownloadURL" == "$githubDownloadURL" ]]; then
             echo "GitHub calculated URL matches entered URL."
+            githubError=0
             downloadURL="\$(downloadURLFromGit $githubAuthor $githubRepo)"
             appNewVersion="\$(versionFromGit $githubAuthor $githubRepo)"
         else
@@ -221,6 +223,7 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
                 if [[ "$( echo $originalDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')" == "$( echo $githubDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')" ]]; then
                     echo "“$( echo $originalDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')” and “$( echo $githubDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')”"
                     echo "Matching without numbers in string.\nVERY LIKELY a version difference."
+                    githubError=1
                     echo "Try running again with URL: ${githubDownloadURL}"
                 else
                     echo "Not a version problem.\nTesting for difference in archiveName."
@@ -233,9 +236,11 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
                     echo "Latest URL on github: $githubDownloadURL \nLatest version: $githubAppNewVersion"
                     if [[ "$originalDownloadURL" == "$githubDownloadURL" ]]; then
                         echo "GitHub calculated URL matches entered URL."
+                        githubError=0
                         downloadURL="\$(downloadURLFromGit $githubAuthor $githubRepo)"
                         appNewVersion="\$(versionFromGit $githubAuthor $githubRepo)"
                     else
+                        githubError=2
                         echo "Not solved by using archiveName."
                         echo "Not sure what this can be."
                         archiveDestinationName=""
@@ -250,14 +255,14 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
     fi
 fi
 
-echo
-echo "**********"
-echo
-echo "Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed."
-echo
-echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, sometimes as part of the download redirects, but also on a web page. See redirect and archivePath above if link contains information about this. That is a good place to start"
-echo
-echo "$identifier)"
+echo "\n**********"
+echo "\nLabels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed."
+
+if [[ -z $githubError || $githubError != 0 ]]; then
+echo "\nappNewVersion is often difficult to find. Can sometimes be found in the filename, sometimes as part of the download redirects, but also on a web page. See redirect and archivePath above if link contains information about this. That is a good place to start"
+fi
+
+echo "\n$identifier)"
 echo "    name=\"$name\""
 echo "    type=\"$archiveExt\""
 if [ -n "$packageID" ]; then
@@ -273,7 +278,24 @@ if [ -n "$appName" ] && [ "$appName" != "${name}.app" ]; then
 echo "    appName=\"$appName\""
 fi
 echo "    ;;"
-echo
-echo "Above should be saved in a file with exact same name as label, and given extension “.sh”."
-echo "Put this file in folder “fragments/labels”."
-echo
+
+case $githubError in
+0)
+    echo "\nLabel converted to GitHub label without errors."
+    echo "Details can be seen above."
+    ;;
+1)
+    echo "\nFound Github place in this URL: $githubAuthor $githubRepo"
+    echo "But version has a problem."
+    echo "Try running again with URL: ${githubDownloadURL}"
+    echo "See details above."
+    ;;
+2)
+    echo "\nFound Github place in this URL: $githubAuthor $githubRepo"
+    echo "But it could not be resolved."
+    echo "Can be from a hidden repository."
+    ;;
+esac
+
+echo "\nAbove should be saved in a file with exact same name as label, and given extension “.sh”."
+echo "Put this file in folder “fragments/labels”.\n"
