@@ -60,13 +60,24 @@ versionFromGit() {
 }
 
 pkgInvestigation() {
-    echo "Package found"
+    echo "Package investigation."
     teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
-    echo "For PKGs it's advised to find packageID for version checking"
+    if [[ -z $teamID ]]; then
+        echo "Error verifying PKG: $archiveName"
+        echo "No TeamID found."
+        exit 4
+    fi
+    echo "Team ID found for PKG: $teamID"
     
+    echo "For PKGs it's advised to find packageID for version checking, so extracting those"
     pkgutil --expand "$pkgPath" "$archiveName"_pkg
-    cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null
-    packageID="$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | tr ' ' '\n' | grep -i "id" | cut -d \" -f 2)"
+    if [[ -a "$archiveName"_pkg/Distribution ]] ; then
+        cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null
+        packageID="$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | tr ' ' '\n' | grep -i "id" | cut -d \" -f 2)"
+    elif [[ -a "$archiveName"_pkg/PackageInfo ]] ; then
+        cat "$archiveName"_pkg/PackageInfo | xpath '//pkg-info/@version' 2>/dev/null
+        packageID="$(cat "$archiveName"_pkg/PackageInfo | xpath '//pkg-info/@identifier' 2>/dev/null | cut -d '"' -f2 )"
+    fi
     rm -r "$archiveName"_pkg
     echo "$packageID"
     echo "Above is the possible packageIDs that can be used, and the correct one is probably one of those with a version number. More investigation might be needed to figure out correct packageID if several are displayed."
@@ -74,13 +85,16 @@ pkgInvestigation() {
 appInvestigation() {
     appName=${appPath##*/}
     name=${appName%.*}
+    echo "Application investigation."
 
     # verify with spctl
-    echo "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' ); then
-        echo "Error verifying $appPath"
+    teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' )
+    if [[ -z $teamID ]]; then
+        echo "Error verifying app: $appPath"
+        echo "No TeamID found."
         exit 4
     fi
+    echo "Team ID found for app: $teamID"
 }
 
 # Mark: Code
@@ -155,6 +169,7 @@ echo "identifier: $identifier"
 
 if [ "$archiveExt" = "pkg" ]; then
     pkgPath="$archiveName"
+    echo "PKG found: $pkgPath"
     pkgInvestigation
 elif [ "$archiveExt" = "dmg" ]; then
     echo "Diskimage found"
@@ -171,10 +186,15 @@ elif [ "$archiveExt" = "dmg" ]; then
     pkgPath=$(find "$dmgmount" -name "*.pkg" -maxdepth 1 -print )
     
     if [[ $appPath != "" ]]; then
+        echo "App found: $appPath"
         appInvestigation
     elif [[ $pkgPath != "" ]]; then
+        echo "PKG found: $pkgPath"
         archiveExt="pkgInDmg"
         pkgInvestigation
+    else
+        echo "Nothing found on DMG."
+        exit 9
     fi
     
     hdiutil detach "$dmgmount"
@@ -188,10 +208,15 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
     pkgPath=$(find "$tmpDir" -name "*.pkg" -maxdepth 2 -print )
     
     if [[ $appPath != "" ]]; then
+        echo "App found: $appPath"
         appInvestigation
     elif [[ $pkgPath != "" ]]; then
+        echo "PKG found: $pkgPath"
         archiveExt="pkgInZip"
         pkgInvestigation
+    else
+        echo "Nothing found in compressed archive."
+        exit 9
     fi
 
 fi
