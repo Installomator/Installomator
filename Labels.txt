@@ -90,6 +90,7 @@ evernote
 exelbanstats
 exifrenamer
 fantastical
+fastscripts
 favro
 ferdi
 figma
