@@ -342,7 +342,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     # versioncheck
     # credit: Søren Theilgaard (@theilgaard)
     appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
-    if [[ $appversion == $appNewVersion ]]; then
+    if [[ -n $appNewVersion && $appversion == $appNewVersion ]]; then
         printlog "Downloaded version of $name is $appNewVersion, same as installed."
         if [[ $INSTALL != "force" ]]; then
             message="$name, version $appNewVersion, is the latest version."
@@ -428,11 +428,7 @@ mountDMG() {
 
 installFromDMG() {
     mountDMG
-    if [[ -z $CLIInstaller ]]; then
     installAppWithPath "$dmgmount/$appName"
-    else
-    installAppWithPath "$dmgmount/$CLIInstaller"
-    fi
 }
 
 installFromPKG() {
