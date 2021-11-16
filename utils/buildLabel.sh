@@ -252,8 +252,19 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
                     echo "Try running again with URL: ${githubDownloadURL}"
                 else
                     echo "Not a version problem.\nTesting for difference in archiveName."
-                    tempName=$(echo ${archiveName%.*} | grep -o "[0-9.]*" | tail -1)
-                    archiveDestinationName="$(echo $archiveName | sed -E "s/^(.*)$tempName(.*)$/\1[0-9.]*\2/g")"
+                    tempName=$(echo ${archiveName%.*} | grep -o "[0-9.]*" ) # | tail -1
+                    tempName=( $tempName )
+                    i=0
+                    max=0; tempString=""
+                    echo $tempName | while read tempLine; do
+                        ((i++))
+                        length[$i]=${#tempLine}
+                        if [[ $max -lt $length[$i] ]] ; then
+                            max=$length[$i]
+                            tempString=$tempLine
+                        fi
+                    done
+                    archiveDestinationName="$(echo $archiveName | sed -E "s/^(.*)$tempString(.*)$/\1[0-9.]*\2/g")"
                     echo "archiveName=\"$archiveDestinationName\""
                     githubDownloadURL=$(downloadURLFromGit "$githubAuthor" "$githubRepo")
                     githubAppNewVersion=$(versionFromGit "$githubAuthor" "$githubRepo")
