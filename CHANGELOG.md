@@ -1,6 +1,6 @@
 ## v0.8
 
-- New variables for labels that should be installaed using CLI: `CLIInstaller` and `CLIArguments`. If the installer app is named differently thatn the installed app, then the variable `installerTool` can be use to name the app that should be located in the DMG or zip. See the label __adobecreativeclouddesktop__ to see it’s use.
+- New variables for labels that should be installaed using CLI: `CLIInstaller` and `CLIArguments`. If the installer app is named differently than the installed app, then the variable `installerTool` should be use to name the app that should be located in the DMG or zip. See the label __adobecreativeclouddesktop__ to see it’s use.
 
 ## v0.7
 
