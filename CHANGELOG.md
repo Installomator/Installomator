@@ -1,5 +1,6 @@
 ## v0.8
 
+- `buildLabel.sh` has been improved to build GitHub software labels much easier. In essense if the URL contains github.com, then it will try to find if it's the latest version or if variable `archiveName` is needed for finding the software. Also improved messaging throughout the script, as well as handling a situation where a pkg does not include a “DIstribution” file, but a “PackageInfo”.
 
 ## v0.7
 

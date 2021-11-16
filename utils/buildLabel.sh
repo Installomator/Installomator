@@ -10,6 +10,94 @@ downloadURL=${1?:"need to provide a download URL."}
 # Usage
 # ./buildLabel.sh <URL to download software>
 
+# Mark: Functions
+
+xpath() {
+    # the xpath tool changes in Big Sur and now requires the `-e` option
+    if [[ $(sw_vers -buildVersion) > "20A" ]]; then
+        /usr/bin/xpath -e $@
+        # alternative: switch to xmllint (which is not perl)
+        #xmllint --xpath $@ -
+    else
+        /usr/bin/xpath $@
+    fi
+}
+# will get the latest release download from a github repo
+downloadURLFromGit() { # $1 git user name, $2 git repo name
+    gitusername=${1?:"no git user name"}
+    gitreponame=${2?:"no git repo name"}
+    
+    if [[ $type == "pkgInDmg" ]]; then
+        filetype="dmg"
+    elif [[ $type == "pkgInZip" ]]; then
+        filetype="zip"
+    else
+        filetype=$type
+    fi
+    
+    if [ -n "$archiveDestinationName" ]; then
+        downloadURL=$(curl -sf "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+    else
+        downloadURL=$(curl -sf "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+    fi
+
+    echo "$downloadURL"
+    return 0
+}
+versionFromGit() {
+    # $1 git user name, $2 git repo name
+    gitusername=${1?:"no git user name"}
+    gitreponame=${2?:"no git repo name"}
+        
+    appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
+    if [ -z "$appNewVersion" ]; then
+        printlog "could not retrieve version number for $gitusername/$gitreponame"
+        appNewVersion=""
+    else
+        echo "$appNewVersion"
+        return 0
+    fi
+}
+
+pkgInvestigation() {
+    echo "Package investigation."
+    teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
+    if [[ -z $teamID ]]; then
+        echo "Error verifying PKG: $archiveName"
+        echo "No TeamID found."
+        exit 4
+    fi
+    echo "Team ID found for PKG: $teamID"
+    
+    echo "For PKGs it's advised to find packageID for version checking, so extracting those"
+    pkgutil --expand "$pkgPath" "$archiveName"_pkg
+    if [[ -a "$archiveName"_pkg/Distribution ]] ; then
+        cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null
+        packageID="$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | tr ' ' '\n' | grep -i "id" | cut -d \" -f 2)"
+    elif [[ -a "$archiveName"_pkg/PackageInfo ]] ; then
+        cat "$archiveName"_pkg/PackageInfo | xpath '//pkg-info/@version' 2>/dev/null
+        packageID="$(cat "$archiveName"_pkg/PackageInfo | xpath '//pkg-info/@identifier' 2>/dev/null | cut -d '"' -f2 )"
+    fi
+    rm -r "$archiveName"_pkg
+    echo "$packageID"
+    echo "Above is the possible packageIDs that can be used, and the correct one is probably one of those with a version number. More investigation might be needed to figure out correct packageID if several are displayed."
+}
+appInvestigation() {
+    appName=${appPath##*/}
+    name=${appName%.*}
+    echo "Application investigation."
+
+    # verify with spctl
+    teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' )
+    if [[ -z $teamID ]]; then
+        echo "Error verifying app: $appPath"
+        echo "No TeamID found."
+        exit 4
+    fi
+    echo "Team ID found for app: $teamID"
+}
+
+# Mark: Code
 # Use working directory as download folder
 tmpDir="$(pwd)/$(date "+%Y-%m-%d-%H-%M-%S")"
 # Create a n almost unique folder name
@@ -48,40 +136,6 @@ if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -
     fi
 fi
 
-xpath() {
-    # the xpath tool changes in Big Sur and now requires the `-e` option
-    if [[ $(sw_vers -buildVersion) > "20A" ]]; then
-        /usr/bin/xpath -e $@
-        # alternative: switch to xmllint (which is not perl)
-        #xmllint --xpath $@ -
-    else
-        /usr/bin/xpath $@
-    fi
-}
-
-pkgInvestigation() {
-    echo "Package found"
-    teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
-    echo "For PKGs it's advised to find packageID for version checking"
-    
-    pkgutil --expand "$pkgPath" "$archiveName"_pkg
-    cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null
-    packageID="$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | tr ' ' '\n' | grep -i "id" | cut -d \" -f 2)"
-    rm -r "$archiveName"_pkg
-    echo "$packageID"
-    echo "Above is the possible packageIDs that can be used, and the correct one is probably one of those with a version number. More investigation might be needed to figure out correct packageID if several are displayed."
-}
-appInvestigation() {
-    appName=${appPath##*/}
-
-    # verify with spctl
-    echo "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }'  | tr -d '()' ); then
-        echo "Error verifying $appPath"
-        exit 4
-    fi
-}
-
 #echo "downloadOut:\n${downloadOut}"
 archiveTempName=$( echo "${downloadOut}" | head -1 )
 echo "archiveTempName: $archiveTempName"
@@ -106,6 +160,7 @@ mv $archiveTempName $archiveName
 name=${archiveName%.*}
 echo "name: $name"
 archiveExt=${archiveName##*.}
+type=$archiveExt
 echo "archiveExt: $archiveExt"
 identifier=${name:l}
 identifier=${identifier//\%[0-9a-fA-F][0-9a-fA-F]}
@@ -114,6 +169,7 @@ echo "identifier: $identifier"
 
 if [ "$archiveExt" = "pkg" ]; then
     pkgPath="$archiveName"
+    echo "PKG found: $pkgPath"
     pkgInvestigation
 elif [ "$archiveExt" = "dmg" ]; then
     echo "Diskimage found"
@@ -130,10 +186,15 @@ elif [ "$archiveExt" = "dmg" ]; then
     pkgPath=$(find "$dmgmount" -name "*.pkg" -maxdepth 1 -print )
     
     if [[ $appPath != "" ]]; then
+        echo "App found: $appPath"
         appInvestigation
     elif [[ $pkgPath != "" ]]; then
+        echo "PKG found: $pkgPath"
         archiveExt="pkgInDmg"
         pkgInvestigation
+    else
+        echo "Nothing found on DMG."
+        exit 9
     fi
     
     hdiutil detach "$dmgmount"
@@ -147,38 +208,119 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
     pkgPath=$(find "$tmpDir" -name "*.pkg" -maxdepth 2 -print )
     
     if [[ $appPath != "" ]]; then
+        echo "App found: $appPath"
         appInvestigation
     elif [[ $pkgPath != "" ]]; then
+        echo "PKG found: $pkgPath"
         archiveExt="pkgInZip"
         pkgInvestigation
+    else
+        echo "Nothing found in compressed archive."
+        exit 9
     fi
 
 fi
 
-echo
-echo "**********"
-echo
-echo "Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed."
-echo
-echo "appNewVersion is often difficult to find. Can sometimes be found in the filename, sometimes as part of the download redirects, but also on a web page. See redirect and archivePath above if link contains information about this. That is a good place to start"
-echo
-echo "$identifier)"
+if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
+    echo "\n**********\n\nFound GitHub path"
+    githubAuthor=$(echo "$downloadURL" | cut -d "/" -f4)
+    githubRepo=$(echo "$downloadURL" | cut -d "/" -f5)
+    if [[ ! -z $githubAuthor && $githubRepo ]] ; then
+        githubError=9
+        echo "Github place: $githubAuthor $githubRepo"
+        originalDownloadURL="$downloadURL"
+        githubDownloadURL=$(downloadURLFromGit "$githubAuthor" "$githubRepo")
+        githubAppNewVersion=$(versionFromGit "$githubAuthor" "$githubRepo")
+        downloadURL=$originalDownloadURL
+        echo "Latest URL on github: $githubDownloadURL \nLatest version: $githubAppNewVersion"
+        if [[ "$originalDownloadURL" == "$githubDownloadURL" ]]; then
+            echo "GitHub calculated URL matches entered URL."
+            githubError=0
+            downloadURL="\$(downloadURLFromGit $githubAuthor $githubRepo)"
+            appNewVersion="\$(versionFromGit $githubAuthor $githubRepo)"
+        else
+            if [[ "$( echo $originalDownloadURL | cut -d "/" -f1-7)" == "$( echo $githubDownloadURL | cut -d "/" -f1-7)" ]]; then
+                echo "Calculated GitHub URL almost identical, only this diff:"
+                echo "“$( echo $originalDownloadURL | cut -d "/" -f8-)” and “$( echo $githubDownloadURL | cut -d "/" -f8-)”"
+                echo "Could be version difference or difference in archiveName for a given release."
+                echo "Testing for version difference."
+                #Investigate if these strings match if numbers are removed.
+                if [[ "$( echo $originalDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')" == "$( echo $githubDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')" ]]; then
+                    echo "“$( echo $originalDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')” and “$( echo $githubDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')”"
+                    echo "Matching without numbers in string.\nVERY LIKELY a version difference."
+                    githubError=1
+                    echo "Try running again with URL: ${githubDownloadURL}"
+                else
+                    echo "Not a version problem.\nTesting for difference in archiveName."
+                    tempName=$(echo ${archiveName%.*} | grep -o "[0-9.]*")
+                    archiveDestinationName="$(echo $archiveName | sed -E "s/^(.*)$tempName(.*)$/\1[0-9.]*\2/g")"
+                    echo "archiveName=\"$archiveDestinationName\""
+                    githubDownloadURL=$(downloadURLFromGit "$githubAuthor" "$githubRepo")
+                    githubAppNewVersion=$(versionFromGit "$githubAuthor" "$githubRepo")
+                    downloadURL=$originalDownloadURL
+                    echo "Latest URL on github: $githubDownloadURL \nLatest version: $githubAppNewVersion"
+                    if [[ "$originalDownloadURL" == "$githubDownloadURL" ]]; then
+                        echo "GitHub calculated URL matches entered URL."
+                        githubError=0
+                        downloadURL="\$(downloadURLFromGit $githubAuthor $githubRepo)"
+                        appNewVersion="\$(versionFromGit $githubAuthor $githubRepo)"
+                    else
+                        githubError=2
+                        echo "Not solved by using archiveName."
+                        echo "Not sure what this can be."
+                        archiveDestinationName=""
+                    fi
+                fi
+                #downloadURL="\$(downloadURLFromGit $githubAuthor $githubRepo)"
+                #appNewVersion="\$(versionFromGit $githubAuthor $githubRepo)"
+            else
+                echo "GitHub URL not matching"
+            fi
+        fi
+    fi
+fi
+
+echo "\n**********"
+echo "\nLabels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed."
+
+if [[ -z $githubError || $githubError != 0 ]]; then
+echo "\nappNewVersion is often difficult to find. Can sometimes be found in the filename, sometimes as part of the download redirects, but also on a web page. See redirect and archivePath above if link contains information about this. That is a good place to start"
+fi
+
+echo "\n$identifier)"
 echo "    name=\"$name\""
 echo "    type=\"$archiveExt\""
-if [ "$packageID" != "" ]; then
+if [ -n "$packageID" ]; then
 echo "    packageID=\"$packageID\""
 fi
+if [ -n "$archiveDestinationName" ]; then
+echo "    archiveName=\"$archiveDestinationName\""
+fi
 echo "    downloadURL=\"$downloadURL\""
-echo "    appNewVersion=\"\""
+echo "    appNewVersion=\"$appNewVersion\""
 echo "    expectedTeamID=\"$teamID\""
 if [ -n "$appName" ] && [ "$appName" != "${name}.app" ]; then
 echo "    appName=\"$appName\""
 fi
 echo "    ;;"
-echo
-echo "Above should be saved in a file with exact same name as label, and given extension “.sh”."
-echo "Put this file in folder “fragments/labels”."
-echo
 
+case $githubError in
+0)
+    echo "\nLabel converted to GitHub label without errors."
+    echo "Details can be seen above."
+    ;;
+1)
+    echo "\nFound Github place in this URL: $githubAuthor $githubRepo"
+    echo "But version has a problem."
+    echo "Try running again with URL: ${githubDownloadURL}"
+    echo "See details above."
+    ;;
+2)
+    echo "\nFound Github place in this URL: $githubAuthor $githubRepo"
+    echo "But it could not be resolved."
+    echo "Can be from a hidden repository."
+    ;;
+esac
 
-exit 0
+echo "\nAbove should be saved in a file with exact same name as label, and given extension “.sh”."
+echo "Put this file in folder “fragments/labels”.\n"
