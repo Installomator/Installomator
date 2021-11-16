@@ -111,21 +111,25 @@ if ! cd "$tmpDir"; then
 fi
 echo "Working dir: $(pwd)"
 
-# download the URL
+# investigate and download the URL
 echo "Downloading $downloadURL"
 echo $(basename $downloadURL)
-#exit
+# First trying to find redirection headers on the download, as those can contain version numbers
 echo "Redirecting to (maybe this can help us with version):\n$(curl -fsIL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" | grep -i "^[location|x\-amz\-meta\-version]*")"
+# Now downloading without extra headers
 if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
     echo "error downloading $downloadURL using standard headers."
     echo "result: $downloadOut"
-    echo "Trying all headers…"
+    echo "Trying all headers…" # that I know of
     if ! downloadOut="$(curl -fL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
+        # we are only here if the download failed
         echo "error downloading $downloadURL using all headers."
         echo "result: $downloadOut"
+        # Sometimes a server will give some results to the downloaded output
         if [[ -n $downloadOut ]]; then
             echo "Trying output of this…"
             downloadURL="$(echo $downloadOut | tail -1)"
+            # Last chance for succes on this download
             if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
                 echo "error downloading $downloadURL using previous output."
                 echo "result: $downloadOut"
@@ -136,15 +140,19 @@ if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -
     fi
 fi
 
-#echo "downloadOut:\n${downloadOut}"
+# Now we have downloaded the archive, and we need to analyze this
+# The download have returned both {filename_effective} and {url_effective}
+
 archiveTempName=$( echo "${downloadOut}" | head -1 )
 echo "archiveTempName: $archiveTempName"
 archivePath=$( echo "${downloadOut}" | tail -1 )
 echo "archivePath: $archivePath"
 
+# The two fields retuurned can be exchanged, so some servers return the filename on the other variable. Don't know why.
+# So we want to investigate which one has the filename
 try1archiveName=${${archiveTempName##*/}%%\?*}
 try2archiveName=${${archivePath##*/}%%\?*}
-fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz)$'
+fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz)$' # regular expression for matching
 if [[ "${try1archiveName}" =~ $fileName_re ]]; then
     archiveName=${try1archiveName}
 elif [[ "${try2archiveName}" =~ $fileName_re ]]; then
@@ -152,9 +160,10 @@ elif [[ "${try2archiveName}" =~ $fileName_re ]]; then
 else
     echo "Could not determine archiveName from “$try1archiveName” and “$try2archiveName”"
     #echo "Extensions $archiveTempName:t:e $archivePath:t:e"
-    exit
+    exit 1
 fi
 
+# So we found a filename, and now we want to detect the extension and other information
 echo "Calculated archiveName: $archiveName"
 mv $archiveTempName $archiveName
 name=${archiveName%.*}
@@ -162,11 +171,12 @@ echo "name: $name"
 archiveExt=${archiveName##*.}
 type=$archiveExt
 echo "archiveExt: $archiveExt"
-identifier=${name:l}
-identifier=${identifier//\%[0-9a-fA-F][0-9a-fA-F]}
-identifier=${identifier//[,._*@$\(\)\-]}
+identifier=${name:l} # making lower case
+identifier=${identifier//\%[0-9a-fA-F][0-9a-fA-F]} # removing certain characters
+identifier=${identifier//[,._*@$\(\)\-]} # removing more characters from label name
 echo "identifier: $identifier"
 
+# Now figuring out the filename extension and handling those situations
 if [ "$archiveExt" = "pkg" ]; then
     pkgPath="$archiveName"
     echo "PKG found: $pkgPath"
@@ -181,7 +191,7 @@ elif [ "$archiveExt" = "dmg" ]; then
     fi
     echo "Mounted: $dmgmount"
     
-    # check if app og pkg exists
+    # check if app og pkg exists on disk image
     appPath=$(find "$dmgmount" -name "*.app" -maxdepth 1 -print )
     pkgPath=$(find "$dmgmount" -name "*.pkg" -maxdepth 1 -print )
     
@@ -203,7 +213,7 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
     # unzip the archive
     tar -xf "$archiveName"
     
-    # check if app og pkg exists
+    # check if app og pkg exists after expanding
     appPath=$(find "$tmpDir" -name "*.app" -maxdepth 2 -print )
     pkgPath=$(find "$tmpDir" -name "*.pkg" -maxdepth 2 -print )
     
@@ -221,6 +231,7 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
 
 fi
 
+# github-part to figure out if we can find author and repo, to use our github functions for the label
 if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
     echo "\n**********\n\nFound GitHub path"
     githubAuthor=$(echo "$downloadURL" | cut -d "/" -f4)
@@ -246,16 +257,18 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
                 echo "Testing for version difference."
                 #Investigate if these strings match if numbers are removed.
                 if [[ "$( echo $originalDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')" == "$( echo $githubDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')" ]]; then
+                    # In this if..then we found out if the end parts of the URL was mathing after removinger numbers and dots (and then assuming that only a version was different
                     echo "“$( echo $originalDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')” and “$( echo $githubDownloadURL | cut -d "/" -f8- | sed 's/[0-9.]*//g')”"
                     echo "Matching without numbers in string.\nVERY LIKELY a version difference."
                     githubError=1
                     echo "Try running again with URL: ${githubDownloadURL}"
                 else
+                    # If we are here more than numbers and dots didn't match, so maybe this repo has software for several software titles
                     echo "Not a version problem.\nTesting for difference in archiveName."
-                    tempName=$(echo ${archiveName%.*} | grep -o "[0-9.]*" ) # | tail -1
-                    tempName=( $tempName )
-                    i=0
-                    max=0; tempString=""
+                    tempName=$(echo ${archiveName%.*} | grep -o "[0-9.]*" )
+                    # if archiveName contains several sections of numbers and/or dots, like "Marathon2-20210408-Mac.dmg" that will return 2 and 20210408 so we want to find the longest of these two (or more), assuming that the longest is the version
+                    tempName=( $tempName ) # make it an array
+                    i=0; max=0; tempString=""
                     echo $tempName | while read tempLine; do
                         ((i++))
                         length[$i]=${#tempLine}
@@ -264,12 +277,15 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
                             tempString=$tempLine
                         fi
                     done
+                    # Now tempString will have the longest string returned before. So I use that in a search-replace to remove that part and insert regular expression "[0-9.]*" instead as that will match the removed part
                     archiveDestinationName="$(echo $archiveName | sed -E "s/^(.*)$tempString(.*)$/\1[0-9.]*\2/g")"
                     echo "archiveName=\"$archiveDestinationName\""
+                    # Now we want to test if the archiveName is working
                     githubDownloadURL=$(downloadURLFromGit "$githubAuthor" "$githubRepo")
                     githubAppNewVersion=$(versionFromGit "$githubAuthor" "$githubRepo")
                     downloadURL=$originalDownloadURL
                     echo "Latest URL on github: $githubDownloadURL \nLatest version: $githubAppNewVersion"
+                    # Final evaluation of our result
                     if [[ "$originalDownloadURL" == "$githubDownloadURL" ]]; then
                         echo "GitHub calculated URL matches entered URL."
                         githubError=0
@@ -282,8 +298,6 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
                         archiveDestinationName=""
                     fi
                 fi
-                #downloadURL="\$(downloadURLFromGit $githubAuthor $githubRepo)"
-                #appNewVersion="\$(versionFromGit $githubAuthor $githubRepo)"
             else
                 echo "GitHub URL not matching"
             fi
@@ -291,6 +305,7 @@ if echo "$downloadURL" | grep -i "github.com.*releases/download"; then
     fi
 fi
 
+# We are finished downloading and analyzing, so now we need to present the data
 echo "\n**********"
 echo "\nLabels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed."
 
@@ -298,6 +313,7 @@ if [[ -z $githubError || $githubError != 0 ]]; then
 echo "\nappNewVersion is often difficult to find. Can sometimes be found in the filename, sometimes as part of the download redirects, but also on a web page. See redirect and archivePath above if link contains information about this. That is a good place to start"
 fi
 
+# Here the label is built, for easy copy and paste
 echo "\n$identifier)"
 echo "    name=\"$name\""
 echo "    type=\"$archiveExt\""
