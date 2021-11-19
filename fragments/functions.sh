@@ -128,9 +128,9 @@ printlog(){
   if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
     while IFS= read -r logmessage; do
       if [[ "$(whoami)" == "root" ]]; then
-        echo "$timestamp" : "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" | tee -a $log_location
+        echo "$timestamp" : "${log_priority} : ${VERSIONDATE//-/} : ${logmessage}" | tee -a $log_location
       else
-        echo "$timestamp" : "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}"
+        echo "$timestamp" : "${log_priority} : ${VERSIONDATE//-/} : ${logmessage}"
       fi
     done <<< "$log_message"
   fi
@@ -672,7 +672,7 @@ runUpdateTool() {
             updatestatus=$(echo $?)
         fi
         sleep 1
-        
+
             updateEndTime=$(date "+$updateToolLogDateFormat")
             deduplicatelogs $updateoutput
           if [[ -n $updateToolLog ]]; then
