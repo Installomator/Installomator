@@ -31,8 +31,6 @@ runScript=1
 if (( ${opts[(I)(-s|--script)]} )); then
     runScript=0
     buildScript=1
-    broken=1
-
 fi
 
 if (( ${opts[(I)(-p|--pkg)]} )); then
@@ -53,6 +51,8 @@ if (( ${opts[(I)(-r|--run)]} )); then
     runScript=1
 fi
 
+
+
 label_flags=( -l --labels )
 # array subtraction to remove options text
 label_paths=(${label_args:|label_flags})
@@ -64,13 +64,9 @@ build_dir="$repo_dir/build"
 destination_file="$build_dir/Installomator.sh"
 fragments_dir="$repo_dir/fragments"
 labels_dir="$fragments_dir/labels"
-broken_dir="$fragments_dir/broken"
+
 # add default labels_dir to label_paths
 label_paths+=$labels_dir
-
-if [[ $broken == 1 ]]; then
-  label_paths+=$broken_dir
-fi
 
 #echo "label_paths: $label_paths"
 

@@ -7,7 +7,7 @@ label="" # if no label is sent to the script, this will be used
 # 2020-2021 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
-#
+# 
 # Contributers:
 #    Armin Briegel - @scriptingosx
 #    Isaac Ordonez - @issacatmann
@@ -23,7 +23,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-DEBUG=0
+DEBUG=1
 
 # notify behavior
 NOTIFY=success
@@ -141,7 +141,7 @@ REOPEN="yes"
 #   How we get version number from app. Possible values:
 #     - CFBundleShortVersionString
 #     - CFBundleVersion
-#   Not all software titles uses fields the same.
+#   Not all software titles uses fields the same. 
 #   See Opera label.
 #
 # - appCustomVersion(){}: (optional function)
@@ -201,31 +201,18 @@ REOPEN="yes"
 # - updateToolRunAsCurrentUser:
 #   When this variable is set (any value), $updateTool will be run as the current user.
 #
-
-# Log Date format used when parsing logs for debugging, this is the default used by install.log, override this in the case
-# statements if you need something custom per application (See adobeillustrator).  Using stadard GNU Date formatting.
-LogDateFormat="%Y-%m-%d %H:%M:%S"
-
-# Get the start time for parsing install.log if we fail.
-starttime=$(date "+$LogDateFormat")
-
-# Check if we have rosetta installed
-if [[ $(/usr/bin/arch) == "arm64" ]]; then
-  arch -x86_64 /usr/bin/true >/dev/null 2>&1
-  if [[ $? -ne 0 ]]; then
-    rosetta2=no
-  fi
-fi
-VERSION="0.8.0"
-VERSIONDATE="2021-11-19"
+VERSION="0.7.0"
+VERSIONDATE="2021-10-14"
 
 # MARK: Functions
 
-cleanupAndExit() { # $1 = exit code, $2 message, $3 level
-
+cleanupAndExit() { # $1 = exit code, $2 message
+    if [[ -n $2 && $1 -ne 0 ]]; then
+        printlog "ERROR: $2"
+    fi
     if [ "$DEBUG" -eq 0 ]; then
         # remove the temporary working directory when done
-        printlog "Deleting $tmpDir" DEBUG
+        printlog "Deleting $tmpDir"
         rm -Rf "$tmpDir"
     fi
 
@@ -236,30 +223,8 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     fi
     # If we closed any processes, reopen the app again
     reopenClosedProcess
-    if [[ -n $2 && $1 -ne 0 ]]; then
-        printlog "$2" $3
-    fi
-    printlog "################## End Installomator, exit code $1 \n\n" REQ
+    printlog "################## End Installomator, exit code $1 \n\n"
     exit "$1"
-}
-
-deduplicatelogs() {
-  loginput=${1:-"Log"}
-  logoutput=""
-  while read log; do
-    if [[ $log == $previous_log ]];then
-      let logrepeat=$logrepeat+1
-      continue
-    fi
-
-    previous_log="$log"
-    if [[ $logrepeat -gt 1 ]];then
-      logoutput+="Last Log repeated ${logrepeat} times\n"
-      logrepeat=0
-    fi
-
-    logoutput+="$log\n"
-  done <<< "$loginput"
 }
 
 runAsUser() {
@@ -300,68 +265,26 @@ displaynotification() { # $1: message $2: title
     fi
 }
 
+
 # MARK: Logging
 log_location="/private/var/log/Installomator.log"
-if [[ $DEBUG -eq 1 ]]; then
-  LOGGING=DEBUG
-elif [[ -z $LOGGING ]]; then
-  LOGGING=INFO
-  datadogLoggingLevel=INFO
-fi
-
-declare -A levels=(DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4)
-
-if [[ -f /Library/Preferences/com.jamfsoftware.jamf.plist ]]; then
-  mdmURL=$(defaults read /Library/Preferences/com.jamfsoftware.jamf.plist jss_url)
-else
-  mdmURL="Unknown"
-fi
-
-SESSION=$RANDOM
 
 printlog(){
-  [ -z "$2" ] && 2=INFO
-  log_message=$1
-  log_priority=$2
-  timestamp=$(date +%F\ %T)
 
-  if [[ ${log_message} == ${previous_log_message} ]];then
-    let logrepeat=$logrepeat+1
-    return
-  fi
-
-  previous_log_message=$log_message
-
-  if [[ $logrepeat -gt 1 ]];then
-    echo "$timestamp" "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : Last Log repeated ${logrepeat} times"
-    if [[ ! -z $datadogAPI ]]; then
-      curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSIONDATE : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
+    timestamp=$(date +%F\ %T)
+        
+    if [[ "$(whoami)" == "root" ]]; then
+        echo "$timestamp" "$label" "$1" | tee -a $log_location
+    else
+        echo "$timestamp" "$label" "$1"
     fi
-    logrepeat=0
-  fi
-
-  if [[ -n $datadogAPI && ${levels[$log_priority]} -ge ${levels[$datadogLoggingLevel]} ]]; then
-    while IFS= read -r logmessage; do
-      curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" > /dev/null
-    done <<< "$log_message"
-  fi
-
-  if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
-    while IFS= read -r logmessage; do
-      if [[ "$(whoami)" == "root" ]]; then
-        echo "$timestamp" : "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" | tee -a $log_location
-      else
-        echo "$timestamp" : "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}"
-      fi
-    done <<< "$log_message"
-  fi
 }
 
 # will get the latest release download from a github repo
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-
+    
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
@@ -369,7 +292,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     else
         filetype=$type
     fi
-
+    
     if [ -n "$archiveName" ]; then
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
     | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
@@ -391,7 +314,7 @@ versionFromGit() {
     # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-
+        
     appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame"
@@ -405,7 +328,7 @@ versionFromGit() {
 
 # Handling of differences in xpath between Catalina and Big Sur
 xpath() {
-	# the xpath tool changes in Big Sur and now requires the `-e` option
+	# the xpath tool changes in Big Sur and now requires the `-e` option	
 	if [[ $(sw_vers -buildVersion) > "20A" ]]; then
 		/usr/bin/xpath -e $@
 		# alternative: switch to xmllint (which is not perl)
@@ -425,7 +348,7 @@ getAppVersion() {
         printlog "Custom App Version detection is used, found $appversion"
         return
     fi
-
+    
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
         appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
@@ -436,7 +359,7 @@ getAppVersion() {
             printlog "No version found using packageID $packageID"
         fi
     fi
-
+    
     # get app in /Applications, or /Applications/Utilities, or find using Spotlight
     if [[ -d "/Applications/$appName" ]]; then
         applist="/Applications/$appName"
@@ -477,7 +400,7 @@ getAppVersion() {
 checkRunningProcesses() {
     # don't check in DEBUG mode
     if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not checking for blocking processes" DEBUG
+        printlog "DEBUG mode, not checking for blocking processes"
         return
     fi
 
@@ -488,7 +411,7 @@ checkRunningProcesses() {
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
                 appClosed=1
-
+                
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
                         printlog "telling app $x to quit"
@@ -575,7 +498,7 @@ checkRunningProcesses() {
 reopenClosedProcess() {
     # If Installomator closed any processes, let's get the app opened again
     # credit: Søren Theilgaard (@theilgaard)
-
+    
     # don't reopen if REOPEN is not "yes"
     if [[ $REOPEN != yes ]]; then
         printlog "REOPEN=no, not reopening anything"
@@ -584,10 +507,10 @@ reopenClosedProcess() {
 
     # don't reopen in DEBUG mode
     if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not reopening anything" DEBUG
+        printlog "DEBUG mode, not reopening anything"
         return
     fi
-
+    
     if [[ $appClosed == 1 ]]; then
         printlog "Telling app $appName to open"
         #runAsUser osascript -e "tell app \"$appName\" to open"
@@ -611,19 +534,15 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     fi
 
     # verify with spctl
-    printlog "Verifying: $appPath" INFO
-    appverify=$(spctl -a -vv "$appPath" 2>&1 )
-    appverifystatus=$(echo $?)
-    teamID=$(echo $appverify | awk '/origin=/ {print $NF }' | tr -d '()' )
-    deduplicatelogs "$appverify"
-    if [[ $appverifystatus -ne 0 && $verifyTeamIDOnly -ne YES ]] ; then
-      cleanupAndExit 4 "Error verifying $appPath error: $logoutput" ERROR
+    printlog "Verifying: $appPath"
+    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
+        cleanupAndExit 4 "Error verifying $appPath"
     fi
-    printlog "Debugging enabled, App Verification output was: $logoutput" DEBUG
-    printlog "Team ID: $teamID (expected: $expectedTeamID )" INFO
+
+    printlog "Team ID matching: $teamID (expected: $expectedTeamID )"
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-      cleanupAndExit 5 "Team IDs do not match. App Verification output was: $logoutput" ERROR
+        cleanupAndExit 5 "Team IDs do not match"
     fi
 
     # versioncheck
@@ -647,14 +566,14 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
-        printlog "DEBUG enabled, skipping remove, copy and chown steps" DEBUG
+        printlog "DEBUG enabled, skipping remove, copy and chown steps"
         return 0
     fi
 
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
-        cleanupAndExit 6 "not running as root, exiting" ERROR
+        cleanupAndExit 6 "not running as root, exiting"
     fi
 
     # remove existing application
@@ -705,26 +624,25 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
-
-    spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 )
-    printlog "spctlout is $spctlout" DEBUG
-    spctlstatus=$(echo $?)
-    teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
-    deduplicatelogs "$spctlout"
-
-    if [[ $spctlstatus -ne 0 && $verifyTeamIDOnly -ne YES ]] ; then
-        cleanupAndExit 4 "Error verifying $appPath error: $logoutput" ERROR
+    
+    if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
+        printlog "Error verifying $archiveName"
+        cleanupAndExit 4
     fi
+    
+    teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
 
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
         teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
     fi
 
+
     printlog "Team ID: $teamID (expected: $expectedTeamID )"
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        cleanupAndExit 5 "Team IDs do not match!" ERROR
+        printlog "Team IDs do not match!"
+        cleanupAndExit 5
     fi
 
     # Check version of pkg to be installed if packageID is set
@@ -749,56 +667,41 @@ installFromPKG() {
             fi
         fi
     fi
-
+    
     # skip install for DEBUG
     if [ "$DEBUG" -ne 0 ]; then
-        printlog "DEBUG enabled, skipping installation" DEBUG
+        printlog "DEBUG enabled, skipping installation"
         return 0
     fi
 
     # check for root
     if [ "$(whoami)" != "root" ]; then
         # not running as root
-        cleanupAndExit 6 "not running as root, exiting" ERROR
+        cleanupAndExit 6 "not running as root, exiting"
     fi
 
     # install pkg
-    pkginstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
-    pkginstallstatus=$(echo $?)
-    sleep 1
-    pkgEndTime=$(date "+$LogDateFormat")
-    pkginstall+=$(echo "Output of /var/log/install.log below this line.\n")
-    pkginstall+=$(echo "----------------------------------------------------------\n")
-    pkginstall+=$(awk -v "b=$starttime" -v "e=$pkgEndTime" -F ',' '$1 >= b && $1 <= e' /var/log/install.log)
-    deduplicatelogs "$pkginstall"
-
-    if [[ $pkginstallstatus -ne 0 ]] && [[ $logoutput == *"requires Rosetta 2"* ]] && [[ $rosetta2 == no ]]; then
-        printlog "Package requires Rosetta 2, Installing Rosetta 2 and Installing Package" INFO
-        /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-        rosetta2=yes
-        installFromPKG
+    printlog "Installing $archiveName to $targetDir"
+    if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
+        printlog "error installing $archiveName"
+        cleanupAndExit 9
     fi
-
-    if [ $pkginstallstatus -ne 0 ] ; then
-        cleanupAndExit 9 "Error installing $archiveName error: $logoutput" ERROR
-    fi
-    printlog "Debugging enabled, installer output was: $logoutput" DEBUG
 }
 
 installFromZIP() {
     # unzip the archive
     printlog "Unzipping $archiveName"
-
+    
     # tar -xf "$archiveName"
 
     # note: when you expand a zip using tar in Mojave the expanded
     # app will never pass the spctl check
 
     # unzip -o -qq "$archiveName"
-
+    
     # note: githubdesktop fails spctl verification when expanded
     # with unzip
-
+    
     ditto -x -k "$archiveName" "$tmpDir"
     installAppWithPath "$tmpDir/$appName"
 }
@@ -884,33 +787,15 @@ installAppInDmgInZip() {
 runUpdateTool() {
     printlog "Function called: runUpdateTool"
     if [[ -x $updateTool ]]; then
-        printlog "Running $updateTool $updateToolArguments"
+        printlog "running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
-            updateoutput=$(runAsUser $updateTool ${updateToolArguments} 2>&1)
-            updatestatus=$(echo $?)
+            runAsUser $updateTool ${updateToolArguments}
         else
-            updateoutput=$($updateTool ${updateToolArguments} 2>&1)
-            updatestatus=$(echo $?)
+            $updateTool ${updateToolArguments}
         fi
-        sleep 1
-        
-            updateEndTime=$(date "+$updateToolLogDateFormat")
-            deduplicatelogs $updateoutput
-          if [[ -n $updateToolLog ]]; then
-              updateoutput+=$(echo "Output of Installer log of $updateToolLog below this line.\n")
-              updateoutput+=$(echo "----------------------------------------------------------\n")
-              updateoutput+=$(awk -v "b=$updatestarttime" -v "e=$updateEndTime" -F ',' '$1 >= b && $1 <= e' $updateToolLog)
-          fi
-
-          if [[ $updatestatus -ne 0 ]]; then
-              printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updatestatus Error: $logoutput" WARN
-              if [[ $type == updateronly ]]; then
-                  cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" WARN
-              fi
-          elif [[ $updatestatus -eq 0 ]]; then
-              printlog "Debugging enabled, update tool output was: $logoutput" DEBUG
-              cleanupAndExit 0 "$updateTool ran Successfully" INFO
-          fi
+        if [[ $? -ne 0 ]]; then
+            cleanupAndExit 15 "Error running $updateTool"
+        fi
     else
         printlog "couldn't find $updateTool, continuing normally"
         return 1
@@ -936,6 +821,8 @@ finishing() {
         displaynotification "$message" "$name update/installation complete!"
     fi
 }
+
+
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
@@ -974,8 +861,8 @@ done
 # lowercase the label
 label=${label:l}
 
-printlog "################## Start Installomator v. $VERSION" REQ
-printlog "################## $label" REQ
+printlog "################## Start Installomator v. $VERSION"
+printlog "################## $label"
 
 # How we get version number from app
 # (alternative is "CFBundleVersion", that can be used in labels)
@@ -3745,49 +3632,6 @@ zulujdk8)
     appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Info.plist" "CFBundleName" | sed 's/Zulu //'; fi }
     appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
     ;;
-brokenappname)
-    name="brokenapp"
-    type="dmg"
-    downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-    expectedTeamID="EQHXZ8M8AV"
-    ;;
-brokendownloadurl)
-    name="Google Chrome"
-    type="dmg"
-    downloadURL="https://broken.com/broken.dmg"
-    expectedTeamID="EQHXZ8M8AV"
-    ;;
-brokeninstaller)
-    rm "/Applications/Adobe Acrobat Reader DC.app"
-    name="Adobe Acrobat Reader DC"
-    type="pkgInDmg"
-    downloadURL=$(adobecurrent=`curl --fail --silent https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.'` && echo http://ardownload.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrent"/AcroRdrDCUpd"$adobecurrent"_MUI.dmg)
-    appNewVersion=$(curl -s https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt)
-    #appNewVersion=$(curl -s -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15)" https://get.adobe.com/reader/ | grep ">Version" | sed -E 's/.*Version 20([0-9.]*)<.*/\1/g') # credit: Søren Theilgaard (@theilgaard)
-    expectedTeamID="JQ525L2MZD"
-    blockingProcesses=( "AdobeReader" )
-    ;;
-brokenteamid)
-    name="Google Chrome"
-    type="dmg"
-    downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-    expectedTeamID="broken"
-    ;;
-brokenupdater)
-    name="Google Chrome"
-    type="dmg"
-    if [[ $(arch) != "i386" ]]; then
-        printlog "Architecture: arm64 (not i386)"
-        downloadURL="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
-    else
-        printlog "Architecture: i386"
-        downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-          fi
-    expectedTeamID="EQHXZ8M8AV"
-    updateTool="/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/GoogleSoftwareUpdateAgent.app/Contents/MacOS/GoogleSoftwareUpdateAgent"
-    updateToolArguments=( -runMode BLERG -userInitiated YES )
-    updateToolRunAsCurrentUser=1
-    ;;
 *)
     # unknown label
     #printlog "unknown label $label"
@@ -3895,7 +3739,7 @@ else
 fi
 
 # MARK: change directory to temporary working directory
-printlog "Changing directory to $tmpDir" DEBUG
+printlog "Changing directory to $tmpDir"
 if ! cd "$tmpDir"; then
     printlog "error changing directory $tmpDir"
     cleanupAndExit 1
@@ -3961,19 +3805,15 @@ else
         printlog "notifying"
         displaynotification "Downloading $name update" "Download in progress …"
     fi
-    curldownload=$(curl -v --location --fail --show-error --silent "$downloadURL" -o "$archiveName" 2>&1)
-    curldownloadstatus=$(echo $?)
-    deduplicatelogs "$curldownload"
-
-    if [[ $curldownloadstatus -ne 0 ]]; then
+    if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
+        printlog "error downloading $downloadURL"
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
             displaynotification "$message" "Error installing/updating $name"
         fi
-        cleanupAndExit 2 "Error downloading $downloadURL error: $logoutput" ERROR
+        cleanupAndExit 2
     fi
-    printlog "curl output was: $logoutput" DEBUG
 fi
 
 # MARK: when user is logged in, and app is running, prompt user to quit app
