@@ -1,6 +1,6 @@
 #!/bin/zsh
 label="" # if no label is sent to the script, this will be used
-set +x
+
 # Installomator
 #
 # Downloads and installs Applications
@@ -201,3 +201,18 @@ REOPEN="yes"
 # - updateToolRunAsCurrentUser:
 #   When this variable is set (any value), $updateTool will be run as the current user.
 #
+
+# Log Date format used when parsing logs for debugging, this is the default used by install.log, override this in the case
+# statements if you need something custom per application (See adobeillustrator).  Using stadard GNU Date formatting.
+LogDateFormat="%Y-%m-%d %H:%M:%S"
+
+# Get the start time for parsing install.log if we fail.
+starttime=$(date "+$LogDateFormat")
+
+# Check if we have rosetta installed
+if [[ $(/usr/bin/arch) == "arm64" ]]; then
+  arch -x86_64 /usr/bin/true >/dev/null 2>&1
+  if [[ $? -ne 0 ]]; then
+    rosetta2=no
+  fi
+fi

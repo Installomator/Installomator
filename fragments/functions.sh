@@ -22,6 +22,25 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     exit "$1"
 }
 
+deduplicatelogs() {
+  loginput=${1:-"Log"}
+  logoutput=""
+  while read log; do
+    if [[ $log == $previous_log ]];then
+      let logrepeat=$logrepeat+1
+      continue
+    fi
+
+    previous_log="$log"
+    if [[ $logrepeat -gt 1 ]];then
+      logoutput+="Last Log repeated ${logrepeat} times\n"
+      logrepeat=0
+    fi
+
+    logoutput+="$log\n"
+  done <<< "$loginput"
+}
+
 runAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
@@ -371,15 +390,19 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     fi
 
     # verify with spctl
-    printlog "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
-        cleanupAndExit 4 "Error verifying $appPath"
+    printlog "Verifying: $appPath" INFO
+    appverify=$(spctl -a -vv "$appPath" 2>&1 )
+    appverifystatus=$(echo $?)
+    teamID=$(echo $appverify | awk '/origin=/ {print $NF }' | tr -d '()' )
+    deduplicatelogs "$appverify"
+    if [[ $appverifystatus -ne 0 && $verifyTeamIDOnly -ne YES ]] ; then
+      cleanupAndExit 4 "Error verifying $appPath error: $logoutput" ERROR
     fi
-
-    printlog "Team ID matching: $teamID (expected: $expectedTeamID )"
+    printlog "Debugging enabled, App Verification output was: $logoutput" DEBUG
+    printlog "Team ID: $teamID (expected: $expectedTeamID )" INFO
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        cleanupAndExit 5 "Team IDs do not match" ERROR
+      cleanupAndExit 5 "Team IDs do not match. App Verification output was: $logoutput" ERROR
     fi
 
     # versioncheck
@@ -462,24 +485,25 @@ installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
 
-    if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
-        printlog "Error verifying $archiveName"
-        cleanupAndExit 4
-    fi
-
+    spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 )
+    printlog "spctlout is $spctlout" DEBUG
+    spctlstatus=$(echo $?)
     teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+    deduplicatelogs "$spctlout"
+
+    if [[ $spctlstatus -ne 0 && $verifyTeamIDOnly -ne YES ]] ; then
+        cleanupAndExit 4 "Error verifying $appPath error: $logoutput" ERROR
+    fi
 
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
         teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
     fi
 
-
     printlog "Team ID: $teamID (expected: $expectedTeamID )"
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        printlog "Team IDs do not match!"
-        cleanupAndExit 5
+        cleanupAndExit 5 "Team IDs do not match!" ERROR
     fi
 
     # Check version of pkg to be installed if packageID is set
@@ -518,11 +542,26 @@ installFromPKG() {
     fi
 
     # install pkg
-    printlog "Installing $archiveName to $targetDir"
-    if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
-        printlog "error installing $archiveName"
-        cleanupAndExit 9
+    pkginstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+    pkginstallstatus=$(echo $?)
+    sleep 1
+    pkgEndTime=$(date "+$LogDateFormat")
+    pkginstall+=$(echo "Output of /var/log/install.log below this line.\n")
+    pkginstall+=$(echo "----------------------------------------------------------\n")
+    pkginstall+=$(awk -v "b=$starttime" -v "e=$pkgEndTime" -F ',' '$1 >= b && $1 <= e' /var/log/install.log)
+    deduplicatelogs "$pkginstall"
+
+    if [[ $pkginstallstatus -ne 0 ]] && [[ $logoutput == *"requires Rosetta 2"* ]] && [[ $rosetta2 == no ]]; then
+        printlog "Package requires Rosetta 2, Installing Rosetta 2 and Installing Package" INFO
+        /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+        rosetta2=yes
+        installFromPKG
     fi
+
+    if [ $pkginstallstatus -ne 0 ] ; then
+        cleanupAndExit 9 "Error installing $archiveName error: $logoutput" ERROR
+    fi
+    printlog "Debugging enabled, installer output was: $logoutput" DEBUG
 }
 
 installFromZIP() {
@@ -624,39 +663,38 @@ installAppInDmgInZip() {
 runUpdateTool() {
     printlog "Function called: runUpdateTool"
     if [[ -x $updateTool ]]; then
-        printlog "running $updateTool $updateToolArguments"
+        printlog "Running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
-            runAsUser $updateTool ${updateToolArguments}
+            updateoutput=$(runAsUser $updateTool ${updateToolArguments} 2>&1)
+            updatestatus=$(echo $?)
         else
-            $updateTool ${updateToolArguments}
+            updateoutput=$($updateTool ${updateToolArguments} 2>&1)
+            updatestatus=$(echo $?)
         fi
-        if [[ $? -ne 0 ]]; then
-            cleanupAndExit 15 "Error running $updateTool"
-        fi
+        sleep 1
+        
+            updateEndTime=$(date "+$updateToolLogDateFormat")
+            deduplicatelogs $updateoutput
+          if [[ -n $updateToolLog ]]; then
+              updateoutput+=$(echo "Output of Installer log of $updateToolLog below this line.\n")
+              updateoutput+=$(echo "----------------------------------------------------------\n")
+              updateoutput+=$(awk -v "b=$updatestarttime" -v "e=$updateEndTime" -F ',' '$1 >= b && $1 <= e' $updateToolLog)
+          fi
+
+          if [[ $updatestatus -ne 0 ]]; then
+              printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updatestatus Error: $logoutput" WARN
+              if [[ $type == updateronly ]]; then
+                  cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" WARN
+              fi
+          elif [[ $updatestatus -eq 0 ]]; then
+              printlog "Debugging enabled, update tool output was: $logoutput" DEBUG
+              cleanupAndExit 0 "$updateTool ran Successfully" INFO
+          fi
     else
         printlog "couldn't find $updateTool, continuing normally"
         return 1
     fi
     return 0
-}
-
-deduplicatelogs() {
-  loginput=${1:-"Log"}
-  logoutput=""
-  while read log; do
-    if [[ $log == $previous_log ]];then
-      let logrepeat=$logrepeat+1
-      continue
-    fi
-
-    previous_log="$log"
-    if [[ $logrepeat -gt 1 ]];then
-      logoutput+="Last Log repeated ${logrepeat} times\n"
-      logrepeat=0
-    fi
-
-    logoutput+="$log\n"
-  done <<< "$loginput"
 }
 
 finishing() {
