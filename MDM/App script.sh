@@ -7,6 +7,13 @@ what="brave" # enter the software to install
 # Script will run this label.
 ###############################################
 
+# No sleeping
+/usr/bin/caffeinate -d -i -m -u &
+caffeinatepid=$!
+caffexit () {
+    kill "$caffeinatepid"
+    exit $1
+}
 
 # Verify that Installomator has been installed
 destFile="/usr/local/Installomator/Installomator.sh"
@@ -14,19 +21,19 @@ if [ ! -e "${destFile}" ]; then
     echo "Installomator not found here:"
     echo "${destFile}"
     echo "Exiting."
-    exit 99
+    caffexit 99
 fi
 
 ${destFile} ${what} LOGO=mosyleb BLOCKING_PROCESS_ACTION=tell_user #NOTIFY=all #INSTALL=force
 if [ $? != 0 ]; then
 # This is currently not working in Mosyle, that will ignore script errors. Please request support for this from Mosyle!
     echo "Error installing ${what}. Exit code $?"
-    exit $?
+    caffexit $?
 fi
 
 echo "[$(DATE)][LOG-END]"
 
-exit 0
+caffexit 0
 
 # notify behavior
 # NOTIFY=success

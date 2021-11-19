@@ -7,13 +7,24 @@ what="microsoftteams microsoftyammer firefox bravebrowser cyberduck vlc signal" 
 # Script will loop through these labels.
 ######################################################################
 
+# No sleeping
+/usr/bin/caffeinate -d -i -m -u &
+caffeinatepid=$!
+caffexit () {
+    kill "$caffeinatepid"
+    exit $1
+}
+
+# Count errors
+errorCount=0
+
 # Verify that Installomator has been installed
 destFile="/usr/local/Installomator/Installomator.sh"
 if [ ! -e "${destFile}" ]; then
     echo "Installomator not found here:"
     echo "${destFile}"
     echo "Exiting."
-    exit 99
+    caffexit 99
 fi
 
 for item in $what; do
@@ -22,13 +33,15 @@ for item in $what; do
     if [ $? != 0 ]; then
     # This is currently not working in Mosyle, that will ignore script errors. Please request support for this from Mosyle!
         echo "[$(DATE)] Error installing ${item}. Exit code $?"
-        # exit $?
+        let errorCount++
     fi
 done
 
+echo
+echo "Errors: $errorCount"
 echo "[$(DATE)][LOG-END]"
 
-exit 0
+caffexit $errorCount
 
 # notify behavior
 # NOTIFY=success
