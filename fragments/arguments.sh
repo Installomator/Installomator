@@ -45,6 +45,11 @@ fi
 printlog "################## Start Installomator v. $VERSION"
 printlog "################## $label"
 
+# Check for DEBUG mode
+if [[ $DEBUG -gt 0 ]]; then
+    printlog "DEBUG mode $DEBUG enabled."
+fi
+
 # How we get version number from app
 # (alternative is "CFBundleVersion", that can be used in labels)
 versionKey="CFBundleShortVersionString"
