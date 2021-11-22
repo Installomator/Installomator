@@ -276,6 +276,7 @@ sourcetree
 splashtopsos
 spotify
 sublimetext
+superhuman
 supportapp
 suspiciouspackage
 swiftruntimeforcommandlinetools
