@@ -202,6 +202,12 @@ if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     displaynotification "Installing $name" "Installation in progress …"
 fi
 
+if [ -n "$installerTool" ]; then
+    # installerTool defined, and we use that for installation
+    printlog "installerTool used: $installerTool"
+    appName="$installerTool"
+fi
+
 case $type in
     dmg)
         installFromDMG
