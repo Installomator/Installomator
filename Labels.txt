@@ -11,6 +11,7 @@ aircall
 airserver
 airtame
 aldente
+alephone
 alfred
 alttab
 amazonchime
@@ -49,16 +50,19 @@ boxdrive
 boxsync
 boxtools
 brave
+bugdom
 caffeine
 cakebrew
 calibre
 camostudio
 camtasia
 canva
+chatwork
 cisdem-documentreader
 citrixworkspace
 clevershare2
 clickshare
+closeio
 cloudya
 code42
 coderunner
@@ -85,6 +89,7 @@ easeusdatarecoverywizard
 egnyte
 element
 eraseinstall
+eshareosx
 etrecheck
 evernote
 exelbanstats
@@ -151,6 +156,7 @@ jetbrainsintellijideace
 jetbrainsphpstorm
 jetbrainspycharm
 jetbrainspycharmce
+jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
 karabinerelements
@@ -173,6 +179,9 @@ lulu
 macfuse
 macports
 malwarebytes
+marathon
+marathon2
+marathoninfinity
 mattermost
 menumeters
 microsoftautoupdate
@@ -224,6 +233,7 @@ onlyofficedesktop
 openvpnconnect
 openvpnconnectv3
 opera
+ottomatic
 pacifist
 pandoc
 parsec
@@ -264,6 +274,7 @@ scaleft
 screamingfrogseospider
 screencloudplayer
 screenflick
+sequelpro
 sfsymbols
 shield
 sidekick
@@ -327,7 +338,7 @@ vivaldi
 vlc
 vmwarehorizonclient
 vscodium
-wallyezflash
+wacomdrivers
 webex
 webexmeetings
 webexteams
@@ -344,6 +355,7 @@ yubikeymanagerqt
 zappy
 zeplin
 zohoworkdrive
+zohoworkdrivetruesync
 zoom
 zoomclient
 zoomgov
