@@ -7,7 +7,15 @@ what="handbrake theunarchiver microsoftoffice365"
 # Covered by Mosyle Catalog: "brave firefox googlechrome microsoftedge microsoftteams signal sublimetext vlc webex zoom" among others
 ######################################################################
 
-## Code here
+## Mark: Code here
+
+# No sleeping
+/usr/bin/caffeinate -d -i -m -u &
+caffeinatepid=$!
+caffexit () {
+    kill "$caffeinatepid"
+    exit $1
+}
 
 # Mark: Condition for Installomator installation
 
@@ -19,12 +27,12 @@ if [[ "$TARGET_VERSION" != "$INSTALLED_VERSION" ]]; then
     TMPDIR=$(mktemp -d )
     if ! cd "$TMPDIR"; then
         echo "error changing directory $TMPDIR"
-        exit 98
+        caffexit 98
     fi
     NAME=$TMPDIR/$(date +%s).pkg
     if ! curl -fsL "$URLDOWNLOAD" -o "$NAME"; then
         echo "error downloading $URLDOWNLOAD to $NAME."
-        exit 97
+        caffexit 97
     fi
     installer -pkg "$NAME" -target /
     rm -rf "$TMPDIR"
@@ -44,7 +52,7 @@ if [ ! -e "${destFile}" ]; then
     echo "Installomator not found here:"
     echo "${destFile}"
     echo "Exiting."
-    exit 99
+    caffexit 99
 fi
 
 for item in $what; do
@@ -54,7 +62,6 @@ for item in $what; do
     # Error handling
         echo "[$(DATE)] Error installing ${item}. Exit code $?"
         let errorCount++
-        # exit $?
     fi
 done
 
@@ -62,4 +69,4 @@ echo
 echo "Errors: $errorCount"
 echo "[$(DATE)][LOG-END]"
 
-exit $errorCount
+caffexit $errorCount

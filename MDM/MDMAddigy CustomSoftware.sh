@@ -15,6 +15,14 @@ what="supportapp xink textmate microsoftedge wwdc keka vlc " # enter the softwar
 # Script will loop through these labels and exit with number of errors.
 ######################################################################
 
+# No sleeping
+/usr/bin/caffeinate -d -i -m -u &
+caffeinatepid=$!
+caffexit () {
+    kill "$caffeinatepid"
+    exit $1
+}
+
 # Count errors
 errorCount=0
 
@@ -24,7 +32,7 @@ if [ ! -e "${destFile}" ]; then
     echo "Installomator not found here:"
     echo "${destFile}"
     echo "Exiting."
-    exit 99
+    caffexit 99
 fi
 
 for item in $what; do
@@ -34,7 +42,6 @@ for item in $what; do
     # Error handling
         echo "[$(DATE)] Error installing ${item}. Exit code $?"
         let errorCount++
-        # exit $?
     fi
 done
 
@@ -42,7 +49,7 @@ echo
 echo "Errors: $errorCount"
 echo "[$(DATE)][LOG-END]"
 
-exit $errorCount
+caffexit $errorCount
 
 # Mark: Conditions
 # Install on success
