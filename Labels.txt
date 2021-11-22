@@ -4,6 +4,7 @@
 abstract
 adobebrackets
 adobeconnect
+adobecreativeclouddesktop
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
@@ -173,9 +174,11 @@ launchbar
 lexarrecoverytool
 libreoffice
 logitechoptions
+logseq
 loom
 lucifer
 lulu
+maccyapp
 macfuse
 macports
 malwarebytes
@@ -235,6 +238,7 @@ openvpnconnect
 openvpnconnectv3
 opera
 ottomatic
+overflow
 pacifist
 pandoc
 parsec
@@ -284,7 +288,7 @@ silnite
 sirimote
 sizeup
 sketch
-skype
+sketchupviewer
 slack
 smartgit
 snagit
@@ -308,6 +312,7 @@ sync
 tableaudesktop
 tableaureader
 tageditor
+talkdeskcallbar
 taskpaper
 teamviewer
 teamviewerhost
