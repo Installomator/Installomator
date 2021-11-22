@@ -286,6 +286,7 @@ spotify
 steelseriesengine
 strongsync
 sublimetext
+superhuman
 supportapp
 suspiciouspackage
 swiftruntimeforcommandlinetools
