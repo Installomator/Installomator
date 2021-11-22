@@ -119,7 +119,7 @@ printlog "appversion: $appversion"
 # credit: Søren Theilgaard (@theilgaard)
 if [[ -n $appNewVersion ]]; then
     printlog "Latest version of $name is $appNewVersion"
-    if [[ $appversion == $appNewVersion ]]; then
+    if [[ $appversion == $appNewVersion && $INSTALL != "force" ]]; then
         if [[ $DEBUG -eq 0 ]]; then
             printlog "There is no newer version available."
             message="$name, version $appNewVersion, is  the latest version."
