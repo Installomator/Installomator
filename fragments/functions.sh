@@ -378,25 +378,26 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     
     # Test if variable CLIInstaller is set
     if [[ -z $CLIInstaller ]]; then
-    # remove existing application
-    if [ -e "$targetDir/$appName" ]; then
-        printlog "Removing existing $targetDir/$appName"
-        rm -Rf "$targetDir/$appName"
-    fi
+    
+        # remove existing application
+        if [ -e "$targetDir/$appName" ]; then
+            printlog "Removing existing $targetDir/$appName"
+            rm -Rf "$targetDir/$appName"
+        fi
 
-    # copy app to /Applications
-    printlog "Copy $appPath to $targetDir"
-    if ! ditto "$appPath" "$targetDir/$appName"; then
-        cleanupAndExit 7 "Error while copying"
-    fi
+        # copy app to /Applications
+        printlog "Copy $appPath to $targetDir"
+        if ! ditto "$appPath" "$targetDir/$appName"; then
+            cleanupAndExit 7 "Error while copying"
+        fi
 
-    # set ownership to current user
-    if [ "$currentUser" != "loginwindow" ]; then
-        printlog "Changing owner to $currentUser"
-        chown -R "$currentUser" "$targetDir/$appName"
-    else
-        printlog "No user logged in, not changing user"
-    fi
+        # set ownership to current user
+        if [ "$currentUser" != "loginwindow" ]; then
+            printlog "Changing owner to $currentUser"
+            chown -R "$currentUser" "$targetDir/$appName"
+        else
+            printlog "No user logged in, not changing user"
+        fi
 
     elif [[ ! -z $CLIInstaller ]]; then
         mountname=$(dirname $appPath)
