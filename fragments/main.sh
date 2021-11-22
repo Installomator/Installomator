@@ -117,29 +117,28 @@ printlog "appversion: $appversion"
 
 # MARK: Exit if new version is the same as installed version (appNewVersion specified)
 # credit: Søren Theilgaard (@theilgaard)
-if [[ $INSTALL == "force" ]]; then
-    printlog "Using force to install, so not using updateTool."
-    updateTool=""
-fi
 if [[ -n $appNewVersion ]]; then
     printlog "Latest version of $name is $appNewVersion"
     if [[ $appversion == $appNewVersion ]]; then
         if [[ $DEBUG -eq 0 ]]; then
             printlog "There is no newer version available."
-            if [[ $INSTALL != "force" ]]; then
-                message="$name, version $appNewVersion, is  the latest version."
-                if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
-                    printlog "notifying"
-                    displaynotification "$message" "No update for $name!"
-                fi
-                cleanupAndExit 0 "No newer version."
+            message="$name, version $appNewVersion, is  the latest version."
+            if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
+                printlog "notifying"
+                displaynotification "$message" "No update for $name!"
             fi
+            cleanupAndExit 0 "No newer version."
         else
             printlog "DEBUG mode enabled, not exiting, but there is no new version of app."
         fi
     fi
 else
     printlog "Latest version not specified."
+fi
+
+if [[ $INSTALL == "force" && -n $updateTool]]; then
+    printlog "Using force to install, so not using updateTool."
+    updateTool=""
 fi
 
 # MARK: check if this is an Update and we can use updateTool
