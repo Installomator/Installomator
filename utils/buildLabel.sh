@@ -61,9 +61,9 @@ versionFromGit() {
 
 pkgInvestigation() {
     echo "Package investigation."
-    teamID=$(spctl -a -vv -t install "$archiveName" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
+    teamID=$(spctl -a -vv -t install "$pkgPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' )
     if [[ -z $teamID ]]; then
-        echo "Error verifying PKG: $archiveName"
+        echo "Error verifying PKG: $pkgPath"
         echo "No TeamID found."
         exit 4
     fi

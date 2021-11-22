@@ -198,8 +198,27 @@ REOPEN="yes"
 #      $updateTool $updateArguments
 #   Will be run instead of of downloading and installing a complete new version.
 #   Use this when the updateTool does differential and optimized downloads.
-#   e.g. msupdate
+#   e.g. msupdate on various Microsoft labels
 #
 # - updateToolRunAsCurrentUser:
 #   When this variable is set (any value), $updateTool will be run as the current user.
+#
+# - CLIInstaller:
+# - CLIArguments:
+#   If the downloaded dmg is actually an installer that we can call using CLI, we can
+#   use these two variables for what to call.
+#   We need to define `name` for the installed app (to be version checked), as well as
+#   `installerTool` for the installer app (if named differently that `name`. Installomator
+#   will add the path to the folder/disk image with the binary, and it will be called like this:
+     `$CLIInstaller $CLIArguments`
+#   For most installations `CLIInstaller` should contain the `installerTool` for the CLI call
+#   (if it’s the same).
+#   We can support a whole range of other software titles by implementing this.
+#   See label adobecreativeclouddesktop
+#
+# - installerTool:
+#   Introduced as part of `CLIInstaller`. If the installer in the DMG or ZIP is named
+#   differently than the installed app, then this variable can be used to name the
+#   installer that should be located after mounting/expanding the downloaded archive.
+#   See label adobecreativeclouddesktop
 #

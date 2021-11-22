@@ -1,7 +1,10 @@
 ## v0.8
 
+- Installomator now detects when an app is already installed, and will display notifications correctly the user based on if the app was updated or installed for the first time.
+- New variables for labels that should be installaed using CLI: `CLIInstaller` and `CLIArguments`. If the installer app is named differently than the installed app, then the variable `installerTool` should be use to name the app that should be located in the DMG or zip. See the label __adobecreativeclouddesktop__ to see it’s use.
 - `buildLabel.sh` has been improved to build GitHub software labels much easier. In essense if the URL contains github.com, then it will try to find if it's the latest version or if variable `archiveName` is needed for finding the software. Also improved messaging throughout the script, as well as handling a situation where a pkg does not include a “DIstribution” file, but a “PackageInfo”.
 - MDM script extended with `caffeinate` so Mac will not go to sleep during the time it takes installomator to run. Especially during setup, this can be handy.
+- Microsoft labels with `updateTool` variable, is updated to run `msupdate --list` before running the updateTool directly. Problems have been reported that the update would fail if the `--list` parameter for the command was not run first.
 
 ## v0.7
 
