@@ -94,6 +94,7 @@ fastscripts
 favro
 ferdi
 figma
+findanyfile
 firefox
 firefox_da
 firefox_intl
