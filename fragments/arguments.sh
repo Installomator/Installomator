@@ -36,6 +36,12 @@ done
 # lowercase the label
 label=${label:l}
 
+# separate check for 'version' in order to print plain version number without any other information
+if [ $label == "version" ]; then
+    echo "$VERSION"
+    exit 0
+fi
+
 printlog "################## Start Installomator v. $VERSION"
 printlog "################## $label"
 
@@ -49,11 +55,6 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 
 # MARK: labels in case statement
 case $label in
-version)
-    # print the script VERSION
-    printlog "$VERSION"
-    exit 0
-    ;;
 longversion)
     # print the script version
     printlog "Installomater: version $VERSION ($VERSIONDATE)"
