@@ -1,5 +1,4 @@
 r)
-    # credit: Tadayuki Onishi (@kenchan0130)
     name="R"
     type="pkg"
     downloadURL="https://cloud.r-project.org/bin/macosx/$( curl -fsL https://cloud.r-project.org/bin/macosx/ | grep -m 1 -o '<a href=".*pkg">' | sed -E 's/.+"(.+)".+/\1/g' )"
