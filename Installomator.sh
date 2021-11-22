@@ -3799,6 +3799,15 @@ fi
 if [ -f "$archiveName" ] && [ "$DEBUG" -ne 0 ]; then
     printlog "$archiveName exists and DEBUG enabled, skipping download"
 else
+    # check for blocking process and exit if we are instructed to silent_fail (prevents excess download)
+    if [[ $BLOCKING_PROCESS_ACTION == "silent_fail" ]]; then
+        if [[ ${#blockingProcesses} -gt 0 ]]; then
+            if [[ ${blockingProcesses[1]} != "NONE" ]]; then
+                checkRunningProcesses
+            fi
+        fi
+    fi
+
     # download the dmg
     printlog "Downloading $downloadURL to $archiveName"
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then

@@ -348,7 +348,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     # versioncheck
     # credit: Søren Theilgaard (@theilgaard)
     appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
-    if [[ $appversion == $appNewVersion ]]; then
+    if [[ -n $appNewVersion && $appversion == $appNewVersion ]]; then
         printlog "Downloaded version of $name is $appNewVersion, same as installed."
         if [[ $INSTALL != "force" ]]; then
             message="$name, version $appNewVersion, is the latest version."
@@ -375,7 +375,9 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         # not running as root
         cleanupAndExit 6 "not running as root, exiting"
     fi
-
+    
+    # Test if variable CLIInstaller is set
+    if [[ -z $CLIInstaller ]]; then
     # remove existing application
     if [ -e "$targetDir/$appName" ]; then
         printlog "Removing existing $targetDir/$appName"
@@ -388,13 +390,28 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         cleanupAndExit 7 "Error while copying"
     fi
 
-
     # set ownership to current user
     if [ "$currentUser" != "loginwindow" ]; then
         printlog "Changing owner to $currentUser"
         chown -R "$currentUser" "$targetDir/$appName"
     else
         printlog "No user logged in, not changing user"
+    fi
+
+    elif [[ ! -z $CLIInstaller ]]; then
+        mountname=$(dirname $appPath)
+        printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" #INFO
+
+        CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
+        CLIstatus=$(echo $?)
+        logoutput="$CLIoutput" # dedupliatelogs "$CLIoutput"
+
+        if [ $CLIstatus -ne 0 ] ; then
+            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" #ERROR
+        else
+            printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments"
+        fi
+        printlog "Debugging enabled, update tool output was:\n$logoutput" #DEBUG
     fi
 
 }
@@ -417,7 +434,6 @@ mountDMG() {
 
 installFromDMG() {
     mountDMG
-
     installAppWithPath "$dmgmount/$appName"
 }
 
