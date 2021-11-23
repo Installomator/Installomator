@@ -63,6 +63,8 @@ displaynotification() { # $1: message $2: title
 # MARK: Logging
 log_location="/private/var/log/Installomator.log"
 
+# Check if we're in debug mode, if so then set logging to DEBUG, otherwise default to INFO
+# if no log level is specified.
 if [[ $DEBUG -eq 1 ]]; then
   LOGGING=DEBUG
 elif [[ -z $LOGGING ]]; then
@@ -70,14 +72,20 @@ elif [[ -z $LOGGING ]]; then
   datadogLoggingLevel=INFO
 fi
 
+# Associate logging levels with a numerical value so that we are able to identify what should be removed.
+# For example if the LOGGING=ERROR only printlog statements with the level REQ and ERROR will be displayed.
+# LOGGING=DEBUG will show all printlog statements. If a printlog statement has no level set it's automatically assigned INFO.
+
 declare -A levels=(DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4)
 
+# If we are able to detect an MDM URL grab it here, this is useful if we're centrally logging multiple MDM instances.
 if [[ -f /Library/Preferences/com.jamfsoftware.jamf.plist ]]; then
   mdmURL=$(defaults read /Library/Preferences/com.jamfsoftware.jamf.plist jss_url)
 else
   mdmURL="Unknown"
 fi
 
+# Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
 SESSION=$RANDOM
 
 printlog(){
@@ -86,6 +94,7 @@ printlog(){
   log_priority=$2
   timestamp=$(date +%F\ %T)
 
+  # Check to make sure that the log isn't the same as the last, if it is then don't log and increment a timer.
   if [[ ${log_message} == ${previous_log_message} ]];then
     let logrepeat=$logrepeat+1
     return
@@ -93,20 +102,25 @@ printlog(){
 
   previous_log_message=$log_message
 
+  # Once we finally stop getting duplicate logs output the number of times we got a duplicate.
   if [[ $logrepeat -gt 1 ]];then
-    echo "$timestamp" "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : Last Log repeated ${logrepeat} times"
+    echo "$timestamp" : "${log_priority} : ${VERSIONDATE//-/} : Last Log repeated ${logrepeat} times" | tee -a $log_location
+
     if [[ ! -z $datadogAPI ]]; then
       curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSIONDATE : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
     fi
     logrepeat=0
   fi
 
+  # If the datadogAPI key value is set and our logging level is greaterthan or equal to our set level
+  # then post to Datadog's HTTPs endpoint.
   if [[ -n $datadogAPI && ${levels[$log_priority]} -ge ${levels[$datadogLoggingLevel]} ]]; then
     while IFS= read -r logmessage; do
       curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" > /dev/null
     done <<< "$log_message"
   fi
 
+  # If our logging level is greaterthan or equal to our set level then output locally.
   if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
     while IFS= read -r logmessage; do
       if [[ "$(whoami)" == "root" ]]; then
@@ -118,10 +132,13 @@ printlog(){
   fi
 }
 
-# Used to remove dupplicate lines in log output
+# Used to remove dupplicate lines in large log output, for example from msupdate command
+# after it finishes running.
 deduplicatelogs() {
   loginput=${1:-"Log"}
   logoutput=""
+  # Read each line of the incoming log individually, match it with the previous.
+  # If it matches increment logrepeate then skip to the next line.
   while read log; do
     if [[ $log == $previous_log ]];then
       let logrepeat=$logrepeat+1
