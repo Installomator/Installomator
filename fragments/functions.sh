@@ -22,25 +22,6 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     exit "$1"
 }
 
-deduplicatelogs() {
-  loginput=${1:-"Log"}
-  logoutput=""
-  while read log; do
-    if [[ $log == $previous_log ]];then
-      let logrepeat=$logrepeat+1
-      continue
-    fi
-
-    previous_log="$log"
-    if [[ $logrepeat -gt 1 ]];then
-      logoutput+="Last Log repeated ${logrepeat} times\n"
-      logrepeat=0
-    fi
-
-    logoutput+="$log\n"
-  done <<< "$loginput"
-}
-
 runAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
@@ -81,6 +62,7 @@ displaynotification() { # $1: message $2: title
 
 # MARK: Logging
 log_location="/private/var/log/Installomator.log"
+
 if [[ $DEBUG -eq 1 ]]; then
   LOGGING=DEBUG
 elif [[ -z $LOGGING ]]; then
@@ -134,6 +116,26 @@ printlog(){
       fi
     done <<< "$log_message"
   fi
+}
+
+# Used to remove dupplicate lines in log output
+deduplicatelogs() {
+  loginput=${1:-"Log"}
+  logoutput=""
+  while read log; do
+    if [[ $log == $previous_log ]];then
+      let logrepeat=$logrepeat+1
+      continue
+    fi
+
+    previous_log="$log"
+    if [[ $logrepeat -gt 1 ]];then
+      logoutput+="Last Log repeated ${logrepeat} times\n"
+      logrepeat=0
+    fi
+
+    logoutput+="$log\n"
+  done <<< "$loginput"
 }
 
 # will get the latest release download from a github repo
