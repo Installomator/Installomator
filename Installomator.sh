@@ -222,7 +222,7 @@ REOPEN="yes"
 #   installer that should be located after mounting/expanding the downloaded archive.
 #   See label adobecreativeclouddesktop
 #
-VERSION="0.8.0"
+VERSION="8.0"
 VERSIONDATE="2021-11-23"
 
 # MARK: Functions
