@@ -621,7 +621,7 @@ runUpdateTool() {
 }
 
 finishing() {
-    printlog "Finishing…"
+    printlog "Finishing..."
     sleep 10 # wait a moment to let spotlight catch up
     getAppVersion
 
