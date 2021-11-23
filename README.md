@@ -12,7 +12,7 @@ I have put a lot of work into making it stable and safe, but I cannot - of cours
 
 ## Support and Contributing
 
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the REAMDME.md file in the `utils` directory for detailed instructions.__
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files below `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the REAMDME.md file in the `utils` directory for detailed instructions.__
 
 Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Go there for support questions.
 
@@ -26,7 +26,6 @@ There are a few interesting post on Installomator on my weblog:
 
 - [Introducing Installomator](https://scriptingosx.com/2020/05/introducing-installomator/)
 - [Using Installomator with Jamf Pro](https://scriptingosx.com/2020/06/using-installomator-with-jamf-pro/) by Mischa van der Bent
-- [Using another MDM than Jamf and you might want a local installation](https://github.com/Theile/Installomator/) By Søren Theilgaard
 
 ## Background
 
@@ -112,7 +111,7 @@ There is a debug mode and one other setting that can be controlled with variable
 
 ### Extensible
 
-As of this writing, Installomator knows how to download and install more than 238 different applications. You can add more by adding a block to the _long_ `case` statement starting on line 758. Some of them are more elaborate, but most of them (just) need this information (not really "just" in this case, as we have to differentiate between arm64 and i386 versions for both `downloadURL` and `appNewVersion`):
+As of this writing, Installomator knows how to download and install more than 364 different applications. You can add more by adding new labels to the `fragments`-folder. Below is an example of a label, and most of them (just) needs this information (not really "just" in this case, as we have to differentiate between arm64 and i386 versions for both `downloadURL` and `appNewVersion`):
 
 ```
 googlechrome)
@@ -121,11 +120,11 @@ googlechrome)
     if [[ $(arch) != "i386" ]]; then
         printlog "Architecture: arm64 (not i386)"
         downloadURL="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
-        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}') # Credit: William Smith (@meck)
+        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}')
     else
         printlog "Architecture: i386"
         downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac,stable/{print $3; exit}') # Credit: William Smith (@meck)
+        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac,stable/{print $3; exit}')
     fi
     expectedTeamID="EQHXZ8M8AV"
     ;;
@@ -141,7 +140,7 @@ Please note: Labels should be named in small caps, numbers 0-9, “-”, and “
 
 I wrote this script mainly for use with Jamf Pro, because that is what we use. For testing, you can run the script interactively from the command line. However, I have tried to keep anything that is specific to Jamf optional, or so flexible that it will work anywhere. Even if it does not work with your management system 'out of the box,' the adaptations should be straightforward.
 
-Not all MDMs can include the full script, for those MDMs it might be more useful to install it on the client machines, and run it from there. See [Using another MDM than Jamf and you might want a local installation](https://github.com/Theile/Installomator/) By Søren Theilgaard.
+Not all MDMs can include the full script, for those MDMs it might be more useful to install it on the client machines, and run it from there. So a PKG to be installed on client Macs is also provided here.
 
 ### No dependencies
 
@@ -267,7 +266,7 @@ __options:__
 
 Since we now make a version checking, and only installs the software if the version is different, an `INSTALL` variable can be used to force the installation:
 
-- ``:            When not set, software is only installed if it is newer/different in version (default)
+- ` `:           When not set, software is only installed if it is newer/different in version (default)
 - `force`:       Install even if it’s the same version
 
 ### Re-opening of closed app
