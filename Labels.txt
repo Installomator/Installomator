@@ -82,6 +82,7 @@ desktoppr
 detectxswift
 devonthink
 dialog
+dialpad
 discord
 docker
 drift
@@ -289,6 +290,7 @@ sirimote
 sizeup
 sketch
 sketchupviewer
+skype
 slack
 smartgit
 snagit
@@ -301,6 +303,8 @@ sonoss2
 sourcetree
 splashtopsos
 spotify
+sqlpropostgres
+sqlprostudio
 steelseriesengine
 strongsync
 sublimetext
@@ -346,6 +350,7 @@ vlc
 vmwarehorizonclient
 vscodium
 wacomdrivers
+wallyezflash
 webex
 webexmeetings
 webexteams
