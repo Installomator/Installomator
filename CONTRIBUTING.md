@@ -8,7 +8,9 @@ We try to keep the script as short as possible, and with more than 300 labels, w
 
 If you need a new label, please take a look at the tutorials in the Wiki, if those can be helpful for starting out on the creation of the label.
 
-We really encourage you to try out finding the version of the app online, so that `appNewVersion` can be filled in the label. It helps a lot when the software needs update, and greatly improve user experience.
+We really encourage you to try out finding the __version__ of the app online, so that `appNewVersion` can be filled in the label. It helps a lot when the software needs update, and greatly improve user experience.
+
+Please document what you found out about the __version__ of the software if it's not included. We will ask about this if it was not included.
 
 When creating a new label, please file a pull request (PR). And feel free to ask questions or make your comments about what else is needed, if we should take a look at the label, or help out in finding the version or isolating URLs or anything else.
 
