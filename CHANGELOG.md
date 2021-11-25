@@ -1,3 +1,5 @@
+- Added option to not interrupt Do Not Disturb full screen apps like Keynote or Zoom with `INTERRUPT_DND="no"`.
+
 ## v0.7 - pre-release
 
 - default for `BLOCKING_PROCESS_ACTION`is now `BLOCKING_PROCESS_ACTION=tell_user` and not `prompt_user`. It will demand the user to quit the app to get it updated, and not present any option to skip it. In considering various use cases in different MDM solutions this is the best option going forward. Users usually choose to update, and is most often not bothered much with this information. If it's absoultely a bad time, then they can move the dialog box to the side, and click it when ready. 
@@ -7,7 +9,6 @@
 - Added bunch of new labels, and improved others.
 - Renamed `buildCaseStatement.sh` to `buildLabel.sh` and improved it a lot. It is a great start when figuring out how to create a new label for an app, or a piece of software. Look at the tutorials in our wiki.
 - Mosyle changed their app name from Business to Self-Service
-- Added option to not interrupt Do Not Disturb full screen apps like KeyNote or Zoom with `INTERRUPT_DND="no"`.
 
 ## v0.6 - 2021-07-14
 
