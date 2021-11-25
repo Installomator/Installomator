@@ -4,7 +4,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2"
     fi
-    if [ "$DEBUG" -eq 0 ]; then
+    if [ "$DEBUG" -ne 1 ]; then
         # remove the temporary working directory when done
         printlog "Deleting $tmpDir"
         rm -Rf "$tmpDir"
@@ -198,9 +198,9 @@ getAppVersion() {
 }
 
 checkRunningProcesses() {
-    # don't check in DEBUG mode
-    if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not checking for blocking processes"
+    # don't check in DEBUG mode 1
+    if [[ $DEBUG -eq 1 ]]; then
+        printlog "DEBUG mode 1, not checking for blocking processes"
         return
     fi
 
@@ -305,9 +305,9 @@ reopenClosedProcess() {
         return
     fi
 
-    # don't reopen in DEBUG mode
-    if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not reopening anything"
+    # don't reopen in DEBUG mode 1
+    if [[ $DEBUG -eq 1 ]]; then
+        printlog "DEBUG mode 1, not reopening anything"
         return
     fi
     
@@ -364,16 +364,16 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         printlog "Downloaded version of $name is $appNewVersion (replacing version $appversion)."
     fi
 
-    # skip install for DEBUG
-    if [ "$DEBUG" -ne 0 ]; then
-        printlog "DEBUG enabled, skipping remove, copy and chown steps"
+    # skip install for DEBUG 1
+    if [ "$DEBUG" -eq 1 ]; then
+        printlog "DEBUG mode 1 enabled, skipping remove, copy and chown steps"
         return 0
     fi
 
-    # check for root
-    if [ "$(whoami)" != "root" ]; then
-        # not running as root
-        cleanupAndExit 6 "not running as root, exiting"
+    # skip install for DEBUG 2
+    if [ "$DEBUG" -eq 2 ]; then
+        printlog "DEBUG mode 2 enabled, exiting"
+        cleanupAndExit 0
     fi
     
     # Test if variable CLIInstaller is set
@@ -485,16 +485,16 @@ installFromPKG() {
         fi
     fi
     
-    # skip install for DEBUG
-    if [ "$DEBUG" -ne 0 ]; then
+    # skip install for DEBUG 1
+    if [ "$DEBUG" -eq 1 ]; then
         printlog "DEBUG enabled, skipping installation"
         return 0
     fi
 
-    # check for root
-    if [ "$(whoami)" != "root" ]; then
-        # not running as root
-        cleanupAndExit 6 "not running as root, exiting"
+    # skip install for DEBUG 2
+    if [ "$DEBUG" -eq 2 ]; then
+        printlog "DEBUG mode 2 enabled, exiting"
+        cleanupAndExit 0 
     fi
 
     # install pkg
