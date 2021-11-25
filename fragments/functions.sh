@@ -65,16 +65,17 @@ log_location="/private/var/log/Installomator.log"
 
 # Check if we're in debug mode, if so then set logging to DEBUG, otherwise default to INFO
 # if no log level is specified.
-if [[ $DEBUG -eq 1 ]]; then
+if [[ $DEBUG -ne 0 ]]; then
     LOGGING=DEBUG
 elif [[ -z $LOGGING ]]; then
     LOGGING=INFO
     datadogLoggingLevel=INFO
 fi
 
-# Associate logging levels with a numerical value so that we are able to identify what should be removed.
-# For example if the LOGGING=ERROR only printlog statements with the level REQ and ERROR will be displayed.
-# LOGGING=DEBUG will show all printlog statements. If a printlog statement has no level set it's automatically assigned INFO.
+# Associate logging levels with a numerical value so that we are able to identify what
+# should be removed. For example if the LOGGING=ERROR only printlog statements with the
+# level REQ and ERROR will be displayed. LOGGING=DEBUG will show all printlog statements.
+# If a printlog statement has no level set it's automatically assigned INFO.
 
 declare -A levels=(DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4)
 

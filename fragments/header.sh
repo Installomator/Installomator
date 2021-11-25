@@ -227,7 +227,7 @@ starttime=$(date "+$LogDateFormat")
 
 # Check if we have rosetta installed
 if [[ $(/usr/bin/arch) == "arm64" ]]; then
-    if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then
+    if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then # pgrep oahd >/dev/null 2>&1
         rosetta2=no
     fi
 fi
