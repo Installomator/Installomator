@@ -36,8 +36,19 @@ done
 # lowercase the label
 label=${label:l}
 
+# separate check for 'version' in order to print plain version number without any other information
+if [[ $label == "version" ]]; then
+    echo "$VERSION"
+    exit 0
+fi
+
 printlog "################## Start Installomator v. $VERSION"
 printlog "################## $label"
+
+# Check for DEBUG mode
+if [[ $DEBUG -gt 0 ]]; then
+    printlog "DEBUG mode $DEBUG enabled."
+fi
 
 # How we get version number from app
 # (alternative is "CFBundleVersion", that can be used in labels)
@@ -54,11 +65,6 @@ fi
 
 # MARK: labels in case statement
 case $label in
-version)
-    # print the script VERSION
-    printlog "$VERSION"
-    exit 0
-    ;;
 longversion)
     # print the script version
     printlog "Installomater: version $VERSION ($VERSIONDATE)"

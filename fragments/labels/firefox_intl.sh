@@ -17,7 +17,7 @@ firefox_intl)
         printlog "Download not found for that language. Using en-US"
         downloadURL="https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US"
     fi
-    appNewVersion=$(/usr/bin/curl -sl https://www.mozilla.org/en-US/firefox/releases/ | /usr/bin/grep '<html' | /usr/bin/awk -F\" '{ print $8 }') # Credit: William Smith (@meck)
+    appNewVersion=$(curl -fs https://www.mozilla.org/en-US/firefox/releases/ | grep '<html' | grep -o -i -e "data-latest-firefox=\"[0-9.]*\"" | cut -d '"' -f2)
     expectedTeamID="43AQ936H96"
     blockingProcesses=( firefox )
     ;;

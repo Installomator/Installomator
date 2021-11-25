@@ -1,4 +1,16 @@
-- Improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user.
+## v9?
+
+- We have moved the root check to the beginning of the script, and improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user (almost as running the script without root before).
+
+## v8.0
+
+- removed leading `0` from the version because it has lost all meaning (thanks to @grahampugh for the inspiration)
+- Installomator now detects when an app is already installed, and will display notifications correctly the user based on if the app was updated or installed for the first time.
+- New variables for labels that should be installed using CLI: `CLIInstaller` and `CLIArguments`. When the installer app is named differently than the installed app, then the variable `installerTool` should be used to name the app that should be located in the DMG or zip. See the label __adobecreativeclouddesktop__ to see its use.
+- `buildLabel.sh` has been improved to build GitHub software labels much easier. In essense if the URL contains github.com, then it will try to find if it's the latest version or if variable `archiveName` is needed for finding the software. Also improved messaging throughout the script, as well as handling a situation where a pkg does not include a “Distribution” file, but a “PackageInfo”.
+- MDM script extended with `caffeinate` so Mac will not go to sleep during the time it takes installomator to run. Especially during setup, this can be useful.
+- Microsoft labels with `updateTool` variable, is updated to run `msupdate --list` before running the updateTool directly. Problems have been reported that the update would fail if the `--list` parameter for the command was not run first. This should help with the Jamf agent stalling during installation.
+- Added bunch of new labels, and improved others.
 
 ## v0.7
 

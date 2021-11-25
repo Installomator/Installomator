@@ -4,6 +4,7 @@
 abstract
 adobebrackets
 adobeconnect
+adobecreativeclouddesktop
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
@@ -11,6 +12,7 @@ aircall
 airserver
 airtame
 aldente
+alephone
 alfred
 alttab
 amazonchime
@@ -49,15 +51,19 @@ boxdrive
 boxsync
 boxtools
 brave
+bugdom
 caffeine
 cakebrew
 calibre
 camostudio
 camtasia
+canva
+chatwork
 cisdem-documentreader
 citrixworkspace
 clevershare2
 clickshare
+closeio
 cloudya
 code42
 coderunner
@@ -76,6 +82,7 @@ desktoppr
 detectxswift
 devonthink
 dialog
+dialpad
 discord
 docker
 drift
@@ -84,13 +91,17 @@ easeusdatarecoverywizard
 egnyte
 element
 eraseinstall
+eshareosx
 etrecheck
 evernote
 exelbanstats
+exifrenamer
 fantastical
+fastscripts
 favro
 ferdi
 figma
+findanyfile
 firefox
 firefox_da
 firefox_intl
@@ -129,6 +140,7 @@ icons
 imazingprofileeditor
 inkscape
 insomnia
+installomator
 installomator_theile
 intellijideace
 istatmenus
@@ -146,6 +158,7 @@ jetbrainsintellijideace
 jetbrainsphpstorm
 jetbrainspycharm
 jetbrainspycharmce
+jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
 karabinerelements
@@ -162,11 +175,17 @@ launchbar
 lexarrecoverytool
 libreoffice
 logitechoptions
+logseq
 loom
 lucifer
 lulu
+maccyapp
 macfuse
+macports
 malwarebytes
+marathon
+marathon2
+marathoninfinity
 mattermost
 menumeters
 microsoftautoupdate
@@ -193,6 +212,7 @@ microsoftword
 microsoftyammer
 miro
 montereyblocker
+mowgliiitsycal
 musescore
 muzzle
 netnewswire
@@ -200,6 +220,7 @@ nextcloud
 nomad
 nomadlogin
 notion
+nudge
 nvivo
 obs
 obsidian
@@ -217,7 +238,10 @@ onlyofficedesktop
 openvpnconnect
 openvpnconnectv3
 opera
+ottomatic
+overflow
 pacifist
+pandoc
 parsec
 pdfsam
 perimeter81
@@ -237,6 +261,8 @@ r
 ramboxce
 rectangle
 redeye
+remotix
+remotixagent
 resiliosynchome
 retrobatch
 ricohpsprinters
@@ -254,6 +280,7 @@ scaleft
 screamingfrogseospider
 screencloudplayer
 screenflick
+sequelpro
 sfsymbols
 shield
 sidekick
@@ -262,6 +289,7 @@ silnite
 sirimote
 sizeup
 sketch
+sketchupviewer
 skype
 slack
 smartgit
@@ -275,7 +303,12 @@ sonoss2
 sourcetree
 splashtopsos
 spotify
+sqlpropostgres
+sqlprostudio
+steelseriesengine
+strongsync
 sublimetext
+superhuman
 supportapp
 suspiciouspackage
 swiftruntimeforcommandlinetools
@@ -283,6 +316,7 @@ sync
 tableaudesktop
 tableaureader
 tageditor
+talkdeskcallbar
 taskpaper
 teamviewer
 teamviewerhost
@@ -300,6 +334,7 @@ torbrowser
 trex
 tunnelbear
 tunnelblick
+typora
 umbrellaroamingclient
 uniconverter
 universaltypeclient
@@ -314,6 +349,7 @@ vivaldi
 vlc
 vmwarehorizonclient
 vscodium
+wacomdrivers
 wallyezflash
 webex
 webexmeetings
@@ -331,6 +367,7 @@ yubikeymanagerqt
 zappy
 zeplin
 zohoworkdrive
+zohoworkdrivetruesync
 zoom
 zoomclient
 zoomgov

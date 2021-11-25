@@ -1,8 +1,6 @@
 lexarrecoverytool)
-    # credit: Søren Theilgaard (@theilgaard)
     name="Lexar Recovery Tool"
     type="appInDmgInZip"
-    downloadURL="https://www.lexar.com$( curl -fs "https://www.lexar.com/support/downloads/" | grep -i "mac" | grep -i "recovery" | head -1 | tr '"' '\n' | grep -i ".zip" )"
-    #appNewVersion=""
+    downloadURL="https://www.lexar.com/wp-content/uploads/product_images/Lexar-Recovery-Tool-Mac.zip"
     expectedTeamID="Y8HM6WR2DV"
     ;;

@@ -1,10 +1,8 @@
 vagrant)
-    # credit: AP Orlebeke (@apizz)
     name="Vagrant"
     type="pkgInDmg"
     pkgName="vagrant.pkg"
-    downloadURL=$(curl -fs https://www.vagrantup.com/downloads | tr '><' '\n' | awk -F'"' '/x86_64.dmg/ {print $6}' | head -1)
-    #appNewVersion=$( curl -fs https://www.vagrantup.com/downloads.html | grep -i "Current Version" )
-    appNewVersion=$(versionFromGit hashicorp vagrant)
+    downloadURL=$(curl -fs "https://www.vagrantup.com/downloads" | tr '"' '\n' | grep "^https.*\.dmg$" | head -1)
+    appNewVersion=$( echo $downloadURL | cut -d "/" -f5 )
     expectedTeamID="D38WU7D763"
     ;;
