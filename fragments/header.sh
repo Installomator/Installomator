@@ -202,8 +202,24 @@ REOPEN="yes"
 #   When this variable is set (any value), $updateTool will be run as the current user.
 #
 
-# Log Date format used when parsing logs for debugging, this is the default used by install.log, override this in the case
-# statements if you need something custom per application (See adobeillustrator).  Using stadard GNU Date formatting.
+### Logging
+# Logging behavior
+LOGGING=""
+# options:
+#   - DEBUG     Everything is logged
+#   - INFO      (default) normal logging level
+#   - WARN      only warning
+#   - ERROR     only errors
+#   - REQ       ????
+
+# Datadog logging used
+datadogAPI=""
+# Simply add your own API key for this in order to have logs sent to Datadog
+# See more here: https://www.datadoghq.com/product/log-management/
+
+# Log Date format used when parsing logs for debugging, this is the default used by
+# install.log, override this in the case statements if you need something custom per
+# application (See adobeillustrator).  Using stadard GNU Date formatting.
 LogDateFormat="%Y-%m-%d %H:%M:%S"
 
 # Get the start time for parsing install.log if we fail.
@@ -211,8 +227,7 @@ starttime=$(date "+$LogDateFormat")
 
 # Check if we have rosetta installed
 if [[ $(/usr/bin/arch) == "arm64" ]]; then
-  arch -x86_64 /usr/bin/true >/dev/null 2>&1
-  if [[ $? -ne 0 ]]; then
-    rosetta2=no
-  fi
+    if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then
+        rosetta2=no
+    fi
 fi
