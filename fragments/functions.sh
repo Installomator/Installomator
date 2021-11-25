@@ -4,7 +4,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2"
     fi
-    if [ "$DEBUG" -eq 0 ]; then
+    if [ "$DEBUG" -ne 1 ]; then
         # remove the temporary working directory when done
         printlog "Deleting $tmpDir"
         rm -Rf "$tmpDir"
@@ -148,6 +148,7 @@ getAppVersion() {
         appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
         if [[ $appversion != "" ]]; then
             printlog "found packageID $packageID installed, version $appversion"
+            updateDetected="YES"
             return
         else
             printlog "No version found using packageID $packageID"
@@ -162,7 +163,11 @@ getAppVersion() {
     else
         applist=$(mdfind "kind:application $appName" -0 )
     fi
-    printlog "App(s) found: ${applist}"
+    if [[ -z applist ]]; then
+        printlog "No previous app found"
+    else
+        printlog "App(s) found: ${applist}"
+    fi
 
     appPathArray=( ${(0)applist} )
 
@@ -173,6 +178,7 @@ getAppVersion() {
             #appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
             appversion=$(defaults read $installedAppPath/Contents/Info.plist $versionKey) #Not dependant on Spotlight indexing
             printlog "found app at $installedAppPath, version $appversion"
+            updateDetected="YES"
             # Is current app from App Store
             if [[ -d "$installedAppPath"/Contents/_MASReceipt ]];then
                 printlog "Installed $appName is from App Store, use “IGNORE_APP_STORE_APPS=yes” to replace."
@@ -192,9 +198,9 @@ getAppVersion() {
 }
 
 checkRunningProcesses() {
-    # don't check in DEBUG mode
-    if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not checking for blocking processes"
+    # don't check in DEBUG mode 1
+    if [[ $DEBUG -eq 1 ]]; then
+        printlog "DEBUG mode 1, not checking for blocking processes"
         return
     fi
 
@@ -299,9 +305,9 @@ reopenClosedProcess() {
         return
     fi
 
-    # don't reopen in DEBUG mode
-    if [[ $DEBUG -ne 0 ]]; then
-        printlog "DEBUG mode, not reopening anything"
+    # don't reopen in DEBUG mode 1
+    if [[ $DEBUG -eq 1 ]]; then
+        printlog "DEBUG mode 1, not reopening anything"
         return
     fi
     
@@ -342,10 +348,10 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     # versioncheck
     # credit: Søren Theilgaard (@theilgaard)
     appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
-    if [[ $appversion == $appNewVersion ]]; then
+    if [[ -n $appNewVersion && $appversion == $appNewVersion ]]; then
         printlog "Downloaded version of $name is $appNewVersion, same as installed."
         if [[ $INSTALL != "force" ]]; then
-            message="$name, version $appNewVersion, is  the latest version."
+            message="$name, version $appNewVersion, is the latest version."
             if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
@@ -358,37 +364,55 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         printlog "Downloaded version of $name is $appNewVersion (replacing version $appversion)."
     fi
 
-    # skip install for DEBUG
-    if [ "$DEBUG" -ne 0 ]; then
-        printlog "DEBUG enabled, skipping remove, copy and chown steps"
+    # skip install for DEBUG 1
+    if [ "$DEBUG" -eq 1 ]; then
+        printlog "DEBUG mode 1 enabled, skipping remove, copy and chown steps"
         return 0
     fi
 
-    # check for root
-    if [ "$(whoami)" != "root" ]; then
-        # not running as root
-        cleanupAndExit 6 "not running as root, exiting"
+    # skip install for DEBUG 2
+    if [ "$DEBUG" -eq 2 ]; then
+        printlog "DEBUG mode 2 enabled, exiting"
+        cleanupAndExit 0
     fi
+    
+    # Test if variable CLIInstaller is set
+    if [[ -z $CLIInstaller ]]; then
+    
+        # remove existing application
+        if [ -e "$targetDir/$appName" ]; then
+            printlog "Removing existing $targetDir/$appName"
+            rm -Rf "$targetDir/$appName"
+        fi
 
-    # remove existing application
-    if [ -e "$targetDir/$appName" ]; then
-        printlog "Removing existing $targetDir/$appName"
-        rm -Rf "$targetDir/$appName"
-    fi
+        # copy app to /Applications
+        printlog "Copy $appPath to $targetDir"
+        if ! ditto "$appPath" "$targetDir/$appName"; then
+            cleanupAndExit 7 "Error while copying"
+        fi
 
-    # copy app to /Applications
-    printlog "Copy $appPath to $targetDir"
-    if ! ditto "$appPath" "$targetDir/$appName"; then
-        cleanupAndExit 7 "Error while copying"
-    fi
+        # set ownership to current user
+        if [ "$currentUser" != "loginwindow" ]; then
+            printlog "Changing owner to $currentUser"
+            chown -R "$currentUser" "$targetDir/$appName"
+        else
+            printlog "No user logged in, not changing user"
+        fi
 
+    elif [[ ! -z $CLIInstaller ]]; then
+        mountname=$(dirname $appPath)
+        printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" #INFO
 
-    # set ownership to current user
-    if [ "$currentUser" != "loginwindow" ]; then
-        printlog "Changing owner to $currentUser"
-        chown -R "$currentUser" "$targetDir/$appName"
-    else
-        printlog "No user logged in, not changing user"
+        CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
+        CLIstatus=$(echo $?)
+        logoutput="$CLIoutput" # dedupliatelogs "$CLIoutput"
+
+        if [ $CLIstatus -ne 0 ] ; then
+            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" #ERROR
+        else
+            printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments"
+        fi
+        printlog "Debugging enabled, update tool output was:\n$logoutput" #DEBUG
     fi
 
 }
@@ -411,7 +435,6 @@ mountDMG() {
 
 installFromDMG() {
     mountDMG
-
     installAppWithPath "$dmgmount/$appName"
 }
 
@@ -450,7 +473,7 @@ installFromPKG() {
         if [[ $appversion == $appNewVersion ]]; then
             printlog "Downloaded version of $name is the same as installed."
             if [[ $INSTALL != "force" ]]; then
-                message="$name, version $appNewVersion, is  the latest version."
+                message="$name, version $appNewVersion, is the latest version."
                 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
@@ -462,16 +485,16 @@ installFromPKG() {
         fi
     fi
     
-    # skip install for DEBUG
-    if [ "$DEBUG" -ne 0 ]; then
+    # skip install for DEBUG 1
+    if [ "$DEBUG" -eq 1 ]; then
         printlog "DEBUG enabled, skipping installation"
         return 0
     fi
 
-    # check for root
-    if [ "$(whoami)" != "root" ]; then
-        # not running as root
-        cleanupAndExit 6 "not running as root, exiting"
+    # skip install for DEBUG 2
+    if [ "$DEBUG" -eq 2 ]; then
+        printlog "DEBUG mode 2 enabled, exiting"
+        cleanupAndExit 0 
     fi
 
     # install pkg
@@ -598,7 +621,7 @@ runUpdateTool() {
 }
 
 finishing() {
-    printlog "Finishing…"
+    printlog "Finishing..."
     sleep 10 # wait a moment to let spotlight catch up
     getAppVersion
 
@@ -612,7 +635,11 @@ finishing() {
 
     if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
         printlog "notifying"
-        displaynotification "$message" "$name update/installation complete!"
+        if [[ $updateDetected == "YES" ]]; then
+            displaynotification "$message" "$name update complete!"
+        else
+            displaynotification "$message" "$name installation complete!"
+        fi
     fi
 }
 

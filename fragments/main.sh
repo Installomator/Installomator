@@ -103,7 +103,7 @@ if [[ -z $blockingProcesses ]]; then
 fi
 
 # MARK: determine tmp dir
-if [ "$DEBUG" -ne 0 ]; then
+if [ "$DEBUG" -eq 1 ]; then
     # for debugging use script dir as working directory
     tmpDir=$(dirname "$0")
 else
@@ -124,10 +124,14 @@ printlog "appversion: $appversion"
 
 # MARK: Exit if new version is the same as installed version (appNewVersion specified)
 # credit: Søren Theilgaard (@theilgaard)
+if [[ $INSTALL == "force" ]]; then
+    printlog "Using force to install, so not using updateTool."
+    updateTool=""
+fi
 if [[ -n $appNewVersion ]]; then
     printlog "Latest version of $name is $appNewVersion"
     if [[ $appversion == $appNewVersion ]]; then
-        if [[ $DEBUG -eq 0 ]]; then
+        if [[ $DEBUG -ne 1 ]]; then
             printlog "There is no newer version available."
             if [[ $INSTALL != "force" ]]; then
                 message="$name, version $appNewVersion, is  the latest version."
@@ -136,26 +140,19 @@ if [[ -n $appNewVersion ]]; then
                     displaynotification "$message" "No update for $name!"
                 fi
                 cleanupAndExit 0 "No newer version."
-            else
-                printlog "Using force to install anyway. Not using updateTool."
-                updateTool=""
             fi
         else
-            printlog "DEBUG mode enabled, not exiting, but there is no new version of app."
+            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app."
         fi
     fi
 else
     printlog "Latest version not specified."
-    if [[ $INSTALL == "force" ]]; then
-        printlog "Using force to install, so not using updateTool."
-        updateTool=""
-    fi
 fi
 
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "appversion & updateTool"
-    if [[ $DEBUG -eq 0 ]]; then
+    if [[ $DEBUG -ne 1 ]]; then
         if runUpdateTool; then
             finishing
             cleanupAndExit 0
@@ -164,26 +161,34 @@ if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
             cleanupAndExit 0
         fi # otherwise continue
     else
-        printlog "DEBUG mode enabled, not running update tool"
+        printlog "DEBUG mode 1 enabled, not running update tool"
     fi
 fi
 
 # MARK: download the archive
-if [ -f "$archiveName" ] && [ "$DEBUG" -ne 0 ]; then
-    printlog "$archiveName exists and DEBUG enabled, skipping download"
+if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
+    printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
     # download the dmg
     printlog "Downloading $downloadURL to $archiveName"
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
         printlog "notifying"
-        displaynotification "Downloading $name update" "Download in progress …"
+        if [[ $updateDetected == "YES" ]]; then
+            displaynotification "Downloading $name update" "Download in progress …"
+        else
+            displaynotification "Downloading new $name" "Download in progress …"
+        fi
     fi
     if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
         printlog "error downloading $downloadURL"
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
-            displaynotification "$message" "Error installing/updating $name"
+            if [[ $updateDetected == "YES" ]]; then
+                displaynotification "$message" "Error updating $name"
+            else
+                displaynotification "$message" "Error installing $name"
+            fi
         fi
         cleanupAndExit 2
     fi
@@ -206,7 +211,17 @@ fi
 printlog "Installing $name"
 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
-    displaynotification "Installing $name" "Installation in progress …"
+    if [[ $updateDetected == "YES" ]]; then
+        displaynotification "Updating $name" "Installation in progress …"
+    else
+        displaynotification "Installing $name" "Installation in progress …"
+    fi
+fi
+
+if [ -n "$installerTool" ]; then
+    # installerTool defined, and we use that for installation
+    printlog "installerTool used: $installerTool"
+    appName="$installerTool"
 fi
 
 case $type in

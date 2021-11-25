@@ -1,7 +1,5 @@
 # Installomator
 
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
-
 _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/scriptingosx/Installomator)&nbsp;![](https://img.shields.io/github/downloads/scriptingosx/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/scriptingosx/Installomator)
@@ -14,15 +12,13 @@ I have put a lot of work into making it stable and safe, but I cannot - of cours
 
 ## Support and Contributing
 
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files below `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the REAMDME.md file in the `utils` directory for detailed instructions.__
+
 Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Go there for support questions.
 
-Do not create an issue just when you have a questions, but do file an issue or pull request for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
+Do not create an issue just when you have a questions, but do file an issue or pull request (PR) for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
 
-If you have added a new label, then please file a pull request. (and Thank you!)
-
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the fragmented files, not the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten.__
-
-We try to keep the script as short as possible, and with more than 300 labels, we can save 300 lines in the script, if we do not have credit lines on each of these. So we are thankful for your contribution, but we will be removing these lines in the coming releases.
+Please see [CONTRIBUTING.md](https://github.com/Installomator/Installomator/blob/dev/CONTRIBUTING.md) for how to contribute.
 
 ## More reading
 
@@ -30,7 +26,6 @@ There are a few interesting post on Installomator on my weblog:
 
 - [Introducing Installomator](https://scriptingosx.com/2020/05/introducing-installomator/)
 - [Using Installomator with Jamf Pro](https://scriptingosx.com/2020/06/using-installomator-with-jamf-pro/) by Mischa van der Bent
-- [Using another MDM than Jamf and you might want a local installation](https://github.com/Theile/Installomator/) By Søren Theilgaard
 
 ## Background
 
@@ -91,7 +86,7 @@ Installomator can work with the following common archive and installer types:
 - dmg: for the common 'drag app to /Applications' installation style
 - zip: the application is just compressed with zip or or tbz
 
-When the download yields a pkg file, Installomator will run `installer` to install it on the current system. 
+When the download yields a pkg file, Installomator will run `installer` to install it on the current system.
 
 Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation.
 
@@ -116,7 +111,7 @@ There is a debug mode and one other setting that can be controlled with variable
 
 ### Extensible
 
-As of this writing, Installomator knows how to download and install more than 238 different applications. You can add more by adding a block to the _long_ `case` statement starting on line 758. Some of them are more elaborate, but most of them (just) need this information (not really "just" in this case, as we have to differentiate between arm64 and i386 versions for both `downloadURL` and `appNewVersion`):
+As of this writing, Installomator knows how to download and install more than 364 different applications. You can add more by adding new labels to the `fragments`-folder. Below is an example of a label, and most of them (just) needs this information (not really "just" in this case, as we have to differentiate between arm64 and i386 versions for both `downloadURL` and `appNewVersion`):
 
 ```
 googlechrome)
@@ -125,11 +120,11 @@ googlechrome)
     if [[ $(arch) != "i386" ]]; then
         printlog "Architecture: arm64 (not i386)"
         downloadURL="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
-        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}') # Credit: William Smith (@meck)
+        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}')
     else
         printlog "Architecture: i386"
         downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac,stable/{print $3; exit}') # Credit: William Smith (@meck)
+        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac,stable/{print $3; exit}')
     fi
     expectedTeamID="EQHXZ8M8AV"
     ;;
@@ -145,7 +140,7 @@ Please note: Labels should be named in small caps, numbers 0-9, “-”, and “
 
 I wrote this script mainly for use with Jamf Pro, because that is what we use. For testing, you can run the script interactively from the command line. However, I have tried to keep anything that is specific to Jamf optional, or so flexible that it will work anywhere. Even if it does not work with your management system 'out of the box,' the adaptations should be straightforward.
 
-Not all MDMs can include the full script, for those MDMs it might be more useful to install it on the client machines, and run it from there. See [Using another MDM than Jamf and you might want a local installation](https://github.com/Theile/Installomator/) By Søren Theilgaard.
+Not all MDMs can include the full script, for those MDMs it might be more useful to install it on the client machines, and run it from there. So a PKG to be installed on client Macs is also provided here.
 
 ### No dependencies
 
@@ -240,7 +235,7 @@ WARNING! It might block the MDM agent on the machine, as the scripts gets stuct 
 - `tell_user_then_kill`: Show dialog 2 times, and if the quitting fails, the blocking processes will be killed.
 - `kill`: kill process without prompting or giving the user a chance to save.
 
-If any process was closed, Installomator will try to open the app again, after the update process is done. 
+If any process was closed, Installomator will try to open the app again, after the update process is done.
 
 ### Notification
 
@@ -271,7 +266,7 @@ __options:__
 
 Since we now make a version checking, and only installs the software if the version is different, an `INSTALL` variable can be used to force the installation:
 
-- ``:            When not set, software is only installed if it is newer/different in version (default)
+- ` `:           When not set, software is only installed if it is newer/different in version (default)
 - `force`:       Install even if it’s the same version
 
 ### Re-opening of closed app
@@ -354,7 +349,7 @@ Depending on the application or pkg there are a few more variables you can or ne
   dmg or zip:
     Applications will be copied to this directory.
     Default value is '`/Applications`' for dmg and zip installations.
-  pkg: 
+  pkg:
     `targetDir` is used as the install-location. Default is '`/`'.
 
 - `blockingProcesses`: (optional)
@@ -376,10 +371,23 @@ Depending on the application or pkg there are a few more variables you can or ne
      `$updateTool $updateArguments`
   Will be run instead of of downloading and installing a complete new version.
   Use this when the `updateTool` does differential and optimized downloads.
-  e.g. `msupdate` (see microsoft installations)
+  e.g. `msupdate` (see various Microsoft installations).
 
 - `updateToolRunAsCurrentUser`:
-  When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and 
+  When this variable is set (any value), `$updateTool` will be run as the current user. Default is unset and
+
+- `CLIInstaller`:
+- `CLIArguments`:
+  If the downloaded dmg is actually an installer that we can call using CLI, we can use these two variables for what to call.
+  We need to define `name` for the installed app (to be version checked), as well as `installerTool` for the installer app (if named differently that `name`. Installomator will add the path to the folder/disk image with the binary, and it will be called like this:
+     `$CLIInstaller $CLIArguments`
+  For most installations `CLIInstaller` should contain the `installerTool` for the CLI call (if it’s the same).
+  We can support a whole range of other software titles by implementing this.
+  See label adobecreativeclouddesktop.
+
+- `installerTool`:
+  Introduced as part of `CLIInstaller`. If the installer in the DMG or ZIP is named differently than the installed app, then this variable can be used to name the installer that should be located after mounting/expanding the downloaded archive.
+  See label adobecreativeclouddesktop
 
 ### Configuration from Arguments
 

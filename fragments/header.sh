@@ -20,9 +20,11 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # NOTE: adjust these variables:
 
-# set to 0 for production, 1 for debugging
+# set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
+# debug mode 1 will download to the directory the script is run in, but will not check version 
+# debug mode 2 will download to the temp directory, check for blocking processes, check version, but will not install anything or remove the current version
 DEBUG=1
 
 # notify behavior
@@ -176,6 +178,8 @@ IGNORE_DND_APPS=""
 # - archiveName: (optional)
 #   The name of the downloaded file.
 #   When not given the archiveName is derived from the $name.
+#   Note: This has to be defined BEFORE calling downloadURLFromGit or
+#   versionFromGit functions in the label.
 #
 # - appName: (optional)
 #   File name of the app bundle in the dmg to verify and copy (include .app).
@@ -208,8 +212,27 @@ IGNORE_DND_APPS=""
 #      $updateTool $updateArguments
 #   Will be run instead of of downloading and installing a complete new version.
 #   Use this when the updateTool does differential and optimized downloads.
-#   e.g. msupdate
+#   e.g. msupdate on various Microsoft labels
 #
 # - updateToolRunAsCurrentUser:
 #   When this variable is set (any value), $updateTool will be run as the current user.
+#
+# - CLIInstaller:
+# - CLIArguments:
+#   If the downloaded dmg is actually an installer that we can call using CLI, we can
+#   use these two variables for what to call.
+#   We need to define `name` for the installed app (to be version checked), as well as
+#   `installerTool` for the installer app (if named differently that `name`. Installomator
+#   will add the path to the folder/disk image with the binary, and it will be called like this:
+     `$CLIInstaller $CLIArguments`
+#   For most installations `CLIInstaller` should contain the `installerTool` for the CLI call
+#   (if it’s the same).
+#   We can support a whole range of other software titles by implementing this.
+#   See label adobecreativeclouddesktop
+#
+# - installerTool:
+#   Introduced as part of `CLIInstaller`. If the installer in the DMG or ZIP is named
+#   differently than the installed app, then this variable can be used to name the
+#   installer that should be located after mounting/expanding the downloaded archive.
+#   See label adobecreativeclouddesktop
 #

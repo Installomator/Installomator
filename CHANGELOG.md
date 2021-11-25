@@ -1,11 +1,24 @@
+## v9?
+
+- We have moved the root check to the beginning of the script, and improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user (almost as running the script without root before).
 - Added option to not interrupt Do Not Disturb full screen apps like Keynote or Zoom with `INTERRUPT_DND="no"`.
 
-## v0.7 - pre-release
+## v8.0
 
-- default for `BLOCKING_PROCESS_ACTION`is now `BLOCKING_PROCESS_ACTION=tell_user` and not `prompt_user`. It will demand the user to quit the app to get it updated, and not present any option to skip it. In considering various use cases in different MDM solutions this is the best option going forward. Users usually choose to update, and is most often not bothered much with this information. If it's absoultely a bad time, then they can move the dialog box to the side, and click it when ready. 
+- removed leading `0` from the version because it has lost all meaning (thanks to @grahampugh for the inspiration)
+- Installomator now detects when an app is already installed, and will display notifications correctly the user based on if the app was updated or installed for the first time.
+- New variables for labels that should be installed using CLI: `CLIInstaller` and `CLIArguments`. When the installer app is named differently than the installed app, then the variable `installerTool` should be used to name the app that should be located in the DMG or zip. See the label __adobecreativeclouddesktop__ to see its use.
+- `buildLabel.sh` has been improved to build GitHub software labels much easier. In essense if the URL contains github.com, then it will try to find if it's the latest version or if variable `archiveName` is needed for finding the software. Also improved messaging throughout the script, as well as handling a situation where a pkg does not include a “Distribution” file, but a “PackageInfo”.
+- MDM script extended with `caffeinate` so Mac will not go to sleep during the time it takes installomator to run. Especially during setup, this can be useful.
+- Microsoft labels with `updateTool` variable, is updated to run `msupdate --list` before running the updateTool directly. Problems have been reported that the update would fail if the `--list` parameter for the command was not run first. This should help with the Jamf agent stalling during installation.
+- Added bunch of new labels, and improved others.
+
+## v0.7
+
+- default for `BLOCKING_PROCESS_ACTION`is now `BLOCKING_PROCESS_ACTION=tell_user` and not `prompt_user`. It will demand the user to quit the app to get it updated, and not present any option to skip it. In considering various use cases in different MDM solutions this is the best option going forward. Users usually choose to update, and is most often not bothered much with this information. If it's absoultely a bad time, then they can move the dialog box to the side, and click it when ready.
 - script is now assembled from fragments. This helps avoid merging conflicts on git and allows the core team to work on the script logic while also accepting new labels. See the "Assemble Script ReadMe" for details.
 - We now detect App Store installed apps, and we do not replace them automatically. An example is Slack that will loose all settings if it is suddenly changed from App Store version to the "web" version (they differ in the handling of settings files). If `INSTALL=force` then we will replace the App Store app. We log all this.
-- Change in finding installed apps. We now look in /Applications and /Applications/Utilities first. If not found there, we use spotligt to find it. (We discovered a problem when a user has Parallels Windows installed with Microsoft Edge in it. Then Installomator wanted to update the app all the time, becaus spotligt found that Windows version of the app that Parallels created.)
+- Change in finding installed apps. We now look in /Applications and /Applications/Utilities first. If not found there, we use spotligt to find it. (We discovered a problem when a user has Parallels Windows installed with Microsoft Edge in it. Then Installomator wanted to update the app all the time, becaus spotlight found that Windows version of the app that Parallels created.)
 - Added bunch of new labels, and improved others.
 - Renamed `buildCaseStatement.sh` to `buildLabel.sh` and improved it a lot. It is a great start when figuring out how to create a new label for an app, or a piece of software. Look at the tutorials in our wiki.
 - Mosyle changed their app name from Business to Self-Service
@@ -26,10 +39,10 @@
 - Major update and now with help from @Theile and @Isaac
 - Added additional `BLOCKING_PROCESS_ACTION` handlings
 - Added additional `NOTIFY=all`. Usuful if used in Self Service, as the user will be notified before download, before install as well as when it is done.
-- Added variable `LOGO` for icons i dialogs, use `LOGO=appstore` (or `jamf` or `mosyleb` or `mosylem` or `addigy`). It's also possible to set it to a direct path to a specific icon. Default is `appstore`. 
+- Added variable `LOGO` for icons i dialogs, use `LOGO=appstore` (or `jamf` or `mosyleb` or `mosylem` or `addigy`). It's also possible to set it to a direct path to a specific icon. Default is `appstore`.
 - Added variable `INSTALL` that can be set to `INSTALL=force` if software needs to be installed even though latest version is already installed (it will be a reinstall).
 - Version control now included. The variable `appNewVersion` in a label can be used to tell what the latest version from the web is. If this is not given, version checking is done after download.
-- For a label that only installs a pkg without an app in it, a variable `packageID` can be used for version checking. 
+- For a label that only installs a pkg without an app in it, a variable `packageID` can be used for version checking.
 - Labels now sorted alphabetically, except for the Microsoft ones (that are at the end of the list). A bunch of new labels added, and lots of them have either been changed or improved (with `appNewVersion` og `packageID`).
 - If an app is asked to be closed down, it will now be opened again after the update.
 - If your MDM cannot call a script with parameters, the label can be set in the top of the script.

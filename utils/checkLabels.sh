@@ -16,14 +16,14 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 
 # MARK: Constants
-pathToLabels="fragments/labels"
 
-if [[ ! -d ${pathToLabels} ]]; then
-    echo "This script should be called from Installomator directory as working directory with this command:"
-    echo "utils/checkLabels.sh"
-    echo
-    exit 99
-fi
+#setup some folders
+script_dir=$(dirname ${0:A})
+repo_dir=$(dirname $script_dir)
+build_dir="$repo_dir/build"
+destination_file="$build_dir/Installomator.sh"
+fragments_dir="$repo_dir/fragments"
+labels_dir="$fragments_dir/labels"
 
 # MARK: Check minimal macOS requirement
 if [[ $(sw_vers -buildVersion ) < "18" ]]; then
@@ -98,11 +98,11 @@ BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
 # Labels with the $(arch) call for different versions for Intel and Apple Silicon should be listed here:
-archLabels=( $(grep "\$(arch)" ${pathToLabels}/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
+archLabels=( $(grep "\$(arch)" ${labels_dir}/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
 echo "${BLUE}Labels with \"\$(arch)\" call:${NC}\n${archLabels}\n"
 
 if [[ $# -eq 0 ]]; then
-    allLabels=( $(grep -h -E '^([a-z0-9\_-]*)(\)|\|\\)$' ${pathToLabels}/*.sh | tr -d ')|\\' | sort) )
+    allLabels=( $(grep -h -E '^([a-z0-9\_-]*)(\)|\|\\)$' ${labels_dir}/*.sh | tr -d ')|\\' | sort) )
 else
     allLabels=( ${=@} )
 fi
@@ -122,7 +122,7 @@ for label in $allLabels; do
     name=""; type=""; downloadURL=""; appNewVersion=""; expectedTeamID=""; blockingProcesses=""; updateTool=""; updateToolArguments=""; archiveName=""
     
     #caseLabel
-    if cat "${pathToLabels}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
+    if cat "${labels_dir}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
         source checkLabelCurrent.sh
 
         echo "Name: $name"
