@@ -8,7 +8,19 @@ This script is in the “we find it useful, it is working for us” stage.
 
 Your production and deployment environment will be different, please test thoroughly before rolling it out to your production.
 
-I have put a lot of work into making it stable and safe, but I cannot - of course - make _any_ promises that it won't break in some not yet encountered edge case.
+We have put a lot of work into making it stable and safe, but we cannot - of course - make _any_ promises that it won't break in some not yet encountered edge case.
+
+## Authors
+
+Intallomator was original inspired by the download scripts from William Smith and Sander Schram, and created by:
+    Armin Briegel - @scriptingosx
+
+Later on a few more contributers came on the project:
+    Isaac Ordonez - @issacatmann
+    Søren Theilgaard - @Theile
+    Adam Codega - @acodega
+
+ And with numerous contributions from many others.
 
 ## Support and Contributing
 
@@ -22,7 +34,7 @@ Please see [CONTRIBUTING.md](https://github.com/Installomator/Installomator/blob
 
 ## More reading
 
-There are a few interesting post on Installomator on my weblog:
+There are a few interesting post on Installomator on Armin’s weblog:
 
 - [Introducing Installomator](https://scriptingosx.com/2020/05/introducing-installomator/)
 - [Using Installomator with Jamf Pro](https://scriptingosx.com/2020/06/using-installomator-with-jamf-pro/) by Mischa van der Bent
@@ -66,12 +78,12 @@ At some point, earlier this year, I got frustrated at the number of scripts we w
 
 ## Goals
 
-My goals for Installomator are:
+The goals for Installomator are:
 
 - work with various common archive types
 - verify the downloaded archive or application
-- have a simple 'interface' to the admin
-- single script file so it can 'easily' be copied into a management system
+- have a simple ‘interface’ to the admin
+- single script file so it can ‘easily’ be copied into a management system
 - extensible without deep scripting knowledge
 - work independently of a specific management system
 - no dependencies that may be removed from macOS in the future or are not pre-installed
@@ -90,7 +102,7 @@ When the download yields a pkg file, Installomator will run `installer` to insta
 
 Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation.
 
-(I consider it a disgrace, that Jamf, after nearly 20 years, _still_ cannot deal with 'drag'n drop installation dmgs' natively. It's not _that_ hard.)
+(I consider it a disgrace, that Jamf, after nearly 20 years, _still_ cannot deal with ‘drag’n drop installation dmgs’ natively. It's not _that_ hard.)
 
 ### Verify the download
 
