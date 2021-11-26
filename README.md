@@ -189,11 +189,13 @@ Other than the version arguments, the argument can be any of the labels listed i
 
 ### Debug mode
 
-There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) no actions that would actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
+There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) or `2` for a variation of debug, no actions that would actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
 
-Also when the `DEBUG` variable is `1`, downloaded archives and extracted files will be written to the script's directory, rather than a temporary directory, which can make debugging easier.
+When the `DEBUG` variable is `1`, downloaded archives and extracted files will be written to the script's directory, rather than a temporary directory, which can make debugging easier.
 
-_Always remember_ to change the `DEBUG` variable to `0` when deploying.
+When `DEBUG` variable is `2`, the temporary folder is created and downloaded and extracted files goes to that folder, as if not in DEBUG mode, but installation is still not done. On the other hand blocking processes are checked, the app is reopened if closed, and the user is notified.
+
+_Always remember_ to change the `DEBUG` variable to `0` when deploying. The installer PKG we provide has `DEBUG=0`.
 
 ### Use Installomator with Jamf Pro
 
@@ -202,6 +204,8 @@ In Jamf Pro, create a new 'Script' and paste the contents of `Installomator.sh` 
 Remember to set `DEBUG` to `0`.
 
 Then you can use the Installomator script in a policy and choose the application to install by setting the label for argument 4.
+
+
 
 ## What it does
 
