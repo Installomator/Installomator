@@ -28,14 +28,17 @@ case $LOGO in
     mosyleb)
         # Mosyle Business
         LOGO="/Applications/Self-Service.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Mosyle Corporation MDM"; fi
         ;;
     mosylem)
         # Mosyle Manager (education)
         LOGO="/Applications/Manager.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Mosyle Corporation MDM"; fi
         ;;
     addigy)
         # Addigy
         LOGO="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then

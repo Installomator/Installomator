@@ -81,9 +81,11 @@ declare -A levels=(DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4)
 
 # If we are able to detect an MDM URL (Jamf Pro) or another identifier for a customer/instance we grab it here, this is useful if we're centrally logging multiple MDM instances.
 if [[ -f /Library/Preferences/com.jamfsoftware.jamf.plist ]]; then
-  mdmURL=$(defaults read /Library/Preferences/com.jamfsoftware.jamf.plist jss_url)
+    mdmURL=$(defaults read /Library/Preferences/com.jamfsoftware.jamf.plist jss_url)
+elif [[ -n "$MDMProfileName" ]]; then
+    mdmURL=$(sudo profiles show | grep -A3 "$MDMProfileName" | sed -n -e 's/^.*organization: //p')
 else
-  mdmURL="Unknown"
+    mdmURL="Unknown"
 fi
 
 # Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
