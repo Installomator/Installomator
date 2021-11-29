@@ -55,7 +55,7 @@ caffexit $errorCount
 # Install on success
 # Remember to fill out the correct “TARGET_VERSION” and “PKG_ID”, and click "Install on succes".
 PKG_ID="com.scriptingosx.Installomator"
-TARGET_VERSION="0.7.0"
+TARGET_VERSION="8.0"
 
 vercomp () {
     if [[ $1 == $2 ]]; then
