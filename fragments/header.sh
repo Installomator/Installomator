@@ -217,7 +217,8 @@ MDMProfileName=""
 # options:
 #   - MDM Profile               Addigy has this name on the profile
 #   - Mosyle Corporation MDM    Mosyle uses this name on the profile
-# From the LOGO variable we can know if Addigy og Mosyle is used, so if that variable is either of these, and this variable is empty, then we can will auto detect this.
+# From the LOGO variable we can know if Addigy og Mosyle is used, so if that variable
+# is either of these, and this variable is empty, then we can will auto detect this.
 
 # Datadog logging used
 datadogAPI=""
