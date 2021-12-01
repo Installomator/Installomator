@@ -58,7 +58,7 @@ versionKey="CFBundleShortVersionString"
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
 # MARK: check for root
-if [[ "$(whoami)" != "root" && "$DEBUG" -ne 2 ]]; then
+if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting"
 fi
