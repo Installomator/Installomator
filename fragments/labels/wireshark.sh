@@ -1,5 +1,4 @@
 wireshark)
-    # credit: Oh4sh0 https://github.com/Oh4sh0
     name="Wireshark"
     type="dmg"
     downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Intel%2064.dmg"
