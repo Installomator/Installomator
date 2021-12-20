@@ -66,7 +66,7 @@ log_location="/private/var/log/Installomator.log"
 printlog(){
 
     timestamp=$(date +%F\ %T)
-        
+
     if [[ "$(whoami)" == "root" ]]; then
         echo "$timestamp" "$label" "$1" | tee -a $log_location
     else
@@ -78,7 +78,7 @@ printlog(){
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-    
+
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
@@ -86,7 +86,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     else
         filetype=$type
     fi
-    
+
     if [ -n "$archiveName" ]; then
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
     | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
@@ -108,7 +108,7 @@ versionFromGit() {
     # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-        
+
     appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame"
@@ -122,7 +122,7 @@ versionFromGit() {
 
 # Handling of differences in xpath between Catalina and Big Sur
 xpath() {
-	# the xpath tool changes in Big Sur and now requires the `-e` option	
+	# the xpath tool changes in Big Sur and now requires the `-e` option
 	if [[ $(sw_vers -buildVersion) > "20A" ]]; then
 		/usr/bin/xpath -e $@
 		# alternative: switch to xmllint (which is not perl)
@@ -142,7 +142,7 @@ getAppVersion() {
         printlog "Custom App Version detection is used, found $appversion"
         return
     fi
-    
+
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
         appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
@@ -154,7 +154,7 @@ getAppVersion() {
             printlog "No version found using packageID $packageID"
         fi
     fi
-    
+
     # get app in /Applications, or /Applications/Utilities, or find using Spotlight
     if [[ -d "/Applications/$appName" ]]; then
         applist="/Applications/$appName"
@@ -211,7 +211,7 @@ checkRunningProcesses() {
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
                 appClosed=1
-                
+
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
                         printlog "telling app $x to quit"
@@ -298,7 +298,7 @@ checkRunningProcesses() {
 reopenClosedProcess() {
     # If Installomator closed any processes, let's get the app opened again
     # credit: Søren Theilgaard (@theilgaard)
-    
+
     # don't reopen if REOPEN is not "yes"
     if [[ $REOPEN != yes ]]; then
         printlog "REOPEN=no, not reopening anything"
@@ -310,7 +310,7 @@ reopenClosedProcess() {
         printlog "DEBUG mode 1, not reopening anything"
         return
     fi
-    
+
     if [[ $appClosed == 1 ]]; then
         printlog "Telling app $appName to open"
         #runAsUser osascript -e "tell app \"$appName\" to open"
@@ -375,10 +375,10 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         printlog "DEBUG mode 2 enabled, exiting"
         cleanupAndExit 0
     fi
-    
+
     # Test if variable CLIInstaller is set
     if [[ -z $CLIInstaller ]]; then
-    
+
         # remove existing application
         if [ -e "$targetDir/$appName" ]; then
             printlog "Removing existing $targetDir/$appName"
@@ -441,12 +441,12 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
-    
+
     if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
         printlog "Error verifying $archiveName"
         cleanupAndExit 4
     fi
-    
+
     teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
 
     # Apple signed software has no teamID, grab entire origin instead
@@ -465,10 +465,11 @@ installFromPKG() {
     # Check version of pkg to be installed if packageID is set
     if [[ $packageID != "" && $appversion != "" ]]; then
         printlog "Checking package version."
-        pkgutil --expand "$archiveName" "$archiveName"_pkg
-        #printlog "$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null)"
-        appNewVersion=$(cat "$archiveName"_pkg/Distribution | xpath '//installer-gui-script/pkg-ref[@id][@version]' 2>/dev/null | grep -i "$packageID" | tr ' ' '\n' | grep -i version | cut -d \" -f 2) #sed -E 's/.*\"([0-9.]*)\".*/\1/g'
-        rm -r "$archiveName"_pkg
+        baseArchiveName=$(basename $archiveName)
+        expandedPkg="$tmpDir/${baseArchiveName}_pkg"
+        pkgutil --expand "$archiveName" "$expandedPkg"
+        appNewVersion=$(cat "$expandedPkg"/Distribution | xpath 'string(//installer-gui-script/pkg-ref[@id][@version]/@version)' 2>/dev/null )
+        rm -r "$expandedPkg"
         printlog "Downloaded package $packageID version $appNewVersion"
         if [[ $appversion == $appNewVersion ]]; then
             printlog "Downloaded version of $name is the same as installed."
@@ -484,7 +485,7 @@ installFromPKG() {
             fi
         fi
     fi
-    
+
     # skip install for DEBUG 1
     if [ "$DEBUG" -eq 1 ]; then
         printlog "DEBUG enabled, skipping installation"
@@ -494,7 +495,7 @@ installFromPKG() {
     # skip install for DEBUG 2
     if [ "$DEBUG" -eq 2 ]; then
         printlog "DEBUG mode 2 enabled, exiting"
-        cleanupAndExit 0 
+        cleanupAndExit 0
     fi
 
     # install pkg
@@ -508,17 +509,17 @@ installFromPKG() {
 installFromZIP() {
     # unzip the archive
     printlog "Unzipping $archiveName"
-    
+
     # tar -xf "$archiveName"
 
     # note: when you expand a zip using tar in Mojave the expanded
     # app will never pass the spctl check
 
     # unzip -o -qq "$archiveName"
-    
+
     # note: githubdesktop fails spctl verification when expanded
     # with unzip
-    
+
     ditto -x -k "$archiveName" "$tmpDir"
     installAppWithPath "$tmpDir/$appName"
 }
