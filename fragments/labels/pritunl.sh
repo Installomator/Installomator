@@ -1,6 +1,7 @@
 pritunl)
     name="Pritunl"
     type="pkgInZip"
+    packageID="com.pritunl.pkg.Pritunl"
     if [[ $(arch) == "arm64" ]]; then
         archiveName="Pritunl.arm64.pkg.zip"
         downloadURL=$(downloadURLFromGit pritunl pritunl-client-electron)
