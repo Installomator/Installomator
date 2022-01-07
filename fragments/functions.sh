@@ -345,8 +345,17 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         cleanupAndExit 5 "Team IDs do not match"
     fi
 
-    # versioncheck
-    # credit: Søren Theilgaard (@theilgaard)
+    # macOS versioncheck
+    minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion)
+    if [[ $minimumOSversion =~ '[0-9.]*' ]]; then
+        printlog "App has LSMinimumSystemVersion: $minimumOSversion"
+        if ! is-at-least $minimumOSversion $installedOSversion; then
+            printlog "App requires higher System Version than installed: $installedOSversion"
+            cleanupAndExit 6 "Installed macOS is too old for this app."
+        fi
+    fi
+
+    # app versioncheck
     appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
     if [[ -n $appNewVersion && $appversion == $appNewVersion ]]; then
         printlog "Downloaded version of $name is $appNewVersion, same as installed."
