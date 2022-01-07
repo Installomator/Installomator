@@ -345,16 +345,6 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         cleanupAndExit 5 "Team IDs do not match"
     fi
 
-    # macOS versioncheck
-    minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion)
-    if [[ $minimumOSversion =~ '[0-9.]*' ]]; then
-        printlog "App has LSMinimumSystemVersion: $minimumOSversion"
-        if ! is-at-least $minimumOSversion $installedOSversion; then
-            printlog "App requires higher System Version than installed: $installedOSversion"
-            cleanupAndExit 6 "Installed macOS is too old for this app."
-        fi
-    fi
-
     # app versioncheck
     appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
     if [[ -n $appNewVersion && $appversion == $appNewVersion ]]; then
@@ -371,6 +361,21 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         fi
     else
         printlog "Downloaded version of $name is $appNewVersion (replacing version $appversion)."
+    fi
+
+    # macOS versioncheck
+    minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion)
+    if [[ $minimumOSversion =~ '[0-9.]*' ]]; then
+        printlog "App has LSMinimumSystemVersion: $minimumOSversion"
+        if ! is-at-least $minimumOSversion $installedOSversion; then
+            printlog "App requires higher System Version than installed: $installedOSversion"
+            message="Cannot install $name, version $appNewVersion, as it is not compatible with the running system version."
+            if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
+                printlog "notifying"
+                displaynotification "$message" "Error updating $name!"
+            fi
+            cleanupAndExit 6 "Installed macOS is too old for this app."
+        fi
     fi
 
     # skip install for DEBUG 1
