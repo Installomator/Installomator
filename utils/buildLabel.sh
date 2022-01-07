@@ -99,10 +99,17 @@ dmgInvestigation() {
     
     if [[ $appPath != "" ]]; then
         echo "App found: $appPath"
+        if [[ $archiveExt = "dmgInZip" ]]; then
+            archiveExt="appInDmgInZip"
+        fi
         appInvestigation
     elif [[ $pkgPath != "" ]]; then
         echo "PKG found: $pkgPath"
-        archiveExt="pkgInDmg"
+        if [[ $archiveExt = "dmgInZip" ]]; then
+            archiveExt="pkgInDmgInZip not supported, yet!"
+        else
+            archiveExt="pkgInDmg"
+        fi
         pkgInvestigation
     else
         echo "Nothing found on DMG."
