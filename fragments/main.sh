@@ -5,6 +5,13 @@
     ;;
 esac
 
+# Are we only asked to return label name
+if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
+    printlog "Only returning label name."
+    printlog "$name"
+    echo "$name"
+    exit
+fi
 
 # MARK: application download and installation starts here
 
