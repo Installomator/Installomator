@@ -20,7 +20,7 @@ cleanupAndExit() { # $1 = exit code, $2 message
     printlog "################## End Installomator, exit code $1 \n\n"
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
-        echo "##################"
+        echo "#"
     fi
     exit "$1"
 }
