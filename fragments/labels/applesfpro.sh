@@ -3,5 +3,5 @@ applesfpro)
     type="pkgInDmg"
     downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg"
     packageID="com.apple.pkg.SanFranciscoPro"
-    expectedTeamID="Development Update"
+    expectedTeamID="Software Update"
     ;;

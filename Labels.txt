@@ -328,6 +328,7 @@ textmate
 theunarchiver
 things
 thunderbird
+tidal
 toggltrack
 tom4aconverter
 torbrowser

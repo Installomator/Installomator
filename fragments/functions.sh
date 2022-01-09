@@ -396,11 +396,12 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         fi
 
         # set ownership to current user
-        if [ "$currentUser" != "loginwindow" ]; then
+        if [[ "$currentUser" != "loginwindow" && $SYSTEMOWNER -ne 1 ]]; then
             printlog "Changing owner to $currentUser"
             chown -R "$currentUser" "$targetDir/$appName"
         else
-            printlog "No user logged in, not changing user"
+            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel"
+            chown -R root:wheel "$targetDir/$appName"
         fi
 
     elif [[ ! -z $CLIInstaller ]]; then
