@@ -277,6 +277,43 @@ checkRunningProcesses() {
                           BLOCKING_PROCESS_ACTION=kill
                       fi
                       ;;
+                      prompt_with_defer)
+                        if [ -d /usr/local/Installomator/receipts ]; then
+                          printlog "receipts already exists"
+                        else
+                          mkdir /usr/local/Installomator/receipts
+                          printlog "creating receipts directory"
+                        fi
+                        if [ ! /usr/local/Installomator/receipts/$x.timer.txt ]; then
+                          echo "2" > /usr/local/Installomator/receipts/$x.timer.txt
+                        fi
+                        ## Get the timer value
+                        timer=$(cat /usr/local/Installomator/receipts/$x.timer.txt)
+                        if [[ $timer == 0 ]]; then
+                          printlog "Changing BLOCKING_PROCESS_ACTION to tell_user_then_kill"
+                          BLOCKING_PROCESS_ACTION=tell_user_then_kill
+                          printlog "Resetting timer"
+                          echo "2" > /usr/local/Installomator/receipts/$x.timer.txt
+                        else
+                          button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
+                          if [[ $button = "Not Now" ]]; then
+                            let CurrTimer=$timer-1
+                            printlog "User chose to defer"
+                            echo "$CurrTimer" > /usr/local/Installomator/receipts/$x.timer.txt
+                            printlog "Defer count is now $CurrTimer"
+                            cleanupAndExit 12 "blocking process '$x' found, aborting"
+                          else
+                            printlog "telling app $x to quit"
+                            runAsUser osascript -e "tell app \"$x\" to quit"
+                            # give the user a bit of time to quit apps
+                            printlog "waiting 30 seconds for processes to quit"
+                            sleep 30
+                            BLOCKING_PROCESS_ACTION=kill
+                            printlog "Resetting timer"
+                            echo "2" > /usr/local/Installomator/receipts/$x.timer.txt
+                          fi
+                        fi
+                        ;;
                     silent_fail)
                       cleanupAndExit 12 "blocking process '$x' found, aborting"
                       ;;
@@ -642,5 +679,3 @@ finishing() {
         fi
     fi
 }
-
-
