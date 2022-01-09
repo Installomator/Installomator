@@ -18,6 +18,10 @@ cleanupAndExit() { # $1 = exit code, $2 message
     # If we closed any processes, reopen the app again
     reopenClosedProcess
     printlog "################## End Installomator, exit code $1 \n\n"
+    # if label is wrong and we wanted name of the label, then return ##################
+    if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
+        echo "#"
+    fi
     exit "$1"
 }
 

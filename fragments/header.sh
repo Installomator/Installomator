@@ -110,6 +110,14 @@ REOPEN="yes"
 #  - yes           App wil be reopened if it was closed
 #  - no            App not reopened
 
+# Only let Installomator return the name of the label
+# RETURN_LABEL_NAME=0
+# options:
+#   - 1      Installomator will return the name of the label and exit, so last line of
+#            output will be that name. When Installomator is locally installed and we
+#            use DEPNotify, then DEPNotify can present a more nice name to the user,
+#            instead of just the label name.
+
 
 # NOTE: How labels work
 
