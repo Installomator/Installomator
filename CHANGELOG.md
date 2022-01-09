@@ -1,6 +1,7 @@
 ## v9?
 
 - We have moved the root check to the beginning of the script, and improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user (almost as running the script without root before).
+- `LSMinimumSystemVersion` will now be honered, if the `Info.plist` in the app is specifying this. That means that an app that has this parameter in that file and it shows that the app requires a newer version of the OS than is currently installed, then we will not install it.
 
 ## v8.0
 
