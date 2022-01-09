@@ -88,6 +88,13 @@ IGNORE_APP_STORE_APPS=no
 #                  Shouldn’t give any problems for the user in most cases.
 #                  Known bad example: Slack will loose all settings.
 
+# Owner of copied apps
+SYSTEMOWNER=0
+# options:
+#  - 0             Current user will be owner of copied apps, just like if they
+#                  installed it themselves (default).
+#  - 1             root:wheel will be set on the copied app.
+#                  Useful for shared machines.
 
 # install behavior
 INSTALL=""
