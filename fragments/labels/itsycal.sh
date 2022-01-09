@@ -1,8 +1,8 @@
 itsycal)
     name="Itsycal"
     type="zip"
-    downloadURL="https://itsycal.s3.amazonaws.com/Itsycal.zip"
-    appNewVersion=$( curl -fsL https://www.mowglii.com/itsycal/versionhistory.html |grep -m1 'id="0' |awk -F '"' '{print $2}' )
+    downloadURL=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal-apple-silicon.xml | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal-apple-silicon.xml | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     blockingProcesses=( "Itsycal" )
     expectedTeamID="HFT3T55WND"
     ;;
