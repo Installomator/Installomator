@@ -1,6 +1,9 @@
 ## v9?
 
 - We have moved the root check to the beginning of the script, and improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user (almost as running the script without root before).
+- Changed logic if `IGNORE_APP_STORE_APPS=yes`. Before this version a label like `microsoftonedrive` that was installed from App Store, and that we want to replace with the “ordinary” version, Installomator would still use `updateTool`, even though `IGNORE_APP_STORE_APPS=yes`. So we would have to have `INSTALL=force` in order to have the app replaced, as `updateTool` would be used. But now if `IGNORE_APP_STORE_APPS=yes` then `updateTool` will be not set, and the App Store app will be replaced. BUT if the installed software was not from App Store, then `updateTool` will not be used, and it would be a kind of a forced install (in the example of `microsoftonedrive`), except if the version is the same (where installation is skipped).
+
+
 
 ## v8.0
 
