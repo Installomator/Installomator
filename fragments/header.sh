@@ -88,6 +88,13 @@ IGNORE_APP_STORE_APPS=no
 #                  Shouldn’t give any problems for the user in most cases.
 #                  Known bad example: Slack will loose all settings.
 
+# Owner of copied apps
+SYSTEMOWNER=0
+# options:
+#  - 0             Current user will be owner of copied apps, just like if they
+#                  installed it themselves (default).
+#  - 1             root:wheel will be set on the copied app.
+#                  Useful for shared machines.
 
 # install behavior
 INSTALL=""
@@ -102,6 +109,14 @@ REOPEN="yes"
 # options:
 #  - yes           App wil be reopened if it was closed
 #  - no            App not reopened
+
+# Only let Installomator return the name of the label
+# RETURN_LABEL_NAME=0
+# options:
+#   - 1      Installomator will return the name of the label and exit, so last line of
+#            output will be that name. When Installomator is locally installed and we
+#            use DEPNotify, then DEPNotify can present a more nice name to the user,
+#            instead of just the label name.
 
 
 # NOTE: How labels work
