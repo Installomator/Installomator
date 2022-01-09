@@ -3,5 +3,5 @@ applesfcompact)
     type="pkgInDmg"
     downloadURL="https://devimages-cdn.apple.com/design/resources/download/SF-Compact.dmg"
     packageID="com.apple.pkg.SanFranciscoCompact"
-    expectedTeamID="Development Update"
+    expectedTeamID="Software Update"
     ;;
