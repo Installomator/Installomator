@@ -5,4 +5,3 @@ ottomatic)
     appNewVersion=$(versionFromGit jorio OttoMatic)
     expectedTeamID="RVNL7XC27G"
     ;;
-
