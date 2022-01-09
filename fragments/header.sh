@@ -23,8 +23,8 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-# debug mode 1 will download to the directory the script is run in, but will not check version 
-# debug mode 2 will download to the temp directory, check for blocking processes, check version, but will not install anything or remove the current version
+# debug mode 1 will download to the directory the script is run in, but will not check the version 
+# debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
 DEBUG=1
 
 # notify behavior
@@ -39,14 +39,14 @@ NOTIFY=success
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
 #   - ignore       continue even when blocking processes are found
-#   - quit         app will be told to quit nicely, if running
+#   - quit         app will be told to quit nicely if running
 #   - quit_kill    told to quit twice, then it will be killed
-#                  Could be great for service apps, if they do not respawn
+#                  Could be great for service apps if they do not respawn
 #   - silent_fail  exit script without prompt or installation
 #   - prompt_user  show a user dialog for each blocking process found
 #                  abort after three attempts to quit
-#                  (only if user accepts to quit the apps, otherwise
-#                  the update is cancelled).
+#                  (only if the user accepts to quit the apps, otherwise
+#                  the update is canceled).
 #   - prompt_user_then_kill
 #                  show a user dialog for each blocking process found,
 #                  attempt to quit two times, kill the process finally
@@ -54,10 +54,10 @@ BLOCKING_PROCESS_ACTION=tell_user
 #                  Like prompt-user, but clicking "Not Now", will just wait an hour,
 #                  and then it will ask again.
 #                  WARNING! It might block the MDM agent on the machine, as
-#                  the scripts gets stuct in waiting until the hour has passed,
+#                  the scripts get stuck in waiting until the hour has passed,
 #                  possibly blocking for other management actions in this time.
-#   - tell_user    User will be showed a notification about the important update,
-#                  but user is only allowed to quit and continue, and then we
+#   - tell_user    User will be shown a notification about the important update,
+#                  but the user is only allowed to quit and continue, and then we
 #                  ask the app to quit.
 #   - tell_user_then_kill
 #                  Show dialog 2 times, and if the quitting fails, the
@@ -81,12 +81,12 @@ LOGO=appstore
 # App Store apps handling
 IGNORE_APP_STORE_APPS=no
 # options:
-#  - no            If installed app is from App Store (which include VPP installed apps)
-#                  it will not be touched, no matter it's version (default)
-#  - yes           Replace App Store (and VPP) version of app and handle future
+#  - no            If the installed app is from App Store (which include VPP installed apps)
+#                  it will not be touched, no matter its version (default)
+#  - yes           Replace App Store (and VPP) version of the app and handle future
 #                  updates using Installomator, even if latest version.
 #                  Shouldn’t give any problems for the user in most cases.
-#                  Known bad example: Slack will loose all settings.
+#                  Known bad example: Slack will lose all settings.
 
 # Owner of copied apps
 SYSTEMOWNER=0
@@ -99,7 +99,7 @@ SYSTEMOWNER=0
 # install behavior
 INSTALL=""
 # options:
-#  -               When not set, software will only be installed
+#  -               When not set, the software will only be installed
 #                  if it is newer/different in version
 #  - force         Install even if it’s the same version
 
@@ -107,7 +107,7 @@ INSTALL=""
 # Re-opening of closed app
 REOPEN="yes"
 # options:
-#  - yes           App wil be reopened if it was closed
+#  - yes           App will be reopened if it was closed
 #  - no            App not reopened
 
 # Only let Installomator return the name of the label
@@ -141,7 +141,7 @@ REOPEN="yes"
 #
 # - packageID: (optional)
 #   The package ID of a pkg
-#   If given, will be used to find version of installed software, instead of searching for an app.
+#   If given, will be used to find the version of installed software, instead of searching for an app.
 #   Usefull if a pkg does not install an app.
 #   See label installomator_st
 #
@@ -151,7 +151,7 @@ REOPEN="yes"
 #
 # - appNewVersion: (optional)
 #   Version of the downloaded software.
-#   If given, it will be compared to installed version, to see if download is different.
+#   If given, it will be compared to the installed version, to see if the download is different.
 #   It does not check for newer or not, only different.
 #
 # - versionKey: (optional)
@@ -222,10 +222,10 @@ REOPEN="yes"
 #
 # - CLIInstaller:
 # - CLIArguments:
-#   If the downloaded dmg is actually an installer that we can call using CLI, we can
+#   If the downloaded dmg is an installer that we can call using CLI, we can
 #   use these two variables for what to call.
 #   We need to define `name` for the installed app (to be version checked), as well as
-#   `installerTool` for the installer app (if named differently that `name`. Installomator
+#   `installerTool` for the installer app (if named differently than `name`. Installomator
 #   will add the path to the folder/disk image with the binary, and it will be called like this:
      `$CLIInstaller $CLIArguments`
 #   For most installations `CLIInstaller` should contain the `installerTool` for the CLI call
