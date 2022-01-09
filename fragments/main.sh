@@ -5,6 +5,13 @@
     ;;
 esac
 
+# Are we only asked to return label name
+if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
+    printlog "Only returning label name."
+    printlog "$name"
+    echo "$name"
+    exit
+fi
 
 # MARK: application download and installation starts here
 
@@ -116,9 +123,8 @@ getAppVersion
 printlog "appversion: $appversion"
 
 # MARK: Exit if new version is the same as installed version (appNewVersion specified)
-# credit: Søren Theilgaard (@theilgaard)
-if [[ $INSTALL == "force" ]]; then
-    printlog "Using force to install, so not using updateTool."
+if [[ "$type" != "updateronly" && ($INSTALL == "force" || $IGNORE_APP_STORE_APPS == "yes") ]]; then
+    printlog "Label is not of type “updateronly”, and it’s set to use force to install or ignoring app store apps, so not using updateTool."
     updateTool=""
 fi
 if [[ -n $appNewVersion ]]; then

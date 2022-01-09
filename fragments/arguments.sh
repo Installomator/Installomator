@@ -1,7 +1,8 @@
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
-if ! is-at-least 10.14 $(sw_vers -productVersion); then
+installedOSversion=$(sw_vers -productVersion)
+if ! is-at-least 10.14 $installedOSversion; then
     printlog "Installomator requires at least macOS 10.14 Mojave."
     exit 98
 fi
