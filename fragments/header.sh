@@ -190,7 +190,7 @@ REOPEN="yes"
 #     blockingProcesses=( NONE )
 #
 # - pkgName: (optional, only used for pkgInDmg, dmgInZip, and appInDmgInZip)
-#   File name of the pkg/dmg file _inside_ the dmg or zip
+#   File name or path to the pkg/dmg file _inside_ the dmg or zip.
 #   When not given the pkgName is derived from the $name
 #
 # - updateTool:
