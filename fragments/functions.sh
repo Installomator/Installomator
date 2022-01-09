@@ -290,7 +290,7 @@ checkRunningProcesses() {
                         ## Get the timer value
                         timer=$(cat /usr/local/Installomator/receipts/$x.timer.txt)
                         if [[ $timer == 0 ]]; then
-                          printlog "Changing BLOCKING_PROCESS_ACTION to kill"
+                          printlog "Changing BLOCKING_PROCESS_ACTION to tell_user_then_kill"
                           BLOCKING_PROCESS_ACTION=tell_user_then_kill
                           printlog "Resetting timer"
                           echo "2" > /usr/local/Installomator/receipts/$x.timer.txt
