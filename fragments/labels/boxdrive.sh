@@ -1,5 +1,4 @@
 boxdrive)
-    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Box"
     type="pkg"
     downloadURL="https://e3.boxcdn.net/box-installers/desktop/releases/mac/Box.pkg"
