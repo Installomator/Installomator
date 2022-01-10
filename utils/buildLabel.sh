@@ -153,32 +153,105 @@ echo "Downloading $downloadURL"
 echo $(basename $downloadURL)
 # First trying to find redirection headers on the download, as those can contain version numbers
 echo "Redirecting to (maybe this can help us with version):\n$(curl -fsIL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" | grep -i "^[location|x\-amz\-meta\-version]*")"
-# Now downloading without extra headers
-if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
-    echo "error downloading $downloadURL using standard headers."
-    echo "result: $downloadOut"
-    echo "Trying all headers…" # that I know of
-    if ! downloadOut="$(curl -fL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
-        echo "Trying almost all headers…" # that I know of
-        if ! downloadOut="$(curl -fL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
-            # we are only here if the download failed
-            echo "error downloading $downloadURL using two different sets of headers."
-            echo "result: $downloadOut"
-            # Sometimes a server will give some results to the downloaded output
-            if [[ -n $downloadOut ]]; then
-                echo "Trying output of this…"
-                downloadURL="$(echo $downloadOut | tail -1)"
-                # Last chance for succes on this download
-                if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
-                    echo "error downloading $downloadURL using previous output."
-                    echo "result: $downloadOut"
+# Now downloading without various sets of extra headers
+if ! downloadOut1="$( \
+curl -fL "$downloadURL" --remote-header-name --remote-name \
+-w "%{filename_effective}\n%{url_effective}\n")"
+then
+    echo "error downloading $downloadURL with no headers."
+    echo "result: $downloadOut1"
+    echo "Trying 1st set of extra headers to download."
+    if ! downloadOut2="$( \
+    curl -fL \
+    -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" \
+    -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" \
+    -H "accept-encoding: gzip, deflate, br" \
+    -H "accept-language: en-US,en;q=0.9" \
+    -H "sec-fetch-dest: document" \
+    -H "sec-fetch-mode: navigate" \
+    -H "sec-fetch-user: ?1" \
+    -H "sec-gpc: 1" \
+    -H "upgrade-insecure-requests: 1" \
+    "$downloadURL" --remote-header-name --remote-name \
+    -w "%{filename_effective}\n%{url_effective}\n")"
+    then
+        echo "error downloading $downloadURL with 1st set of headers."
+        echo "result: $downloadOut2"
+        echo "Trying 2nd set of extra headers to download."
+        if ! downloadOut3="$( \
+        curl -fL \
+        -H "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36" \
+        -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" \
+        -H "accept-encoding: gzip, deflate, br" \
+        -H "accept-language: en-US,en;q=0.9" \
+        -H "sec-fetch-dest: document" \
+        -H "sec-fetch-mode: navigate" \
+        -H "sec-fetch-site: same-site" \
+        -H "sec-fetch-user: ?1" \
+        -H "sec-gpc: 1" \
+        -H "upgrade-insecure-requests: 1" \
+        "$downloadURL" --remote-header-name --remote-name \
+        -w "%{filename_effective}\n%{url_effective}\n")"
+        then
+            echo "error downloading $downloadURL with 2nd set of headers."
+            echo "result: $downloadOut3"
+            echo "Trying 3rd set of extra headers to download."
+            if ! downloadOut4="$( \
+            curl -fL \
+            -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" \
+            -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" \
+            -H "accept-encoding: gzip, deflate, br" \
+            -H "accept-language: en-US,en;q=0.9" \
+            -H "sec-fetch-dest: document" \
+            -H "sec-fetch-mode: navigate" \
+            -H "sec-fetch-user: ?1" \
+            -H "sec-gpc: 1" \
+            -H "upgrade-insecure-requests: 1" \
+            -H "Referrer Policy: strict-origin-when-cross-origin" \
+            "$downloadURL" --remote-header-name --remote-name \
+            -w "%{filename_effective}\n%{url_effective}\n")"
+            then
+                # we are only here if the download failed
+                echo "error downloading $downloadURL with 3rd set of headers."
+                echo "result: $downloadOut4"
+                echo "no more header sets to try"
+                # Sometimes a server will give some results to the downloaded output
+                echo "If any information came out of the previous download attempts, we can try those…"
+                downloadOuts=( "$downloadOut1" "$downloadOut3" "$downloadOut3" "$downloadOut4" )
+                downloadOutCount=${#downloadOuts}
+                for downloadOut in $downloadOuts ; do
+                    if [[ -n $downloadOut ]]; then
+                        echo "Trying output of this…"
+                        downloadURL="$(echo $downloadOut | tail -1)"
+                        # Last chance for succes on this download
+                        if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
+                            echo "error downloading $downloadURL using previous output."
+                            echo "result: $downloadOut"
+                            ((downloadOutCount--))
+                        else
+                            echo "Success on this download."
+                            succesDownloadOut=$downloadOut
+                            return
+                        fi
+                    fi
+                done
+                if [[ $downloadOutCount -eq 0 ]]; then
                     echo "No more tries. Cannot continue."
                     exit 1
                 fi
+            else
+                succesDownloadOut=$downloadOut4
             fi
+        else
+            succesDownloadOut=$downloadOut3
         fi
+    else
+        succesDownloadOut=$downloadOut2
     fi
+else
+    succesDownloadOut=$downloadOut1
 fi
+downloadOut=$succesDownloadOut
 
 # Now we have downloaded the archive, and we need to analyze this
 # The download have returned both {filename_effective} and {url_effective}
