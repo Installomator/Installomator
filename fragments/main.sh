@@ -179,17 +179,25 @@ else
         fi
     fi
     if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
-        printlog "error downloading $downloadURL"
-        message="$name update/installation failed. This will be logged, so IT can follow up."
-        if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
-            printlog "notifying"
-            if [[ $updateDetected == "YES" ]]; then
-                displaynotification "$message" "Error updating $name"
+        if ! curl -fsL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" -o "$archiveName"; then
+            if ! curl -fsL -H "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "accept-encoding: gzip, deflate, br" -H "accept-language: en-US,en;q=0.9" -H "sec-fetch-dest: document" -H "sec-fetch-mode: navigate" -H "sec-fetch-site: same-site" -H "sec-fetch-user: ?1" -H "sec-gpc: 1" -H "upgrade-insecure-requests: 1" "$downloadURL" -o "$archiveName"; then
+                printlog "error downloading $downloadURL"
+                message="$name update/installation failed. This will be logged, so IT can follow up."
+                if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
+                    printlog "notifying"
+                    if [[ $updateDetected == "YES" ]]; then
+                        displaynotification "$message" "Error updating $name"
+                    else
+                        displaynotification "$message" "Error installing $name"
+                    fi
+                fi
+                cleanupAndExit 2
             else
-                displaynotification "$message" "Error installing $name"
+                printlog "Downloaded with all headers."
             fi
+        else
+            printlog "Downloaded with exta headers."
         fi
-        cleanupAndExit 2
     fi
 fi
 
