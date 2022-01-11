@@ -219,7 +219,7 @@ for label in $allLabels; do
         if [[ $labelError != 0 ]]; then
             echo "${RED}########## ERROR in label: $label${NC}"
                 echo "Testing using Installomator"
-                exit_status=$( . $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+                exit_status=$( . $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force BLOCKING_PROCESS_ACTION=ignore | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
                 if [[ ${exit_status} -eq 0 ]] ; then
                     echo "${GREEN}$label works fine!${NC}"
                     #errorLabels=("${(@)errorLabels:#$errorLabel}")
