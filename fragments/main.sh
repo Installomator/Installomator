@@ -178,7 +178,9 @@ else
             displaynotification "Downloading new $name" "Download in progress …"
         fi
     fi
-    if ! curl -fsL ${=curlOptions} "$downloadURL" -o "$archiveName"; then
+    set -x
+    if ! curl -fsL ${curlOptions} "$downloadURL" -o "$archiveName"; then
+    set +x
         printlog "error downloading $downloadURL"
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
@@ -192,7 +194,7 @@ else
         cleanupAndExit 2
     fi
 fi
-
+set +x
 # MARK: when user is logged in, and app is running, prompt user to quit app
 if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
     printlog "ignoring blocking processes"

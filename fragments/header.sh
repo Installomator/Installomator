@@ -149,6 +149,11 @@ REOPEN="yes"
 #   URL to download the dmg.
 #   Can be generated with a series of commands (see BBEdit for an example).
 #
+# - curlOptions: (optional)
+#   Options to the curl command, needed for curl to be able to download the software.
+#   Usually used for adding extra headers that some servers need in order to serve the file.
+#   (see “mocha”-labels, for examples).
+#
 # - appNewVersion: (optional)
 #   Version of the downloaded software.
 #   If given, it will be compared to the installed version, to see if the download is different.
