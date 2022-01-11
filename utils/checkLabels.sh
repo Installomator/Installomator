@@ -97,16 +97,19 @@ YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
-# Labels with the $(arch) call for different versions for Intel and Apple Silicon should be listed here:
-archLabels=( $(grep "\$(arch)" ${labels_dir}/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
-echo "${BLUE}Labels with \"\$(arch)\" call:${NC}\n${archLabels}\n"
-
+# Has label(s) been given as arguments or not, and list those
+# Figure out which ones of these include "${arch}" so those will be testet for both architectures
 if [[ $# -eq 0 ]]; then
     allLabels=( $(grep -h -E '^([a-z0-9\_-]*)(\)|\|\\)$' ${labels_dir}/*.sh | tr -d ')|\\' | sort) )
+    archLabels=( $(grep "\$(arch)" ${labels_dir}/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
 else
     allLabels=( ${=@} )
+    # Next line needs to be improved to only look through the labels given as arguments
+    archLabels=( $(grep "\$(arch)" ${labels_dir}/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
 fi
 echo "${BLUE}Total labels:${NC}\n${allLabels}\n"
+echo "${BLUE}Labels with \"\$(arch)\" call:${NC}\n${archLabels}\n"
+
 
 secondRoundLabels="" # variable for labels with $(arch) call in them
 countWarning=0
