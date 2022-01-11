@@ -231,7 +231,7 @@ then
                         else
                             echo "Success on this download."
                             succesDownloadOut=$downloadOut
-                            return
+                            break 2
                         fi
                     fi
                 done
