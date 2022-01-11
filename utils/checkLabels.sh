@@ -119,7 +119,7 @@ echo
 for label in $allLabels; do
     echo "########## $label"
     labelWarning=0; labelError=0; expectedExtension=""; URLextension=""
-    name=""; type=""; downloadURL=""; appNewVersion=""; expectedTeamID=""; blockingProcesses=""; updateTool=""; updateToolArguments=""; archiveName=""
+    name=""; type=""; downloadURL=""; curlOptions=""; appNewVersion=""; expectedTeamID=""; blockingProcesses=""; updateTool=""; updateToolArguments=""; archiveName=""
     
     #caseLabel
     if cat "${labels_dir}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
@@ -156,7 +156,7 @@ for label in $allLabels; do
                 echo "Version: $appNewVersion" ;
             fi
         fi
-        if curl -sfL --output /dev/null -r 0-0 "$downloadURL" ; then
+        if curl -sfL ${curlOptions} --output /dev/null -r 0-0 "$downloadURL" ; then
             echo "${GREEN}OK: downloadURL works OK${NC}"
             if [[ $(echo "$downloadURL" | sed -E 's/.*\.([a-zA-Z]*)\s*/\1/g' ) == "${expectedExtension}" ]]; then
                 echo "${GREEN}OK: download extension MATCH on ${expectedExtension}${NC}"
