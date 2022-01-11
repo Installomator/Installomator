@@ -284,13 +284,13 @@ rm checkLabelCurrent.sh
 #${SELFLOCATION}/Installomator.sh version
 #echo
 
-if [[ countWarning > 0 ]]; then
+if [[ countWarning -gt 0 ]]; then
     echo "${YELLOW}Warnings counted: $countWarning${NC}"
     echo "${YELLOW}${warningLabels}${NC}"
 else
     echo "${GREEN}No warnings detected!${NC}"
 fi
-if [[ countError > 0 ]]; then
+if [[ countError -gt 0 ]]; then
     echo "${RED}ERRORS counted: $countError${NC}"
     echo "${RED}i386 : ${errorLabelsi386}${NC}"
     echo "${RED}arm64: ${errorLabelsarm64}${NC}"
