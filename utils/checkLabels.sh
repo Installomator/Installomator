@@ -98,18 +98,31 @@ BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
 # Has label(s) been given as arguments or not, and list those
-# Figure out which ones of these include "${arch}" so those will be testet for both architectures
+# Figure out which ones of these include "$(arch)" so those will be testet for both i386 and arm64 architectures
 if [[ $# -eq 0 ]]; then
     allLabels=( $(grep -h -E '^([a-z0-9\_-]*)(\)|\|\\)$' ${labels_dir}/*.sh | tr -d ')|\\' | sort) )
     archLabels=( $(grep "\$(arch)" ${labels_dir}/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
 else
     allLabels=( ${=@} )
-    # Next line needs to be improved to only look through the labels given as arguments
-    archLabels=( $(grep "\$(arch)" ${labels_dir}/* | awk '{print $1}' | sed -E 's/.*\/([a-z0-9\_-]*)\..*/\1/g'| uniq ) )
+    # Check if labels exist
+    for checkLabel in $allLabels; do
+        if [ ! $(ls ${labels_dir}/${checkLabel}.sh 2>/dev/null) ] ; then
+            # Remove label from array
+            allLabels=("${(@)allLabels:#$checkLabel}")
+        fi
+    done
+    # Figure out if labels has "$(arch)" in them
+    archLabels=( $allLabels )
+    for checkLabel in $archLabels; do
+        if [ ! -n "$(grep "\$(arch)" ${labels_dir}/${checkLabel}.sh 2>/dev/null)" ] ; then
+            # Remove label from array
+            archLabels=("${(@)archLabels:#$checkLabel}")
+        fi
+    done
 fi
+
 echo "${BLUE}Total labels:${NC}\n${allLabels}\n"
 echo "${BLUE}Labels with \"\$(arch)\" call:${NC}\n${archLabels}\n"
-
 
 secondRoundLabels="" # variable for labels with $(arch) call in them
 countWarning=0
