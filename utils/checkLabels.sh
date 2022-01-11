@@ -125,13 +125,17 @@ echo "${BLUE}Total labels:${NC}\n${allLabels}\n"
 echo "${BLUE}Labels with \"\$(arch)\" call:${NC}\n${archLabels}\n"
 
 secondRoundLabels="" # variable for labels with $(arch) call in them
+warningLabels="" # variable for labels with warnings
+errorLabels="" # variable for labels with errors
 countWarning=0
 countError=0
+
+# Loop through the 2 architectures
 for fixedArch in i386 arm64; do
 echo "${BLUE}Architecture: $fixedArch${NC}"
 echo
 
-# Go through all labels
+# Loop through all labels
 for label in $allLabels; do
     echo "########## $label"
     labelWarning=0; labelError=0; expectedExtension=""; URLextension=""
@@ -211,8 +215,21 @@ for label in $allLabels; do
             echo "${RED}-> !! ERROR in downloadURL${NC}"
             labelError=1
         fi
-        if [[ $labelWarning != 0 ]]; then; echo "${YELLOW}########## Warning in label: $label${NC}"; ((countWarning++)); fi
-        if [[ $labelError != 0 ]]; then; echo "${RED}########## ERROR in label: $label${NC}"; ((countError++)); fi
+        if [[ $labelWarning != 0 ]]; then; echo "${YELLOW}########## Warning in label: $label${NC}"; ((countWarning++)); warningLabels+=( "$label" ); fi
+        if [[ $labelError != 0 ]]; then
+            echo "${RED}########## ERROR in label: $label${NC}"
+                echo "Testing using Installomator"
+                exit_status=$( . $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+                if [[ ${exit_status} -eq 0 ]] ; then
+                    echo "${GREEN}$label works fine!${NC}"
+                    #errorLabels=("${(@)errorLabels:#$errorLabel}")
+                else
+                    echo "${RED}$label NOT WORKING!${NC}"
+                    ((countError++))
+                    errorLabels+=( "$label" )
+                fi
+
+            fi
 
         if (($archLabels[(Ie)$label])); then
             secondRoundLabels+=( "$label" )
@@ -222,10 +239,45 @@ for label in $allLabels; do
     fi
     echo
 done
+# check errorLabels using Installomator
+#echo "Testing – $errorLabels – using Installomator"
+#if [[ countError > 0 ]]; then
+#    allLabels=( ${=errorLabels} )
+#    for errorLabel in $errorLabels; do
+#        exit_status=$( . $repo_dir/assemble.sh $errorLabel DEBUG=2 INSTALL=force | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+#        if [[ ${exit_status} -eq 0 ]] ; then
+#            echo "$errorLabel works fine"
+#            errorLabels=("${(@)errorLabels:#$errorLabel}")
+#            ((countError--))
+#        fi
+#    done
+#fi
+if [[ $fixedArch == i386 ]] ; then
+    errorLabelsi386=( ${=errorLabels} )
+else
+    errorLabelsarm64=( ${=errorLabels} )
+fi
+#eval errorLabels${fixedArch}="${errorLabels}"
+errorLabels=""
 allLabels=( ${=secondRoundLabels} )
 archLabels=()
 echo
 done
+#errorLabels${fixedArch}=(${=errorLabels})
+# check errorLabels using Installomator
+#echo "Testing – $errorLabels – using Installomator"
+#if [[ countError > 0 ]]; then
+#    allLabels=( ${=errorLabels} )
+#    for errorLabel in $errorLabels; do
+#        exit_status=$( . $repo_dir/assemble.sh $errorLabel DEBUG=2 INSTALL=force | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+#        if [[ ${exit_status} -eq 0 ]] ; then
+#            echo "$errorLabel works fine"
+#            errorLabels=("${(@)errorLabels:#$errorLabel}")
+#            ((countError--))
+#        fi
+#    done
+#fi
+#errorLabels2=( ${=errorLabels} )
 
 rm checkLabelCurrent.sh
 
@@ -234,11 +286,14 @@ rm checkLabelCurrent.sh
 
 if [[ countWarning > 0 ]]; then
     echo "${YELLOW}Warnings counted: $countWarning${NC}"
+    echo "${YELLOW}${warningLabels}${NC}"
 else
     echo "${GREEN}No warnings detected!${NC}"
 fi
 if [[ countError > 0 ]]; then
     echo "${RED}ERRORS counted: $countError${NC}"
+    echo "${RED}i386 : ${errorLabelsi386}${NC}"
+    echo "${RED}arm64: ${errorLabelsarm64}${NC}"
 else
     echo "${GREEN}No errors detected!${NC}"
 fi
