@@ -7,6 +7,12 @@
 - Changed logic if `IGNORE_APP_STORE_APPS=yes`. Before this version a label like `microsoftonedrive` that was installed from App Store, and that we want to replace with the “ordinary” version, Installomator would still use `updateTool`, even though `IGNORE_APP_STORE_APPS=yes`. So we would have to have `INSTALL=force` in order to have the app replaced, as `updateTool` would be used. But now if `IGNORE_APP_STORE_APPS=yes` then `updateTool` will be not set, and the App Store app will be replaced. BUT if the installed software was not from App Store, then `updateTool` will not be used, and it would be a kind of a forced install (in the example of `microsoftonedrive`), except if the version is the same (where installation is skipped).
 - Added variable `SYSTEMOWNER` that is used when copying files when installing. Default `0` is to change owner of the app to the current user on the Mac, like this user was installing this app themselves. When using `1` we will put “root:wheel” on the app, which can be useful for shared machines.
 
+Big changes to logging:
+- Logging levels as DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4
+- External logging to Datadog
+- A function to shorten duplicate lines in installation logs
+- Ability to extract install.log in the time when Installomator was running, if further investigations needs to be done to logs
+
 ## v8.0
 
 - removed leading `0` from the version because it has lost all meaning (thanks to @grahampugh for the inspiration)
