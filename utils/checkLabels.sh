@@ -3,7 +3,7 @@
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # Check Installomator labels from fragments
-# 2021 Søren Theilgaard (@theilgaard)
+# 2021-2022 Søren Theilgaard (@theilgaard)
 
 # This script will test labels and check if download link is active, and if version is defined.
 # If labels are written to the script only those will be tested.
@@ -132,157 +132,126 @@ countError=0
 
 # Loop through the 2 architectures
 for fixedArch in i386 arm64; do
-echo "${BLUE}Architecture: $fixedArch${NC}"
-echo
+    echo "${BLUE}Architecture: $fixedArch${NC}"
+    echo
 
-# Loop through all labels
-for label in $allLabels; do
-    echo "########## $label"
-    labelWarning=0; labelError=0; expectedExtension=""; URLextension=""
-    name=""; type=""; downloadURL=""; curlOptions=""; appNewVersion=""; expectedTeamID=""; blockingProcesses=""; updateTool=""; updateToolArguments=""; archiveName=""
-    
-    #caseLabel
-    if cat "${labels_dir}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
-        source checkLabelCurrent.sh
+    # Loop through all labels
+    for label in $allLabels; do
+        echo "########## $label"
+        labelWarning=0; labelError=0; expectedExtension=""; URLextension=""
+        name=""; type=""; downloadURL=""; curlOptions=""; appNewVersion=""; expectedTeamID=""; blockingProcesses=""; updateTool=""; updateToolArguments=""; archiveName=""
+        
+        #caseLabel
+        if cat "${labels_dir}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
+            source checkLabelCurrent.sh
 
-        echo "Name: $name"
-        echo "Download URL: $downloadURL"
-        echo "Type: $type"
-        case $type in
-            dmg|pkg|zip|tbz)
-                expectedExtension="$type"
-                ;;
-            pkgInDmg)
-                expectedExtension="dmg"
-                ;;
-            *InZip)
-                expectedExtension="zip"
-                ;;
-            *)
-                echo "Cannot handle type $type"
-                ;;
-        esac
-        if [[ "$appNewVersion" == "" ]] ; then
-            echo "No appNewVersion!"
-        else
-            if [[ $( echo "$appNewVersion" | grep -i "[0-9.]" ) == "" || $appNewVersion == "" ]]; then
-                echo "${RED}-> !! ERROR in appNewVersion${NC}"
-                labelError=1
+            echo "Name: $name"
+            echo "Download URL: $downloadURL"
+            echo "Type: $type"
+            case $type in
+                dmg|pkg|zip|tbz)
+                    expectedExtension="$type"
+                    ;;
+                pkgInDmg)
+                    expectedExtension="dmg"
+                    ;;
+                *InZip)
+                    expectedExtension="zip"
+                    ;;
+                *)
+                    echo "Cannot handle type $type"
+                    ;;
+            esac
+            if [[ "$appNewVersion" == "" ]] ; then
+                echo "No appNewVersion!"
             else
-                if [[ $appNewVersion != $( echo "$appNewVersion" | sed -E 's/[^0-9]*([0-9.]*)[^0-9]*/\1/g' ) ]]; then
-                    echo "${YELLOW}Warning: Version contain not only numbers and dots.${NC}"
-                    labelWarning=1
+                if [[ $( echo "$appNewVersion" | grep -i "[0-9.]" ) == "" || $appNewVersion == "" ]]; then
+                    echo "${RED}-> !! ERROR in appNewVersion${NC}"
+                    labelError=1
+                else
+                    if [[ $appNewVersion != $( echo "$appNewVersion" | sed -E 's/[^0-9]*([0-9.]*)[^0-9]*/\1/g' ) ]]; then
+                        echo "${YELLOW}Warning: Version contain not only numbers and dots.${NC}"
+                        labelWarning=1
+                    fi
+                    echo "Version: $appNewVersion" ;
                 fi
-                echo "Version: $appNewVersion" ;
             fi
-        fi
-        if curl -sfL ${curlOptions} --output /dev/null -r 0-0 "$downloadURL" ; then
-            echo "${GREEN}OK: downloadURL works OK${NC}"
-            if [[ $(echo "$downloadURL" | sed -E 's/.*\.([a-zA-Z]*)\s*/\1/g' ) == "${expectedExtension}" ]]; then
-                echo "${GREEN}OK: download extension MATCH on ${expectedExtension}${NC}"
-            else
-                if [[ $(echo "$downloadURL" | grep -io "github.com") != "github.com" ]]; then
-                    URLheader=$( curl -fsIL "$downloadURL" )
-                    if [[ "${URLheader}" != "" ]]; then
-                        URLlocation=$( echo "${URLheader}" | grep -i "^location" )
-                        URLfilename=$( echo "${URLheader}" | grep -i "filename=" )
-                        if [[ "${URLlocation}" != "" ]]; then
-                            URLextension=$( echo "${URLlocation}" | tail -1 | sed -E 's/.*\.([a-zA-Z]*)\s*/\1/g' | tr -d '\r\n' )
+            if curl -sfL ${curlOptions} --output /dev/null -r 0-0 "$downloadURL" ; then
+                echo "${GREEN}OK: downloadURL works OK${NC}"
+                if [[ $(echo "$downloadURL" | sed -E 's/.*\.([a-zA-Z]*)\s*/\1/g' ) == "${expectedExtension}" ]]; then
+                    echo "${GREEN}OK: download extension MATCH on ${expectedExtension}${NC}"
+                else
+                    if [[ $(echo "$downloadURL" | grep -io "github.com") != "github.com" ]]; then
+                        URLheader=$( curl -fsIL "$downloadURL" )
+                        if [[ "${URLheader}" != "" ]]; then
+                            URLlocation=$( echo "${URLheader}" | grep -i "^location" )
+                            URLfilename=$( echo "${URLheader}" | grep -i "filename=" )
+                            if [[ "${URLlocation}" != "" ]]; then
+                                URLextension=$( echo "${URLlocation}" | tail -1 | sed -E 's/.*\.([a-zA-Z]*)\s*/\1/g' | tr -d '\r\n' )
+                            else
+                                URLextension=$( echo "${URLfilename}" | tail -1 | sed -E 's/.*\.([a-zA-Z]*)\s*/\1/g' | tr -d '\r\n' )
+                            fi
+                            URLextension=${${URLextension:l}%%\?*}
+                            if [[ "${URLextension}" == "${expectedExtension}" ]]; then
+                                echo "${GREEN}OK: download extension MATCH on ${URLextension}${NC}"
+                            else
+                                echo "${RED}-> !! ERROR in download extension, expected ${expectedExtension}, but got ${URLextension}.${NC}"
+                                labelError=1
+                            fi
                         else
-                            URLextension=$( echo "${URLfilename}" | tail -1 | sed -E 's/.*\.([a-zA-Z]*)\s*/\1/g' | tr -d '\r\n' )
+                            echo "no header provided from server."
                         fi
-                        URLextension=${${URLextension:l}%%\?*}
-                        if [[ "${URLextension}" == "${expectedExtension}" ]]; then
-                            echo "${GREEN}OK: download extension MATCH on ${URLextension}${NC}"
+                    else
+                        githubPart="$(echo "$downloadURL" | cut -d "/" -f4-6)"
+                        if [[ "$(curl -fsL "$downloadURL" | grep -io "${githubPart}.*\.${expectedExtension}")" != "" ]]; then
+                            echo "${GREEN}OK: download extension MATCH on ${expectedExtension}${NC}"
                         else
-                            echo "${RED}-> !! ERROR in download extension, expected ${expectedExtension}, but got ${URLextension}.${NC}"
+                            echo "${RED}-> !! ERROR in download extension, expected ${expectedExtension}, but it was wrong${NC}"
                             labelError=1
                         fi
-                    else
-                        echo "no header provided from server."
-                    fi
-                else
-                    githubPart="$(echo "$downloadURL" | cut -d "/" -f4-6)"
-                    if [[ "$(curl -fsL "$downloadURL" | grep -io "${githubPart}.*\.${expectedExtension}")" != "" ]]; then
-                        echo "${GREEN}OK: download extension MATCH on ${expectedExtension}${NC}"
-                    else
-                        echo "${RED}-> !! ERROR in download extension, expected ${expectedExtension}, but it was wrong${NC}"
-                        labelError=1
                     fi
                 fi
+            else
+                echo "${RED}-> !! ERROR in downloadURL${NC}"
+                labelError=1
+            fi
+            if [[ $labelWarning != 0 ]]; then; echo "${YELLOW}########## Warning in label: $label${NC}"; ((countWarning++)); warningLabels+=( "$label" ); fi
+            if [[ $labelError != 0 ]]; then
+                echo "${RED}########## ERROR in label: $label${NC}"
+                    echo "Testing using Installomator"
+                    exit_status=$( . $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force IGNORE_APP_STORE_APPS=yes BLOCKING_PROCESS_ACTION=ignore | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+                    if [[ ${exit_status} -eq 0 ]] ; then
+                        echo "${GREEN}$label works fine!${NC}"
+                        #errorLabels=("${(@)errorLabels:#$errorLabel}")
+                    else
+                        echo "${RED}$label NOT WORKING!${NC}"
+                        ((countError++))
+                        errorLabels+=( "$label" )
+                    fi
+
+                fi
+
+            if (($archLabels[(Ie)$label])); then
+                secondRoundLabels+=( "$label" )
             fi
         else
-            echo "${RED}-> !! ERROR in downloadURL${NC}"
-            labelError=1
+            echo "Label: ${label} is not it's own file in Labels-folder. Skipping"
         fi
-        if [[ $labelWarning != 0 ]]; then; echo "${YELLOW}########## Warning in label: $label${NC}"; ((countWarning++)); warningLabels+=( "$label" ); fi
-        if [[ $labelError != 0 ]]; then
-            echo "${RED}########## ERROR in label: $label${NC}"
-                echo "Testing using Installomator"
-                exit_status=$( . $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force IGNORE_APP_STORE_APPS=yes BLOCKING_PROCESS_ACTION=ignore | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
-                if [[ ${exit_status} -eq 0 ]] ; then
-                    echo "${GREEN}$label works fine!${NC}"
-                    #errorLabels=("${(@)errorLabels:#$errorLabel}")
-                else
-                    echo "${RED}$label NOT WORKING!${NC}"
-                    ((countError++))
-                    errorLabels+=( "$label" )
-                fi
-
-            fi
-
-        if (($archLabels[(Ie)$label])); then
-            secondRoundLabels+=( "$label" )
-        fi
+        echo
+    done
+    if [[ $fixedArch == i386 ]] ; then
+        errorLabelsi386=( ${=errorLabels} )
     else
-        echo "Label: ${label} is not it's own file in Labels-folder. Skipping"
+        errorLabelsarm64=( ${=errorLabels} )
     fi
+
+    errorLabels=""
+    allLabels=( ${=secondRoundLabels} )
+    archLabels=()
     echo
 done
-# check errorLabels using Installomator
-#echo "Testing – $errorLabels – using Installomator"
-#if [[ countError > 0 ]]; then
-#    allLabels=( ${=errorLabels} )
-#    for errorLabel in $errorLabels; do
-#        exit_status=$( . $repo_dir/assemble.sh $errorLabel DEBUG=2 INSTALL=force | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
-#        if [[ ${exit_status} -eq 0 ]] ; then
-#            echo "$errorLabel works fine"
-#            errorLabels=("${(@)errorLabels:#$errorLabel}")
-#            ((countError--))
-#        fi
-#    done
-#fi
-if [[ $fixedArch == i386 ]] ; then
-    errorLabelsi386=( ${=errorLabels} )
-else
-    errorLabelsarm64=( ${=errorLabels} )
-fi
-#eval errorLabels${fixedArch}="${errorLabels}"
-errorLabels=""
-allLabels=( ${=secondRoundLabels} )
-archLabels=()
-echo
-done
-#errorLabels${fixedArch}=(${=errorLabels})
-# check errorLabels using Installomator
-#echo "Testing – $errorLabels – using Installomator"
-#if [[ countError > 0 ]]; then
-#    allLabels=( ${=errorLabels} )
-#    for errorLabel in $errorLabels; do
-#        exit_status=$( . $repo_dir/assemble.sh $errorLabel DEBUG=2 INSTALL=force | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
-#        if [[ ${exit_status} -eq 0 ]] ; then
-#            echo "$errorLabel works fine"
-#            errorLabels=("${(@)errorLabels:#$errorLabel}")
-#            ((countError--))
-#        fi
-#    done
-#fi
-#errorLabels2=( ${=errorLabels} )
 
 rm checkLabelCurrent.sh
-
-#${SELFLOCATION}/Installomator.sh version
-#echo
 
 if [[ countWarning -gt 0 ]]; then
     echo "${YELLOW}Warnings counted: $countWarning${NC}"
