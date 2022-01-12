@@ -1,23 +1,24 @@
 # MARK: Functions
 
-cleanupAndExit() { # $1 = exit code, $2 message
-    if [[ -n $2 && $1 -ne 0 ]]; then
-        printlog "ERROR: $2"
-    fi
+cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     if [ "$DEBUG" -ne 1 ]; then
         # remove the temporary working directory when done
-        printlog "Deleting $tmpDir"
+        printlog "Deleting $tmpDir" DEBUG
         rm -Rf "$tmpDir"
     fi
 
     if [ -n "$dmgmount" ]; then
         # unmount disk image
-        printlog "Unmounting $dmgmount"
+        printlog "Unmounting $dmgmount" DEBUG
         hdiutil detach "$dmgmount"
     fi
     # If we closed any processes, reopen the app again
     reopenClosedProcess
-    printlog "################## End Installomator, exit code $1 \n\n"
+    if [[ -n $2 && $1 -ne 0 ]]; then
+        printlog "ERROR: $2" $3
+    fi
+    printlog "################## End Installomator, exit code $1 \n\n" REQ
+    
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
         echo "#"
@@ -294,7 +295,7 @@ getAppVersion() {
 checkRunningProcesses() {
     # don't check in DEBUG mode 1
     if [[ $DEBUG -eq 1 ]]; then
-        printlog "DEBUG mode 1, not checking for blocking processes"
+        printlog "DEBUG mode 1, not checking for blocking processes" DEBUG
         return
     fi
 
@@ -386,7 +387,7 @@ checkRunningProcesses() {
         cleanupAndExit 11 "could not quit all processes, aborting..."
     fi
 
-    printlog "no more blocking processes, continue with update"
+    printlog "no more blocking processes, continue with update" REQ
 }
 
 reopenClosedProcess() {
@@ -401,7 +402,7 @@ reopenClosedProcess() {
 
     # don't reopen in DEBUG mode 1
     if [[ $DEBUG -eq 1 ]]; then
-        printlog "DEBUG mode 1, not reopening anything"
+        printlog "DEBUG mode 1, not reopening anything" DEBUG
         return
     fi
 
@@ -428,15 +429,21 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     fi
 
     # verify with spctl
-    printlog "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
-        cleanupAndExit 4 "Error verifying $appPath"
+    printlog "Verifying: $appPath" INFO
+    appVerify=$(spctl -a -vv "$appPath" 2>&1 )
+    appVerifyStatus=$(echo $?)
+    teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
+    deduplicatelogs "$appVerify"
+    printlog "Debugging enabled, App Verification output was: $logoutput" DEBUG
+    
+    if [[ $appVerifyStatus -ne 0 ]] ; then
+    #if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
+        cleanupAndExit 4 "Error verifying $appPath error: $logoutput" ERROR
     fi
-
-    printlog "Team ID matching: $teamID (expected: $expectedTeamID )"
+    printlog "Team ID matching: $teamID (expected: $expectedTeamID )" INFO
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        cleanupAndExit 5 "Team IDs do not match"
+        cleanupAndExit 5 "Team IDs do not match" ERROR
     fi
 
     # app versioncheck
@@ -474,13 +481,13 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # skip install for DEBUG 1
     if [ "$DEBUG" -eq 1 ]; then
-        printlog "DEBUG mode 1 enabled, skipping remove, copy and chown steps"
+        printlog "DEBUG mode 1 enabled, skipping remove, copy and chown steps" DEBUG
         return 0
     fi
 
     # skip install for DEBUG 2
     if [ "$DEBUG" -eq 2 ]; then
-        printlog "DEBUG mode 2 enabled, exiting"
+        printlog "DEBUG mode 2 enabled, exiting" DEBUG
         cleanupAndExit 0
     fi
 
@@ -551,24 +558,26 @@ installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
 
-    if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
-        printlog "Error verifying $archiveName"
-        cleanupAndExit 4
+    spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
+    spctlStatus=$(echo $?)
+    printlog "spctlOut is $spctlOut" DEBUG
+    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+    deduplicatelogs "$spctlOut" # Why this?
+    
+    if [[ $spctlStatus -ne 0 ]] ; then
+    #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
+        cleanupAndExit 4 "Error verifying $archiveName error: $logoutput" ERROR
     fi
-
-    teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
 
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
         teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
     fi
 
-
     printlog "Team ID: $teamID (expected: $expectedTeamID )"
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        printlog "Team IDs do not match!"
-        cleanupAndExit 5
+        cleanupAndExit 5 "Team IDs do not match!" ERROR
     fi
 
     # Check version of pkg to be installed if packageID is set
@@ -597,22 +606,39 @@ installFromPKG() {
 
     # skip install for DEBUG 1
     if [ "$DEBUG" -eq 1 ]; then
-        printlog "DEBUG enabled, skipping installation"
+        printlog "DEBUG enabled, skipping installation" DEBUG
         return 0
     fi
 
     # skip install for DEBUG 2
     if [ "$DEBUG" -eq 2 ]; then
-        printlog "DEBUG mode 2 enabled, exiting"
-        cleanupAndExit 0
+        cleanupAndExit 0 "DEBUG mode 2 enabled, exiting" DEBUG
     fi
 
     # install pkg
     printlog "Installing $archiveName to $targetDir"
-    if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
-        printlog "error installing $archiveName"
-        cleanupAndExit 9
+    pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+    pkgInstallStatus=$(echo $?)
+    sleep 1
+    pkgEndTime=$(date "+$LogDateFormat")
+    pkgInstall+=$(echo "Output of /var/log/install.log below this line.\n")
+    pkgInstall+=$(echo "----------------------------------------------------------\n")
+    pkgInstall+=$(awk -v "b=$starttime" -v "e=$pkgEndTime" -F ',' '$1 >= b && $1 <= e' /var/log/install.log)
+    deduplicatelogs "$pkgInstall"
+
+    if [[ $pkgInstallStatus -ne 0 ]] && [[ $logoutput == *"requires Rosetta 2"* ]] && [[ $rosetta2 == no ]]; then
+        printlog "Package requires Rosetta 2, Installing Rosetta 2 and Installing Package" INFO
+        /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+        rosetta2=yes
+        installFromPKG
     fi
+
+    if [ $pkginstallstatus -ne 0 ] ; then
+    #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
+        cleanupAndExit 9 "Error installing $archiveName error: $logoutput" ERROR
+        
+    fi
+    printlog "Debugging enabled, installer output was: $logoutput" DEBUG
 }
 
 installFromZIP() {
@@ -738,12 +764,29 @@ runUpdateTool() {
     if [[ -x $updateTool ]]; then
         printlog "running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
-            runAsUser $updateTool ${updateToolArguments}
+            updateOutput=$(runAsUser $updateTool ${updateToolArguments} 2>&1)
+            updateStatus=$(echo $?)
         else
-            $updateTool ${updateToolArguments}
+            updateOutput=$($updateTool ${updateToolArguments} 2>&1)
+            updateStatus=$(echo $?)
         fi
-        if [[ $? -ne 0 ]]; then
-            cleanupAndExit 15 "Error running $updateTool"
+        sleep 1
+        updateEndTime=$(date "+$updateToolLogDateFormat")
+        deduplicatelogs $updateOutput
+        if [[ -n $updateToolLog ]]; then
+            updateOutput+=$(echo "Output of Installer log of $updateToolLog below this line.\n")
+            updateOutput+=$(echo "----------------------------------------------------------\n")
+            updateOutput+=$(awk -v "b=$updatestarttime" -v "e=$updateEndTime" -F ',' '$1 >= b && $1 <= e' $updateToolLog)
+        fi
+
+        if [[ $updateStatus -ne 0 ]]; then
+            printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updateStatus Error: $logoutput" WARN
+            return 1
+            if [[ $type == updateronly ]]; then
+                cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" WARN
+            fi
+        elif [[ $updateStatus -eq 0 ]]; then
+            printlog "Debugging enabled, update tool output was: $logoutput" DEBUG
         fi
     else
         printlog "couldn't find $updateTool, continuing normally"
