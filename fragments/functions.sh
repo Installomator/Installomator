@@ -113,10 +113,11 @@ printlog(){
     if [[ $logrepeat -gt 1 ]];then
         echo "$timestamp" : "${log_priority} : ${VERSIONDATE//-/} : Last Log repeated ${logrepeat} times" | tee -a $log_location
 
-    if [[ ! -z $datadogAPI ]]; then
-        curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSIONDATE : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
+        if [[ ! -z $datadogAPI ]]; then
+            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSIONDATE : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
+        fi
+        logrepeat=0
     fi
-    logrepeat=0
 
     # If the datadogAPI key value is set and our logging level is greaterthan or equal to our set level
     # then post to Datadog's HTTPs endpoint.
