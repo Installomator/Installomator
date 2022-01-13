@@ -415,7 +415,7 @@ reopenClosedProcess() {
         processuser=$(ps aux | grep -i "${appName}" | grep -vi "grep" | awk '{print $1}')
         printlog "Reopened ${appName} as $processuser"
     else
-        printlog "App not closed, so no reopen."
+        printlog "App not closed, so no reopen." DEBUG
     fi
 }
 
@@ -434,12 +434,12 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     appVerifyStatus=$(echo $?)
     teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
     deduplicatelogs "$appVerify"
-    printlog "Debugging enabled, App Verification output was: $logoutput" DEBUG
-    
+
     if [[ $appVerifyStatus -ne 0 ]] ; then
     #if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
         cleanupAndExit 4 "Error verifying $appPath error: $logoutput" ERROR
     fi
+    printlog "Debugging enabled, App Verification output was: $logoutput" DEBUG
     printlog "Team ID matching: $teamID (expected: $expectedTeamID )" INFO
 
     if [ "$expectedTeamID" != "$teamID" ]; then
@@ -511,24 +511,24 @@ installAppWithPath() { # $1: path to app to install in $targetDir
             printlog "Changing owner to $currentUser"
             chown -R "$currentUser" "$targetDir/$appName"
         else
-            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel"
+            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel" 
             chown -R root:wheel "$targetDir/$appName"
         fi
 
     elif [[ ! -z $CLIInstaller ]]; then
         mountname=$(dirname $appPath)
-        printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" #INFO
+        printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" INFO
 
         CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
         CLIstatus=$(echo $?)
-        logoutput="$CLIoutput" # dedupliatelogs "$CLIoutput"
+        dedupliatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
-            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" #ERROR
+            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error: $logoutput" ERROR
         else
-            printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments"
+            printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments" INFO
         fi
-        printlog "Debugging enabled, update tool output was:\n$logoutput" #DEBUG
+        printlog "Debugging enabled, update tool output was: $logoutput" DEBUG
     fi
 
 }
@@ -537,16 +537,22 @@ mountDMG() {
     # mount the dmg
     printlog "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
-    if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
-        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
+    dmgmountOut=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly )
+    dmgmountStatus=$(echo $?)
+    dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
+    printlog "dmgmountOut is $dmgmountOut" DEBUG
+    deduplicatelogs "$dmgmountOut"
+    
+    if [[ $dmgmountStatus -ne 0 ]] ; then
+    #if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName error: $logoutput" ERROR
     fi
-
     if [[ ! -e $dmgmount ]]; then
-        printlog "Error mounting $tmpDir/$archiveName"
-        cleanupAndExit 3
+        cleanupAndExit 3 "Error accessing mountpoint for $tmpDir/$archiveName error: $logoutput" ERROR
     fi
-
-    printlog "Mounted: $dmgmount"
+    printlog "Debugging enabled, installer output was: $logoutput" DEBUG
+    
+    printlog "Mounted: $dmgmount" INFO
 }
 
 installFromDMG() {
@@ -562,7 +568,7 @@ installFromPKG() {
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
     teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
-    deduplicatelogs "$spctlOut" # Why this?
+    deduplicatelogs "$spctlOut"
     
     if [[ $spctlStatus -ne 0 ]] ; then
     #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
@@ -636,7 +642,6 @@ installFromPKG() {
     if [ $pkginstallstatus -ne 0 ] ; then
     #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
         cleanupAndExit 9 "Error installing $archiveName error: $logoutput" ERROR
-        
     fi
     printlog "Debugging enabled, installer output was: $logoutput" DEBUG
 }

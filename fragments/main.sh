@@ -172,7 +172,7 @@ if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
     printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
     # download the dmg
-    printlog "Downloading $downloadURL to $archiveName"
+    printlog "Downloading $downloadURL to $archiveName" REQ
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
         printlog "notifying"
         if [[ $updateDetected == "YES" ]]; then
@@ -181,7 +181,7 @@ else
             displaynotification "Downloading new $name" "Download in progress …"
         fi
     fi
-    curlDownload=$(curl -v -fsL --show-error "$downloadURL" -o "$archiveName" 2>&1)
+    curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
     curlDownloadStatus=$(echo $?)
     deduplicatelogs "$curlDownload"
     printlog "curl output was: $logoutput" DEBUG
@@ -192,9 +192,9 @@ else
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
             if [[ $updateDetected == "YES" ]]; then
-                displaynotification "$message" "Error updating $name"
+                displaynotification "$message" "Error updating $name" ERROR
             else
-                displaynotification "$message" "Error installing $name"
+                displaynotification "$message" "Error installing $name" ERROR
             fi
         fi
         cleanupAndExit 2 "Error downloading $downloadURL error: $logoutput" ERROR
@@ -215,7 +215,7 @@ else
 fi
 
 # MARK: install the download
-printlog "Installing $name"
+printlog "Installing $name" REQ
 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
     if [[ $updateDetected == "YES" ]]; then
@@ -227,7 +227,7 @@ fi
 
 if [ -n "$installerTool" ]; then
     # installerTool defined, and we use that for installation
-    printlog "installerTool used: $installerTool"
+    printlog "installerTool used: $installerTool" REQ
     appName="$installerTool"
 fi
 

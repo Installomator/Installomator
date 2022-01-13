@@ -8,9 +8,15 @@
 - Added variable `SYSTEMOWNER` that is used when copying files when installing. Default `0` is to change owner of the app to the current user on the Mac, like this user was installing this app themselves. When using `1` we will put “root:wheel” on the app, which can be useful for shared machines.
 
 Big changes to logging:
-- Logging levels as DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4
+- Introducing variable `LOGGING`, that can be either of the logging levels
+- Logging levels:
+    0: DEBUG     Everything is logged
+    1: INFO      Normal logging behavior
+    2: WARN
+    3: ERROR
+    4: REQ
 - External logging to Datadog
-- A function to shorten duplicate lines in installation logs
+- A function to shorten duplicate lines in installation logs or output of longer commands
 - Ability to extract install.log in the time when Installomator was running, if further investigations needs to be done to logs
 
 ## v8.0
