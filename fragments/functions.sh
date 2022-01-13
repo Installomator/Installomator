@@ -190,8 +190,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
     fi
     if [ -z "$downloadURL" ]; then
-        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame"
-        #exit 9
+        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
     else
         echo "$downloadURL"
         return 0
@@ -259,9 +258,9 @@ getAppVersion() {
         applist=$(mdfind "kind:application $appName" -0 )
     fi
     if [[ -z applist ]]; then
-        printlog "No previous app found"
+        printlog "No previous app found" DEBUG
     else
-        printlog "App(s) found: ${applist}"
+        printlog "App(s) found: ${applist}" DEBUG
     fi
 
     appPathArray=( ${(0)applist} )
@@ -281,7 +280,7 @@ getAppVersion() {
                     printlog "Replacing App Store apps, no matter the version"
                     appversion=0
                 else
-                    cleanupAndExit 1 "App previously installed from App Store, and we respect that"
+                    cleanupAndExit 1 "App previously installed from App Store, and we respect that" ERROR
                 fi
             fi
         else
@@ -328,7 +327,7 @@ checkRunningProcesses() {
                     prompt_user|prompt_user_then_kill)
                       button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
-                        cleanupAndExit 10 "user aborted update"
+                        cleanupAndExit 10 "user aborted update" ERROR
                       else
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
@@ -373,7 +372,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
-                      cleanupAndExit 12 "blocking process '$x' found, aborting"
+                      cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
                 esac
 
@@ -384,7 +383,7 @@ checkRunningProcesses() {
     done
 
     if [[ $countedProcesses -ne 0 ]]; then
-        cleanupAndExit 11 "could not quit all processes, aborting..."
+        cleanupAndExit 11 "could not quit all processes, aborting..." ERROR
     fi
 
     printlog "no more blocking processes, continue with update" REQ
@@ -425,7 +424,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # check if app exists
     if [ ! -e "$appPath" ]; then
-        cleanupAndExit 8 "could not find: $appPath"
+        cleanupAndExit 8 "could not find: $appPath" DEBUG
     fi
 
     # verify with spctl
@@ -456,7 +455,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
             fi
-            cleanupAndExit 0 "No new version to install"
+            cleanupAndExit 0 "No new version to install" INFO
         else
             printlog "Using force to install anyway."
         fi
@@ -475,7 +474,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "Error updating $name!"
             fi
-            cleanupAndExit 6 "Installed macOS is too old for this app."
+            cleanupAndExit 6 "Installed macOS is too old for this app." INFO
         fi
     fi
 
@@ -496,14 +495,14 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # remove existing application
         if [ -e "$targetDir/$appName" ]; then
-            printlog "Removing existing $targetDir/$appName"
+            printlog "Removing existing $targetDir/$appName" DEBUG
             rm -Rf "$targetDir/$appName"
         fi
 
         # copy app to /Applications
         printlog "Copy $appPath to $targetDir"
         if ! ditto "$appPath" "$targetDir/$appName"; then
-            cleanupAndExit 7 "Error while copying"
+            cleanupAndExit 7 "Error while copying" ERROR
         fi
 
         # set ownership to current user
@@ -603,7 +602,7 @@ installFromPKG() {
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No new version to install"
+                cleanupAndExit 0 "No new version to install" INFO
             else
                 printlog "Using force to install anyway."
             fi
@@ -679,7 +678,7 @@ installPkgInDmg() {
         findfiles=$(find "$dmgmount" -iname "*.pkg" -maxdepth 1  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
+            cleanupAndExit 20 "couldn't find pkg in dmg $archiveName" ERROR
         fi
         archiveName="${filearray[1]}"
         printlog "found pkg: $archiveName"
@@ -691,7 +690,7 @@ installPkgInDmg() {
             findfiles=$(find "$tmpDir" -iname "$pkgName")
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName"
+                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
@@ -714,7 +713,7 @@ installPkgInZip() {
         findfiles=$(find "$tmpDir" -iname "*.pkg" -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in zip $archiveName"
+            cleanupAndExit 20 "couldn't find pkg in zip $archiveName" ERROR
         fi
         # it is now safe to overwrite archiveName for installFromPKG
         archiveName="${filearray[1]}"
@@ -727,7 +726,7 @@ installPkgInZip() {
             findfiles=$(find "$tmpDir" -iname "$pkgName")
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName"
+                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
@@ -750,7 +749,7 @@ installAppInDmgInZip() {
         findfiles=$(find "$tmpDir" -iname "*.dmg" -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find dmg in zip $archiveName"
+            cleanupAndExit 20 "couldn't find dmg in zip $archiveName" ERROR
         fi
         archiveName="$(basename ${filearray[1]})"
         # it is now safe to overwrite archiveName for installFromDMG
