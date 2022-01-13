@@ -43,12 +43,14 @@ if [[ $label == "version" ]]; then
     exit 0
 fi
 
-printlog "################## Start Installomator v. $VERSION"
-printlog "################## $label"
+printlog "################## Start Installomator" REQ
+printlog "################## Version: $VERSION" REQ
+printlog "################## Date: $VERSIONDATE" REQ
+printlog "################## $label" REQ
 
 # Check for DEBUG mode
 if [[ $DEBUG -gt 0 ]]; then
-    printlog "DEBUG mode $DEBUG enabled."
+    printlog "DEBUG mode $DEBUG enabled." DEBUG
 fi
 
 # How we get version number from app

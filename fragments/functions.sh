@@ -112,10 +112,10 @@ printlog(){
 
     # Once we finally stop getting duplicate logs output the number of times we got a duplicate.
     if [[ $logrepeat -gt 1 ]];then
-        echo "$timestamp" : "${log_priority} : ${VERSIONDATE//-/} : Last Log repeated ${logrepeat} times" | tee -a $log_location
+        echo "$timestamp" : "${log_priority} : Last Log repeated ${logrepeat} times" | tee -a $log_location
 
         if [[ ! -z $datadogAPI ]]; then
-            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSIONDATE : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
+            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSION : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
         fi
         logrepeat=0
     fi
@@ -132,18 +132,12 @@ printlog(){
     if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
         while IFS= read -r logmessage; do
             if [[ "$(whoami)" == "root" ]]; then
-                echo "$timestamp" : "${log_priority} : ${VERSIONDATE//-/} : ${logmessage}" | tee -a $log_location
+                echo "$timestamp" : "${log_priority} : ${logmessage}" | tee -a $log_location
             else
-                echo "$timestamp" : "${log_priority} : ${VERSIONDATE//-/} : ${logmessage}"
+                echo "$timestamp" : "${log_priority} : ${logmessage}"
             fi
         done <<< "$log_message"
     fi
-
-#    if [[ "$(whoami)" == "root" ]]; then
-#        echo "$timestamp" "$label" "$1" | tee -a $log_location
-#    else
-#        echo "$timestamp" "$label" "$1"
-#    fi
 }
 
 # Used to remove dupplicate lines in large log output, for example from msupdate command
