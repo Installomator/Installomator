@@ -4,13 +4,15 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     if [ "$DEBUG" -ne 1 ]; then
         # remove the temporary working directory when done
         printlog "Deleting $tmpDir" DEBUG
-        rm -Rf "$tmpDir"
+        deleteTmpOut=$(rm -Rfv "$tmpDir")
+        printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
     if [ -n "$dmgmount" ]; then
         # unmount disk image
         printlog "Unmounting $dmgmount" DEBUG
-        hdiutil detach "$dmgmount"
+        unmountingOut=$(hdiutil detach "$dmgmount" 2>&1)
+        printlog "Debugging enabled, Unmounting output was:\n$unmountingOut" DEBUG
     fi
     # If we closed any processes, reopen the app again
     reopenClosedProcess
@@ -430,9 +432,9 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     if [[ $appVerifyStatus -ne 0 ]] ; then
     #if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
-        cleanupAndExit 4 "Error verifying $appPath error: $logoutput" ERROR
+        cleanupAndExit 4 "Error verifying $appPath error:\n$logoutput" ERROR
     fi
-    printlog "Debugging enabled, App Verification output was: $logoutput" DEBUG
+    printlog "Debugging enabled, App Verification output was:\n$logoutput" DEBUG
     printlog "Team ID matching: $teamID (expected: $expectedTeamID )" INFO
 
     if [ "$expectedTeamID" != "$teamID" ]; then
@@ -480,7 +482,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # skip install for DEBUG 2
     if [ "$DEBUG" -eq 2 ]; then
-        printlog "DEBUG mode 2 enabled, exiting" DEBUG
+        printlog "DEBUG mode 2 enabled, not installing anything, exiting" DEBUG
         cleanupAndExit 0
     fi
 
@@ -490,7 +492,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         # remove existing application
         if [ -e "$targetDir/$appName" ]; then
             printlog "Removing existing $targetDir/$appName" DEBUG
-            rm -Rf "$targetDir/$appName"
+            deleteAppOut=$(rm -Rfv "$targetDir/$appName" 2>&1)
+            printlog "Debugging enabled, App removing output was:\n$deleteAppOut" DEBUG
         fi
 
         # copy app to /Applications
@@ -517,11 +520,11 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         dedupliatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
-            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error: $logoutput" ERROR
+            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
         else
             printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments" INFO
         fi
-        printlog "Debugging enabled, update tool output was: $logoutput" DEBUG
+        printlog "Debugging enabled, update tool output was:\n$logoutput" DEBUG
     fi
 
 }
@@ -538,12 +541,12 @@ mountDMG() {
     
     if [[ $dmgmountStatus -ne 0 ]] ; then
     #if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
-        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName error: $logoutput" ERROR
+        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName error:\n$logoutput" ERROR
     fi
     if [[ ! -e $dmgmount ]]; then
-        cleanupAndExit 3 "Error accessing mountpoint for $tmpDir/$archiveName error: $logoutput" ERROR
+        cleanupAndExit 3 "Error accessing mountpoint for $tmpDir/$archiveName error:\n$logoutput" ERROR
     fi
-    printlog "Debugging enabled, installer output was: $logoutput" DEBUG
+    printlog "Debugging enabled, installer output was:\n$logoutput" DEBUG
     
     printlog "Mounted: $dmgmount" INFO
 }
@@ -565,7 +568,7 @@ installFromPKG() {
     
     if [[ $spctlStatus -ne 0 ]] ; then
     #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
-        cleanupAndExit 4 "Error verifying $archiveName error: $logoutput" ERROR
+        cleanupAndExit 4 "Error verifying $archiveName error:\n$logoutput" ERROR
     fi
 
     # Apple signed software has no teamID, grab entire origin instead
@@ -634,9 +637,9 @@ installFromPKG() {
 
     if [ $pkginstallstatus -ne 0 ] ; then
     #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
-        cleanupAndExit 9 "Error installing $archiveName error: $logoutput" ERROR
+        cleanupAndExit 9 "Error installing $archiveName error:\n$logoutput" ERROR
     fi
-    printlog "Debugging enabled, installer output was: $logoutput" DEBUG
+    printlog "Debugging enabled, installer output was:\n$logoutput" DEBUG
 }
 
 installFromZIP() {
@@ -778,13 +781,13 @@ runUpdateTool() {
         fi
 
         if [[ $updateStatus -ne 0 ]]; then
-            printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updateStatus Error: $logoutput" WARN
+            printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updateStatus Error:\n$logoutput" WARN
             return 1
             if [[ $type == updateronly ]]; then
                 cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" WARN
             fi
         elif [[ $updateStatus -eq 0 ]]; then
-            printlog "Debugging enabled, update tool output was: $logoutput" DEBUG
+            printlog "Debugging enabled, update tool output was:\n$logoutput" DEBUG
         fi
     else
         printlog "couldn't find $updateTool, continuing normally"
