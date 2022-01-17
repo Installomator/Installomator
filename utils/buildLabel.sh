@@ -324,7 +324,7 @@ fi
 
 identifier=${name:l} # making lower case
 identifier=${identifier//\%[0-9a-fA-F][0-9a-fA-F]} # removing certain characters
-identifier=${identifier//[,._*@$\(\)\-]} # removing more characters from label name
+identifier=${identifier//[ ,._*@$\(\)\-]} # removing more characters from label name
 echo "identifier: $identifier"
 
 # github-part to figure out if we can find author and repo, to use our github functions for the label
