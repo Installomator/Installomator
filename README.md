@@ -262,6 +262,12 @@ __options:__
 - `no`: If installed app is from App Store (which include VPP installed apps) it will not be touched, no matter it's version (default)
 - `yes`: Replace App Store (and VPP) version of app and handle future updates using Installomator, even if latest version. Shouldn’t give any problems for the user in most cases. Known bad example: Slack will loose all settings.
 
+### Owner of copied apps
+Default is `SYSTEMOWNER=0`
+__options:__
+- `0`: Current user will be owner of copied apps, just like if they installed it themselves (default).
+- `1`: root:wheel will be set on the copied app. Useful for shared machines.
+
 ### Install behavior (force installation)
 
 Since we now make a version checking, and only installs the software if the version is different, an `INSTALL` variable can be used to force the installation:
