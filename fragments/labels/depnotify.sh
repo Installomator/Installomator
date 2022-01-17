@@ -1,7 +1,8 @@
 depnotify)
     name="DEPNotify"
-    type="zip"
-    downloadURL="https://files.nomad.menu/DEPNotify.zip"
+    type="pkg"
+    #packageID="menu.nomad.depnotify"
+    downloadURL="https://files.nomad.menu/DEPNotify.pkg"
+    #appNewVersion=$()
     expectedTeamID="VRPY9KHGX6"
-    targetDir="/Applications/Utilities"
     ;;

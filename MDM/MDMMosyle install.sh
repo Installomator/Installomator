@@ -1,5 +1,5 @@
 PKG_ID="com.scriptingosx.Installomator"
-TARGET_VERSION="0.7.0"
+TARGET_VERSION="8.0"
 URLDOWNLOAD="%MosyleCDNFile:blah-blah-blah%"
 ######################################################################
 # Installation using Installomator (enter the software to install separated with spaces in the "what"-variable)

@@ -1,7 +1,8 @@
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
-if ! is-at-least 10.14 $(sw_vers -productVersion); then
+installedOSversion=$(sw_vers -productVersion)
+if ! is-at-least 10.14 $installedOSversion; then
     printlog "Installomator requires at least macOS 10.14 Mojave."
     exit 98
 fi
@@ -58,7 +59,7 @@ versionKey="CFBundleShortVersionString"
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
 # MARK: check for root
-if [[ "$(whoami)" != "root" && "$DEBUG" -ne 2 ]]; then
+if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting"
 fi
