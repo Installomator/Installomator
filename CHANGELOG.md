@@ -1,7 +1,7 @@
 ## v9?
 
 - We have moved the root check to the beginning of the script, and improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user (almost as running the script without root before).
-- Added option to not interrupt Do Not Disturb full screen apps like Keynote or Zoom with `INTERRUPT_DND="no"`.
+- Added option to not interrupt Do Not Disturb full screen apps like Keynote or Zoom with `INTERRUPT_DND="no"`. Default is `"yes"` which is how it has worked until now.
 
 ## v8.0
 
