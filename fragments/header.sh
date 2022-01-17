@@ -43,25 +43,32 @@ BLOCKING_PROCESS_ACTION=tell_user
 #   - quit_kill    told to quit twice, then it will be killed
 #                  Could be great for service apps if they do not respawn
 #   - silent_fail  exit script without prompt or installation
-#   - prompt_user  show a user dialog for each blocking process found
-#                  abort after three attempts to quit
-#                  (only if the user accepts to quit the apps, otherwise
-#                  the update is canceled).
+#   - prompt_user  show a user dialog for each blocking process found,
+#                  user can choose "Quit and Update" or "Not Now".
+#                  When "Quit and Update" is chosen, blocking process
+#                  will be told to quit. Installomator will wait 30 seconds
+#                  before checking again in case Save dialogs etc are being responded to.
+#                  Installomator will abort if quitting after three tries does not succeed.
+#                  "Not Now" will exit Installomator.
 #   - prompt_user_then_kill
 #                  show a user dialog for each blocking process found,
-#                  attempt to quit two times, kill the process finally
+#                  user can choose "Quit and Update" or "Not Now".
+#                  When "Quit and Update" is chosen, blocking process
+#                  will be terminated. Installomator will abort if terminating
+#                  after two tries does not succeed. "Not Now" will exit Installomator.
 #   - prompt_user_loop
 #                  Like prompt-user, but clicking "Not Now", will just wait an hour,
 #                  and then it will ask again.
 #                  WARNING! It might block the MDM agent on the machine, as
-#                  the scripts get stuck in waiting until the hour has passed,
+#                  the script will not exit, it will pause until the hour has passed,
 #                  possibly blocking for other management actions in this time.
-#   - tell_user    User will be shown a notification about the important update,
-#                  but the user is only allowed to quit and continue, and then we
-#                  ask the app to quit.
+#   - tell_user    User will be showed a notification about the important update,
+#                  but user is only allowed to Quit and Continue, and then we
+#                  ask the app to quit. This is default.
 #   - tell_user_then_kill
-#                  Show dialog 2 times, and if the quitting fails, the
-#                  blocking processes will be killed.
+#                  User will be showed a notification about the important update,
+#                  but user is only allowed to Quit and Continue. If the quitting fails,
+#                  the blocking processes will be terminated.
 #   - kill         kill process without prompting or giving the user a chance to save
 
 
