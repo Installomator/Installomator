@@ -181,7 +181,7 @@ getAppVersion() {
             installedAppPath=$filteredAppPaths[1]
             #appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
             appversion=$(defaults read $installedAppPath/Contents/Info.plist $versionKey) #Not dependant on Spotlight indexing
-            printlog "found app at $installedAppPath, version $appversion"
+            printlog "found app at $installedAppPath, version $appversion, on versionKey $versionKey"
             updateDetected="YES"
             # Is current app from App Store
             if [[ -d "$installedAppPath"/Contents/_MASReceipt ]];then
@@ -352,7 +352,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     # app versioncheck
     appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
     if [[ -n $appNewVersion && $appversion == $appNewVersion ]]; then
-        printlog "Downloaded version of $name is $appNewVersion, same as installed."
+        printlog "Downloaded version of $name is $appNewVersion on versionKey $versionKey, same as installed."
         if [[ $INSTALL != "force" ]]; then
             message="$name, version $appNewVersion, is the latest version."
             if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
@@ -364,7 +364,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
             printlog "Using force to install anyway."
         fi
     else
-        printlog "Downloaded version of $name is $appNewVersion (replacing version $appversion)."
+        printlog "Downloaded version of $name is $appNewVersion on versionKey $versionKey (replacing version $appversion)."
     fi
 
     # macOS versioncheck

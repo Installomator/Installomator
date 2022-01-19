@@ -52,8 +52,9 @@ if [[ $DEBUG -gt 0 ]]; then
 fi
 
 # How we get version number from app
-# (alternative is "CFBundleVersion", that can be used in labels)
-versionKey="CFBundleShortVersionString"
+if [[ -z $versionKey ]]; then
+    versionKey="CFBundleShortVersionString"
+fi
 
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
