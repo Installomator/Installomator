@@ -1,5 +1,4 @@
 code42)
-    # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Code42"
     type="pkgInDmg"
     if [[ $(arch) == i386 ]]; then
