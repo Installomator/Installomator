@@ -10,6 +10,7 @@ what="installomator" # enter the software to install
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
+    pkill caffeinate
     exit $1
 }
 

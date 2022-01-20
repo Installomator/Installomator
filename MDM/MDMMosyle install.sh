@@ -14,6 +14,7 @@ what="handbrake theunarchiver microsoftoffice365"
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
+    pkill caffeinate
     exit $1
 }
 

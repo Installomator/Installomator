@@ -12,6 +12,7 @@ what="microsoftteams microsoftyammer firefox bravebrowser cyberduck vlc signal" 
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
+    pkill caffeinate
     exit $1
 }
 

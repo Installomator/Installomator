@@ -20,6 +20,7 @@ what="supportapp xink textmate microsoftedge wwdc keka vlc " # enter the softwar
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
+    pkill caffeinate
     exit $1
 }
 
