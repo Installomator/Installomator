@@ -43,10 +43,10 @@ if [[ $label == "version" ]]; then
     exit 0
 fi
 
-printlog "################## Start Installomator" REQ
-printlog "################## Version: $VERSION" REQ
-printlog "################## Date: $VERSIONDATE" REQ
-printlog "################## $label" REQ
+printlog "################## Start Installomator v. $VERSION, date $VERSIONDATE" REQ
+printlog "################## Version: $VERSION" INFO
+printlog "################## Date: $VERSIONDATE" INFO
+printlog "################## $label" INFO
 
 # Check for DEBUG mode
 if [[ $DEBUG -gt 0 ]]; then
