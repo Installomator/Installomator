@@ -368,8 +368,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     fi
 
     # macOS versioncheck
-    minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion)
-    if [[ $minimumOSversion =~ '[0-9.]*' ]]; then
+    minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion 2>/dev/null )
+    if [[ -n $minimumOSversion && $minimumOSversion =~ '[0-9.]*' ]]; then
         printlog "App has LSMinimumSystemVersion: $minimumOSversion"
         if ! is-at-least $minimumOSversion $installedOSversion; then
             printlog "App requires higher System Version than installed: $installedOSversion"
