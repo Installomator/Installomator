@@ -24,7 +24,7 @@ Later on a few more contributers came on the project:
 
 ## Support and Contributing
 
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files below `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the REAMDME.md file in the `utils` directory for detailed instructions.__
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files below `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the [README.md](utils/README.md) file in the `utils` directory for detailed instructions.__
 
 Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Go there for support questions.
 
@@ -34,6 +34,10 @@ Please see [CONTRIBUTING.md](https://github.com/Installomator/Installomator/blob
 
 ## More reading
 
+Our wiki:
+
+- [Wiki](https://github.com/Installomator/Installomator/wiki)
+
 There are a few interesting post on Installomator on Armin’s weblog:
 
 - [Introducing Installomator](https://scriptingosx.com/2020/05/introducing-installomator/)
@@ -41,23 +45,32 @@ There are a few interesting post on Installomator on Armin’s weblog:
 
 ## Background
 
-As a system engineer at [an Apple Authorized Enterprise Reseller](https://prowarehouse.nl), we manage a lot of Jamf instances.
+In the world of managing Apple Macs, organizations can have two different approaches to the management. Either the IT department will tightly manage and verify each piece of software, or they will just want the latest software to be deployed as fast as possible.
 
-Some of these instances are tightly managed, i.e. the versions of the operating system and third party software are controlled and updates will only be pushed with the management system when the administration and security team went through an approval process and then the update is automated. This is an important and valid workflow and the right fit for many deployments.
+OK, maybe some software should be tightly managed and others not, but you get the point.
+
+### Tightly managed
+
+If your solution needs to be tightly managed, i.e. the versions of the operating system and third party software are controlled and updates will only be pushed with the management system when the administration and security team went through an approval process and then the update is automated. This is an important and valid workflow and the right fit for many deployments.
 
 Installomator was _not_ written for these kinds of deployment.
 
 If you are running this kind of deployment, you want to use [AutoPkg](https://github.com/autopkg/autopkg) and you can stop reading here.
 
-There are other kinds of deployments, though. In these deployments the management system is merely used to "get the user ready" as quickly as possible when they set up a new machine, and to offer software from a self service portal. In these deployments, system and software installations are 'latest version available' and updates are user driven (though we do want to nag them).
+### Latest version always
 
-These deployments are
+There are other kinds of deployments, though. In these deployments the management system is merely used to “get the user ready” as quickly as possible when they set up a new machine, and to offer software from a self service portal. In these deployments, system and software installations are ‘latest version available’ and updates are user driven (though we do want to nag them and push them).
+
+Installomator can help with this.
+
+These deployments can be
 
 - user driven
 - low control
 - minimal maintenance effort
+- latest version is best
 
-These are mostly 'user controlled' Macs and we (the admins) just want to assist the user in doing the right thing. And the right thing is (often) to install the latest versions and updates when they are available.
+These can be 'user controlled' Macs and we (the admins) just want to assist the user in doing the right thing. And the right thing is (often) to install the latest versions and updates when they are available.
 
 The Mac App Store and software pushed through the Mac App Store follow this approach. When you manage and deploy software through the App Store — whether it is on iOS or macOS — neither the MacAdmin nor the user get a choice of the application version. They will get the latest version.
 
@@ -74,7 +87,15 @@ Some of these disadvantages can be seen as advantages in different setups. When 
 
 Because this is an attractive solution for _certain kinds_ of deployment, there are already many scripts out there that will download and install the latest version of a given software. And we have built and used quite a few in-house, as well. Most importantly, [William Smith has this script](https://gist.github.com/talkingmoose/a16ca849416ce5ce89316bacd75fc91a) which can be used to install several different Microsoft applications and bundles, because Microsoft has a nice unified URL scheme.
 
-At some point, earlier this year, I got frustrated at the number of scripts we were maintaining (or failing to). Also, my concern that most of the scripts weren't doing _any_ verification of the download was getting unbearable. So, I set out to write the one install script to rule them all...
+At some point, in 2018, Armin got frustrated at the number of scripts he was maintaining (or failing to). Also, his concern that most of the scripts weren’t doing _any_ verification of the download was getting unbearable. So, he set out to write _the one install script to rule them all…_
+
+### Locally installed
+
+So Armin made the version for Jamf Pro.
+
+Søren looked at this, and wanted this approach to work in Mosyle and Addigy, and for these solutions we need Installomator to be locally installed on. the Mac, and then the MDM can call this script from their scripts features. For some time Søren had a version of Installomator that was supplied with a notarized pkg, so it could be deployed as part of DEP or however was needed.
+
+This has now been merged into Installomator, and with contributions of Isaac and Adam, new features and labels have been added more frequently.
 
 ## Goals
 
@@ -84,6 +105,7 @@ The goals for Installomator are:
 - verify the downloaded archive or application
 - have a simple ‘interface’ to the admin
 - single script file so it can ‘easily’ be copied into a management system
+- signed and notarized pkg-installer for local installation
 - extensible without deep scripting knowledge
 - work independently of a specific management system
 - no dependencies that may be removed from macOS in the future or are not pre-installed
@@ -100,9 +122,9 @@ Installomator can work with the following common archive and installer types:
 
 When the download yields a pkg file, Installomator will run `installer` to install it on the current system.
 
-Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation.
+Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation. Owner can also be set to root/wheel.
 
-(I consider it a disgrace, that Jamf, after nearly 20 years, _still_ cannot deal with ‘drag’n drop installation dmgs’ natively. It's not _that_ hard.)
+(I consider it a disgrace, that Jamf, after nearly 20 years, _still_ cannot deal with ‘drag’n drop installation dmgs natively. It’s not _that_ hard.)
 
 ### Verify the download
 
@@ -119,7 +141,7 @@ When used to install software, Installomator has a single argument: the label or
 ./Installomator.sh firefox LOGO=jamf BLOCKING_PROCESS_ACTION=tell_user_then_kill NOTIFY=all
 ```
 
-There is a debug mode and one other setting that can be controlled with variables in the code. This simplifies the actual use of the script from within a management system.
+There is a debug mode and other settings that can be controlled with variables in the code. This simplifies the actual use of the script from within a management system.
 
 ### Extensible
 
@@ -144,19 +166,21 @@ googlechrome)
 
 When you know how to extract these pieces of information from the application and/or download, then you can add an application to Installomator.
 
-The script `buildCaseStatement.sh` can help with the label creation.
+The script `buildLabel.sh` can help with the label creation. Just server the URL to the script, and it will try to figure out things and write out a label as output. See [Wiki Tutorials](https://github.com/Installomator/Installomator/wiki#tutorials).
 
 Please note: Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed.
 
+Actually labels are part of a case-statement, and must be formatted accordingly.
+
 ### Not specific to a management system
 
-I wrote this script mainly for use with Jamf Pro, because that is what we use. For testing, you can run the script interactively from the command line. However, I have tried to keep anything that is specific to Jamf optional, or so flexible that it will work anywhere. Even if it does not work with your management system 'out of the box,' the adaptations should be straightforward.
+Armin wrote this script mainly for use with Jamf Pro, because that is what he used. For testing, you can run the script interactively from the command line. However, we have tried to keep anything that is specific to Jamf optional, or so flexible that it will work anywhere. Even if it does not work with your management system ‘out of the box’, the adaptations should be straightforward.
 
 Not all MDMs can include the full script, for those MDMs it might be more useful to install it on the client machines, and run it from there. So a PKG to be installed on client Macs is also provided here.
 
 ### No dependencies
 
-The script started out as a pure `sh` script, and when I needed arrays I 'switched' to `zsh`, because that is what [we can rely on being in macOS for the foreseeable future](https://scriptingosx.com/zsh). There are quite a few places where using python would have been easier and safer, but with the python 2 run-time being deprecated, that would have added a requirement for a Python 3 run-time to be installed. XML and JSON parsing would have been better with a tool like [scout](https://github.com/ABridoux/scout) or [jq](https://stedolan.github.io/jq/), but those would again require additional installations on the client before the script can run.
+The script started out as a pure `sh` script, and when arrays was needed it was ‘switched’ to `zsh`, because that is what [we can rely on being in macOS for the foreseeable future](https://scriptingosx.com/zsh). There are quite a few places where using python would have been easier and safer, but with the python 2 run-time being deprecated, that would have added a requirement for a Python 3 run-time to be installed. XML and JSON parsing would have been better with a tool like [scout](https://github.com/ABridoux/scout) or [jq](https://stedolan.github.io/jq/), but those would again require additional installations on the client before the script can run.
 
 Keeping the script as a `zsh` allows you to paste it into your management system's interface (and disable the DEBUG mode) and use it without requiring any other installations.
 
@@ -201,7 +225,7 @@ _Always remember_ to change the `DEBUG` variable to `0` when deploying. The inst
 
 ### Use Installomator with various MDM solutions
 
-In the wiki we have provided documentation on how Installomator is used in various MDM solution, like Jamf Pro, Mosyle, and Addigy.
+In the wiki we have provided documentation on how Installomator is used in various MDM solution, like [Jamf Pro](https://github.com/Installomator/Installomator/wiki/MDM:-Jamf-Pro), [Mosyle](https://github.com/Installomator/Installomator/wiki/MDM:-Mosyle-(Business,-Fuse,-and-Manager)), and [Addigy](https://github.com/Installomator/Installomator/wiki/MDM:-Addigy).
 
 ## What it does
 
@@ -209,7 +233,7 @@ When it runs with a known label, the script will perform the following:
 
 - Check the version installed with the version online. Only continue if it's different
 - download the latest version from the vendor
-- when the application is running, prompt the user to quit or cancel
+- when the application is running, prompt the user to quit or cancel (customizable)
 - dmg or zip archives:
     - extract the application and copy it to /Applications
     - change the owner of the application to the current user
@@ -217,7 +241,7 @@ When it runs with a known label, the script will perform the following:
     - when necessary, extract the pkg from the enclosing archive
     - install the pkg with the `installer` tool
 - clean up the downloaded files
-- notify the user
+- notify the user (also customizable)
 
 ## Configuring the script
 
