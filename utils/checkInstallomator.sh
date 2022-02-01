@@ -14,11 +14,14 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # MARK: Constants
 allLabels=( dbeaverce signal brave inkscape devonthink microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
 
-# dbeaverse: dmg without appNewVersion
+## Testing for combinations of these
+# Label types: dmg, pkg, zip, tbz, pkgInDmg, pkgInZip, appInDmgInZip
+# Label fields: packageID, appNewVersion, versionKey, appCustomVersion(){}, archiveName, appName, pkgName
+
+# dbeaverse: dmg without appNewVersion and does not have LSMinimumSystemVersion in Info.plist
 # signal: dmg with appNewVersion
 # brave: dmg with appNewVersion from versionKey
 # inkscape: dmg with appCustomVersion
-# adobecreativeclouddesktop: dmg with appNewVersion and installerTool
 # devonthink: appInDmgInZip
 # microsoftteams: pkg with appNewVersion from packageID
 # applenyfonts: pkgInDmg from Apple with packageID and no appNewVersion
@@ -26,6 +29,10 @@ allLabels=( dbeaverce signal brave inkscape devonthink microsoftteams applenyfon
 # sqlpropostgres: zip without appNewVersion
 # desktoppr: pkg from github with packageID
 # marathon: dmg from github with archiveName
+
+# Label types not possible to test in DEBUG mode: updateronly
+# Label fields not possible to test in DEBUG mode: targetDir, blockingProcesses, updateTool, updateToolRunAsCurrentUser, installerTool, CLIInstaller, CLIArguments
+# adobecreativeclouddesktop: dmg with appNewVersion and installerTool, CLIInstaller, CLIArguments
 
 
 #setup some folders
