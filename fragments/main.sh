@@ -65,6 +65,8 @@ if [[ ! -a "${LOGO}" ]]; then
 fi
 printlog "LOGO=${LOGO}"
 
+printlog "Label type: $type"
+
 # MARK: extract info from data
 if [ -z "$archiveName" ]; then
     case $type in
@@ -85,6 +87,7 @@ if [ -z "$archiveName" ]; then
             ;;
     esac
 fi
+printlog "archiveName: $archiveName" DEBUG
 
 if [ -z "$appName" ]; then
     # when not given derive from name

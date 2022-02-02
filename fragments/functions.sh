@@ -609,7 +609,7 @@ installFromPKG() {
         installFromPKG
     fi
 
-    if [ $pkginstallstatus -ne 0 ] ; then
+    if [[ $pkginstallstatus -ne 0 ]] ; then
     #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
         cleanupAndExit 9 "Error installing $archiveName error:\n$logoutput" ERROR
     fi
