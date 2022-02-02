@@ -6,6 +6,7 @@
 - New variable `RETURN_LABEL_NAME`. If given the value `1`, like `RETURN_LABEL_NAME=1` then Installomator only returns the name of the label. It makes for a better user friendly message for displaying in DEPNotify if that is integrated.
 - Changed logic if `IGNORE_APP_STORE_APPS=yes`. Before this version a label like `microsoftonedrive` that was installed from App Store, and that we want to replace with the “ordinary” version, Installomator would still use `updateTool`, even though `IGNORE_APP_STORE_APPS=yes`. So we would have to have `INSTALL=force` in order to have the app replaced, as `updateTool` would be used. But now if `IGNORE_APP_STORE_APPS=yes` then `updateTool` will be not set, and the App Store app will be replaced. BUT if the installed software was not from App Store, then `updateTool` will not be used, and it would be a kind of a forced install (in the example of `microsoftonedrive`), except if the version is the same (where installation is skipped).
 - Added variable `SYSTEMOWNER` that is used when copying files when installing. Default `0` is to change owner of the app to the current user on the Mac, like this user was installing this app themselves. When using `1` we will put “root:wheel” on the app, which can be useful for shared machines.
+- Added option `curlOptions` to the labels. It can be filled with extra headers need for downloading the specific software. It needs to be an array, like `curlOptions=( )`. See “mocha”-software-labels. 
 
 ## v8.0
 

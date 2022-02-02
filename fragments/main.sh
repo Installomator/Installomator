@@ -168,7 +168,7 @@ fi
 if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
     printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
-    # download the dmg
+    # download
     printlog "Downloading $downloadURL to $archiveName"
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
         printlog "notifying"
@@ -178,7 +178,7 @@ else
             displaynotification "Downloading new $name" "Download in progress …"
         fi
     fi
-    if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
+    if ! curl -fsL ${curlOptions} "$downloadURL" -o "$archiveName"; then
         printlog "error downloading $downloadURL"
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
