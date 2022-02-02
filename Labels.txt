@@ -22,6 +22,7 @@ anydesk
 apparency
 appcleaner
 applenyfonts
+applesfarabic
 applesfcompact
 applesfmono
 applesfpro
@@ -72,6 +73,7 @@ cormorant
 craftmanager
 cryptomator
 cyberduck
+daisydisk
 dangerzone
 darktable
 dbeaverce
@@ -84,6 +86,7 @@ devonthink
 dialog
 dialpad
 discord
+diskspace
 docker
 drift
 dropbox
@@ -110,6 +113,7 @@ firefoxesr_intl
 firefoxesrpkg
 firefoxpkg
 flowjo
+flux
 front
 fsmonitor
 gimp
@@ -136,7 +140,9 @@ hazel
 hpeasyadmin
 hpeasystart
 hyper
+ibarcoder
 icons
+iina
 imazingprofileeditor
 inkscape
 insomnia
@@ -145,6 +151,7 @@ installomator_theile
 intellijideace
 istatmenus
 iterm2
+itsycal
 jabradirect
 jamfconnect
 jamfconnectconfiguration
@@ -177,6 +184,7 @@ libreoffice
 logitechoptions
 logseq
 loom
+lowprofile
 lucifer
 lulu
 maccyapp
@@ -211,6 +219,12 @@ microsoftvisualstudiocode
 microsoftword
 microsoftyammer
 miro
+mobikinassistantforandroid
+mochakeyboard
+mochatelnet
+mochatn3270
+mochatn3812
+mochatn5250
 montereyblocker
 mowgliiitsycal
 musescore
@@ -242,6 +256,7 @@ ottomatic
 overflow
 pacifist
 pandoc
+paretosecurity
 parsec
 pdfsam
 perimeter81
@@ -251,16 +266,21 @@ platypus
 plisteditpro
 postman
 prism9
+pritunl
 privileges
 proctortrack
 promiseutilityr
+protonvpn
 proxyman
 pycharmce
 pymol
 r
 ramboxce
+rancherdesktop
 rectangle
 redeye
+remotedesktopmanagerenterprise
+remotedesktopmanagerfree
 remotix
 remotixagent
 resiliosynchome
@@ -280,6 +300,8 @@ scaleft
 screamingfrogseospider
 screencloudplayer
 screenflick
+sdnotary
+secretive
 sequelpro
 sfsymbols
 shield
@@ -314,6 +336,7 @@ suspiciouspackage
 swiftruntimeforcommandlinetools
 sync
 tableaudesktop
+tableaupublic
 tableaureader
 tageditor
 talkdeskcallbar
@@ -343,7 +366,7 @@ utm
 vagrant
 vanilla
 veracrypt
-virtualbox
+vimac
 viscosity
 visualstudiocode
 vivaldi
@@ -376,4 +399,5 @@ zoomrooms
 zulujdk11
 zulujdk13
 zulujdk15
+zulujdk17
 zulujdk8
