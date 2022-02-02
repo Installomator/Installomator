@@ -269,6 +269,7 @@ prism9
 pritunl
 privileges
 proctortrack
+promiseutility
 promiseutilityr
 protonvpn
 proxyman
