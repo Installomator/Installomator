@@ -461,7 +461,9 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         if [ -e "$targetDir/$appName" ]; then
             printlog "Removing existing $targetDir/$appName" DEBUG
             deleteAppOut=$(rm -Rfv "$targetDir/$appName" 2>&1)
-            deleteAppOut=$(echo $deleteAppOut | cut -c 1-80)
+            tempName="$targetDir/$appName"
+            tempNameLength=$((${#tempName} + 10))
+            deleteAppOut=$(echo $deleteAppOut | cut -c 1-$tempNameLength)
             deduplicatelogs "$deleteAppOut"
             printlog "Debugging enabled, App removing output was:\n$logoutput" DEBUG
         fi
