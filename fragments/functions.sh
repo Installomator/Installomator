@@ -1,23 +1,26 @@
 # MARK: Functions
 
-cleanupAndExit() { # $1 = exit code, $2 message
-    if [[ -n $2 && $1 -ne 0 ]]; then
-        printlog "ERROR: $2"
-    fi
+cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     if [ "$DEBUG" -ne 1 ]; then
         # remove the temporary working directory when done
-        printlog "Deleting $tmpDir"
-        rm -Rf "$tmpDir"
+        printlog "Deleting $tmpDir" DEBUG
+        deleteTmpOut=$(rm -Rfv "$tmpDir")
+        printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
     if [ -n "$dmgmount" ]; then
         # unmount disk image
-        printlog "Unmounting $dmgmount"
-        hdiutil detach "$dmgmount"
+        printlog "Unmounting $dmgmount" DEBUG
+        unmountingOut=$(hdiutil detach "$dmgmount" 2>&1)
+        printlog "Debugging enabled, Unmounting output was:\n$unmountingOut" DEBUG
     fi
     # If we closed any processes, reopen the app again
     reopenClosedProcess
-    printlog "################## End Installomator, exit code $1 \n\n"
+    if [[ -n $2 && $1 -ne 0 ]]; then
+        printlog "ERROR: $2" $3
+    fi
+    printlog "################## End Installomator, exit code $1 \n\n" REQ
+    
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
         1=0
@@ -68,15 +71,99 @@ displaynotification() { # $1: message $2: title
 # MARK: Logging
 log_location="/private/var/log/Installomator.log"
 
-printlog(){
+# Check if we're in debug mode, if so then set logging to DEBUG, otherwise default to INFO
+# if no log level is specified.
+if [[ $DEBUG -ne 0 ]]; then
+    LOGGING=DEBUG
+elif [[ -z $LOGGING ]]; then
+    LOGGING=INFO
+    datadogLoggingLevel=INFO
+fi
 
+# Associate logging levels with a numerical value so that we are able to identify what
+# should be removed. For example if the LOGGING=ERROR only printlog statements with the
+# level REQ and ERROR will be displayed. LOGGING=DEBUG will show all printlog statements.
+# If a printlog statement has no level set it's automatically assigned INFO.
+
+declare -A levels=(DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4)
+
+# If we are able to detect an MDM URL (Jamf Pro) or another identifier for a customer/instance we grab it here, this is useful if we're centrally logging multiple MDM instances.
+if [[ -f /Library/Preferences/com.jamfsoftware.jamf.plist ]]; then
+    mdmURL=$(defaults read /Library/Preferences/com.jamfsoftware.jamf.plist jss_url)
+elif [[ -n "$MDMProfileName" ]]; then
+    mdmURL=$(sudo profiles show | grep -A3 "$MDMProfileName" | sed -n -e 's/^.*organization: //p')
+else
+    mdmURL="Unknown"
+fi
+
+# Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
+SESSION=$RANDOM
+
+printlog(){
+    [ -z "$2" ] && 2=INFO
+    log_message=$1
+    log_priority=$2
     timestamp=$(date +%F\ %T)
 
-    if [[ "$(whoami)" == "root" ]]; then
-        echo "$timestamp" "$label" "$1" | tee -a $log_location
-    else
-        echo "$timestamp" "$label" "$1"
+    # Check to make sure that the log isn't the same as the last, if it is then don't log and increment a timer.
+    if [[ ${log_message} == ${previous_log_message} ]];then
+        let logrepeat=$logrepeat+1
+        return
     fi
+
+    previous_log_message=$log_message
+
+    # Once we finally stop getting duplicate logs output the number of times we got a duplicate.
+    if [[ $logrepeat -gt 1 ]];then
+        echo "$timestamp" : "${log_priority} : $label : Last Log repeated ${logrepeat} times" | tee -a $log_location
+
+        if [[ ! -z $datadogAPI ]]; then
+            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSION : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
+        fi
+        logrepeat=0
+    fi
+
+    # If the datadogAPI key value is set and our logging level is greaterthan or equal to our set level
+    # then post to Datadog's HTTPs endpoint.
+    if [[ -n $datadogAPI && ${levels[$log_priority]} -ge ${levels[$datadogLoggingLevel]} ]]; then
+        while IFS= read -r logmessage; do
+            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" > /dev/null
+        done <<< "$log_message"
+    fi
+
+    # If our logging level is greaterthan or equal to our set level then output locally.
+    if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
+        while IFS= read -r logmessage; do
+            if [[ "$(whoami)" == "root" ]]; then
+                echo "$timestamp" : "${log_priority} : $label : ${logmessage}" | tee -a $log_location
+            else
+                echo "$timestamp" : "${log_priority} : $label : ${logmessage}"
+            fi
+        done <<< "$log_message"
+    fi
+}
+
+# Used to remove dupplicate lines in large log output, for example from msupdate command
+# after it finishes running.
+deduplicatelogs() {
+    loginput=${1:-"Log"}
+    logoutput=""
+    # Read each line of the incoming log individually, match it with the previous.
+    # If it matches increment logrepeate then skip to the next line.
+    while read log; do
+        if [[ $log == $previous_log ]];then
+            let logrepeat=$logrepeat+1
+            continue
+        fi
+
+        previous_log="$log"
+        if [[ $logrepeat -gt 1 ]];then
+            logoutput+="Last Log repeated ${logrepeat} times\n"
+            logrepeat=0
+        fi
+
+        logoutput+="$log\n"
+    done <<< "$loginput"
 }
 
 # will get the latest release download from a github repo
@@ -100,8 +187,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
     fi
     if [ -z "$downloadURL" ]; then
-        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame"
-        #exit 9
+        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
     else
         echo "$downloadURL"
         return 0
@@ -169,9 +255,9 @@ getAppVersion() {
         applist=$(mdfind "kind:application $appName" -0 )
     fi
     if [[ -z applist ]]; then
-        printlog "No previous app found"
+        printlog "No previous app found" DEBUG
     else
-        printlog "App(s) found: ${applist}"
+        printlog "App(s) found: ${applist}" DEBUG
     fi
 
     appPathArray=( ${(0)applist} )
@@ -191,7 +277,7 @@ getAppVersion() {
                     printlog "Replacing App Store apps, no matter the version"
                     appversion=0
                 else
-                    cleanupAndExit 1 "App previously installed from App Store, and we respect that"
+                    cleanupAndExit 1 "App previously installed from App Store, and we respect that" ERROR
                 fi
             fi
         else
@@ -205,7 +291,7 @@ getAppVersion() {
 checkRunningProcesses() {
     # don't check in DEBUG mode 1
     if [[ $DEBUG -eq 1 ]]; then
-        printlog "DEBUG mode 1, not checking for blocking processes"
+        printlog "DEBUG mode 1, not checking for blocking processes" DEBUG
         return
     fi
 
@@ -238,7 +324,7 @@ checkRunningProcesses() {
                     prompt_user|prompt_user_then_kill)
                       button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
-                        cleanupAndExit 10 "user aborted update"
+                        cleanupAndExit 10 "user aborted update" ERROR
                       else
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
@@ -283,7 +369,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
-                      cleanupAndExit 12 "blocking process '$x' found, aborting"
+                      cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
                 esac
 
@@ -294,10 +380,10 @@ checkRunningProcesses() {
     done
 
     if [[ $countedProcesses -ne 0 ]]; then
-        cleanupAndExit 11 "could not quit all processes, aborting..."
+        cleanupAndExit 11 "could not quit all processes, aborting..." ERROR
     fi
 
-    printlog "no more blocking processes, continue with update"
+    printlog "no more blocking processes, continue with update" REQ
 }
 
 reopenClosedProcess() {
@@ -312,7 +398,7 @@ reopenClosedProcess() {
 
     # don't reopen in DEBUG mode 1
     if [[ $DEBUG -eq 1 ]]; then
-        printlog "DEBUG mode 1, not reopening anything"
+        printlog "DEBUG mode 1, not reopening anything" DEBUG
         return
     fi
 
@@ -325,7 +411,7 @@ reopenClosedProcess() {
         processuser=$(ps aux | grep -i "${appName}" | grep -vi "grep" | awk '{print $1}')
         printlog "Reopened ${appName} as $processuser"
     else
-        printlog "App not closed, so no reopen."
+        printlog "App not closed, so no reopen." DEBUG
     fi
 }
 
@@ -335,19 +421,25 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # check if app exists
     if [ ! -e "$appPath" ]; then
-        cleanupAndExit 8 "could not find: $appPath"
+        cleanupAndExit 8 "could not find: $appPath" DEBUG
     fi
 
     # verify with spctl
-    printlog "Verifying: $appPath"
-    if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
-        cleanupAndExit 4 "Error verifying $appPath"
-    fi
+    printlog "Verifying: $appPath" INFO
+    appVerify=$(spctl -a -vv "$appPath" 2>&1 )
+    appVerifyStatus=$(echo $?)
+    teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
+    deduplicatelogs "$appVerify"
 
-    printlog "Team ID matching: $teamID (expected: $expectedTeamID )"
+    if [[ $appVerifyStatus -ne 0 ]] ; then
+    #if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
+        cleanupAndExit 4 "Error verifying $appPath error:\n$logoutput" ERROR
+    fi
+    printlog "Debugging enabled, App Verification output was:\n$logoutput" DEBUG
+    printlog "Team ID matching: $teamID (expected: $expectedTeamID )" INFO
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        cleanupAndExit 5 "Team IDs do not match"
+        cleanupAndExit 5 "Team IDs do not match" ERROR
     fi
 
     # app versioncheck
@@ -360,7 +452,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
             fi
-            cleanupAndExit 0 "No new version to install"
+            cleanupAndExit 0 "No new version to install" INFO
         else
             printlog "Using force to install anyway."
         fi
@@ -379,19 +471,19 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "Error updating $name!"
             fi
-            cleanupAndExit 6 "Installed macOS is too old for this app."
+            cleanupAndExit 6 "Installed macOS is too old for this app." INFO
         fi
     fi
 
     # skip install for DEBUG 1
     if [ "$DEBUG" -eq 1 ]; then
-        printlog "DEBUG mode 1 enabled, skipping remove, copy and chown steps"
+        printlog "DEBUG mode 1 enabled, skipping remove, copy and chown steps" DEBUG
         return 0
     fi
 
     # skip install for DEBUG 2
     if [ "$DEBUG" -eq 2 ]; then
-        printlog "DEBUG mode 2 enabled, exiting"
+        printlog "DEBUG mode 2 enabled, not installing anything, exiting" DEBUG
         cleanupAndExit 0
     fi
 
@@ -400,14 +492,15 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # remove existing application
         if [ -e "$targetDir/$appName" ]; then
-            printlog "Removing existing $targetDir/$appName"
-            rm -Rf "$targetDir/$appName"
+            printlog "Removing existing $targetDir/$appName" DEBUG
+            deleteAppOut=$(rm -Rfv "$targetDir/$appName" 2>&1)
+            printlog "Debugging enabled, App removing output was:\n$deleteAppOut" DEBUG
         fi
 
         # copy app to /Applications
         printlog "Copy $appPath to $targetDir"
         if ! ditto "$appPath" "$targetDir/$appName"; then
-            cleanupAndExit 7 "Error while copying"
+            cleanupAndExit 7 "Error while copying" ERROR
         fi
 
         # set ownership to current user
@@ -415,24 +508,24 @@ installAppWithPath() { # $1: path to app to install in $targetDir
             printlog "Changing owner to $currentUser"
             chown -R "$currentUser" "$targetDir/$appName"
         else
-            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel"
+            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel" 
             chown -R root:wheel "$targetDir/$appName"
         fi
 
     elif [[ ! -z $CLIInstaller ]]; then
         mountname=$(dirname $appPath)
-        printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" #INFO
+        printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" INFO
 
         CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
         CLIstatus=$(echo $?)
-        logoutput="$CLIoutput" # dedupliatelogs "$CLIoutput"
+        dedupliatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
-            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" #ERROR
+            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
         else
-            printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments"
+            printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments" INFO
         fi
-        printlog "Debugging enabled, update tool output was:\n$logoutput" #DEBUG
+        printlog "Debugging enabled, update tool output was:\n$logoutput" DEBUG
     fi
 
 }
@@ -441,16 +534,22 @@ mountDMG() {
     # mount the dmg
     printlog "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
-    if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
-        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName"
+    dmgmountOut=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly )
+    dmgmountStatus=$(echo $?)
+    dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
+    printlog "dmgmountOut is $dmgmountOut" DEBUG
+    deduplicatelogs "$dmgmountOut"
+    
+    if [[ $dmgmountStatus -ne 0 ]] ; then
+    #if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+        cleanupAndExit 3 "Error mounting $tmpDir/$archiveName error:\n$logoutput" ERROR
     fi
-
     if [[ ! -e $dmgmount ]]; then
-        printlog "Error mounting $tmpDir/$archiveName"
-        cleanupAndExit 3
+        cleanupAndExit 3 "Error accessing mountpoint for $tmpDir/$archiveName error:\n$logoutput" ERROR
     fi
-
-    printlog "Mounted: $dmgmount"
+    printlog "Debugging enabled, installer output was:\n$logoutput" DEBUG
+    
+    printlog "Mounted: $dmgmount" INFO
 }
 
 installFromDMG() {
@@ -462,24 +561,26 @@ installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
 
-    if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
-        printlog "Error verifying $archiveName"
-        cleanupAndExit 4
+    spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
+    spctlStatus=$(echo $?)
+    printlog "spctlOut is $spctlOut" DEBUG
+    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+    deduplicatelogs "$spctlOut"
+    
+    if [[ $spctlStatus -ne 0 ]] ; then
+    #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
+        cleanupAndExit 4 "Error verifying $archiveName error:\n$logoutput" ERROR
     fi
-
-    teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
 
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
         teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
     fi
 
-
     printlog "Team ID: $teamID (expected: $expectedTeamID )"
 
     if [ "$expectedTeamID" != "$teamID" ]; then
-        printlog "Team IDs do not match!"
-        cleanupAndExit 5
+        cleanupAndExit 5 "Team IDs do not match!" ERROR
     fi
 
     # Check version of pkg to be installed if packageID is set
@@ -499,7 +600,7 @@ installFromPKG() {
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No new version to install"
+                cleanupAndExit 0 "No new version to install" INFO
             else
                 printlog "Using force to install anyway."
             fi
@@ -508,22 +609,38 @@ installFromPKG() {
 
     # skip install for DEBUG 1
     if [ "$DEBUG" -eq 1 ]; then
-        printlog "DEBUG enabled, skipping installation"
+        printlog "DEBUG enabled, skipping installation" DEBUG
         return 0
     fi
 
     # skip install for DEBUG 2
     if [ "$DEBUG" -eq 2 ]; then
-        printlog "DEBUG mode 2 enabled, exiting"
-        cleanupAndExit 0
+        cleanupAndExit 0 "DEBUG mode 2 enabled, exiting" DEBUG
     fi
 
     # install pkg
     printlog "Installing $archiveName to $targetDir"
-    if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
-        printlog "error installing $archiveName"
-        cleanupAndExit 9
+    pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+    pkgInstallStatus=$(echo $?)
+    sleep 1
+    pkgEndTime=$(date "+$LogDateFormat")
+    pkgInstall+=$(echo "Output of /var/log/install.log below this line.\n")
+    pkgInstall+=$(echo "----------------------------------------------------------\n")
+    pkgInstall+=$(awk -v "b=$starttime" -v "e=$pkgEndTime" -F ',' '$1 >= b && $1 <= e' /var/log/install.log)
+    deduplicatelogs "$pkgInstall"
+
+    if [[ $pkgInstallStatus -ne 0 ]] && [[ $logoutput == *"requires Rosetta 2"* ]] && [[ $rosetta2 == no ]]; then
+        printlog "Package requires Rosetta 2, Installing Rosetta 2 and Installing Package" INFO
+        /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+        rosetta2=yes
+        installFromPKG
     fi
+
+    if [ $pkginstallstatus -ne 0 ] ; then
+    #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
+        cleanupAndExit 9 "Error installing $archiveName error:\n$logoutput" ERROR
+    fi
+    printlog "Debugging enabled, installer output was:\n$logoutput" DEBUG
 }
 
 installFromZIP() {
@@ -559,7 +676,7 @@ installPkgInDmg() {
         findfiles=$(find "$dmgmount" -iname "*.pkg" -maxdepth 1  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in dmg $archiveName"
+            cleanupAndExit 20 "couldn't find pkg in dmg $archiveName" ERROR
         fi
         archiveName="${filearray[1]}"
         printlog "found pkg: $archiveName"
@@ -571,7 +688,7 @@ installPkgInDmg() {
             findfiles=$(find "$tmpDir" -iname "$pkgName")
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName"
+                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
@@ -594,7 +711,7 @@ installPkgInZip() {
         findfiles=$(find "$tmpDir" -iname "*.pkg" -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in zip $archiveName"
+            cleanupAndExit 20 "couldn't find pkg in zip $archiveName" ERROR
         fi
         # it is now safe to overwrite archiveName for installFromPKG
         archiveName="${filearray[1]}"
@@ -607,7 +724,7 @@ installPkgInZip() {
             findfiles=$(find "$tmpDir" -iname "$pkgName")
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName"
+                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
@@ -630,7 +747,7 @@ installAppInDmgInZip() {
         findfiles=$(find "$tmpDir" -iname "*.dmg" -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find dmg in zip $archiveName"
+            cleanupAndExit 20 "couldn't find dmg in zip $archiveName" ERROR
         fi
         archiveName="$(basename ${filearray[1]})"
         # it is now safe to overwrite archiveName for installFromDMG
@@ -649,12 +766,29 @@ runUpdateTool() {
     if [[ -x $updateTool ]]; then
         printlog "running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
-            runAsUser $updateTool ${updateToolArguments}
+            updateOutput=$(runAsUser $updateTool ${updateToolArguments} 2>&1)
+            updateStatus=$(echo $?)
         else
-            $updateTool ${updateToolArguments}
+            updateOutput=$($updateTool ${updateToolArguments} 2>&1)
+            updateStatus=$(echo $?)
         fi
-        if [[ $? -ne 0 ]]; then
-            cleanupAndExit 15 "Error running $updateTool"
+        sleep 1
+        updateEndTime=$(date "+$updateToolLogDateFormat")
+        deduplicatelogs $updateOutput
+        if [[ -n $updateToolLog ]]; then
+            updateOutput+=$(echo "Output of Installer log of $updateToolLog below this line.\n")
+            updateOutput+=$(echo "----------------------------------------------------------\n")
+            updateOutput+=$(awk -v "b=$updatestarttime" -v "e=$updateEndTime" -F ',' '$1 >= b && $1 <= e' $updateToolLog)
+        fi
+
+        if [[ $updateStatus -ne 0 ]]; then
+            printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updateStatus Error:\n$logoutput" WARN
+            return 1
+            if [[ $type == updateronly ]]; then
+                cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" WARN
+            fi
+        elif [[ $updateStatus -eq 0 ]]; then
+            printlog "Debugging enabled, update tool output was:\n$logoutput" DEBUG
         fi
     else
         printlog "couldn't find $updateTool, continuing normally"

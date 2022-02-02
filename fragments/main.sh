@@ -35,14 +35,17 @@ case $LOGO in
     mosyleb)
         # Mosyle Business
         LOGO="/Applications/Self-Service.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Mosyle Corporation MDM"; fi
         ;;
     mosylem)
         # Mosyle Manager (education)
         LOGO="/Applications/Manager.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Mosyle Corporation MDM"; fi
         ;;
     addigy)
         # Addigy
         LOGO="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
@@ -112,7 +115,7 @@ else
 fi
 
 # MARK: change directory to temporary working directory
-printlog "Changing directory to $tmpDir"
+printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
     printlog "error changing directory $tmpDir"
     cleanupAndExit 1
@@ -169,7 +172,7 @@ if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
     printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
     # download
-    printlog "Downloading $downloadURL to $archiveName"
+    printlog "Downloading $downloadURL to $archiveName" REQ
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
         printlog "notifying"
         if [[ $updateDetected == "YES" ]]; then
@@ -178,18 +181,23 @@ else
             displaynotification "Downloading new $name" "Download in progress …"
         fi
     fi
-    if ! curl -fsL ${curlOptions} "$downloadURL" -o "$archiveName"; then
+    curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+    curlDownloadStatus=$(echo $?)
+    deduplicatelogs "$curlDownload"
+    printlog "curl output was: $logoutput" DEBUG
+    if [[ $curlDownloadStatus -ne 0 ]]; then
+    #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
         printlog "error downloading $downloadURL"
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
             if [[ $updateDetected == "YES" ]]; then
-                displaynotification "$message" "Error updating $name"
+                displaynotification "$message" "Error updating $name" ERROR
             else
-                displaynotification "$message" "Error installing $name"
+                displaynotification "$message" "Error installing $name" ERROR
             fi
         fi
-        cleanupAndExit 2
+        cleanupAndExit 2 "Error downloading $downloadURL error: $logoutput" ERROR
     fi
 fi
 
@@ -207,7 +215,7 @@ else
 fi
 
 # MARK: install the download
-printlog "Installing $name"
+printlog "Installing $name" REQ
 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
     if [[ $updateDetected == "YES" ]]; then
@@ -219,7 +227,7 @@ fi
 
 if [ -n "$installerTool" ]; then
     # installerTool defined, and we use that for installation
-    printlog "installerTool used: $installerTool"
+    printlog "installerTool used: $installerTool" REQ
     appName="$installerTool"
 fi
 

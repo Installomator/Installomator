@@ -252,3 +252,40 @@ REOPEN="yes"
 #   installer that should be located after mounting/expanding the downloaded archive.
 #   See label adobecreativeclouddesktop
 #
+### Logging
+# Logging behavior
+LOGGING=""
+# options:
+#   - DEBUG     Everything is logged
+#   - INFO      (default) normal logging level
+#   - WARN      only warning
+#   - ERROR     only errors
+#   - REQ       ????
+
+# MDM profile name
+MDMProfileName=""
+# options:
+#   - MDM Profile               Addigy has this name on the profile
+#   - Mosyle Corporation MDM    Mosyle uses this name on the profile
+# From the LOGO variable we can know if Addigy og Mosyle is used, so if that variable
+# is either of these, and this variable is empty, then we will auto detect this.
+
+# Datadog logging used
+datadogAPI=""
+# Simply add your own API key for this in order to have logs sent to Datadog
+# See more here: https://www.datadoghq.com/product/log-management/
+
+# Log Date format used when parsing logs for debugging, this is the default used by
+# install.log, override this in the case statements if you need something custom per
+# application (See adobeillustrator).  Using stadard GNU Date formatting.
+LogDateFormat="%Y-%m-%d %H:%M:%S"
+
+# Get the start time for parsing install.log if we fail.
+starttime=$(date "+$LogDateFormat")
+
+# Check if we have rosetta installed
+if [[ $(/usr/bin/arch) == "arm64" ]]; then
+    if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then # pgrep oahd >/dev/null 2>&1
+        rosetta2=no
+    fi
+fi
