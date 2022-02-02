@@ -12,7 +12,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 
 # MARK: Constants
-allLabels=( dbeaverce signal brave inkscape devonthink microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
+allLabels=( dbeaverce signal mochatn3270 eshareosx googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
 
 ## Testing for combinations of these
 # Label types: dmg, pkg, zip, tbz, pkgInDmg, pkgInZip, appInDmgInZip
@@ -20,9 +20,14 @@ allLabels=( dbeaverce signal brave inkscape devonthink microsoftteams applenyfon
 
 # dbeaverse: dmg without appNewVersion and does not have LSMinimumSystemVersion in Info.plist
 # signal: dmg with appNewVersion
+# mochatn3270: appInDmgInZip with curlOptions
+# eshareosx: with packageID, versionKey, and appNewVerseion
+# googlechrome: with appNewVersion
 # brave: dmg with appNewVersion from versionKey
+# macports: with custom code for archiveName, and with appNewVersion and appCustomVersion
 # inkscape: dmg with appCustomVersion
 # devonthink: appInDmgInZip
+# omnidisksweeper: with appNewVersion, and uses xpath
 # microsoftteams: pkg with appNewVersion from packageID
 # applenyfonts: pkgInDmg from Apple with packageID and no appNewVersion
 # sketch: zip with appNewVersion
@@ -32,8 +37,8 @@ allLabels=( dbeaverce signal brave inkscape devonthink microsoftteams applenyfon
 
 # Label types not possible to test in DEBUG mode: updateronly
 # Label fields not possible to test in DEBUG mode: targetDir, blockingProcesses, updateTool, updateToolRunAsCurrentUser, installerTool, CLIInstaller, CLIArguments
-# adobecreativeclouddesktop: dmg with appNewVersion and installerTool, CLIInstaller, CLIArguments
 
+# adobecreativeclouddesktop: dmg with appNewVersion and installerTool, CLIInstaller, CLIArguments
 
 #setup some folders
 script_dir=$(dirname ${0:A})
@@ -50,6 +55,12 @@ if [[ $(sw_vers -buildVersion ) < "18" ]]; then
     exit 98
 fi
 
+echo "TESTING Installoamator"
+echo "Version: $($repo_dir/assemble.sh version)\n"
+echo "\nRemember to follow log in another terminal window:"
+echo "tail -f /var/log/Installomator.log\n"
+
+
 currentUser=$(stat -f "%Su" /dev/console)
 
 RED='\033[0;31m'
@@ -60,6 +71,43 @@ NC='\033[0m' # No Color
 countWarning=0
 countError=0
 
+mostWorkAndCheck() {
+    no_appNewVersion=$( echo $cmd_output | grep -ic "Latest version not specified." )
+    echo "No appNewVersion: $no_appNewVersion (1 for no)"
+    latest_appNewVersion=$( echo $cmd_output | grep -i "Latest version of " | sed -E 's/.* is ([0-9.]*),*.*$/\1/g' )
+    echo "Latest version: $latest_appNewVersion"
+    github_label=$( echo $cmd_output | grep -ci "Downloading https://github.com" )
+    echo "GitHub: $github_label (1 for true)"
+    downloaded_version=$( echo $cmd_output | grep -ioE "Downloaded (package.*version|version of.*is) [0-9.]*" | grep -v "is the same as installed" | sed -E 's/.* (is|version) ([0-9.]*).*/\2/g' )
+    echo "Downloaded version: $downloaded_version"
+    exit_status=$( echo $cmd_output | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+    echo "Exit: $exit_status"
+    if [[ ${exit_status} -eq 0 ]] ; then
+        if [[ $no_appNewVersion -eq 1 ]]; then
+            echo "${GREEN}$label works fine, but no appNewVersion.${NC}"
+        elif [[ $latest_appNewVersion == $downloaded_version && $github_label -eq 0 ]]; then
+            echo "${GREEN}$label works fine, with version $latest_appNewVersion.${NC}"
+        elif [[ $github_label -eq 1 ]]; then
+            echo "${GREEN}$label works fine, with GitHub version $latest_appNewVersion.${NC}"
+        elif [[ $latest_appNewVersion != $downloaded_version && $github_label -eq 0 ]]; then
+            echo "${YELLOW}$label has version warning, with latest $latest_appNewVersion not matching downloaded $downloaded_version.${NC}"
+            ((countWarning++))
+            echo "$cmd_output"
+        else
+            echo "${RED}$label NOT WORKING:${NC}"
+            ((countError++))
+            errorLabels+=( "$label" )
+            echo "$cmd_output"
+        fi
+    else
+        echo "${RED}$label NOT WORKING:${NC}"
+        ((countError++))
+        errorLabels+=( "$label" )
+        echo "$cmd_output"
+    fi
+}
+
+# Mark: First part in DEBUG mode
 for label in $allLabels; do
     label_name=$( $repo_dir/assemble.sh $label DEBUG=2 RETURN_LABEL_NAME=1 | tail -1 )
     if [[ "$label_name" == "#" ]]; then
@@ -68,39 +116,34 @@ for label in $allLabels; do
         echo "Label $label: $label_name"
         cmd_output=$( $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force IGNORE_APP_STORE_APPS=yes BLOCKING_PROCESS_ACTION=ignore )
         #echo "$cmd_output"
-        no_appNewVersion=$( echo $cmd_output | grep -ic "Latest version not specified." )
-        echo "No appNewVersion: $no_appNewVersion (1 for no)"
-        latest_appNewVersion=$( echo $cmd_output | grep -i "Latest version of " | sed -E 's/.* is ([0-9.]*),*.*$/\1/g' )
-        echo "Latest version: $latest_appNewVersion"
-        github_label=$( echo $cmd_output | grep -ci "Downloading https://github.com" )
-        echo "GitHub: $github_label (1 for true)"
-        downloaded_version=$( echo $cmd_output | grep -ioE "Downloaded (package.*version|version of.*is) [0-9.]*" | grep -v "is the same as installed" | sed -E 's/.* (is|version) ([0-9.]*).*/\2/g' )
-        echo "Downloaded version: $downloaded_version"
-        exit_status=$( echo $cmd_output | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
-        echo "Exit: $exit_status"
-        if [[ ${exit_status} -eq 0 ]] ; then
-            if [[ $no_appNewVersion -eq 1 ]]; then
-                echo "${GREEN}$label works fine, but no appNewVersion.${NC}"
-            elif [[ $latest_appNewVersion == $downloaded_version && $github_label -eq 0 ]]; then
-                echo "${GREEN}$label works fine, with version $latest_appNewVersion.${NC}"
-            elif [[ $github_label -eq 1 ]]; then
-                echo "${GREEN}$label works fine, with GitHub version $latest_appNewVersion.${NC}"
-            elif [[ $latest_appNewVersion != $downloaded_version && $github_label -eq 0 ]]; then
-                echo "${YELLOW}$label has version warning, with latest $latest_appNewVersion not matching downloaded $downloaded_version.${NC}"
-                ((countWarning++))
-                echo "$cmd_output"
-            else
-                echo "${RED}$label NOT WORKING:${NC}"
-                ((countError++))
-                errorLabels+=( "$label" )
-                echo "$cmd_output"
-            fi
-        else
-            echo "${RED}$label NOT WORKING:${NC}"
-            ((countError++))
-            errorLabels+=( "$label" )
-            echo "$cmd_output"
-        fi
+        mostWorkAndCheck
+        echo
+    fi
+done
+
+# Mark: Testing for real
+
+allLabelsArg=(
+"vlc"
+"depnotify NOTIFY=all"
+"brave NOTIFY=silent"
+)
+
+for labelArg in $allLabelsArg; do
+    echo $labelArg
+    label=$(echo $labelArg | cut -d" " -f1 )
+    arg1=$(echo $labelArg | cut -d" " -f2 )
+    arg2=$(echo $labelArg | cut -d" " -f3 )
+    label_name=$( $repo_dir/assemble.sh $label DEBUG=2 RETURN_LABEL_NAME=1 | tail -1 )
+    if [[ "$label_name" == "#" ]]; then
+        echo "${RED}Label $label does not exist. Skipping.${NC}"
+    else
+        echo "Label $label: $label_name"
+        cmd_output=$( sudo $repo_dir/assemble.sh $label $arg1 $arg2 DEBUG=0 LOGGING=DEBUG INSTALL=force BLOCKING_PROCESS_ACTION=quit )
+        #echo "$cmd_output"
+        argument_variables=$( echo $cmd_output | grep -i "setting variable from argument" | sed -E 's/.*setting variable from argument (.*)$/\1/g')
+        echo $argument_variables
+        mostWorkAndCheck
         echo
     fi
 done
