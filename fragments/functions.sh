@@ -1,19 +1,19 @@
 # MARK: Functions
 
 cleanupAndExit() { # $1 = exit code, $2 message, $3 level
-    if [ "$DEBUG" -ne 1 ]; then
-        # remove the temporary working directory when done
-        printlog "Deleting $tmpDir" DEBUG
-        deleteTmpOut=$(rm -Rfv "$tmpDir")
-        printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
-    fi
-
     if [ -n "$dmgmount" ]; then
         # unmount disk image
         printlog "Unmounting $dmgmount" DEBUG
         unmountingOut=$(hdiutil detach "$dmgmount" 2>&1)
         printlog "Debugging enabled, Unmounting output was:\n$unmountingOut" DEBUG
     fi
+    if [ "$DEBUG" -ne 1 ]; then
+        # remove the temporary working directory when done (only if DEBUG is not used)
+        printlog "Deleting $tmpDir" DEBUG
+        deleteTmpOut=$(rm -Rfv "$tmpDir")
+        printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
+    fi
+
     # If we closed any processes, reopen the app again
     reopenClosedProcess
     if [[ -n $2 && $1 -ne 0 ]]; then
