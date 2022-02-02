@@ -24,6 +24,7 @@ fi
 
 printlog "BLOCKING_PROCESS_ACTION=${BLOCKING_PROCESS_ACTION}"
 printlog "NOTIFY=${NOTIFY}"
+printlog "LOGGING=${LOGGING}"
 
 # Finding LOGO to use in dialogs
 case $LOGO in
@@ -191,7 +192,6 @@ else
     curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
     curlDownloadStatus=$(echo $?)
     deduplicatelogs "$curlDownload"
-    printlog "curl output was: $logoutput" DEBUG
     if [[ $curlDownloadStatus -ne 0 ]]; then
     #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
         printlog "error downloading $downloadURL"
@@ -204,8 +204,9 @@ else
                 displaynotification "$message" "Error installing $name" ERROR
             fi
         fi
-        cleanupAndExit 2 "Error downloading $downloadURL error: $logoutput" ERROR
+        cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
     fi
+    printlog "curl output was:\n$logoutput" DEBUG
 fi
 
 # MARK: when user is logged in, and app is running, prompt user to quit app

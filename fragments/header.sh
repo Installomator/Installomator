@@ -266,7 +266,7 @@ IGNORE_DND_APPS=""
 #
 ### Logging
 # Logging behavior
-LOGGING=""
+LOGGING="INFO"
 # options:
 #   - DEBUG     Everything is logged
 #   - INFO      (default) normal logging level
