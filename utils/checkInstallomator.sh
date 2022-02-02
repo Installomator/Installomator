@@ -101,6 +101,7 @@ for label in $allLabels; do
             errorLabels+=( "$label" )
             echo "$cmd_output"
         fi
+        echo
     fi
 done
 
