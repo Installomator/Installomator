@@ -56,8 +56,8 @@ if [[ $(sw_vers -buildVersion ) < "18" ]]; then
 fi
 
 echo "TESTING Installoamator"
-echo "Version: $($repo_dir/assemble.sh version)\n"
-echo "\nRemember to follow log in another terminal window:"
+echo "Version: $($repo_dir/assemble.sh version)"
+echo "\nRemember to follow log in another terminal window (for the REAL tests):"
 echo "tail -f /var/log/Installomator.log\n"
 
 
@@ -122,12 +122,12 @@ for label in $allLabels; do
 done
 
 # Mark: Testing for real
-
 allLabelsArg=(
 "vlc"
 "depnotify NOTIFY=all"
 "brave NOTIFY=silent"
 )
+echo "\nTesting for REAL:\n"
 
 for labelArg in $allLabelsArg; do
     echo $labelArg
