@@ -461,7 +461,9 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         if [ -e "$targetDir/$appName" ]; then
             printlog "Removing existing $targetDir/$appName" DEBUG
             deleteAppOut=$(rm -Rfv "$targetDir/$appName" 2>&1)
-            printlog "Debugging enabled, App removing output was:\n$deleteAppOut" DEBUG
+            deleteAppOut=$(echo $deleteAppOut | cut -c 1-80)
+            deduplicatelogs "$deleteAppOut"
+            printlog "Debugging enabled, App removing output was:\n$logoutput" DEBUG
         fi
 
         # copy app to /Applications
@@ -485,7 +487,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
         CLIstatus=$(echo $?)
-        dedupliatelogs "$CLIoutput"
+        deduplicatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
             cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
@@ -597,7 +599,7 @@ installFromPKG() {
     pkgInstallStatus=$(echo $?)
     sleep 1
     pkgEndTime=$(date "+$LogDateFormat")
-    pkgInstall+=$(echo "Output of /var/log/install.log below this line.\n")
+    pkgInstall+=$(echo "\nOutput of /var/log/install.log below this line.\n")
     pkgInstall+=$(echo "----------------------------------------------------------\n")
     pkgInstall+=$(awk -v "b=$starttime" -v "e=$pkgEndTime" -F ',' '$1 >= b && $1 <= e' /var/log/install.log)
     deduplicatelogs "$pkgInstall"
