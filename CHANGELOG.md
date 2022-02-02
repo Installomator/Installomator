@@ -1,6 +1,7 @@
 ## v9?
 
 - We have moved the root check to the beginning of the script, and improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user (almost as running the script without root before).
+- Added option to not interrupt Do Not Disturb full screen apps like Keynote or Zoom with `INTERRUPT_DND="no"`. Default is `"yes"` which is how it has worked until now.
 - `pkgName` in a label can now be searched for. An example is logitechoptions, where only the name of the pkg is given, and not the exact file path to it.
 - `LSMinimumSystemVersion` will now be honered, if the `Info.plist` in the app is specifying this. That means that an app that has this parameter in that file and it shows that the app requires a newer version of the OS than is currently installed, then we will not install it.
 - New variable `RETURN_LABEL_NAME`. If given the value `1`, like `RETURN_LABEL_NAME=1` then Installomator only returns the name of the label. It makes for a better user friendly message for displaying in DEPNotify if that is integrated.
@@ -19,6 +20,7 @@ Big changes to logging:
 - External logging to Datadog
 - A function to shorten duplicate lines in installation logs or output of longer commands
 - Ability to extract install.log in the time when Installomator was running, if further investigations needs to be done to logs
+
 
 ## v8.0
 
