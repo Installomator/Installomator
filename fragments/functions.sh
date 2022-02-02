@@ -564,7 +564,13 @@ installFromPKG() {
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
+    
     teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+    # Apple signed software has no teamID, grab entire origin instead
+    if [[ -z $teamID ]]; then
+        teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
+    fi
+
     deduplicatelogs "$spctlOut"
     
     if [[ $spctlStatus -ne 0 ]] ; then
