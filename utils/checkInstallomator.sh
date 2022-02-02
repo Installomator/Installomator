@@ -12,7 +12,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 
 # MARK: Constants
-allLabels=( dbeaverce signal mochatn3270 eshareosx googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
+allLabels=( dbeaverce signal mochatn3270 googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
 
 ## Testing for combinations of these
 # Label types: dmg, pkg, zip, tbz, pkgInDmg, pkgInZip, appInDmgInZip
@@ -21,7 +21,6 @@ allLabels=( dbeaverce signal mochatn3270 eshareosx googlechrome brave macports i
 # dbeaverse: dmg without appNewVersion and does not have LSMinimumSystemVersion in Info.plist
 # signal: dmg with appNewVersion
 # mochatn3270: appInDmgInZip with curlOptions
-# eshareosx: with packageID, versionKey, and appNewVerseion
 # googlechrome: with appNewVersion
 # brave: dmg with appNewVersion from versionKey
 # macports: with custom code for archiveName, and with appNewVersion and appCustomVersion
