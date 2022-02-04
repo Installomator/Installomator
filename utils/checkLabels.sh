@@ -89,6 +89,42 @@ arch () {
     echo $fixedArch
 }
 
+checkCmd_output() {
+    no_appNewVersion=$( echo $cmd_output | grep -ic "Latest version not specified." )
+    #echo "No appNewVersion: $no_appNewVersion (1 for no)"
+    latest_appNewVersion=$( echo $cmd_output | grep -i "Latest version of " | sed -E 's/.* is ([0-9.]*),*.*$/\1/g' )
+    #echo "Latest version: $latest_appNewVersion"
+    github_label=$( echo $cmd_output | grep -ci "Downloading https://github.com" )
+    #echo "GitHub: $github_label (1 for true)"
+    downloaded_version=$( echo $cmd_output | grep -ioE "Downloaded (package.*version|version of.*is) [0-9.]*" | grep -v "is the same as installed" | sed -E 's/.* (is|version) ([0-9.]*).*/\2/g' )
+    #echo "Downloaded version: $downloaded_version"
+    exit_status=$( echo $cmd_output | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+    #echo "Exit: $exit_status"
+    if [[ ${exit_status} -eq 0 ]] ; then
+        if [[ $no_appNewVersion -eq 1 ]]; then
+            echo "${GREEN}$label works fine, but no appNewVersion.${NC}"
+        elif [[ $latest_appNewVersion == $downloaded_version && $github_label -eq 0 ]]; then
+            echo "${GREEN}$label works fine, with version $latest_appNewVersion.${NC}"
+        elif [[ $github_label -eq 1 ]]; then
+            echo "${GREEN}$label works fine, with GitHub version $latest_appNewVersion.${NC}"
+        elif [[ $latest_appNewVersion != $downloaded_version && $github_label -eq 0 ]]; then
+            echo "${YELLOW}$label has version warning, with latest $latest_appNewVersion not matching downloaded $downloaded_version.${NC}"
+            ((countWarning++))
+            warningLabels+=( "$label" )
+            echo "$cmd_output"
+        else
+            echo "${RED}$label NOT WORKING:${NC}"
+            ((countError++))
+            errorLabels+=( "$label" )
+            echo "$cmd_output"
+        fi
+    else
+        echo "${RED}$label FAILED with exit code ${exit_status}:${NC}"
+        ((countError++))
+        errorLabels+=( "$label" )
+        echo "$cmd_output"
+    fi
+}
 
 # MARK: Script
 RED='\033[0;31m'
@@ -215,22 +251,14 @@ for fixedArch in i386 arm64; do
                 echo "${RED}-> !! ERROR in downloadURL${NC}"
                 labelError=1
             fi
-            if [[ $labelWarning != 0 ]]; then; echo "${YELLOW}########## Warning in label: $label${NC}"; ((countWarning++)); warningLabels+=( "$label" ); fi
-            if [[ $labelError != 0 ]]; then
+            if [[ $labelError != 0 || $labelWarning != 0 ]]; then
                 echo "${RED}########## ERROR in label: $label${NC}"
                     echo "Testing using Installomator"
-                    exit_status=$( . $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force IGNORE_APP_STORE_APPS=yes BLOCKING_PROCESS_ACTION=ignore | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
-                    if [[ ${exit_status} -eq 0 ]] ; then
-                        echo "${GREEN}$label works fine!${NC}"
-                        #errorLabels=("${(@)errorLabels:#$errorLabel}")
-                    else
-                        echo "${RED}$label NOT WORKING!${NC}"
-                        ((countError++))
-                        errorLabels+=( "$label" )
-                    fi
-
+                    #exit_status=$( . $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force IGNORE_APP_STORE_APPS=yes BLOCKING_PROCESS_ACTION=ignore | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+                    cmd_output=$( $repo_dir/assemble.sh $label DEBUG=2 INSTALL=force IGNORE_APP_STORE_APPS=yes BLOCKING_PROCESS_ACTION=ignore )
+                    #echo "$cmd_output"
+                    checkCmd_output
                 fi
-
             if (($archLabels[(Ie)$label])); then
                 secondRoundLabels+=( "$label" )
             fi
