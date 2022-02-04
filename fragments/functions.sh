@@ -97,14 +97,21 @@ printlog(){
             curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" > /dev/null
         done <<< "$log_message"
     fi
-
+    
+    # Extra spaces
+    space_char=""
+    if [[ ${#log_priority} -eq 3 ]]; then
+        space_char="  "
+    elif [[ ${#log_priority} -eq 4 ]]; then
+        space_char=" "
+    fi
     # If our logging level is greaterthan or equal to our set level then output locally.
     if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
         while IFS= read -r logmessage; do
             if [[ "$(whoami)" == "root" ]]; then
-                echo "$timestamp" : "${log_priority} : $label : ${logmessage}" | tee -a $log_location
+                echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}" | tee -a $log_location
             else
-                echo "$timestamp" : "${log_priority} : $label : ${logmessage}"
+                echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}"
             fi
         done <<< "$log_message"
     fi
