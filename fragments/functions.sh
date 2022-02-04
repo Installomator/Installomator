@@ -515,7 +515,6 @@ mountDMG() {
     dmgmountOut=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly )
     dmgmountStatus=$(echo $?)
     dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
-    printlog "dmgmountOut is $dmgmountOut" DEBUG
     deduplicatelogs "$dmgmountOut"
     
     if [[ $dmgmountStatus -ne 0 ]] ; then
