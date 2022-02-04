@@ -524,7 +524,7 @@ mountDMG() {
     if [[ ! -e $dmgmount ]]; then
         cleanupAndExit 3 "Error accessing mountpoint for $tmpDir/$archiveName error:\n$logoutput" ERROR
     fi
-    printlog "Debugging enabled, installer output was:\n$logoutput" DEBUG
+    printlog "Debugging enabled, dmgmount output was:\n$logoutput" DEBUG
     
     printlog "Mounted: $dmgmount" INFO
 }
