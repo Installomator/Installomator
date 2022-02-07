@@ -14,7 +14,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # MARK: Constants
 
 # Labels to test in DEBUG=2 mode
-allLabels=( dbeaverce signal mochatn3270 logitechoptions googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
+allLabels=( dbeaverce signal malwarebytes mochatn3270 logitechoptions googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
 
 # Labels to test for real (script use sudo to ask for admin rights)
 # Purpose is only toest things that are being skipped in DEBUG mode
@@ -33,9 +33,10 @@ allLabelsArg=(
 
 # dbeaverse: dmg without appNewVersion and does not have LSMinimumSystemVersion in Info.plist
 # signal: dmg with appNewVersion
+# malwarebytes: pkg with appNewVersion but not packageID
 # mochatn3270: appInDmgInZip with curlOptions
 # logitechoptions pkgInZip with pkgName but without packageID
-# googlechrome: with appNewVersion
+# googlechrome: dmg with appNewVersion
 # brave: dmg with appNewVersion from versionKey
 # macports: with custom code for archiveName, and with appNewVersion and appCustomVersion
 # inkscape: dmg with appCustomVersion
