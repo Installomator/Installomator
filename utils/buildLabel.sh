@@ -265,7 +265,7 @@ echo "archivePath: $archivePath"
 # So we want to investigate which one has the filename
 try1archiveName=${${archiveTempName##*/}%%\?*}
 try2archiveName=${${archivePath##*/}%%\?*}
-fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz)$' # regular expression for matching
+fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz|gz)$' # regular expression for matching
 if [[ "${try1archiveName}" =~ $fileName_re ]]; then
     archiveName=${try1archiveName}
 elif [[ "${try2archiveName}" =~ $fileName_re ]]; then
