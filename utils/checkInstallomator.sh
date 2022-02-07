@@ -12,7 +12,18 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 
 # MARK: Constants
-allLabels=( dbeaverce signal mochatn3270 googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
+
+# Labels to test in DEBUG mode
+allLabels=( dbeaverce signal mochatn3270 logitechoptions googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
+
+# Labels to test for real (script must be run as root, with sudo, to run)
+# Purpose is only toest things that are being skipped in DEBUG mode
+allLabelsArg=(
+"vlc"
+"depnotify NOTIFY=all"
+"brave NOTIFY=silent"
+)
+
 
 ## Testing for combinations of these
 # Label types: dmg, pkg, zip, tbz, pkgInDmg, pkgInZip, appInDmgInZip
@@ -21,6 +32,7 @@ allLabels=( dbeaverce signal mochatn3270 googlechrome brave macports inkscape de
 # dbeaverse: dmg without appNewVersion and does not have LSMinimumSystemVersion in Info.plist
 # signal: dmg with appNewVersion
 # mochatn3270: appInDmgInZip with curlOptions
+# logitechoptions pkgInZip with pkgName
 # googlechrome: with appNewVersion
 # brave: dmg with appNewVersion from versionKey
 # macports: with custom code for archiveName, and with appNewVersion and appCustomVersion
@@ -124,11 +136,6 @@ for label in $allLabels; do
 done
 
 # Mark: Testing for real
-allLabelsArg=(
-"vlc"
-"depnotify NOTIFY=all"
-"brave NOTIFY=silent"
-)
 echo "\nTesting for REAL:\n"
 
 for labelArg in $allLabelsArg; do
