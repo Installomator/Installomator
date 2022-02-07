@@ -13,7 +13,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # MARK: Constants
 
-# Labels to test in DEBUG mode
+# Labels to test in DEBUG=2 mode
 allLabels=( dbeaverce signal mochatn3270 logitechoptions googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
 
 # Labels to test for real (script must be run as root, with sudo, to run)
@@ -22,6 +22,7 @@ allLabelsArg=(
 "vlc"
 "depnotify NOTIFY=all"
 "brave NOTIFY=silent"
+"handbrake SYSTEMOWNER=1"
 )
 
 
@@ -48,6 +49,13 @@ allLabelsArg=(
 
 # Label types not possible to test in DEBUG mode: updateronly
 # Label fields not possible to test in DEBUG mode: targetDir, blockingProcesses, updateTool, updateToolRunAsCurrentUser, installerTool, CLIInstaller, CLIArguments
+
+# Labels tested for real
+
+# vlc: app-copy
+# depnotify: pkg-install
+# brave: app-copy but with few extras
+# handbrake: app-copy
 
 # adobecreativeclouddesktop: dmg with appNewVersion and installerTool, CLIInstaller, CLIArguments
 
@@ -121,7 +129,7 @@ checkCmd_output() {
     fi
 }
 
-# Mark: First part in DEBUG mode
+# Mark: First part in DEBUG=2 mode
 for label in $allLabels; do
     label_name=$( $repo_dir/assemble.sh $label DEBUG=2 RETURN_LABEL_NAME=1 | tail -1 )
     if [[ "$label_name" == "#" ]]; then
