@@ -21,6 +21,9 @@ Big changes to logging:
 - A function to shorten duplicate lines in installation logs or output of longer commands
 - Ability to extract install.log in the time when Installomator was running, if further investigations needs to be done to logs
 
+Fixes:
+- Fixed a problem with pkgs: If they were mounted with .pkg in the name, then we would find the directory and not the pkg file itself.
+- Minor fix for a check for a pkgName on a DMG. We used `ls` that would throw an error when not found, so the check was corrected.
 
 ## v8.0
 
