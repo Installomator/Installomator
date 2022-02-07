@@ -207,8 +207,12 @@ else
                 displaynotification "$message" "Error installing $name" ERROR
             fi
         fi
+        printlog "File list: $(ls -lh "$archiveName")" ERROR
+        printlog "File type: $(file "$archiveName")" ERROR
         cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
     fi
+    printlog "File list: $(ls -lh "$archiveName")" DEBUG
+    printlog "File type: $(file "$archiveName")" DEBUG
     printlog "curl output was:\n$logoutput" DEBUG
 fi
 

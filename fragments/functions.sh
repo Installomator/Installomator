@@ -400,6 +400,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # verify with spctl
     printlog "Verifying: $appPath" INFO
+    printlog "App size: $(du -sh "$appPath")" DEBUG
     appVerify=$(spctl -a -vv "$appPath" 2>&1 )
     appVerifyStatus=$(echo $?)
     teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
@@ -537,7 +538,8 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
-
+    printlog "File list: $(ls -lh "$archiveName")" DEBUG
+    printlog "File type: $(file "$archiveName")" DEBUG
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
@@ -656,7 +658,7 @@ installPkgInDmg() {
     # locate pkg in dmg
     if [[ -z $pkgName ]]; then
         # find first file ending with 'pkg'
-        findfiles=$(find "$dmgmount" -iname "*.pkg" -maxdepth 1  )
+        findfiles=$(find "$dmgmount" -iname "*.pkg" -type f -maxdepth 1  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in dmg $archiveName" ERROR
@@ -691,7 +693,7 @@ installPkgInZip() {
     # locate pkg in zip
     if [[ -z $pkgName ]]; then
         # find first file ending with 'pkg'
-        findfiles=$(find "$tmpDir" -iname "*.pkg" -maxdepth 2  )
+        findfiles=$(find "$tmpDir" -iname "*.pkg" -type f -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in zip $archiveName" ERROR
