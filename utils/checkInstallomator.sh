@@ -16,12 +16,13 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # Labels to test in DEBUG=2 mode
 allLabels=( dbeaverce signal mochatn3270 logitechoptions googlechrome brave macports inkscape devonthink omnidisksweeper microsoftteams applenyfonts sketch sqlpropostgres desktoppr marathon)
 
-# Labels to test for real (script must be run as root, with sudo, to run)
+# Labels to test for real (script use sudo to ask for admin rights)
 # Purpose is only toest things that are being skipped in DEBUG mode
 allLabelsArg=(
 "vlc"
 "depnotify NOTIFY=all"
 "brave NOTIFY=silent"
+"dialog"
 "handbrake SYSTEMOWNER=1"
 )
 
@@ -33,7 +34,7 @@ allLabelsArg=(
 # dbeaverse: dmg without appNewVersion and does not have LSMinimumSystemVersion in Info.plist
 # signal: dmg with appNewVersion
 # mochatn3270: appInDmgInZip with curlOptions
-# logitechoptions pkgInZip with pkgName
+# logitechoptions pkgInZip with pkgName but without packageID
 # googlechrome: with appNewVersion
 # brave: dmg with appNewVersion from versionKey
 # macports: with custom code for archiveName, and with appNewVersion and appCustomVersion
@@ -53,8 +54,9 @@ allLabelsArg=(
 # Labels tested for real
 
 # vlc: app-copy
-# depnotify: pkg-install
+# depnotify: pkg-install without appNewVersion
 # brave: app-copy but with few extras
+# dialog: pkg from GitHub
 # handbrake: app-copy
 
 # adobecreativeclouddesktop: dmg with appNewVersion and installerTool, CLIInstaller, CLIArguments
@@ -93,16 +95,17 @@ countWarning=0
 countError=0
 
 checkCmd_output() {
-    no_appNewVersion=$( echo $cmd_output | grep -ic "Latest version not specified." )
-    #echo "No appNewVersion: $no_appNewVersion (1 for no)"
-    latest_appNewVersion=$( echo $cmd_output | grep -i "Latest version of " | sed -E 's/.* is ([0-9.]*),*.*$/\1/g' )
-    #echo "Latest version: $latest_appNewVersion"
-    github_label=$( echo $cmd_output | grep -ci "Downloading https://github.com" )
-    #echo "GitHub: $github_label (1 for true)"
-    downloaded_version=$( echo $cmd_output | grep -ioE "Downloaded (package.*version|version of.*is) [0-9.]*" | grep -v "is the same as installed" | sed -E 's/.* (is|version) ([0-9.]*).*/\2/g' )
-    #echo "Downloaded version: $downloaded_version"
-    exit_status=$( echo $cmd_output | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
-    #echo "Exit: $exit_status"
+    #echo "$cmd_output"
+    no_appNewVersion=$( echo "$cmd_output" | grep --binary-files=text -ic "Latest version not specified." )
+    echo "No appNewVersion: $no_appNewVersion (1 for no)"
+    latest_appNewVersion=$( echo "$cmd_output" | grep --binary-files=text -i "Latest version of " | sed -E 's/.* is ([0-9.]*),*.*$/\1/g' )
+    echo "Latest version: $latest_appNewVersion"
+    github_label=$( echo "$cmd_output" | grep --binary-files=text -ci "Downloading https://github.com" )
+    echo "GitHub: $github_label (1 for true)"
+    downloaded_version=$( echo "$cmd_output" | grep --binary-files=text -ioE "Downloaded (package.*version|version of.*is) [0-9.]*" | grep -v "is the same as installed" | sed -E 's/.* (is|version) ([0-9.]*).*/\2/g' )
+    echo "Downloaded version: $downloaded_version"
+    exit_status=$( echo "$cmd_output" | grep --binary-files=text exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+    echo "Exit: $exit_status"
     if [[ ${exit_status} -eq 0 ]] ; then
         if [[ $no_appNewVersion -eq 1 ]]; then
             echo "${GREEN}$label works fine, but no appNewVersion.${NC}"
@@ -110,6 +113,8 @@ checkCmd_output() {
             echo "${GREEN}$label works fine, with version $latest_appNewVersion.${NC}"
         elif [[ $github_label -eq 1 ]]; then
             echo "${GREEN}$label works fine, with GitHub version $latest_appNewVersion.${NC}"
+        elif [[ $downloaded_version == "" ]]; then
+            echo "${GREEN}$label works fine, but downloaded version can not be checked without packageID.${NC}"
         elif [[ $latest_appNewVersion != $downloaded_version && $github_label -eq 0 ]]; then
             echo "${YELLOW}$label has version warning, with latest $latest_appNewVersion not matching downloaded $downloaded_version.${NC}"
             ((countWarning++))
@@ -158,7 +163,7 @@ for labelArg in $allLabelsArg; do
         echo "Label $label: $label_name"
         cmd_output=$( sudo $repo_dir/assemble.sh $label $arg1 $arg2 DEBUG=0 LOGGING=DEBUG INSTALL=force BLOCKING_PROCESS_ACTION=quit )
         #echo "$cmd_output"
-        argument_variables=$( echo $cmd_output | grep -i "setting variable from argument" | sed -E 's/.*setting variable from argument (.*)$/\1/g')
+        argument_variables=$( echo "$cmd_output" | grep --binary-files=text -i "setting variable from argument" | sed -E 's/.*setting variable from argument (.*)$/\1/g')
         echo $argument_variables
         checkCmd_output
         echo
