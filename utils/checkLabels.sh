@@ -90,16 +90,17 @@ arch () {
 }
 
 checkCmd_output() {
-    no_appNewVersion=$( echo $cmd_output | grep -ic "Latest version not specified." )
-    #echo "No appNewVersion: $no_appNewVersion (1 for no)"
-    latest_appNewVersion=$( echo $cmd_output | grep -i "Latest version of " | sed -E 's/.* is ([0-9.]*),*.*$/\1/g' )
-    #echo "Latest version: $latest_appNewVersion"
-    github_label=$( echo $cmd_output | grep -ci "Downloading https://github.com" )
-    #echo "GitHub: $github_label (1 for true)"
-    downloaded_version=$( echo $cmd_output | grep -ioE "Downloaded (package.*version|version of.*is) [0-9.]*" | grep -v "is the same as installed" | sed -E 's/.* (is|version) ([0-9.]*).*/\2/g' )
-    #echo "Downloaded version: $downloaded_version"
-    exit_status=$( echo $cmd_output | grep exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
-    #echo "Exit: $exit_status"
+    #echo "$cmd_output"
+    no_appNewVersion=$( echo "$cmd_output" | grep --binary-files=text -ic "Latest version not specified." )
+    echo "No appNewVersion: $no_appNewVersion (1 for no)"
+    latest_appNewVersion=$( echo "$cmd_output" | grep --binary-files=text -i "Latest version of " | sed -E 's/.* is ([0-9.]*),*.*$/\1/g' )
+    echo "Latest version: $latest_appNewVersion"
+    github_label=$( echo "$cmd_output" | grep --binary-files=text -ci "Downloading https://github.com" )
+    echo "GitHub: $github_label (1 for true)"
+    downloaded_version=$( echo "$cmd_output" | grep --binary-files=text -ioE "Downloaded (package.*version|version of.*is) [0-9.]*" | grep -v "is the same as installed" | sed -E 's/.* (is|version) ([0-9.]*).*/\2/g' )
+    echo "Downloaded version: $downloaded_version"
+    exit_status=$( echo "$cmd_output" | grep --binary-files=text exit | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' )
+    echo "Exit: $exit_status"
     if [[ ${exit_status} -eq 0 ]] ; then
         if [[ $no_appNewVersion -eq 1 ]]; then
             echo "${GREEN}$label works fine, but no appNewVersion.${NC}"
@@ -107,6 +108,8 @@ checkCmd_output() {
             echo "${GREEN}$label works fine, with version $latest_appNewVersion.${NC}"
         elif [[ $github_label -eq 1 ]]; then
             echo "${GREEN}$label works fine, with GitHub version $latest_appNewVersion.${NC}"
+        elif [[ $downloaded_version == "" ]]; then
+            echo "${GREEN}$label works fine, but downloaded version can not be checked without packageID.${NC}"
         elif [[ $latest_appNewVersion != $downloaded_version && $github_label -eq 0 ]]; then
             echo "${YELLOW}$label has version warning, with latest $latest_appNewVersion not matching downloaded $downloaded_version.${NC}"
             ((countWarning++))
