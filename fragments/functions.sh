@@ -176,7 +176,7 @@ versionFromGit() {
 
     appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
-        printlog "could not retrieve version number for $gitusername/$gitreponame"
+        printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
         appNewVersion=""
     else
         echo "$appNewVersion"
@@ -229,9 +229,9 @@ getAppVersion() {
         applist=$(mdfind "kind:application $appName" -0 )
     fi
     if [[ -z applist ]]; then
-        printlog "No previous app found" DEBUG
+        printlog "No previous app found" INFO
     else
-        printlog "App(s) found: ${applist}" DEBUG
+        printlog "App(s) found: ${applist}" INFO
     fi
 
     appPathArray=( ${(0)applist} )
@@ -255,10 +255,10 @@ getAppVersion() {
                 fi
             fi
         else
-            printlog "could not determine location of $appName"
+            printlog "could not determine location of $appName" WARN
         fi
     else
-        printlog "could not find $appName"
+        printlog "could not find $appName" WARN
     fi
 }
 
@@ -385,7 +385,7 @@ reopenClosedProcess() {
         processuser=$(ps aux | grep -i "${appName}" | grep -vi "grep" | awk '{print $1}')
         printlog "Reopened ${appName} as $processuser"
     else
-        printlog "App not closed, so no reopen." DEBUG
+        printlog "App not closed, so no reopen." INFO
     fi
 }
 
@@ -395,7 +395,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # check if app exists
     if [ ! -e "$appPath" ]; then
-        cleanupAndExit 8 "could not find: $appPath" DEBUG
+        cleanupAndExit 8 "could not find: $appPath" ERROR
     fi
 
     # verify with spctl
@@ -427,10 +427,12 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
             fi
-            cleanupAndExit 0 "No new version to install" INFO
+            cleanupAndExit 0 "No new version to install" WARN
         else
             printlog "Using force to install anyway."
         fi
+    elif [[ -z $appversion ]]; then
+        printlog "Installing $name version $appNewVersion on versionKey $versionKey."
     else
         printlog "Downloaded version of $name is $appNewVersion on versionKey $versionKey (replacing version $appversion)."
     fi
@@ -446,7 +448,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "Error updating $name!"
             fi
-            cleanupAndExit 6 "Installed macOS is too old for this app." INFO
+            cleanupAndExit 6 "Installed macOS is too old for this app." ERROR
         fi
     fi
 
@@ -585,7 +587,7 @@ installFromPKG() {
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No new version to install" INFO
+                cleanupAndExit 0 "No new version to install" WARN
             else
                 printlog "Using force to install anyway."
             fi
@@ -770,13 +772,13 @@ runUpdateTool() {
             printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updateStatus Error:\n$logoutput" WARN
             return 1
             if [[ $type == updateronly ]]; then
-                cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" WARN
+                cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" ERROR
             fi
         elif [[ $updateStatus -eq 0 ]]; then
             printlog "Debugging enabled, update tool output was:\n$logoutput" DEBUG
         fi
     else
-        printlog "couldn't find $updateTool, continuing normally"
+        printlog "couldn't find $updateTool, continuing normally" WARN
         return 1
     fi
     return 0
