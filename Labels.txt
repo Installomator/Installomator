@@ -368,6 +368,7 @@ vagrant
 vanilla
 veracrypt
 vimac
+virtualbox
 viscosity
 visualstudiocode
 vivaldi
