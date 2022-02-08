@@ -228,8 +228,12 @@ getAppVersion() {
     else
         applist=$(mdfind "kind:application $appName" -0 )
     fi
-    if [[ -z applist ]]; then
+    if [[ -z $applist ]]; then
+        if [[ $SKIP_UNINSTALLED -eq 1 ]]; then
+            cleanupAndExit 0 "No previous app found, and SKIP_UNINSTALLED=1." REQ
+        else
         printlog "No previous app found" DEBUG
+        fi
     else
         printlog "App(s) found: ${applist}" DEBUG
     fi

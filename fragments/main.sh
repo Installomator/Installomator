@@ -93,6 +93,7 @@ if [ -z "$appName" ]; then
     # when not given derive from name
     appName="$name.app"
 fi
+printlog "appName: $appName" INFO
 
 if [ -z "$targetDir" ]; then
     case $type in

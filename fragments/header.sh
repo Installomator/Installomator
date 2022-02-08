@@ -110,6 +110,13 @@ INSTALL=""
 #                  if it is newer/different in version
 #  - force         Install even if it’s the same version
 
+# skip if app is not currently installed
+SKIP_UNINSTALLED=0
+# options:
+#  - 0             Run normally and install the app if other conditions are met.
+#  - 1             If app is not currently installed we will not install anything.
+#                  This is mostly done in the getAppVersion function, and if it cannot
+#                  locate the app, the script will exit.
 
 # Re-opening of closed app
 REOPEN="yes"
