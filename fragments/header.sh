@@ -126,6 +126,18 @@ REOPEN="yes"
 #            instead of just the label name.
 
 
+# Interrupt Do Not Disturb (DND) full screen apps
+INTERRUPT_DND="yes"
+# options:
+#  - yes           Script will run without checking for DND full screen apps.
+#  - no            Script will exit when an active DND full screen app is detected.
+
+# Comma separated list of app names to ignore when evaluating DND
+IGNORE_DND_APPS=""
+# example that will ignore browsers when evaluating DND:
+# IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
+
+
 # NOTE: How labels work
 
 # Each workflow label needs to be listed in the case statement below.
@@ -155,6 +167,12 @@ REOPEN="yes"
 # - downloadURL: (required)
 #   URL to download the dmg.
 #   Can be generated with a series of commands (see BBEdit for an example).
+#
+# - curlOptions: (array, optional)
+#   Options to the curl command, needed for curl to be able to download the software.
+#   Usually used for adding extra headers that some servers need in order to serve the file.
+#   curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" )
+#   (See “mocha”-labels, for examples on labels, and buildLabel.sh for header-examples.)
 #
 # - appNewVersion: (optional)
 #   Version of the downloaded software.
@@ -246,3 +264,40 @@ REOPEN="yes"
 #   installer that should be located after mounting/expanding the downloaded archive.
 #   See label adobecreativeclouddesktop
 #
+### Logging
+# Logging behavior
+LOGGING="INFO"
+# options:
+#   - DEBUG     Everything is logged
+#   - INFO      (default) normal logging level
+#   - WARN      only warning
+#   - ERROR     only errors
+#   - REQ       ????
+
+# MDM profile name
+MDMProfileName=""
+# options:
+#   - MDM Profile               Addigy has this name on the profile
+#   - Mosyle Corporation MDM    Mosyle uses this name on the profile
+# From the LOGO variable we can know if Addigy og Mosyle is used, so if that variable
+# is either of these, and this variable is empty, then we will auto detect this.
+
+# Datadog logging used
+datadogAPI=""
+# Simply add your own API key for this in order to have logs sent to Datadog
+# See more here: https://www.datadoghq.com/product/log-management/
+
+# Log Date format used when parsing logs for debugging, this is the default used by
+# install.log, override this in the case statements if you need something custom per
+# application (See adobeillustrator).  Using stadard GNU Date formatting.
+LogDateFormat="%Y-%m-%d %H:%M:%S"
+
+# Get the start time for parsing install.log if we fail.
+starttime=$(date "+$LogDateFormat")
+
+# Check if we have rosetta installed
+if [[ $(/usr/bin/arch) == "arm64" ]]; then
+    if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then # pgrep oahd >/dev/null 2>&1
+        rosetta2=no
+    fi
+fi

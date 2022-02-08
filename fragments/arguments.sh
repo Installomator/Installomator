@@ -43,17 +43,52 @@ if [[ $label == "version" ]]; then
     exit 0
 fi
 
-printlog "################## Start Installomator v. $VERSION"
-printlog "################## $label"
+# MARK: Logging
+log_location="/private/var/log/Installomator.log"
+
+# Check if we're in debug mode, if so then set logging to DEBUG, otherwise default to INFO
+# if no log level is specified.
+if [[ $DEBUG -ne 0 ]]; then
+    LOGGING=DEBUG
+elif [[ -z $LOGGING ]]; then
+    LOGGING=INFO
+    datadogLoggingLevel=INFO
+fi
+
+# Associate logging levels with a numerical value so that we are able to identify what
+# should be removed. For example if the LOGGING=ERROR only printlog statements with the
+# level REQ and ERROR will be displayed. LOGGING=DEBUG will show all printlog statements.
+# If a printlog statement has no level set it's automatically assigned INFO.
+
+declare -A levels=(DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4)
+
+# If we are able to detect an MDM URL (Jamf Pro) or another identifier for a customer/instance we grab it here, this is useful if we're centrally logging multiple MDM instances.
+if [[ -f /Library/Preferences/com.jamfsoftware.jamf.plist ]]; then
+    mdmURL=$(defaults read /Library/Preferences/com.jamfsoftware.jamf.plist jss_url)
+elif [[ -n "$MDMProfileName" ]]; then
+    mdmURL=$(sudo profiles show | grep -A3 "$MDMProfileName" | sed -n -e 's/^.*organization: //p')
+else
+    mdmURL="Unknown"
+fi
+
+# Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
+SESSION=$RANDOM
+
+# Mark: START
+printlog "################## Start Installomator v. $VERSION, date $VERSIONDATE" REQ
+printlog "################## Version: $VERSION" INFO
+printlog "################## Date: $VERSIONDATE" INFO
+printlog "################## $label" INFO
 
 # Check for DEBUG mode
 if [[ $DEBUG -gt 0 ]]; then
-    printlog "DEBUG mode $DEBUG enabled."
+    printlog "DEBUG mode $DEBUG enabled." DEBUG
 fi
 
 # How we get version number from app
-# (alternative is "CFBundleVersion", that can be used in labels)
-versionKey="CFBundleShortVersionString"
+if [[ -z $versionKey ]]; then
+    versionKey="CFBundleShortVersionString"
+fi
 
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')

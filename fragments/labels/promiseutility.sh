@@ -1,3 +1,4 @@
+promiseutility|\
 promiseutilityr)
     name="Promise Utility"
     type="pkgInDmg"

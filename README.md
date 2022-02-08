@@ -8,11 +8,23 @@ This script is in the “we find it useful, it is working for us” stage.
 
 Your production and deployment environment will be different, please test thoroughly before rolling it out to your production.
 
-I have put a lot of work into making it stable and safe, but I cannot - of course - make _any_ promises that it won't break in some not yet encountered edge case.
+We have put a lot of work into making it stable and safe, but we cannot - of course - make _any_ promises that it won't break in some not yet encountered edge case.
+
+## Authors
+
+Intallomator was original inspired by the download scripts from William Smith and Sander Schram, and created by:
+    Armin Briegel - @scriptingosx
+
+Later on a few more contributers came on the project:
+    Isaac Ordonez - @issacatmann
+    Søren Theilgaard - @Theile
+    Adam Codega - @acodega
+
+ And with numerous contributions from many others.
 
 ## Support and Contributing
 
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files below `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the REAMDME.md file in the `utils` directory for detailed instructions.__
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files below `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the [README.md](utils/README.md) file in the `utils` directory for detailed instructions.__
 
 Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Go there for support questions.
 
@@ -22,30 +34,43 @@ Please see [CONTRIBUTING.md](https://github.com/Installomator/Installomator/blob
 
 ## More reading
 
-There are a few interesting post on Installomator on my weblog:
+Our wiki:
+
+- [Wiki](https://github.com/Installomator/Installomator/wiki)
+
+There are a few interesting post on Installomator on Armin’s weblog:
 
 - [Introducing Installomator](https://scriptingosx.com/2020/05/introducing-installomator/)
 - [Using Installomator with Jamf Pro](https://scriptingosx.com/2020/06/using-installomator-with-jamf-pro/) by Mischa van der Bent
 
 ## Background
 
-As a system engineer at [an Apple Authorized Enterprise Reseller](https://prowarehouse.nl), we manage a lot of Jamf instances.
+In the world of managing Apple Macs, organizations can have two different approaches to the management. Either the IT department will tightly manage and verify each piece of software, or they will just want the latest software to be deployed as fast as possible.
 
-Some of these instances are tightly managed, i.e. the versions of the operating system and third party software are controlled and updates will only be pushed with the management system when the administration and security team went through an approval process and then the update is automated. This is an important and valid workflow and the right fit for many deployments.
+OK, maybe some software should be tightly managed and others not, but you get the point.
+
+### Tightly managed
+
+If your solution needs to be tightly managed, i.e. the versions of the operating system and third party software are controlled and updates will only be pushed with the management system when the administration and security team went through an approval process and then the update is automated. This is an important and valid workflow and the right fit for many deployments.
 
 Installomator was _not_ written for these kinds of deployment.
 
 If you are running this kind of deployment, you want to use [AutoPkg](https://github.com/autopkg/autopkg) and you can stop reading here.
 
-There are other kinds of deployments, though. In these deployments the management system is merely used to "get the user ready" as quickly as possible when they set up a new machine, and to offer software from a self service portal. In these deployments, system and software installations are 'latest version available' and updates are user driven (though we do want to nag them).
+### Latest version always
 
-These deployments are
+There are other kinds of deployments, though. In these deployments the management system is merely used to “get the user ready” as quickly as possible when they set up a new machine, and to offer software from a self service portal. In these deployments, system and software installations are ‘latest version available’ and updates are user driven (though we do want to nag them and push them).
+
+Installomator can help with this.
+
+These deployments can be
 
 - user driven
 - low control
 - minimal maintenance effort
+- latest version is best
 
-These are mostly 'user controlled' Macs and we (the admins) just want to assist the user in doing the right thing. And the right thing is (often) to install the latest versions and updates when they are available.
+These can be 'user controlled' Macs and we (the admins) just want to assist the user in doing the right thing. And the right thing is (often) to install the latest versions and updates when they are available.
 
 The Mac App Store and software pushed through the Mac App Store follow this approach. When you manage and deploy software through the App Store — whether it is on iOS or macOS — neither the MacAdmin nor the user get a choice of the application version. They will get the latest version.
 
@@ -62,16 +87,25 @@ Some of these disadvantages can be seen as advantages in different setups. When 
 
 Because this is an attractive solution for _certain kinds_ of deployment, there are already many scripts out there that will download and install the latest version of a given software. And we have built and used quite a few in-house, as well. Most importantly, [William Smith has this script](https://gist.github.com/talkingmoose/a16ca849416ce5ce89316bacd75fc91a) which can be used to install several different Microsoft applications and bundles, because Microsoft has a nice unified URL scheme.
 
-At some point, earlier this year, I got frustrated at the number of scripts we were maintaining (or failing to). Also, my concern that most of the scripts weren't doing _any_ verification of the download was getting unbearable. So, I set out to write the one install script to rule them all...
+At some point, in 2018, Armin got frustrated at the number of scripts he was maintaining (or failing to). Also, his concern that most of the scripts weren’t doing _any_ verification of the download was getting unbearable. So, he set out to write _the one install script to rule them all…_
+
+### Locally installed
+
+So Armin made the version for Jamf Pro but universally for any MDM to adopt.
+
+Søren looked at this, and wanted this approach to work in Mosyle and Addigy, and for these solutions we need Installomator to be locally installed on. the Mac, and then the MDM can call this script from their scripts features. For some time Søren had a version of Installomator that was supplied with a notarized pkg, so it could be deployed as part of DEP or however was needed.
+
+This has now been merged into Installomator, and with contributions of Isaac and Adam, new features and labels have been added more frequently.
 
 ## Goals
 
-My goals for Installomator are:
+The goals for Installomator are:
 
 - work with various common archive types
 - verify the downloaded archive or application
-- have a simple 'interface' to the admin
-- single script file so it can 'easily' be copied into a management system
+- have a simple ‘interface’ to the admin
+- single script file so it can ‘easily’ be copied into a management system
+- signed and notarized pkg-installer for local installation
 - extensible without deep scripting knowledge
 - work independently of a specific management system
 - no dependencies that may be removed from macOS in the future or are not pre-installed
@@ -88,9 +122,9 @@ Installomator can work with the following common archive and installer types:
 
 When the download yields a pkg file, Installomator will run `installer` to install it on the current system.
 
-Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation.
+Applications in dmgs or zips will be copied to `/Applications` and their owner will be set to the current user, so the install works like a standard drag'n drop installation. Owner can also be set to root/wheel.
 
-(I consider it a disgrace, that Jamf, after nearly 20 years, _still_ cannot deal with 'drag'n drop installation dmgs' natively. It's not _that_ hard.)
+(I consider it a disgrace, that Jamf, after nearly 20 years, _still_ cannot deal with ‘drag’n drop installation dmgs natively. It’s not _that_ hard.)
 
 ### Verify the download
 
@@ -107,7 +141,7 @@ When used to install software, Installomator has a single argument: the label or
 ./Installomator.sh firefox LOGO=jamf BLOCKING_PROCESS_ACTION=tell_user_then_kill NOTIFY=all
 ```
 
-There is a debug mode and one other setting that can be controlled with variables in the code. This simplifies the actual use of the script from within a management system.
+There is a debug mode and other settings that can be controlled with variables in the code. This simplifies the actual use of the script from within a management system.
 
 ### Extensible
 
@@ -132,19 +166,21 @@ googlechrome)
 
 When you know how to extract these pieces of information from the application and/or download, then you can add an application to Installomator.
 
-The script `buildCaseStatement.sh` can help with the label creation.
+The script `buildLabel.sh` can help with the label creation. Just server the URL to the script, and it will try to figure out things and write out a label as output. See [Wiki Tutorials](https://github.com/Installomator/Installomator/wiki#tutorials).
 
 Please note: Labels should be named in small caps, numbers 0-9, “-”, and “_”. No other characters allowed.
 
+Actually labels are part of a case-statement, and must be formatted accordingly.
+
 ### Not specific to a management system
 
-I wrote this script mainly for use with Jamf Pro, because that is what we use. For testing, you can run the script interactively from the command line. However, I have tried to keep anything that is specific to Jamf optional, or so flexible that it will work anywhere. Even if it does not work with your management system 'out of the box,' the adaptations should be straightforward.
+Armin wrote this script mainly for use with Jamf Pro, because that is what he used. For testing, you can run the script interactively from the command line. However, we have tried to keep anything that is specific to Jamf optional, or so flexible that it will work anywhere. Even if it does not work with your management system ‘out of the box’, the adaptations should be straightforward.
 
 Not all MDMs can include the full script, for those MDMs it might be more useful to install it on the client machines, and run it from there. So a PKG to be installed on client Macs is also provided here.
 
 ### No dependencies
 
-The script started out as a pure `sh` script, and when I needed arrays I 'switched' to `zsh`, because that is what [we can rely on being in macOS for the foreseeable future](https://scriptingosx.com/zsh). There are quite a few places where using python would have been easier and safer, but with the python 2 run-time being deprecated, that would have added a requirement for a Python 3 run-time to be installed. XML and JSON parsing would have been better with a tool like [scout](https://github.com/ABridoux/scout) or [jq](https://stedolan.github.io/jq/), but those would again require additional installations on the client before the script can run.
+The script started out as a pure `sh` script, and when arrays was needed it was ‘switched’ to `zsh`, because that is what [we can rely on being in macOS for the foreseeable future](https://scriptingosx.com/zsh). There are quite a few places where using python would have been easier and safer, but with the python 2 run-time being deprecated, that would have added a requirement for a Python 3 run-time to be installed. XML and JSON parsing would have been better with a tool like [scout](https://github.com/ABridoux/scout) or [jq](https://stedolan.github.io/jq/), but those would again require additional installations on the client before the script can run.
 
 Keeping the script as a `zsh` allows you to paste it into your management system's interface (and disable the DEBUG mode) and use it without requiring any other installations.
 
@@ -177,19 +213,19 @@ Other than the version arguments, the argument can be any of the labels listed i
 
 ### Debug mode
 
-There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) no actions that would actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
+There is a variable named `DEBUG` which is set in line 21 of the script. When `DEBUG` is set to `1` (default) or `2` for a variation of debug, no actions that would actually modify the current system are taken. This is useful for testing most of the actions in the script, but obviously not all of them.
 
-Also when the `DEBUG` variable is `1`, downloaded archives and extracted files will be written to the script's directory, rather than a temporary directory, which can make debugging easier.
+When the `DEBUG` variable is `1`, downloaded archives and extracted files will be written to the script's directory, rather than a temporary directory, which can make debugging easier.
 
-_Always remember_ to change the `DEBUG` variable to `0` when deploying.
+When `DEBUG` variable is `2`, the temporary folder is created and downloaded and extracted files goes to that folder, as if not in DEBUG mode, but installation is still not done. On the other hand blocking processes are checked, the app is reopened if closed, and the user is notified.
 
-### Use Installomator with Jamf Pro
+Debug mode 1 is useful to test the download and verification process without having to re-download and re-install an application or package on your system. Debug mode 2 is great for checking running processe and notifications.
 
-In Jamf Pro, create a new 'Script' and paste the contents of `Installomator.sh` into the 'Script Contents' area. Under 'Options' you can change the parameter label for argument 4 to 'Application Label.'
+_Always remember_ to change the `DEBUG` variable to `0` when deploying. The installer PKG we provide has `DEBUG=0`.
 
-Remember to set `DEBUG` to `0`.
+### Use Installomator with various MDM solutions
 
-Then you can use the Installomator script in a policy and choose the application to install by setting the label for argument 4.
+In the wiki we have provided documentation on how Installomator is used in various MDM solution, like [Jamf Pro](https://github.com/Installomator/Installomator/wiki/MDM:-Jamf-Pro), [Mosyle](https://github.com/Installomator/Installomator/wiki/MDM:-Mosyle-(Business,-Fuse,-and-Manager)), and [Addigy](https://github.com/Installomator/Installomator/wiki/MDM:-Addigy).
 
 ## What it does
 
@@ -197,7 +233,7 @@ When it runs with a known label, the script will perform the following:
 
 - Check the version installed with the version online. Only continue if it's different
 - download the latest version from the vendor
-- when the application is running, prompt the user to quit or cancel
+- when the application is running, prompt the user to quit or cancel (customizable)
 - dmg or zip archives:
     - extract the application and copy it to /Applications
     - change the owner of the application to the current user
@@ -205,19 +241,11 @@ When it runs with a known label, the script will perform the following:
     - when necessary, extract the pkg from the enclosing archive
     - install the pkg with the `installer` tool
 - clean up the downloaded files
-- notify the user
+- notify the user (also customizable)
 
 ## Configuring the script
 
-As of now there are two settings that are meant to configured when deploying the script.
-
-### Debug mode
-
-The first is the `DEBUG` variable. When this is set to `1` the script will _not_ perform any changes to the current system. In other words, no application will be copied to the target directory and no `installer` command be performed.
-
-In addition, files will be downloaded and extracted to the Installomator project folder instead of a temporary directory and _not_ deleted when the script exits. Also archives will _not_ be re-downloaded when they already exist in the project folder. The repository's `.gitignore` file is set up to ignore the archive file extensions.
-
-Debug mode is useful to test the download and verification process without having to re-download and re-install an application or package on your system.
+We have several default settings for certain behavior and notifications inside the script, but these can be customized when calling the script.
 
 ### Blocking Process actions
 
@@ -226,12 +254,12 @@ The `BLOCKING_PROCESS_ACTION` variable controls the behavior of the script when 
 There are eight options:
 
 - `ignore`: continue even when blocking processes are found.
-- `silent_fail`: exit script without prompt or installation.
-- `prompt_user`: (default) show a user dialog for each blocking process found, user can choose "Quit and Update" or "Not Now". When "Quit and Update" is chosen, blocking process will be told to quit. Installomator will wait 30 seconds before checking again in case Save dialogs etc are being responded to. Installomator will abort if quitting after three tries does not succeed. "Not Now" will exit Installomator.
+- `silent_fail`: Exit script without prompt or installation.
+- `prompt_user`: Show a user dialog for each blocking process found, user can choose "Quit and Update" or "Not Now". When "Quit and Update" is chosen, blocking process will be told to quit. Installomator will wait 30 seconds before checking again in case Save dialogs etc are being responded to. Installomator will abort if quitting after three tries does not succeed. "Not Now" will exit Installomator.
 - `prompt_user_then_kill`: show a user dialog for each blocking process found, user can choose "Quit and Update" or "Not Now". When "Quit and Update" is chosen, blocking process will be terminated. Installomator will abort if terminating after two tries does not succeed. "Not Now" will exit Installomator.
 - `prompt_user_loop`: Like prompt-user, but clicking "Not Now", will just wait an hour, and then it will ask again.
-WARNING! It might block the MDM agent on the machine, as the script will not exit, it will pause until the hour has passed, possibly blocking for other management actions in this time.
-- `tell_user`: User will be showed a notification about the important update, but user is only allowed to Quit and Continue, and then we ask the app to quit. This is default.
+  WARNING! It might block the MDM agent on the machine, as the script will not exit, it will pause until the hour has passed, possibly blocking for other management actions in this time.
+- `tell_user`: (Default) User will be showed a notification about the important update, but user is only allowed to Quit and Continue, and then we ask the app to quit. This is default.
 - `tell_user_then_kill`: User will be showed a notification about the important update, but user is only allowed to Quit and Continue. If the quitting fails, the blocking processes will be terminated.
 - `kill`: kill process without prompting or giving the user a chance to save.
 
@@ -282,9 +310,29 @@ The `REOPEN` can be used to prevent the reopening of a closed app
 - `yes`:   (default) app will be reopened if it was closed
 - `no`:    app not reopened
 
-### Adding applications/label blocks
+### Configuration from Arguments
 
-#### Required Variables
+You can provide a configuration variable, such as `DEBUG` or `NOTIFY` as an argument in the form `VAR=value`. For example:
+
+```
+./Installomator.sh desktoppr DEBUG=0 NOTIFY=silent
+```
+
+Providing variables this way will override any variables set in the script.
+
+You can even provide _all_ the variables necessary for download and installation. Of course, without a label the argument parsing will fail, so I created a special label `valuesfromarguments` which only checks if the four required values are present:
+
+```
+./Installomator.sh name=desktoppr type=pkg downloadURL=https://github.com/scriptingosx/desktoppr/releases/download/v0.3/desktoppr-0.3.pkg expectedTeamID=JME5BW3F3R valuesfromarguments
+```
+
+The order of the variables and label is not relevant. But, when you provide more than one label, all but the _last_ label will be ignored.
+
+Providing all the variables this way might be useful for certain downloads that have a customized URL for each vendor/customer (like customized TeamView or Watchman Monitoring) or are local downloads.
+
+## Adding applications/label blocks
+
+### Required Variables
 
 The script requires four pieces of information to download and install an application:
 
@@ -317,6 +365,12 @@ The URL from which to download the archive.
 The URL can be generated by a series of commands, for example when you need to parse an xml file for the latest URL. (See `bbedit`, `desktoppr`, or `omnigraffle` for examples.)
 Sometimes version differs between Intel and Apple Silicon versions. (See `brave`,  `obsidian`, `omnidisksweeper`, or `notion`).
 
+- `curlOptions`: (array, optional)
+Options to the `curl` command, needed for `curl` to be able to download the software.
+Usually used for adding extra headers that some servers need in order to serve the file.
+`curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" )`
+(See “mocha”-labels, for examples on labels, and `buildLabel.sh` for header-examples.)
+
 - `appNewVersion` (optional, but recommended):
 Version of the downloaded software.
 If given, it will be compared to installed version, to see if download is different.
@@ -337,8 +391,7 @@ The 10-character Developer Team ID with which the application or pkg is signed a
    - Installation Packages (pkg)
      `spctl -a -vv -t install ~/Downloads/desktoppr-0.2.pkg`
 
-
-#### Optional Variables
+### Optional Variables
 
 Depending on the application or pkg there are a few more variables you can or need to set. Many of these are derived from the required variables, but may need to be set manually if those derived values do not work.
 
@@ -395,42 +448,17 @@ Depending on the application or pkg there are a few more variables you can or ne
   Introduced as part of `CLIInstaller`. If the installer in the DMG or ZIP is named differently than the installed app, then this variable can be used to name the installer that should be located after mounting/expanding the downloaded archive.
   See label adobecreativeclouddesktop
 
-### Configuration from Arguments
-
-You can provide a configuration variable, such as `DEBUG` or `NOTIFY` as an argument in the form `VAR=value`. For example:
-
-```
-./Installomator.sh desktoppr DEBUG=0 NOTIFY=silent
-```
-
-Providing variables this way will override any variables set in the script.
-
-You can even provide _all_ the variables necessary for download and installation. Of course, without a label the argument parsing will fail, so I created a special label `valuesfromarguments` which only checks if the four required values are present:
-
-```
-./Installomator.sh name=desktoppr type=pkg downloadURL=https://github.com/scriptingosx/desktoppr/releases/download/v0.3/desktoppr-0.3.pkg expectedTeamID=JME5BW3F3R valuesfromarguments
-```
-
-The order of the variables and label is not relevant. But, when you provide more than one label, all but the _last_ label will be ignored.
-
-Providing all the variables this way might be useful for certain downloads that have a customized URL for each vendor/customer (like customized TeamView or Watchman Monitoring) or are local downloads.
-
-
 ## Frequently Asked Questions
 
 ### What if the latest version of the app is already installed?
 
-Short answer: Installomator will re-download and re-install the latest over the existing installation.
+Short answer: That depends on if labels will know what the latest version will be.
 
 Longer answer:
 
-Installomator will try to find a currently installed app to log the version. When Installomator finds an existing app (any version) and the `updateTool` variable is set, then Installomator will _not_ download and install, but run the `updateTool` instead.
-
-However, there is no simple generic method to actually determine the latest version of an application or installer.
-
-We deploy Installomator usually for user initiated installations from Self Service, so re-installs don't really 'hurt' and may be a useful troubleshooting step.
-
-When you want to have automated installations, you can use smart groups based on the app version to limit excessive re-installations.
+- Labels without this will re-download and re-install the latest over the existing installation.
+- Labels with this info will only install the app if the version is different than the one installed.
+- Labels that can use update tool will use that for the update (if the version is different)
 
 ### Why don't you just use `autopkg install`?
 
@@ -460,7 +488,7 @@ Please don't misunderstand this as me saying that AutoPkg is a bad or poorly des
 
 But it is not suited as a client install automation tool.
 
-### Why don't you just use brew?
+### Why don't you just use brew or MacPorts?
 
 Read the explanation for `autopkg`, pretty much the same applies for `brew`, i.e. while it is useful on a single Mac, it is a un-manageable mess when you think about deploying and managing on a fleet of computers.
 
