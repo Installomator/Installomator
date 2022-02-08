@@ -1,4 +1,4 @@
-# MARK: Functions
+# MARK: 2 Functions
 
 cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     if [ -n "$dmgmount" ]; then
@@ -27,6 +27,17 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         echo "#"
     fi
     exit "$1"
+}
+
+# Two functions to trap the script
+trap_with_arg() {
+    func="$1" ; shift
+    for sig ; do
+        trap "$func $sig" "$sig"
+    done
+}
+func_trap() {
+    cleanupAndExit 255 "Installomator has been terminated with: $1" ERROR
 }
 
 runAsUser() {

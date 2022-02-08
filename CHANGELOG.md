@@ -1,5 +1,6 @@
 ## v10
 
+- Now we trap the script, so if it is cancelled, we will run cleanupAndExit anyway, and have mounted diskimages unmounted and temporary files and folders removed.
 -
 
 ## v9

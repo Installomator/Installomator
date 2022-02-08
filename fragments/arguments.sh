@@ -1,4 +1,9 @@
-# MARK: check minimal macOS requirement
+# MARK: 3 Arguments
+
+# Start trapping the script
+trap_with_arg func_trap SIGHUP SIGINT SIGQUIT SIGABRT SIGTERM SIGTSTP
+
+# check minimal macOS requirement
 autoload is-at-least
 
 installedOSversion=$(sw_vers -productVersion)
@@ -125,4 +130,4 @@ valuesfromarguments)
     fi
     ;;
 
-# label descriptions start here
+# Mark: label descriptions start here
