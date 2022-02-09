@@ -1,5 +1,6 @@
 ## v10
 
+- Changed and improved logging levels on many messages throughout the script. Should be more polished.
 -
 
 ## v9

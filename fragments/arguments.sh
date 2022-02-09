@@ -10,21 +10,21 @@ fi
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
     if [[ -z $label ]]; then # check if label is set inside script
-        printlog "no label provided, printing labels"
+        printlog "no label provided, printing labels" REQ
         grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
         #grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "${labelFile}" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
         exit 0
     fi
 elif [[ $1 == "/" ]]; then
     # jamf uses sends '/' as the first argument
-    printlog "shifting arguments for Jamf"
+    printlog "shifting arguments for Jamf" REQ
     shift 3
 fi
 
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1"
+        printlog "setting variable from argument $1" REQ
         eval $1
     else
         # assume it's a label
@@ -96,31 +96,31 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 # MARK: check for root
 if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
-    cleanupAndExit 6 "not running as root, exiting"
+    cleanupAndExit 6 "not running as root, exiting" ERROR
 fi
 
 # MARK: labels in case statement
 case $label in
 longversion)
     # print the script version
-    printlog "Installomater: version $VERSION ($VERSIONDATE)"
+    printlog "Installomater: version $VERSION ($VERSIONDATE)" REQ
     exit 0
     ;;
 valuesfromarguments)
     if [[ -z $name ]]; then
-        printlog "need to provide 'name'"
+        printlog "need to provide 'name'" ERROR
         exit 1
     fi
     if [[ -z $type ]]; then
-        printlog "need to provide 'type'"
+        printlog "need to provide 'type'" ERROR
         exit 1
     fi
     if [[ -z $downloadURL ]]; then
-        printlog "need to provide 'downloadURL'"
+        printlog "need to provide 'downloadURL'" ERROR
         exit 1
     fi
     if [[ -z $expectedTeamID ]]; then
-        printlog "need to provide 'expectedTeamID'"
+        printlog "need to provide 'expectedTeamID'" ERROR
         exit 1
     fi
     ;;

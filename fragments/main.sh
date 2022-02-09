@@ -1,13 +1,13 @@
 *)
     # unknown label
     #printlog "unknown label $label"
-    cleanupAndExit 1 "unknown label $label"
+    cleanupAndExit 1 "unknown label $label" ERROR
     ;;
 esac
 
 # Are we only asked to return label name
 if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
-    printlog "Only returning label name."
+    printlog "Only returning label name." REQ
     printlog "$name"
     echo "$name"
     exit
@@ -18,7 +18,7 @@ fi
 if [[ ${INTERRUPT_DND} = "no" ]]; then
     # Check if a fullscreen app is active
     if hasDisplaySleepAssertion; then
-        cleanupAndExit 1 "active display sleep assertion detected, aborting"
+        cleanupAndExit 1 "active display sleep assertion detected, aborting" ERROR
     fi
 fi
 
@@ -63,9 +63,9 @@ if [[ ! -a "${LOGO}" ]]; then
         LOGO="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
     fi
 fi
-printlog "LOGO=${LOGO}"
+printlog "LOGO=${LOGO}" INFO
 
-printlog "Label type: $type"
+printlog "Label type: $type" INFO
 
 # MARK: extract info from data
 if [ -z "$archiveName" ]; then
@@ -87,7 +87,7 @@ if [ -z "$archiveName" ]; then
             ;;
     esac
 fi
-printlog "archiveName: $archiveName" DEBUG
+printlog "archiveName: $archiveName" INFO
 
 if [ -z "$appName" ]; then
     # when not given derive from name
@@ -105,14 +105,13 @@ if [ -z "$targetDir" ]; then
         updateronly)
             ;;
         *)
-            printlog "Cannot handle type $type"
-            cleanupAndExit 99
+            cleanupAndExit 99 "Cannot handle type $type" ERROR
             ;;
     esac
 fi
 
 if [[ -z $blockingProcesses ]]; then
-    printlog "no blocking processes defined, using $name as default"
+    printlog "no blocking processes defined, using $name as default" INFO
     blockingProcesses=( $name )
 fi
 
@@ -128,8 +127,7 @@ fi
 # MARK: change directory to temporary working directory
 printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
-    printlog "error changing directory $tmpDir"
-    cleanupAndExit 1
+    cleanupAndExit 1 "error changing directory $tmpDir" ERROR
 fi
 
 # MARK: get installed version
@@ -152,10 +150,10 @@ if [[ -n $appNewVersion ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No newer version."
+                cleanupAndExit 0 "No newer version." WARN
             fi
         else
-            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app."
+            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app." WARN
         fi
     fi
 else
@@ -174,7 +172,7 @@ if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
             cleanupAndExit 0
         fi # otherwise continue
     else
-        printlog "DEBUG mode 1 enabled, not running update tool"
+        printlog "DEBUG mode 1 enabled, not running update tool" WARN
     fi
 fi
 
@@ -197,14 +195,14 @@ else
     deduplicatelogs "$curlDownload"
     if [[ $curlDownloadStatus -ne 0 ]]; then
     #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
-        printlog "error downloading $downloadURL"
+        printlog "error downloading $downloadURL" ERROR
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
             if [[ $updateDetected == "YES" ]]; then
-                displaynotification "$message" "Error updating $name" ERROR
+                displaynotification "$message" "Error updating $name"
             else
-                displaynotification "$message" "Error installing $name" ERROR
+                displaynotification "$message" "Error installing $name"
             fi
         fi
         printlog "File list: $(ls -lh "$archiveName")" ERROR
@@ -269,8 +267,7 @@ case $type in
         installAppInDmgInZip
         ;;
     *)
-        printlog "Cannot handle type $type"
-        cleanupAndExit 99
+        cleanupAndExit 99 "Cannot handle type $type" ERROR
         ;;
 esac
 
