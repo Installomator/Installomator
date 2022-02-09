@@ -670,7 +670,7 @@ installPkgInDmg() {
         archiveName="${filearray[1]}"
         printlog "found pkg: $archiveName"
     else
-        if ls "$tmpDir/$pkgName" ; then
+        if [[ -s "$tmpDir/$pkgName" ]] ; then
             archiveName="$tmpDir/$pkgName"
         else
             # try searching for pkg
