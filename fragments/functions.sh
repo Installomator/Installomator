@@ -668,23 +668,22 @@ installPkgInDmg() {
             cleanupAndExit 20 "couldn't find pkg in dmg $archiveName" ERROR
         fi
         archiveName="${filearray[1]}"
-        printlog "found pkg: $archiveName"
     else
         if [[ -s "$tmpDir/$pkgName" ]] ; then
             archiveName="$tmpDir/$pkgName"
         else
             # try searching for pkg
-            findfiles=$(find "$tmpDir" -iname "$pkgName")
+            findfiles=$(find "$dmgmount" -iname "$pkgName") # was: $tmpDir
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
+                cleanupAndExit 20 "couldn't find pkg “$pkgName” in dmg $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
-            printlog "found pkg: $archiveName"
         fi
     fi
-
+    printlog "found pkg: $archiveName"
+    
     # installFromPkgs
     installFromPKG
 }
