@@ -22,7 +22,7 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "$2" $3
     fi
     printlog "################## End Installomator, exit code $1 \n\n" REQ
-    
+
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
         1=0 # If only label name should be returned we exit without any errors
@@ -99,7 +99,7 @@ printlog(){
             curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" > /dev/null
         done <<< "$log_message"
     fi
-    
+
     # Extra spaces
     space_char=""
     if [[ ${#log_priority} -eq 3 ]]; then
@@ -491,7 +491,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
             printlog "Changing owner to $currentUser"
             chown -R "$currentUser" "$targetDir/$appName"
         else
-            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel" 
+            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel"
             chown -R root:wheel "$targetDir/$appName"
         fi
 
@@ -521,7 +521,7 @@ mountDMG() {
     dmgmountStatus=$(echo $?)
     dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
     deduplicatelogs "$dmgmountOut"
-    
+
     if [[ $dmgmountStatus -ne 0 ]] ; then
     #if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
         cleanupAndExit 3 "Error mounting $tmpDir/$archiveName error:\n$logoutput" ERROR
@@ -530,7 +530,7 @@ mountDMG() {
         cleanupAndExit 3 "Error accessing mountpoint for $tmpDir/$archiveName error:\n$logoutput" ERROR
     fi
     printlog "Debugging enabled, dmgmount output was:\n$logoutput" DEBUG
-    
+
     printlog "Mounted: $dmgmount" INFO
 }
 
@@ -547,7 +547,7 @@ installFromPKG() {
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
-    
+
     teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
@@ -555,7 +555,7 @@ installFromPKG() {
     fi
 
     deduplicatelogs "$spctlOut"
-    
+
     if [[ $spctlStatus -ne 0 ]] ; then
     #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
         cleanupAndExit 4 "Error verifying $archiveName error:\n$logoutput" ERROR
@@ -671,7 +671,7 @@ installPkgInDmg() {
         archiveName="${filearray[1]}"
     else
         if [[ -s "$dmgmount/$pkgName" ]] ; then # was: $tmpDir
-            archiveName="$tmpDir/$pkgName"
+            archiveName="$dmgmount/$pkgName"
         else
             # try searching for pkg
             findfiles=$(find "$dmgmount" -iname "$pkgName") # was: $tmpDir
@@ -685,7 +685,7 @@ installPkgInDmg() {
         fi
     fi
     printlog "found pkg: $archiveName"
-    
+
     # installFromPkgs
     installFromPKG
 }
