@@ -21,7 +21,7 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     else
         printlog "$2" $3
     fi
-    printlog "################## End Installomator, exit code $1 \n\n" REQ
+    printlog "################## End Installomator, exit code $1 \n" REQ
     
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
