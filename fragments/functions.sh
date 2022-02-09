@@ -663,17 +663,19 @@ installPkgInDmg() {
     if [[ -z $pkgName ]]; then
         # find first file ending with 'pkg'
         findfiles=$(find "$dmgmount" -iname "*.pkg" -type f -maxdepth 1  )
+        printlog "Found pkg(s):\n$findfiles" DEBUG
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in dmg $archiveName" ERROR
         fi
         archiveName="${filearray[1]}"
     else
-        if [[ -s "$tmpDir/$pkgName" ]] ; then
+        if [[ -s "$dmgmount/$pkgName" ]] ; then # was: $tmpDir
             archiveName="$tmpDir/$pkgName"
         else
             # try searching for pkg
             findfiles=$(find "$dmgmount" -iname "$pkgName") # was: $tmpDir
+            printlog "Found pkg(s):\n$findfiles" DEBUG
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
                 cleanupAndExit 20 "couldn't find pkg “$pkgName” in dmg $archiveName" ERROR
@@ -697,6 +699,7 @@ installPkgInZip() {
     if [[ -z $pkgName ]]; then
         # find first file ending with 'pkg'
         findfiles=$(find "$tmpDir" -iname "*.pkg" -type f -maxdepth 2  )
+        printlog "Found pkg(s):\n$findfiles" DEBUG
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in zip $archiveName" ERROR
