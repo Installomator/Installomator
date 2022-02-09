@@ -225,12 +225,12 @@ getAppVersion() {
         applist="$targetDir/$appName"
     elif [[ -d "/Applications/$appName" ]]; then
         applist="/Applications/$appName"
-        if [[ $type =~ '^(dmg|zip|tbz|app.*)$']]; then
+        if [[ $type =~ '^(dmg|zip|tbz|app.*)$' ]]; then
             targetDir="/Applications"
         fi
     elif [[ -d "/Applications/Utilities/$appName" ]]; then
         applist="/Applications/Utilities/$appName"
-        if [[ $type =~ '^(dmg|zip|tbz|app.*)$']]; then
+        if [[ $type =~ '^(dmg|zip|tbz|app.*)$' ]]; then
             targetDir="/Applications/Utilities"
         fi
     #else
@@ -241,7 +241,7 @@ getAppVersion() {
     else
         printlog "App(s) found: ${applist}" DEBUG
     fi
-    if [[ $type =~ '^(dmg|zip|tbz|app.*)$']]; then
+    if [[ $type =~ '^(dmg|zip|tbz|app.*)$' ]]; then
         printlog "targetDir for installation: $targetDir" INFO
     fi
 
