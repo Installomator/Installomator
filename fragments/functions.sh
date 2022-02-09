@@ -220,13 +220,21 @@ getAppVersion() {
         fi
     fi
 
-    # get app in /Applications, or /Applications/Utilities, or find using Spotlight
-    if [[ -d "/Applications/$appName" ]]; then
+    # get app in targetDir, /Applications, or /Applications/Utilities
+    if [[ -d "$targetDir/$appName" ]]; then
+        applist="$targetDir/$appName"
+    elif [[ -d "/Applications/$appName" ]]; then
         applist="/Applications/$appName"
+        if [[ $type =~ '^(dmg|zip|tbz|app.*)$']]; then
+            targetDir="/Applications"
+        fi
     elif [[ -d "/Applications/Utilities/$appName" ]]; then
         applist="/Applications/Utilities/$appName"
-    else
-        applist=$(mdfind "kind:application $appName" -0 )
+        if [[ $type =~ '^(dmg|zip|tbz|app.*)$']]; then
+            targetDir="/Applications/Utilities"
+        fi
+    #else
+    #    applist=$(mdfind "kind:application $appName" -0 )
     fi
     if [[ -z applist ]]; then
         printlog "No previous app found" DEBUG
