@@ -301,8 +301,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="9.0"
-VERSIONDATE="2022-02-08"
+VERSION="10.0dev"
+VERSIONDATE="2022-02-18"
 
 # MARK: Functions
 
@@ -324,8 +324,10 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     reopenClosedProcess
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2" $3
+    else
+        printlog "$2" $3
     fi
-    printlog "################## End Installomator, exit code $1 \n\n" REQ
+    printlog "################## End Installomator, exit code $1 \n" REQ
     
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
@@ -403,7 +405,7 @@ printlog(){
             curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" > /dev/null
         done <<< "$log_message"
     fi
-    
+
     # Extra spaces
     space_char=""
     if [[ ${#log_priority} -eq 3 ]]; then
@@ -482,7 +484,7 @@ versionFromGit() {
 
     appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
-        printlog "could not retrieve version number for $gitusername/$gitreponame"
+        printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
         appNewVersion=""
     else
         echo "$appNewVersion"
@@ -526,19 +528,34 @@ getAppVersion() {
         fi
     fi
 
-    # get app in /Applications, or /Applications/Utilities, or find using Spotlight
-    if [[ -d "/Applications/$appName" ]]; then
+    # get app in targetDir, /Applications, or /Applications/Utilities
+    if [[ -d "$targetDir/$appName" ]]; then
+        applist="$targetDir/$appName"
+    elif [[ -d "/Applications/$appName" ]]; then
         applist="/Applications/$appName"
+#        if [[ $type =~ '^(dmg|zip|tbz|app.*)$' ]]; then
+#            targetDir="/Applications"
+#        fi
     elif [[ -d "/Applications/Utilities/$appName" ]]; then
         applist="/Applications/Utilities/$appName"
+#        if [[ $type =~ '^(dmg|zip|tbz|app.*)$' ]]; then
+#            targetDir="/Applications/Utilities"
+#        fi
     else
-        applist=$(mdfind "kind:application $appName" -0 )
+    #    applist=$(mdfind "kind:application $appName" -0 )
+        printlog "name: $name, appName: $appName"
+        applist=$(mdfind "kind:application AND name:$name" -0 )
+#        printlog "App(s) found: ${applist}" DEBUG
+#        applist=$(mdfind "kind:application AND name:$appName" -0 )
     fi
     if [[ -z applist ]]; then
-        printlog "No previous app found" DEBUG
+        printlog "No previous app found" INFO
     else
-        printlog "App(s) found: ${applist}" DEBUG
+        printlog "App(s) found: ${applist}" INFO
     fi
+#    if [[ $type =~ '^(dmg|zip|tbz|app.*)$' ]]; then
+#        printlog "targetDir for installation: $targetDir" INFO
+#    fi
 
     appPathArray=( ${(0)applist} )
 
@@ -561,10 +578,10 @@ getAppVersion() {
                 fi
             fi
         else
-            printlog "could not determine location of $appName"
+            printlog "could not determine location of $appName" WARN
         fi
     else
-        printlog "could not find $appName"
+        printlog "could not find $appName" WARN
     fi
 }
 
@@ -691,7 +708,7 @@ reopenClosedProcess() {
         processuser=$(ps aux | grep -i "${appName}" | grep -vi "grep" | awk '{print $1}')
         printlog "Reopened ${appName} as $processuser"
     else
-        printlog "App not closed, so no reopen." DEBUG
+        printlog "App not closed, so no reopen." INFO
     fi
 }
 
@@ -701,7 +718,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # check if app exists
     if [ ! -e "$appPath" ]; then
-        cleanupAndExit 8 "could not find: $appPath" DEBUG
+        cleanupAndExit 8 "could not find: $appPath" ERROR
     fi
 
     # verify with spctl
@@ -733,10 +750,12 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
             fi
-            cleanupAndExit 0 "No new version to install" INFO
+            cleanupAndExit 0 "No new version to install" WARN
         else
             printlog "Using force to install anyway."
         fi
+    elif [[ -z $appversion ]]; then
+        printlog "Installing $name version $appNewVersion on versionKey $versionKey."
     else
         printlog "Downloaded version of $name is $appNewVersion on versionKey $versionKey (replacing version $appversion)."
     fi
@@ -752,7 +771,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "Error updating $name!"
             fi
-            cleanupAndExit 6 "Installed macOS is too old for this app." INFO
+            cleanupAndExit 6 "Installed macOS is too old for this app." ERROR
         fi
     fi
 
@@ -793,7 +812,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
             printlog "Changing owner to $currentUser"
             chown -R "$currentUser" "$targetDir/$appName"
         else
-            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel" 
+            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel"
             chown -R root:wheel "$targetDir/$appName"
         fi
 
@@ -823,7 +842,7 @@ mountDMG() {
     dmgmountStatus=$(echo $?)
     dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
     deduplicatelogs "$dmgmountOut"
-    
+
     if [[ $dmgmountStatus -ne 0 ]] ; then
     #if ! dmgmount=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
         cleanupAndExit 3 "Error mounting $tmpDir/$archiveName error:\n$logoutput" ERROR
@@ -832,7 +851,7 @@ mountDMG() {
         cleanupAndExit 3 "Error accessing mountpoint for $tmpDir/$archiveName error:\n$logoutput" ERROR
     fi
     printlog "Debugging enabled, dmgmount output was:\n$logoutput" DEBUG
-    
+
     printlog "Mounted: $dmgmount" INFO
 }
 
@@ -849,7 +868,7 @@ installFromPKG() {
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
-    
+
     teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
@@ -857,7 +876,7 @@ installFromPKG() {
     fi
 
     deduplicatelogs "$spctlOut"
-    
+
     if [[ $spctlStatus -ne 0 ]] ; then
     #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
         cleanupAndExit 4 "Error verifying $archiveName error:\n$logoutput" ERROR
@@ -891,7 +910,7 @@ installFromPKG() {
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No new version to install" INFO
+                cleanupAndExit 0 "No new version to install" WARN
             else
                 printlog "Using force to install anyway."
             fi
@@ -965,27 +984,28 @@ installPkgInDmg() {
     if [[ -z $pkgName ]]; then
         # find first file ending with 'pkg'
         findfiles=$(find "$dmgmount" -iname "*.pkg" -type f -maxdepth 1  )
+        printlog "Found pkg(s):\n$findfiles" DEBUG
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in dmg $archiveName" ERROR
         fi
         archiveName="${filearray[1]}"
-        printlog "found pkg: $archiveName"
     else
-        if ls "$tmpDir/$pkgName" ; then
-            archiveName="$tmpDir/$pkgName"
+        if [[ -s "$dmgmount/$pkgName" ]] ; then # was: $tmpDir
+            archiveName="$dmgmount/$pkgName"
         else
             # try searching for pkg
-            findfiles=$(find "$tmpDir" -iname "$pkgName")
+            findfiles=$(find "$dmgmount" -iname "$pkgName") # was: $tmpDir
+            printlog "Found pkg(s):\n$findfiles" DEBUG
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
+                cleanupAndExit 20 "couldn't find pkg “$pkgName” in dmg $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
-            printlog "found pkg: $archiveName"
         fi
     fi
+    printlog "found pkg: $archiveName"
 
     # installFromPkgs
     installFromPKG
@@ -1000,6 +1020,7 @@ installPkgInZip() {
     if [[ -z $pkgName ]]; then
         # find first file ending with 'pkg'
         findfiles=$(find "$tmpDir" -iname "*.pkg" -type f -maxdepth 2  )
+        printlog "Found pkg(s):\n$findfiles" DEBUG
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
             cleanupAndExit 20 "couldn't find pkg in zip $archiveName" ERROR
@@ -1076,13 +1097,13 @@ runUpdateTool() {
             printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updateStatus Error:\n$logoutput" WARN
             return 1
             if [[ $type == updateronly ]]; then
-                cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" WARN
+                cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" ERROR
             fi
         elif [[ $updateStatus -eq 0 ]]; then
             printlog "Debugging enabled, update tool output was:\n$logoutput" DEBUG
         fi
     else
-        printlog "couldn't find $updateTool, continuing normally"
+        printlog "couldn't find $updateTool, continuing normally" WARN
         return 1
     fi
     return 0
@@ -1150,21 +1171,21 @@ fi
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
     if [[ -z $label ]]; then # check if label is set inside script
-        printlog "no label provided, printing labels"
+        printlog "no label provided, printing labels" REQ
         grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "$0" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
         #grep -E '^[a-z0-9\_-]*(\)|\|\\)$' "${labelFile}" | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort
         exit 0
     fi
 elif [[ $1 == "/" ]]; then
     # jamf uses sends '/' as the first argument
-    printlog "shifting arguments for Jamf"
+    printlog "shifting arguments for Jamf" REQ
     shift 3
 fi
 
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1"
+        printlog "setting variable from argument $1" REQ
         eval $1
     else
         # assume it's a label
@@ -1236,31 +1257,31 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 # MARK: check for root
 if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
-    cleanupAndExit 6 "not running as root, exiting"
+    cleanupAndExit 6 "not running as root, exiting" ERROR
 fi
 
 # MARK: labels in case statement
 case $label in
 longversion)
     # print the script version
-    printlog "Installomater: version $VERSION ($VERSIONDATE)"
+    printlog "Installomater: version $VERSION ($VERSIONDATE)" REQ
     exit 0
     ;;
 valuesfromarguments)
     if [[ -z $name ]]; then
-        printlog "need to provide 'name'"
+        printlog "need to provide 'name'" ERROR
         exit 1
     fi
     if [[ -z $type ]]; then
-        printlog "need to provide 'type'"
+        printlog "need to provide 'type'" ERROR
         exit 1
     fi
     if [[ -z $downloadURL ]]; then
-        printlog "need to provide 'downloadURL'"
+        printlog "need to provide 'downloadURL'" ERROR
         exit 1
     fi
     if [[ -z $expectedTeamID ]]; then
-        printlog "need to provide 'expectedTeamID'"
+        printlog "need to provide 'expectedTeamID'" ERROR
         exit 1
     fi
     ;;
@@ -2795,7 +2816,11 @@ loom)
     # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
     name="Loom"
     type="dmg"
-    downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /dmg/ {print $3}' | head -1)
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /arm64/ && /dmg/ {print $3}' | head -1)
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /dmg/ {print $3}' | head -1)
+    fi
     appNewVersion=$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/version/ {print $2}' )
     expectedTeamID="QGD2ZPXZZG"
     ;;
@@ -3494,6 +3519,15 @@ pacifist)
     downloadURL="https://charlessoft.com/cgi-bin/pacifist_download.cgi?type=dmg"
     expectedTeamID="HRLUCP7QP4"
     ;;
+
+packages)
+   #NOTE: Packages is signed but _not_ notarized, so spctl will reject it
+   name="Packages"
+   type="pkgInDmg"
+   pkgName="Install Packages.pkg"
+   downloadURL="http://s.sudre.free.fr/Software/files/Packages.dmg"
+   expectedTeamID="NL5M9E394P"
+   ;;
 pandoc)
     name="Pandoc"
     type="pkg"
@@ -4605,13 +4639,13 @@ zulujdk8)
 *)
     # unknown label
     #printlog "unknown label $label"
-    cleanupAndExit 1 "unknown label $label"
+    cleanupAndExit 1 "unknown label $label" ERROR
     ;;
 esac
 
 # Are we only asked to return label name
 if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
-    printlog "Only returning label name."
+    printlog "Only returning label name." REQ
     printlog "$name"
     echo "$name"
     exit
@@ -4622,7 +4656,7 @@ fi
 if [[ ${INTERRUPT_DND} = "no" ]]; then
     # Check if a fullscreen app is active
     if hasDisplaySleepAssertion; then
-        cleanupAndExit 1 "active display sleep assertion detected, aborting"
+        cleanupAndExit 1 "active display sleep assertion detected, aborting" ERROR
     fi
 fi
 
@@ -4667,9 +4701,9 @@ if [[ ! -a "${LOGO}" ]]; then
         LOGO="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
     fi
 fi
-printlog "LOGO=${LOGO}"
+printlog "LOGO=${LOGO}" INFO
 
-printlog "Label type: $type"
+printlog "Label type: $type" INFO
 
 # MARK: extract info from data
 if [ -z "$archiveName" ]; then
@@ -4691,7 +4725,7 @@ if [ -z "$archiveName" ]; then
             ;;
     esac
 fi
-printlog "archiveName: $archiveName" DEBUG
+printlog "archiveName: $archiveName" INFO
 
 if [ -z "$appName" ]; then
     # when not given derive from name
@@ -4709,14 +4743,13 @@ if [ -z "$targetDir" ]; then
         updateronly)
             ;;
         *)
-            printlog "Cannot handle type $type"
-            cleanupAndExit 99
+            cleanupAndExit 99 "Cannot handle type $type" ERROR
             ;;
     esac
 fi
 
 if [[ -z $blockingProcesses ]]; then
-    printlog "no blocking processes defined, using $name as default"
+    printlog "no blocking processes defined, using $name as default" INFO
     blockingProcesses=( $name )
 fi
 
@@ -4732,8 +4765,7 @@ fi
 # MARK: change directory to temporary working directory
 printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
-    printlog "error changing directory $tmpDir"
-    cleanupAndExit 1
+    cleanupAndExit 1 "error changing directory $tmpDir" ERROR
 fi
 
 # MARK: get installed version
@@ -4756,10 +4788,10 @@ if [[ -n $appNewVersion ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No newer version."
+                cleanupAndExit 0 "No newer version." WARN
             fi
         else
-            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app."
+            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app." WARN
         fi
     fi
 else
@@ -4778,7 +4810,7 @@ if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
             cleanupAndExit 0
         fi # otherwise continue
     else
-        printlog "DEBUG mode 1 enabled, not running update tool"
+        printlog "DEBUG mode 1 enabled, not running update tool" WARN
     fi
 fi
 
@@ -4801,14 +4833,14 @@ else
     deduplicatelogs "$curlDownload"
     if [[ $curlDownloadStatus -ne 0 ]]; then
     #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
-        printlog "error downloading $downloadURL"
+        printlog "error downloading $downloadURL" ERROR
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
             if [[ $updateDetected == "YES" ]]; then
-                displaynotification "$message" "Error updating $name" ERROR
+                displaynotification "$message" "Error updating $name"
             else
-                displaynotification "$message" "Error installing $name" ERROR
+                displaynotification "$message" "Error installing $name"
             fi
         fi
         printlog "File list: $(ls -lh "$archiveName")" ERROR
@@ -4873,8 +4905,7 @@ case $type in
         installAppInDmgInZip
         ;;
     *)
-        printlog "Cannot handle type $type"
-        cleanupAndExit 99
+        cleanupAndExit 99 "Cannot handle type $type" ERROR
         ;;
 esac
 
