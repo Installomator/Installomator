@@ -255,6 +255,7 @@ opera
 ottomatic
 overflow
 pacifist
+packages
 pandoc
 paretosecurity
 parsec
