@@ -1,7 +1,10 @@
-## v10
+## v9.0.1
 
-- Changed and improved logging levels on many messages throughout the script. Should be more polished.
--
+- improved logging levels throughout the script #408
+- fixed a bug for `pkgindmg` style labels #408
+- changed the criteria used to locate an app in the case the it cannot be found in the default locations, this should help with some apps with similar name (Virtual Box and Box Drive, #401) #413
+- new label: WhiteBox Packages (`packages`) #415
+- modified label: `loom` (added Apple silicon download) #417
 
 ## v9
 
