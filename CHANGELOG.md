@@ -1,3 +1,7 @@
+## v9.1
+
+- new labels: amazoncorretto8jdk (#423)
+
 ## v9.0.1
 
 - improved logging levels throughout the script #408
