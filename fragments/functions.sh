@@ -444,7 +444,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
             fi
-            cleanupAndExit 0 "No new version to install" WARN
+            cleanupAndExit 0 "No new version to install" REG
         else
             printlog "Using force to install anyway."
         fi
@@ -604,7 +604,7 @@ installFromPKG() {
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No new version to install" WARN
+                cleanupAndExit 0 "No new version to install" REQ
             else
                 printlog "Using force to install anyway."
             fi
@@ -814,7 +814,7 @@ finishing() {
         message="Installed $name, version $appversion"
     fi
 
-    printlog "$message"
+    printlog "$message" REQ
 
     if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
         printlog "notifying"
