@@ -486,7 +486,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # remove existing application
         if [ -e "$targetDir/$appName" ]; then
-            printlog "Removing existing $targetDir/$appName" DEBUG
+            printlog "Removing existing $targetDir/$appName" WARN
             deleteAppOut=$(rm -Rfv "$targetDir/$appName" 2>&1)
             tempName="$targetDir/$appName"
             tempNameLength=$((${#tempName} + 10))
@@ -497,16 +497,21 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # copy app to /Applications
         printlog "Copy $appPath to $targetDir"
-        if ! ditto "$appPath" "$targetDir/$appName"; then
-            cleanupAndExit 7 "Error while copying" ERROR
+        copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
+        copyAppStatus=$(echo $?)
+        deduplicatelogs "$copyAppOut"
+        printlog "Debugging enabled, App copy output was:\n$logoutput" DEBUG
+        if [[ $appVerifyStatus -ne 0 ]] ; then
+        #if ! ditto "$appPath" "$targetDir/$appName"; then
+            cleanupAndExit 7 "Error while copying:\n$logoutput" ERROR
         fi
 
         # set ownership to current user
         if [[ "$currentUser" != "loginwindow" && $SYSTEMOWNER -ne 1 ]]; then
-            printlog "Changing owner to $currentUser"
+            printlog "Changing owner to $currentUser" WARN
             chown -R "$currentUser" "$targetDir/$appName"
         else
-            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel"
+            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel" WARN
             chown -R root:wheel "$targetDir/$appName"
         fi
 
