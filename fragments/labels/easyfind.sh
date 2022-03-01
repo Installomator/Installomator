@@ -1,4 +1,4 @@
-devoneasyfind)
+easyfind)
     name="EasyFind"
     type="zip"
     downloadURL="$(curl -fs "https://www.devontechnologies.com/apps/freeware" | grep -o "http.*download.*.zip" | grep -i easyfind)"
