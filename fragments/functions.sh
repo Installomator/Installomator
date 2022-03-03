@@ -246,7 +246,7 @@ getAppVersion() {
         if [[ $SKIP_UNINSTALLED -eq 1 ]]; then
             cleanupAndExit 0 "No previous app found, and SKIP_UNINSTALLED=1." REQ
         else
-            printlog "No previous app found" DEBUG
+            printlog "No previous app found" WARN
         fi
     else
         printlog "App(s) found: ${applist}" INFO
@@ -269,7 +269,7 @@ getAppVersion() {
             if [[ -d "$installedAppPath"/Contents/_MASReceipt ]];then
                 printlog "Installed $appName is from App Store, use “IGNORE_APP_STORE_APPS=yes” to replace."
                 if [[ $IGNORE_APP_STORE_APPS == "yes" ]]; then
-                    printlog "Replacing App Store apps, no matter the version"
+                    printlog "Replacing App Store apps, no matter the version" WARN
                     appversion=0
                 else
                     cleanupAndExit 1 "App previously installed from App Store, and we respect that" ERROR
