@@ -2,6 +2,14 @@
 
 - Introducing variable `SKIP_UNINSTALLED` that normally will be `0` and the script will run and install the software label if other conditions align with this. Use `SKIP_UNINSTALLED=1` to have the script stop if a current installation of the app is not found.
 
+## v9.0.1
+
+- improved logging levels throughout the script #408
+- fixed a bug for `pkgindmg` style labels #408
+- changed the criteria used to locate an app in the case the it cannot be found in the default locations, this should help with some apps with similar name (Virtual Box and Box Drive, #401) #413
+- new label: WhiteBox Packages (`packages`) #415
+- modified label: `loom` (added Apple silicon download) #417
+
 ## v9
 
 - We have moved the root check to the beginning of the script, and improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user (almost as running the script without root before).
