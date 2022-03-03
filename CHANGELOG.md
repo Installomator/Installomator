@@ -1,4 +1,4 @@
-## v9.1
+## v10.0
 
 - Introducing variable `SKIP_UNINSTALLED` that normally will be `0` and the script will run and install the software label if other conditions align with this. Use `SKIP_UNINSTALLED=1` to have the script stop if a current installation of the app is not found.
 
