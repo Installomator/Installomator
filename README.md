@@ -12,7 +12,7 @@ We have put a lot of work into making it stable and safe, but we cannot - of cou
 
 ## Authors
 
-Intallomator was original inspired by the download scripts from William Smith and Sander Schram, and created by:
+Intallomator was originally inspired by the download scripts from William Smith and Sander Schram, and created by:
     Armin Briegel - @scriptingosx
 
 Later on a few more contributers came on the project:
