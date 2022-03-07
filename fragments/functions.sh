@@ -501,7 +501,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         copyAppStatus=$(echo $?)
         deduplicatelogs "$copyAppOut"
         printlog "Debugging enabled, App copy output was:\n$logoutput" DEBUG
-        if [[ $appVerifyStatus -ne 0 ]] ; then
+        if [[ $copyAppStatus -ne 0 ]] ; then
         #if ! ditto "$appPath" "$targetDir/$appName"; then
             cleanupAndExit 7 "Error while copying:\n$logoutput" ERROR
         fi
