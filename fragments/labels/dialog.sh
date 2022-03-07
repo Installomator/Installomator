@@ -1,4 +1,5 @@
-dialog)
+dialog|\
+swiftdialog)
     name="Dialog"
     type="pkg"
     packageID="au.csiro.dialogcli"
