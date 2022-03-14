@@ -55,6 +55,11 @@ case $LOGO in
         LOGO="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;
+    microsoft)
+        # Microsoft Endpoint Manager (formerly known as Intune)
+        LOGO="/Applications/Company Portal.app/Contents/Resources/AppIcon.icns"
+        #if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
+        ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
     if [[ $(sw_vers -buildVersion) > "19" ]]; then
