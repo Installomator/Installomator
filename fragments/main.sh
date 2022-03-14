@@ -56,7 +56,7 @@ case $LOGO in
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;
     microsoft)
-        # Microsoft Endpoint Manager (formerly known as Intune)
+        # Microsoft Endpoint Manager (Intune)
         LOGO="/Applications/Company Portal.app/Contents/Resources/AppIcon.icns"
         #if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;

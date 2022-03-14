@@ -80,7 +80,7 @@ LOGO=appstore
 #   - mosyleb       Mosyle Business
 #   - mosylem       Mosyle Manager (Education)
 #   - addigy        Addigy
-#   - microsoft     Microsoft Endpoint Manager (formerly known as Intune)
+#   - microsoft     Microsoft Endpoint Manager (Intune)
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
