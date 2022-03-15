@@ -57,8 +57,8 @@ case $LOGO in
         ;;
     microsoft)
         # Microsoft Endpoint Manager (Intune)
-        LOGO="/Applications/Company Portal.app/Contents/Resources/AppIcon.icns"
-        #if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
+        LOGO="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Management Profile"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
