@@ -3,7 +3,7 @@ autoload is-at-least
 
 installedOSversion=$(sw_vers -productVersion)
 if ! is-at-least 10.14 $installedOSversion; then
-    printlog "Installomator requires at least macOS 10.14 Mojave."
+    printlog "Installomator requires at least macOS 10.14 Mojave." ERROR
     exit 98
 fi
 
@@ -24,7 +24,7 @@ fi
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" REQ
+        printlog "setting variable from argument $1" WARN
         eval $1
     else
         # assume it's a label
