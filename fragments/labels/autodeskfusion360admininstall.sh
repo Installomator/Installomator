@@ -1,5 +1,5 @@
 autodeskfusion360admininstall)
-    name="Autodesk%20Fusion%20360%20Admin%20Install"
+    name="Autodesk Fusion 360 Admin Install"
     type="pkg"
     packageID="com.autodesk.edu.fusion360"
     downloadURL="https://dl.appstreaming.autodesk.com/production/installers/Autodesk%20Fusion%20360%20Admin%20Install.pkg"
