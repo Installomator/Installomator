@@ -80,6 +80,7 @@ LOGO=appstore
 #   - mosyleb       Mosyle Business
 #   - mosylem       Mosyle Manager (Education)
 #   - addigy        Addigy
+#   - microsoft     Microsoft Endpoint Manager (Intune)
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
@@ -4830,6 +4831,11 @@ case $LOGO in
         # Addigy
         LOGO="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
+        ;;
+    microsoft)
+        # Microsoft Endpoint Manager (Intune)
+        LOGO="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Management Profile"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
