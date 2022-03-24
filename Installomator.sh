@@ -1968,6 +1968,13 @@ debookee)
     downloadURL=$(curl --location --fail --silent "https://www.iwaxx.com/debookee/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="AATLWWB4MZ"
     ;;
+dedoose)
+    name="Dedoose"
+    type="dmg"
+    downloadURL=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep "Dedoose-.*[0-9.].*[0-9.].*[0-9.]dmg" | cut -d'/' -f3- | cut -f1 -d'"')
+    appNewVersion=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep -o "Dedoose-.*[0-9.].*[0-9.].*[0-9.]" | cut -d'>' -f2- | tail -1)
+    expectedTeamID="9U74Q6K62X"
+    ;;
 defaultfolderx)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="Default Folder X"
