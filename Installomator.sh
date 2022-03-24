@@ -80,6 +80,7 @@ LOGO=appstore
 #   - mosyleb       Mosyle Business
 #   - mosylem       Mosyle Manager (Education)
 #   - addigy        Addigy
+#   - microsoft     Microsoft Endpoint Manager (Intune)
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
@@ -301,8 +302,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="9.0.1"
-VERSIONDATE="2022-02-20"
+VERSION="9.1"
+VERSIONDATE="2022-03-18"
 
 # MARK: Functions
 
@@ -462,10 +463,10 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 
     if [ -n "$archiveName" ]; then
-    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
+    downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
     | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
     else
-    downloadURL=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
+    downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
     | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
     fi
     if [ -z "$downloadURL" ]; then
@@ -482,7 +483,7 @@ versionFromGit() {
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
-    appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
+    appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
         appNewVersion=""
@@ -750,7 +751,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
             fi
-            cleanupAndExit 0 "No new version to install" WARN
+            cleanupAndExit 0 "No new version to install" REG
         else
             printlog "Using force to install anyway."
         fi
@@ -792,7 +793,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # remove existing application
         if [ -e "$targetDir/$appName" ]; then
-            printlog "Removing existing $targetDir/$appName" DEBUG
+            printlog "Removing existing $targetDir/$appName" WARN
             deleteAppOut=$(rm -Rfv "$targetDir/$appName" 2>&1)
             tempName="$targetDir/$appName"
             tempNameLength=$((${#tempName} + 10))
@@ -803,16 +804,21 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # copy app to /Applications
         printlog "Copy $appPath to $targetDir"
-        if ! ditto "$appPath" "$targetDir/$appName"; then
-            cleanupAndExit 7 "Error while copying" ERROR
+        copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
+        copyAppStatus=$(echo $?)
+        deduplicatelogs "$copyAppOut"
+        printlog "Debugging enabled, App copy output was:\n$logoutput" DEBUG
+        if [[ $copyAppStatus -ne 0 ]] ; then
+        #if ! ditto "$appPath" "$targetDir/$appName"; then
+            cleanupAndExit 7 "Error while copying:\n$logoutput" ERROR
         fi
 
         # set ownership to current user
         if [[ "$currentUser" != "loginwindow" && $SYSTEMOWNER -ne 1 ]]; then
-            printlog "Changing owner to $currentUser"
+            printlog "Changing owner to $currentUser" WARN
             chown -R "$currentUser" "$targetDir/$appName"
         else
-            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel"
+            printlog "No user logged in or SYSTEMOWNER=1, setting owner to root:wheel" WARN
             chown -R root:wheel "$targetDir/$appName"
         fi
 
@@ -910,7 +916,7 @@ installFromPKG() {
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No new version to install" WARN
+                cleanupAndExit 0 "No new version to install" REQ
             else
                 printlog "Using force to install anyway."
             fi
@@ -1120,7 +1126,7 @@ finishing() {
         message="Installed $name, version $appversion"
     fi
 
-    printlog "$message"
+    printlog "$message" REQ
 
     if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
         printlog "notifying"
@@ -1164,7 +1170,7 @@ autoload is-at-least
 
 installedOSversion=$(sw_vers -productVersion)
 if ! is-at-least 10.14 $installedOSversion; then
-    printlog "Installomator requires at least macOS 10.14 Mojave."
+    printlog "Installomator requires at least macOS 10.14 Mojave." ERROR
     exit 98
 fi
 
@@ -1185,7 +1191,7 @@ fi
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" REQ
+        printlog "setting variable from argument $1" WARN
         eval $1
     else
         # assume it's a label
@@ -1295,6 +1301,15 @@ valuesfromarguments)
     expectedTeamID="2BUA8C4S2C"
     blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password (Safari)" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
     #forcefulQuit=YES
+    ;;
+1passwordcli)
+    name="1Password CLI"
+    type="pkg"
+    #packageID="com.1password.op"
+    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI | grep -m 1 -i op_apple_universal | cut -d'"' -f 2)
+    appNewVersion=$(echo $downloadURL | sed -E 's/.*\/[a-zA-Z_]*([0-9.]*)\..*/\1/g')
+    appCustomVersion(){ /usr/local/bin/op -v }
+    expectedTeamID="2BUA8C4S2C"
     ;;
 4kvideodownloader)
     name="4K Video Downloader"
@@ -1434,6 +1449,13 @@ amazonchime)
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[a-zA-Z.\-]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="94KV3E626L"
     ;;
+amazoncorretto8jdk)
+name="Amazon Corretto 8 JDK"
+type="pkg"
+	downloadURL="https://corretto.aws/downloads/latest/amazon-corretto-8-x64-macos-jdk.pkg"
+	appNewVersion=$(curl -s https://raw.githubusercontent.com/corretto/corretto-8/develop/CHANGELOG.md | grep "## Corretto version" | head -n 1 | awk '{ print $4; exit}')
+expectedTeamID="94KV3E626L"
+;;
 amazonworkspaces)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Workspaces"
@@ -1463,10 +1485,10 @@ apparency)
     expectedTeamID="936EB786NH"
     ;;
 appcleaner)
-    # credit: Tadayuki Onishi (@kenchan0130)
     name="AppCleaner"
     type="zip"
-    downloadURL=$(curl -fs https://freemacsoft.net/appcleaner/Updates.xml | xpath '//rss/channel/*/enclosure/@url' 2>/dev/null | tr " " "\n" | sort | tail -1 | cut -d '"' -f 2)
+    downloadURL=$(curl -fs https://freemacsoft.net/appcleaner/Updates.xml | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | tr " " "\n" | sort | tail -1 | cut -d '"' -f 2)
+    appNewVersion=$(curl -fsL "https://freemacsoft.net/appcleaner/Updates.xml" | xpath '//rss/channel/item[last()]/enclosure/@sparkle:shortVersionString' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="X85ZX835W9"
     ;;
 applenyfonts)
@@ -1564,6 +1586,16 @@ authydesktop)
     appNewVersion="$(curl -sfL --output /dev/null -r 0-0 "${downloadURL}" --remote-header-name --remote-name -w "%{url_effective}\n" | grep -o -E '([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz)$' | sed -E 's/.*-([0-9.]*)\.dmg/\1/g')"
     expectedTeamID="9EVH78F4V4"
     ;;
+autodeskfusion360admininstall)
+    name="Autodesk Fusion 360 Admin Install"
+    type="pkg"
+    packageID="com.autodesk.edu.fusion360"
+    downloadURL="https://dl.appstreaming.autodesk.com/production/installers/Autodesk%20Fusion%20360%20Admin%20Install.pkg"
+    appNewVersion=$(curl -fs "https://dl.appstreaming.autodesk.com/production/97e6dd95735340d6ad6e222a520454db/73e72ada57b7480280f7a6f4a289729f/full.json" | sed -E 's/.*build-version":"([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/g')
+    expectedTeamID="XXKJ396S2Y"
+    appName="Autodesk Fusion 360.app"
+    blockingProcesses=( "Autodesk Fusion 360" "Fusion 360" )
+    ;;
 autodmg)
     # credit: Mischa van der Bent (@mischavdbent)
     name="AutoDMG"
@@ -1601,6 +1633,20 @@ awsvpnclient)
     downloadURL="https://d20adtppz83p9s.cloudfront.net/OSX/latest/AWS_VPN_Client.pkg"
     expectedTeamID="94KV3E626L"
     appNewVersion=$(curl -is "https://beta2.communitypatch.com/jamf/v1/ba1efae22ae74a9eb4e915c31fef5dd2/patch/AWSVPNClient" | grep currentVersion | tr ',' '\n' | grep currentVersion | cut -d '"' -f 4)
+    ;;
+axurerp10)
+    name="Axure RP 10"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://d3uii9pxdigrx1.cloudfront.net/AxureRP-Setup-arm64.dmg"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://d3uii9pxdigrx1.cloudfront.net/AxureRP-Setup.dmg"
+    fi
+    appNewVersion=$( curl -sL https://www.axure.com/release-history | grep -Eo '[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}' -m 1 )
+    expectedTeamID="HUMW6UU796"
+    versionKey="CFBundleVersion"
+    appName="Axure RP 10.app"
+    blockingProcesses=( "Axure RP 10" )
     ;;
 balenaetcher)
     name="balenaEtcher"
@@ -1729,6 +1775,13 @@ cakebrew)
     appNewVersion=$( curl -fsL "https://www.cakebrew.com/appcast/profileInfo.php" | xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2 )
     expectedTeamID="R85D3K8ATT"
     ;;
+calcservice)
+    name="CalcService"
+    type="zip"
+    downloadURL="$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.devontechnologies.com/support/download" | tr '"' "\n" | grep -o "http.*download.*.zip" | grep -i calcservice | head -1)"
+    appNewVersion="$(echo $downloadURL | sed -E 's/.*\/([0-9.]*)\/.*/\1/g')"
+    expectedTeamID="679S2QUWR8"
+    ;;
 calibre)
     # credit: Drew Diver (@grumpydrew on MacAdmins Slack)
     name="calibre"
@@ -1802,6 +1855,13 @@ clickshare)
     type="appInDmgInZip"
     downloadURL=https://www.barco.com$(curl -fs "https://www.barco.com/en/clickshare/app" | grep -E -o '(\/\S*Download\?FileNumber=R3306192\S*ShowDownloadPage=False)' | tail -1)
     expectedTeamID="P6CDJZR997"
+    ;;
+clipy)
+	name="Clipy"
+	type="dmg"
+    downloadURL=$(downloadURLFromGit Clipy Clipy)
+    appNewVersion=$(versionFromGit Clipy Clipy)
+    expectedTeamID="BBCHAJ584H"
     ;;
 closeio)
     name="Close.io"
@@ -1949,12 +2009,13 @@ devonthink)
     appNewVersion=$( echo ${downloadURL} | tr '/' '\n' | grep "[0-9]" | grep "[.]" | head -1 )
     expectedTeamID="679S2QUWR8"
     ;;
-dialog)
+dialog|\
+swiftdialog)
     name="Dialog"
     type="pkg"
     packageID="au.csiro.dialogcli"
-    downloadURL="$(downloadURLFromGit bartreardon Dialog)"
-    appNewVersion="$(versionFromGit bartreardon Dialog)"
+    downloadURL="$(downloadURLFromGit bartreardon swiftDialog)"
+    appNewVersion="$(versionFromGit bartreardon swiftDialog)"
     expectedTeamID="PWA5E9TQ59"
     ;;
 dialpad)
@@ -1990,6 +2051,15 @@ docker)
     fi
     expectedTeamID="9BNSXJN65R"
     ;;
+dockutil)
+    name="dockutil"
+    type="pkg"
+    packageID="dockutil.cli.tool"
+    downloadURL=$(downloadURLFromGit "kcrawford" "dockutil")
+    appNewVersion=$(versionFromGit "kcrawford" "dockutil")
+    expectedTeamID="Z5J8CJBUWC"
+    blockingProcesses=( NONE )
+    ;;
 drift)
     # credit Elena Ackley (@elenaelago)
     name="Drift"
@@ -2010,6 +2080,13 @@ easeusdatarecoverywizard)
     downloadURL=$( curl -fsIL https://down.easeus.com/product/mac_drw_free_setup | grep -i "^location" | awk '{print $2}' | tr -d '\r\n' )
     #appNewVersion=""
     expectedTeamID="DLLVW95FSM"
+    ;;
+easyfind)
+    name="EasyFind"
+    type="zip"
+    downloadURL="$(curl -fs "https://www.devontechnologies.com/apps/freeware" | grep -o "http.*download.*.zip" | grep -i easyfind)"
+    appNewVersion="$(echo $downloadURL | sed -E 's/.*\/([0-9.]*)\/.*/\1/g')"
+    expectedTeamID="679S2QUWR8"
     ;;
 egnyte)
     # credit: #MoeMunyoki from MacAdmins Slack
@@ -2266,15 +2343,8 @@ golang)
 googlechrome)
     name="Google Chrome"
     type="dmg"
-    if [[ $(arch) != "i386" ]]; then
-        printlog "Architecture: arm64 (not i386)"
-        downloadURL="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
-        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}')
-    else
-        printlog "Architecture: i386"
-        downloadURL="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
-        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac,stable/{print $3; exit}')
-    fi
+    downloadURL="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
+    appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}')
     expectedTeamID="EQHXZ8M8AV"
     ;;
 googlechromepkg)
@@ -2415,6 +2485,13 @@ hazel)
     downloadURL=$(curl -fsI https://www.noodlesoft.com/Products/Hazel/download | grep -i "^location" | awk '{print $2}' | tr -d '\r\n')
     appNewVersion=$(curl -fsI https://www.noodlesoft.com/Products/Hazel/download | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
     expectedTeamID="86Z3GCJ4MF"
+    ;;
+houdahspot)
+    name="HoudahSpot"
+    type="zip"
+    downloadURL="$(curl -fs https://www.houdah.com/houdahSpot/updates/cast6.php | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)"
+    appNewVersion="$(curl -fs https://www.houdah.com/houdahSpot/updates/cast6.php | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)"
+    expectedTeamID="DKGQD8H8ZY"
     ;;
 hpeasyadmin)
     # credit: Søren Theilgaard (@theilgaard)
@@ -2857,6 +2934,15 @@ lulu)
     appNewVersion=$(versionFromGit objective-see LuLu)
     expectedTeamID="VBG97UB4TA"
     ;;
+macadminspython)
+    name="MacAdmins Python"
+    type="pkg"
+    packageID="org.macadmins.python.recommended"
+    downloadURL=$(curl --silent --fail "https://api.github.com/repos/macadmins/python/releases/latest" | awk -F '"' "/browser_download_url/ && /python_recommended_signed/ { print \$4; exit }")
+    appNewVersion=$(grep -o -E '\d+\.\d+\.\d+\.\d+' <<< $downloadURL | head -n 1)
+    expectedTeamID="9GQZ7KUFR6"
+    blockingProcesses=( NONE )
+    ;;
 maccyapp)
     name="Maccy"
     type="zip"
@@ -2953,6 +3039,16 @@ microsoftautoupdate)
     #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     #updateToolArguments=( --install --apps MSau04 )
     ;;
+microsoftazuredatastudio|\
+azuredatastudio)
+    name="Azure Data Studio"
+    type="zip"
+    downloadURL=$( curl -sL https://github.com/microsoft/azuredatastudio/releases/latest | grep 'macOS ZIP' | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" )
+    appNewVersion=$(versionFromGit microsoft azuredatastudio )
+    expectedTeamID="UBF8T346G9"
+    appName="Azure Data Studio.app"
+    blockingProcesses=( "Azure Data Studio" )
+    ;;
 microsoftazurestorageexplorer)
     name="Microsoft Azure Storage Explorer"
     type="zip"
@@ -2975,8 +3071,9 @@ microsoftcompanyportal)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps IMCP01 )
     ;;
+microsoftdefender|\
 microsoftdefenderatp)
-    name="Microsoft Defender ATP"
+    name="Microsoft Defender"
     type="pkg"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=2097502"
     appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.defender.standalone"]/version' 2>/dev/null | sed -E 's/<version>([0-9.]*) .*/\1/')
@@ -3325,6 +3422,13 @@ muzzle)
     downloadURL="https://muzzleapp.com/binaries/muzzle.zip"
     appNewVersion=$(curl -fs https://muzzleapp.com/updates/  | grep -io 'h2.*Version.* [0-9.]*.*h2' | head -1 | sed -E 's/.*ersion *([0-9.]*).*/\1/g')
     expectedTeamID="49EYHPJ4Q3"
+    ;;
+nanosaur)
+    name="Nanosaur"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit jorio Nanosaur)
+    appNewVersion=$(versionFromGit jorio Nanosaur)
+    expectedTeamID="RVNL7XC27G"
     ;;
 netnewswire)
     name="NetNewsWire"
@@ -4073,13 +4177,14 @@ superhuman)
     expectedTeamID="6XHFYUTQGX"
     ;;
 supportapp)
-    # credit: Søren Theilgaard (@theilgaard)
     name="Support"
     type="pkg"
     packageID="nl.root3.support"
     downloadURL=$(downloadURLFromGit root3nl SupportApp)
     appNewVersion=$(versionFromGit root3nl SupportApp)
     expectedTeamID="98LJ4XBGYK"
+    uid=$(id -u "$currentUser")
+    launchctl bootout gui/${uid} "/Library/LaunchAgents/nl.root3.support.plist"
     ;;
 suspiciouspackage)
     # credit: Mischa van der Bent (@mischavdbent)
@@ -4186,6 +4291,13 @@ telegram)
     downloadURL="https://telegram.org/dl/macos"
     appNewVersion=$( curl -fs https://macos.telegram.org | grep anchor | head -1 | sed -E 's/.*a>([0-9.]*) .*/\1/g' )
     expectedTeamID="6N38VWS5BX"
+    ;;
+tembo)
+    name="Tembo"
+    type="zip"
+    downloadURL="$(curl -fs https://www.houdah.com/tembo/updates/cast2.xml | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)"
+    appNewVersion="$(curl -fs https://www.houdah.com/tembo/updates/cast2.xml | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)"
+    expectedTeamID="DKGQD8H8ZY"
     ;;
 textexpander)
     name="TextExpander"
@@ -4462,6 +4574,14 @@ wireshark)
     appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep -i "href.*_stable" | sed -E 's/.*\(([0-9.]*)\).*/\1/g')
     expectedTeamID="7Z6EMTD2C6"
     ;;
+wordservice)
+    name="WordService"
+    type="zip"
+    downloadURL="$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.devontechnologies.com/support/download" | tr '"' "\n" | grep -o "http.*download.*.zip" | grep -i wordservice | head -1)"
+    appNewVersion="$(echo $downloadURL | sed -E 's/.*\/([0-9.]*)\/.*/\1/g')"
+    appNewVersion=""
+    expectedTeamID="679S2QUWR8"
+    ;;
 wwdc)
     # credit: Søren Theilgaard (@theilgaard)
     name="WWDC"
@@ -4484,6 +4604,14 @@ xink)
     appNewVersion=$(curl -fs "https://downloads.xink.io/macos/appcast" | xpath '(//rss/channel/item/enclosure/@sparkle:version)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     expectedTeamID="F287823HVS"
     ;;
+xmenu)
+    name="XMenu"
+    type="zip"
+    downloadURL="$(curl -fs "https://www.devontechnologies.com/apps/freeware" | grep -o "http.*download.*.zip" | grep -i xmenu)"
+    appNewVersion="$(echo $downloadURL | sed -E 's/.*\/([0-9.]*)\/.*/\1/g')"
+    expectedTeamID="679S2QUWR8"
+    ;;
+
 xquartz)
     # credit: AP Orlebeke (@apizz)
     name="XQuartz"
@@ -4549,6 +4677,7 @@ zoom)
     downloadURL="https://zoom.us/client/latest/ZoomInstallerIT.pkg"
     appNewVersion="$(curl -fsIL ${downloadURL} | grep -i ^location | cut -d "/" -f5)"
     expectedTeamID="BJ4HAAB9B3"
+    versionKey="CFBundleVersion"
     ;;
 zoomclient)
     name="zoom.us"
@@ -4570,6 +4699,7 @@ zoomgov)
     downloadURL="https://www.zoomgov.com/client/latest/ZoomInstallerIT.pkg"
     appNewVersion="$(curl -fsIL ${downloadURL} | grep -i ^location | cut -d "/" -f5)"
     expectedTeamID="BJ4HAAB9B3"
+    versionKey="CFBundleVersion"
     ;;
 zoomrooms)
     name="ZoomRooms"
@@ -4702,6 +4832,11 @@ case $LOGO in
         LOGO="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;
+    microsoft)
+        # Microsoft Endpoint Manager (Intune)
+        LOGO="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Management Profile"; fi
+        ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
     if [[ $(sw_vers -buildVersion) > "19" ]]; then
@@ -4797,7 +4932,7 @@ if [[ -n $appNewVersion ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No newer version." WARN
+                cleanupAndExit 0 "No newer version." REQ
             fi
         else
             printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app." WARN
@@ -4813,10 +4948,9 @@ if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     if [[ $DEBUG -ne 1 ]]; then
         if runUpdateTool; then
             finishing
-            cleanupAndExit 0
+            cleanupAndExit 0 "updateTool has run" REQ
         elif [[ $type == "updateronly" ]];then
-            printlog "type is $type so we end here."
-            cleanupAndExit 0
+            cleanupAndExit 0 "type is $type so we end here." REQ
         fi # otherwise continue
     else
         printlog "DEBUG mode 1 enabled, not running update tool" WARN
@@ -4922,4 +5056,4 @@ esac
 finishing
 
 # all done!
-cleanupAndExit 0
+cleanupAndExit 0 "All done!" REQ

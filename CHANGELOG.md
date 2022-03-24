@@ -1,3 +1,37 @@
+## v9.1
+
+**Note**: Both Google and Mozilla recommend using the pkg installers instead of the dmg downloads for managed deployments. So far, Installomator has provided labels for both. (`googlechrome` and `googlechromepkg` or `firefox` and `firefoxpkg`, respectively) Since there are problems with the dmg downloads, a future release of Installomator will _disable_ the `firefox` and `googlechrome` dmg labels. You should switch to using the respective pkg labels instead.
+
+- added option for Microsoft Endpoint Manager (Intune) to `LOGO` (#446)
+- minor fixes (#427, #434, #436)
+- the `googlechrome` label now always downloads the universal version (#430)
+- new labels:
+    - 1passwordcli (#429)
+    - amazoncorretto8jdk (#423)
+    - autodeskfusion360admininstall (#447)
+    - axurerp10 (#439)
+    - calcservice (#426)
+    - clipy (#412)
+    - dockutil (#432)
+    - easyfind (#426)
+    - grammarly (#444)
+    - houdahspot (#426)
+    - macadminspython (#431)
+    - microsoftazuredatastudio (#438)
+    - nanosaur (#426)
+    - tembo (#426)
+    - wordservice (#426)
+    - xmenu (#426)
+- updated labels:
+    - appcleaner (#428)
+    - dialog (#435, #437)
+    - googlechrome (#430)
+    - microsoftdefender (#440)
+    - supportapp (#426)
+    - zoom and zoomgov (#426, #433)
+
+
+
 ## v9.0.1
 
 - improved logging levels throughout the script #408
