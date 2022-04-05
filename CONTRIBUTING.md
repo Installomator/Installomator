@@ -4,6 +4,21 @@ __Please note, that if you are contributing to this project with new labels or o
 
 We try to keep the script as short as possible, and with more than 300 labels, we can save 300 lines in the script, if we do not have credit lines on each of these. So we are thankful for your contribution, but we will be removing these lines in the coming releases.
 
+## Branches
+
+The branch list is as follows:
+
+- `release`: this branch will have the latest released version
+- `main`: (default) this branch will be the latest release plus new and updated app labels, and critical bug fixes
+- `dev`: this will contain new and updated app labels, as well as any other code changes
+there will be other branches for new features and testing
+
+This should allow the contributing team to release minor updates for new and updated app labels while also work on new features for the next major release.
+
+With all the new branches, your local repo may get confused. If you don’t have local changes, it is easiest to delete your local repo and re-clone it. If you have local changes you want to preserve, then you should commit those to a local branch, pull the latest changes `git pull --all`, then delete the old master branch: `git branch -d master`.
+
+Make sure you branch off of main for new and updated labels and off of `dev` for other code changes. Thank you for contributing!
+
 ## Labels
 
 If you need a new label for a piece of software, please take a look at the tutorials in the Wiki, if those can be helpful for starting out on the creation of the label.

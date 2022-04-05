@@ -1,6 +1,71 @@
-## v9?
+## v9.1
+
+**Note**: Both Google and Mozilla recommend using the pkg installers instead of the dmg downloads for managed deployments. So far, Installomator has provided labels for both. (`googlechrome` and `googlechromepkg` or `firefox` and `firefoxpkg`, respectively) Since there are problems with the dmg downloads, a future release of Installomator will _disable_ the `firefox` and `googlechrome` dmg labels. You should switch to using the respective pkg labels instead.
+
+- added option for Microsoft Endpoint Manager (Intune) to `LOGO` (#446)
+- minor fixes (#427, #434, #436)
+- the `googlechrome` label now always downloads the universal version (#430)
+- new labels:
+    - 1passwordcli (#429)
+    - amazoncorretto8jdk (#423)
+    - autodeskfusion360admininstall (#447)
+    - axurerp10 (#439)
+    - calcservice (#426)
+    - clipy (#412)
+    - dockutil (#432)
+    - easyfind (#426)
+    - grammarly (#444)
+    - houdahspot (#426)
+    - macadminspython (#431)
+    - microsoftazuredatastudio (#438)
+    - nanosaur (#426)
+    - tembo (#426)
+    - wordservice (#426)
+    - xmenu (#426)
+- updated labels:
+    - appcleaner (#428)
+    - dialog (#435, #437)
+    - googlechrome (#430)
+    - microsoftdefender (#440)
+    - supportapp (#426)
+    - zoom and zoomgov (#426, #433)
+
+
+
+## v9.0.1
+
+- improved logging levels throughout the script #408
+- fixed a bug for `pkgindmg` style labels #408
+- changed the criteria used to locate an app in the case the it cannot be found in the default locations, this should help with some apps with similar name (Virtual Box and Box Drive, #401) #413
+- new label: WhiteBox Packages (`packages`) #415
+- modified label: `loom` (added Apple silicon download) #417
+
+## v9
 
 - We have moved the root check to the beginning of the script, and improved DEBUG handling with two different modes. `DEBUG=0` is still for production, and `1` is still for the DEBUG we previously knew downloading to the directory it is running from, but `2` will download to temporary folder, will detect updates, but will not install anything, but it will notify the user (almost as running the script without root before).
+- Added option to not interrupt Do Not Disturb full screen apps like Keynote or Zoom with `INTERRUPT_DND="no"`. Default is `"yes"` which is how it has worked until now.
+- `pkgName` in a label can now be searched for. An example is logitechoptions, where only the name of the pkg is given, and not the exact file path to it.
+- `LSMinimumSystemVersion` will now be honered, if the `Info.plist` in the app is specifying this. That means that an app that has this parameter in that file and it shows that the app requires a newer version of the OS than is currently installed, then we will not install it.
+- New variable `RETURN_LABEL_NAME`. If given the value `1`, like `RETURN_LABEL_NAME=1` then Installomator only returns the name of the label. It makes for a better user friendly message for displaying in DEPNotify if that is integrated.
+- Changed logic if `IGNORE_APP_STORE_APPS=yes`. Before this version a label like `microsoftonedrive` that was installed from App Store, and that we want to replace with the “ordinary” version, Installomator would still use `updateTool`, even though `IGNORE_APP_STORE_APPS=yes`. So we would have to have `INSTALL=force` in order to have the app replaced, as `updateTool` would be used. But now if `IGNORE_APP_STORE_APPS=yes` then `updateTool` will be not set, and the App Store app will be replaced. BUT if the installed software was not from App Store, then `updateTool` will not be used, and it would be a kind of a forced install (in the example of `microsoftonedrive`), except if the version is the same (where installation is skipped).
+- Added variable `SYSTEMOWNER` that is used when copying files when installing. Default `0` is to change owner of the app to the current user on the Mac, like this user was installing this app themselves. When using `1` we will put “root:wheel” on the app, which can be useful for shared machines.
+- Added option `curlOptions` to the labels. It can be filled with extra headers need for downloading the specific software. It needs to be an array, like `curlOptions=( )`. See “mocha”-software-labels.
+
+Big changes to logging:
+- Introducing variable `LOGGING`, that can be either of the logging levels
+- Logging levels:
+    0: DEBUG     Everything is logged
+    1: INFO      Normal logging behavior
+    2: WARN
+    3: ERROR
+    4: REQ
+- External logging to Datadog
+- A function to shorten duplicate lines in installation logs or output of longer commands
+- Ability to extract install.log in the time when Installomator was running, if further investigations needs to be done to logs
+
+Fixes:
+- Fixed a problem with pkgs: If they were mounted with .pkg in the name, then we would find the directory and not the pkg file itself.
+- Minor fix for a check for a pkgName on a DMG. We used `ls` that would throw an error when not found, so the check was corrected.
 
 ## v8.0
 

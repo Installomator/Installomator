@@ -1,5 +1,5 @@
 mightymike)
-    name="Nanosaur"
+    name="Mighty Mike"
     type="dmg"
     downloadURL=$(downloadURLFromGit jorio MightyMike)
     appNewVersion=$(versionFromGit jorio MightyMike)

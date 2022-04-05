@@ -9,8 +9,6 @@ install_location="/usr/local/Installomator/"
 signature="Developer ID Installer: Armin Briegel (JME5BW3F3R)"
 
 # notarization
-dev_team="JME5BW3F3R" # asc-provider
-dev_account="developer@scriptingosx.com"
 dev_keychain_label="notary-scriptingosx"
 
 # parse arguments

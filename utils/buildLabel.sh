@@ -82,6 +82,43 @@ pkgInvestigation() {
     echo "$packageID"
     echo "Above is the possible packageIDs that can be used, and the correct one is probably one of those with a version number. More investigation might be needed to figure out correct packageID if several are displayed."
 }
+
+dmgInvestigation() {
+    echo "DMG investigation."
+    # mount the dmg
+    echo "Mounting $archiveName"
+    if ! dmgmount=$(echo "Y"$'\n' | hdiutil attach "$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
+        echo "Error mounting $archiveName"
+        exit 3
+    fi
+    echo "Mounted: $dmgmount"
+    
+    # check if app og pkg exists on disk image
+    appPath=$(find "$dmgmount" -name "*.app" -maxdepth 1 -print )
+    pkgPath=$(find "$dmgmount" -name "*.pkg" -maxdepth 1 -print )
+    
+    if [[ $appPath != "" ]]; then
+        echo "App found: $appPath"
+        if [[ $archiveExt = "dmgInZip" ]]; then
+            archiveExt="appInDmgInZip"
+        fi
+        appInvestigation
+    elif [[ $pkgPath != "" ]]; then
+        echo "PKG found: $pkgPath"
+        if [[ $archiveExt = "dmgInZip" ]]; then
+            archiveExt="pkgInDmgInZip not supported, yet!"
+        else
+            archiveExt="pkgInDmg"
+        fi
+        pkgInvestigation
+    else
+        echo "Nothing found on DMG."
+        exit 9
+    fi
+    
+    hdiutil detach "$dmgmount"
+}
+
 appInvestigation() {
     appName=${appPath##*/}
     name=${appName%.*}
@@ -116,29 +153,105 @@ echo "Downloading $downloadURL"
 echo $(basename $downloadURL)
 # First trying to find redirection headers on the download, as those can contain version numbers
 echo "Redirecting to (maybe this can help us with version):\n$(curl -fsIL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" | grep -i "^[location|x\-amz\-meta\-version]*")"
-# Now downloading without extra headers
-if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
-    echo "error downloading $downloadURL using standard headers."
-    echo "result: $downloadOut"
-    echo "Trying all headers…" # that I know of
-    if ! downloadOut="$(curl -fL -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -H "accept-encoding: gzip, deflate, br" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "accept-language: en-US,en;q=0.9" -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "sec-fetch-mode: navigate" "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
-        # we are only here if the download failed
-        echo "error downloading $downloadURL using all headers."
-        echo "result: $downloadOut"
-        # Sometimes a server will give some results to the downloaded output
-        if [[ -n $downloadOut ]]; then
-            echo "Trying output of this…"
-            downloadURL="$(echo $downloadOut | tail -1)"
-            # Last chance for succes on this download
-            if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
-                echo "error downloading $downloadURL using previous output."
-                echo "result: $downloadOut"
-                echo "No more tries. Cannot continue."
-                exit 1
+# Now downloading without various sets of extra headers
+if ! downloadOut1="$( \
+curl -fL "$downloadURL" --remote-header-name --remote-name \
+-w "%{filename_effective}\n%{url_effective}\n")"
+then
+    echo "error downloading $downloadURL with no headers."
+    echo "result: $downloadOut1"
+    echo "Trying 1st set of extra headers to download."
+    if ! downloadOut2="$( \
+    curl -fL \
+    -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" \
+    -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" \
+    -H "accept-encoding: gzip, deflate, br" \
+    -H "accept-language: en-US,en;q=0.9" \
+    -H "sec-fetch-dest: document" \
+    -H "sec-fetch-mode: navigate" \
+    -H "sec-fetch-user: ?1" \
+    -H "sec-gpc: 1" \
+    -H "upgrade-insecure-requests: 1" \
+    "$downloadURL" --remote-header-name --remote-name \
+    -w "%{filename_effective}\n%{url_effective}\n")"
+    then
+        echo "error downloading $downloadURL with 1st set of headers."
+        echo "result: $downloadOut2"
+        echo "Trying 2nd set of extra headers to download."
+        if ! downloadOut3="$( \
+        curl -fL \
+        -H "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36" \
+        -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" \
+        -H "accept-encoding: gzip, deflate, br" \
+        -H "accept-language: en-US,en;q=0.9" \
+        -H "sec-fetch-dest: document" \
+        -H "sec-fetch-mode: navigate" \
+        -H "sec-fetch-site: same-site" \
+        -H "sec-fetch-user: ?1" \
+        -H "sec-gpc: 1" \
+        -H "upgrade-insecure-requests: 1" \
+        "$downloadURL" --remote-header-name --remote-name \
+        -w "%{filename_effective}\n%{url_effective}\n")"
+        then
+            echo "error downloading $downloadURL with 2nd set of headers."
+            echo "result: $downloadOut3"
+            echo "Trying 3rd set of extra headers to download."
+            if ! downloadOut4="$( \
+            curl -fL \
+            -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" \
+            -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" \
+            -H "accept-encoding: gzip, deflate, br" \
+            -H "accept-language: en-US,en;q=0.9" \
+            -H "sec-fetch-dest: document" \
+            -H "sec-fetch-mode: navigate" \
+            -H "sec-fetch-user: ?1" \
+            -H "sec-gpc: 1" \
+            -H "upgrade-insecure-requests: 1" \
+            -H "Referrer Policy: strict-origin-when-cross-origin" \
+            "$downloadURL" --remote-header-name --remote-name \
+            -w "%{filename_effective}\n%{url_effective}\n")"
+            then
+                # we are only here if the download failed
+                echo "error downloading $downloadURL with 3rd set of headers."
+                echo "result: $downloadOut4"
+                echo "no more header sets to try"
+                # Sometimes a server will give some results to the downloaded output
+                echo "If any information came out of the previous download attempts, we can try those…"
+                downloadOuts=( "$downloadOut1" "$downloadOut3" "$downloadOut3" "$downloadOut4" )
+                downloadOutCount=${#downloadOuts}
+                for downloadOut in $downloadOuts ; do
+                    if [[ -n $downloadOut ]]; then
+                        echo "Trying output of this…"
+                        downloadURL="$(echo $downloadOut | tail -1)"
+                        # Last chance for succes on this download
+                        if ! downloadOut="$(curl -fL "$downloadURL" --remote-header-name --remote-name -w "%{filename_effective}\n%{url_effective}\n")"; then
+                            echo "error downloading $downloadURL using previous output."
+                            echo "result: $downloadOut"
+                            ((downloadOutCount--))
+                        else
+                            echo "Success on this download."
+                            succesDownloadOut=$downloadOut
+                            break 2
+                        fi
+                    fi
+                done
+                if [[ $downloadOutCount -eq 0 ]]; then
+                    echo "No more tries. Cannot continue."
+                    exit 1
+                fi
+            else
+                succesDownloadOut=$downloadOut4
             fi
+        else
+            succesDownloadOut=$downloadOut3
         fi
+    else
+        succesDownloadOut=$downloadOut2
     fi
+else
+    succesDownloadOut=$downloadOut1
 fi
+downloadOut=$succesDownloadOut
 
 # Now we have downloaded the archive, and we need to analyze this
 # The download have returned both {filename_effective} and {url_effective}
@@ -152,7 +265,7 @@ echo "archivePath: $archivePath"
 # So we want to investigate which one has the filename
 try1archiveName=${${archiveTempName##*/}%%\?*}
 try2archiveName=${${archivePath##*/}%%\?*}
-fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz)$' # regular expression for matching
+fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz|gz)$' # regular expression for matching
 if [[ "${try1archiveName}" =~ $fileName_re ]]; then
     archiveName=${try1archiveName}
 elif [[ "${try2archiveName}" =~ $fileName_re ]]; then
@@ -171,10 +284,6 @@ echo "name: $name"
 archiveExt=${archiveName##*.}
 type=$archiveExt
 echo "archiveExt: $archiveExt"
-identifier=${name:l} # making lower case
-identifier=${identifier//\%[0-9a-fA-F][0-9a-fA-F]} # removing certain characters
-identifier=${identifier//[,._*@$\(\)\-]} # removing more characters from label name
-echo "identifier: $identifier"
 
 # Now figuring out the filename extension and handling those situations
 if [ "$archiveExt" = "pkg" ]; then
@@ -183,31 +292,7 @@ if [ "$archiveExt" = "pkg" ]; then
     pkgInvestigation
 elif [ "$archiveExt" = "dmg" ]; then
     echo "Diskimage found"
-    # mount the dmg
-    echo "Mounting $archiveName"
-    if ! dmgmount=$(echo "Y"$'\n' | hdiutil attach "$archiveName" -nobrowse -readonly | tail -n 1 | cut -c 54- ); then
-        echo "Error mounting $archiveName"
-        exit 3
-    fi
-    echo "Mounted: $dmgmount"
-    
-    # check if app og pkg exists on disk image
-    appPath=$(find "$dmgmount" -name "*.app" -maxdepth 1 -print )
-    pkgPath=$(find "$dmgmount" -name "*.pkg" -maxdepth 1 -print )
-    
-    if [[ $appPath != "" ]]; then
-        echo "App found: $appPath"
-        appInvestigation
-    elif [[ $pkgPath != "" ]]; then
-        echo "PKG found: $pkgPath"
-        archiveExt="pkgInDmg"
-        pkgInvestigation
-    else
-        echo "Nothing found on DMG."
-        exit 9
-    fi
-    
-    hdiutil detach "$dmgmount"
+    dmgInvestigation
 elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
     echo "Compressed file found"
     # unzip the archive
@@ -216,6 +301,7 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
     # check if app og pkg exists after expanding
     appPath=$(find "$tmpDir" -name "*.app" -maxdepth 2 -print )
     pkgPath=$(find "$tmpDir" -name "*.pkg" -maxdepth 2 -print )
+    archiveName=$(find "$tmpDir" -name "*.dmg" -maxdepth 2 -print )
     
     if [[ $appPath != "" ]]; then
         echo "App found: $appPath"
@@ -223,13 +309,23 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
     elif [[ $pkgPath != "" ]]; then
         echo "PKG found: $pkgPath"
         archiveExt="pkgInZip"
+        echo "archiveExt: $archiveExt"
         pkgInvestigation
+    elif [[ $archiveName != "" ]]; then
+        echo "Disk image found: $archiveName"
+        archiveExt="dmgInZip"
+        echo "archiveExt: $archiveExt"
+        dmgInvestigation
     else
         echo "Nothing found in compressed archive."
         exit 9
     fi
-
 fi
+
+identifier=${name:l} # making lower case
+identifier=${identifier//\%[0-9a-fA-F][0-9a-fA-F]} # removing certain characters
+identifier=${identifier//[ ,._*@$\(\)\-]} # removing more characters from label name
+echo "identifier: $identifier"
 
 # github-part to figure out if we can find author and repo, to use our github functions for the label
 if echo "$downloadURL" | grep -i "github.com.*releases/download"; then

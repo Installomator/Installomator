@@ -23,8 +23,8 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-# debug mode 1 will download to the directory the script is run in, but will not check version 
-# debug mode 2 will download to the temp directory, check for blocking processes, check version, but will not install anything or remove the current version
+# debug mode 1 will download to the directory the script is run in, but will not check the version 
+# debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
 DEBUG=1
 
 # notify behavior
@@ -39,29 +39,36 @@ NOTIFY=success
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
 #   - ignore       continue even when blocking processes are found
-#   - quit         app will be told to quit nicely, if running
+#   - quit         app will be told to quit nicely if running
 #   - quit_kill    told to quit twice, then it will be killed
-#                  Could be great for service apps, if they do not respawn
+#                  Could be great for service apps if they do not respawn
 #   - silent_fail  exit script without prompt or installation
-#   - prompt_user  show a user dialog for each blocking process found
-#                  abort after three attempts to quit
-#                  (only if user accepts to quit the apps, otherwise
-#                  the update is cancelled).
+#   - prompt_user  show a user dialog for each blocking process found,
+#                  user can choose "Quit and Update" or "Not Now".
+#                  When "Quit and Update" is chosen, blocking process
+#                  will be told to quit. Installomator will wait 30 seconds
+#                  before checking again in case Save dialogs etc are being responded to.
+#                  Installomator will abort if quitting after three tries does not succeed.
+#                  "Not Now" will exit Installomator.
 #   - prompt_user_then_kill
 #                  show a user dialog for each blocking process found,
-#                  attempt to quit two times, kill the process finally
+#                  user can choose "Quit and Update" or "Not Now".
+#                  When "Quit and Update" is chosen, blocking process
+#                  will be terminated. Installomator will abort if terminating
+#                  after two tries does not succeed. "Not Now" will exit Installomator.
 #   - prompt_user_loop
 #                  Like prompt-user, but clicking "Not Now", will just wait an hour,
 #                  and then it will ask again.
 #                  WARNING! It might block the MDM agent on the machine, as
-#                  the scripts gets stuct in waiting until the hour has passed,
+#                  the script will not exit, it will pause until the hour has passed,
 #                  possibly blocking for other management actions in this time.
 #   - tell_user    User will be showed a notification about the important update,
-#                  but user is only allowed to quit and continue, and then we
-#                  ask the app to quit.
+#                  but user is only allowed to Quit and Continue, and then we
+#                  ask the app to quit. This is default.
 #   - tell_user_then_kill
-#                  Show dialog 2 times, and if the quitting fails, the
-#                  blocking processes will be killed.
+#                  User will be showed a notification about the important update,
+#                  but user is only allowed to Quit and Continue. If the quitting fails,
+#                  the blocking processes will be terminated.
 #   - kill         kill process without prompting or giving the user a chance to save
 
 
@@ -73,6 +80,7 @@ LOGO=appstore
 #   - mosyleb       Mosyle Business
 #   - mosylem       Mosyle Manager (Education)
 #   - addigy        Addigy
+#   - microsoft     Microsoft Endpoint Manager (Intune)
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
@@ -81,18 +89,25 @@ LOGO=appstore
 # App Store apps handling
 IGNORE_APP_STORE_APPS=no
 # options:
-#  - no            If installed app is from App Store (which include VPP installed apps)
-#                  it will not be touched, no matter it's version (default)
-#  - yes           Replace App Store (and VPP) version of app and handle future
+#  - no            If the installed app is from App Store (which include VPP installed apps)
+#                  it will not be touched, no matter its version (default)
+#  - yes           Replace App Store (and VPP) version of the app and handle future
 #                  updates using Installomator, even if latest version.
 #                  Shouldn’t give any problems for the user in most cases.
-#                  Known bad example: Slack will loose all settings.
+#                  Known bad example: Slack will lose all settings.
 
+# Owner of copied apps
+SYSTEMOWNER=0
+# options:
+#  - 0             Current user will be owner of copied apps, just like if they
+#                  installed it themselves (default).
+#  - 1             root:wheel will be set on the copied app.
+#                  Useful for shared machines.
 
 # install behavior
 INSTALL=""
 # options:
-#  -               When not set, software will only be installed
+#  -               When not set, the software will only be installed
 #                  if it is newer/different in version
 #  - force         Install even if it’s the same version
 
@@ -100,8 +115,28 @@ INSTALL=""
 # Re-opening of closed app
 REOPEN="yes"
 # options:
-#  - yes           App wil be reopened if it was closed
+#  - yes           App will be reopened if it was closed
 #  - no            App not reopened
+
+# Only let Installomator return the name of the label
+# RETURN_LABEL_NAME=0
+# options:
+#   - 1      Installomator will return the name of the label and exit, so last line of
+#            output will be that name. When Installomator is locally installed and we
+#            use DEPNotify, then DEPNotify can present a more nice name to the user,
+#            instead of just the label name.
+
+
+# Interrupt Do Not Disturb (DND) full screen apps
+INTERRUPT_DND="yes"
+# options:
+#  - yes           Script will run without checking for DND full screen apps.
+#  - no            Script will exit when an active DND full screen app is detected.
+
+# Comma separated list of app names to ignore when evaluating DND
+IGNORE_DND_APPS=""
+# example that will ignore browsers when evaluating DND:
+# IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
 
 # NOTE: How labels work
@@ -126,7 +161,7 @@ REOPEN="yes"
 #
 # - packageID: (optional)
 #   The package ID of a pkg
-#   If given, will be used to find version of installed software, instead of searching for an app.
+#   If given, will be used to find the version of installed software, instead of searching for an app.
 #   Usefull if a pkg does not install an app.
 #   See label installomator_st
 #
@@ -134,9 +169,15 @@ REOPEN="yes"
 #   URL to download the dmg.
 #   Can be generated with a series of commands (see BBEdit for an example).
 #
+# - curlOptions: (array, optional)
+#   Options to the curl command, needed for curl to be able to download the software.
+#   Usually used for adding extra headers that some servers need in order to serve the file.
+#   curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" )
+#   (See “mocha”-labels, for examples on labels, and buildLabel.sh for header-examples.)
+#
 # - appNewVersion: (optional)
 #   Version of the downloaded software.
-#   If given, it will be compared to installed version, to see if download is different.
+#   If given, it will be compared to the installed version, to see if the download is different.
 #   It does not check for newer or not, only different.
 #
 # - versionKey: (optional)
@@ -190,7 +231,7 @@ REOPEN="yes"
 #     blockingProcesses=( NONE )
 #
 # - pkgName: (optional, only used for pkgInDmg, dmgInZip, and appInDmgInZip)
-#   File name of the pkg/dmg file _inside_ the dmg or zip
+#   File name or path to the pkg/dmg file _inside_ the dmg or zip.
 #   When not given the pkgName is derived from the $name
 #
 # - updateTool:
@@ -207,10 +248,10 @@ REOPEN="yes"
 #
 # - CLIInstaller:
 # - CLIArguments:
-#   If the downloaded dmg is actually an installer that we can call using CLI, we can
+#   If the downloaded dmg is an installer that we can call using CLI, we can
 #   use these two variables for what to call.
 #   We need to define `name` for the installed app (to be version checked), as well as
-#   `installerTool` for the installer app (if named differently that `name`. Installomator
+#   `installerTool` for the installer app (if named differently than `name`. Installomator
 #   will add the path to the folder/disk image with the binary, and it will be called like this:
      `$CLIInstaller $CLIArguments`
 #   For most installations `CLIInstaller` should contain the `installerTool` for the CLI call
@@ -224,3 +265,40 @@ REOPEN="yes"
 #   installer that should be located after mounting/expanding the downloaded archive.
 #   See label adobecreativeclouddesktop
 #
+### Logging
+# Logging behavior
+LOGGING="INFO"
+# options:
+#   - DEBUG     Everything is logged
+#   - INFO      (default) normal logging level
+#   - WARN      only warning
+#   - ERROR     only errors
+#   - REQ       ????
+
+# MDM profile name
+MDMProfileName=""
+# options:
+#   - MDM Profile               Addigy has this name on the profile
+#   - Mosyle Corporation MDM    Mosyle uses this name on the profile
+# From the LOGO variable we can know if Addigy og Mosyle is used, so if that variable
+# is either of these, and this variable is empty, then we will auto detect this.
+
+# Datadog logging used
+datadogAPI=""
+# Simply add your own API key for this in order to have logs sent to Datadog
+# See more here: https://www.datadoghq.com/product/log-management/
+
+# Log Date format used when parsing logs for debugging, this is the default used by
+# install.log, override this in the case statements if you need something custom per
+# application (See adobeillustrator).  Using stadard GNU Date formatting.
+LogDateFormat="%Y-%m-%d %H:%M:%S"
+
+# Get the start time for parsing install.log if we fail.
+starttime=$(date "+$LogDateFormat")
+
+# Check if we have rosetta installed
+if [[ $(/usr/bin/arch) == "arm64" ]]; then
+    if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then # pgrep oahd >/dev/null 2>&1
+        rosetta2=no
+    fi
+fi

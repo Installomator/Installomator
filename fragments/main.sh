@@ -1,15 +1,30 @@
 *)
     # unknown label
     #printlog "unknown label $label"
-    cleanupAndExit 1 "unknown label $label"
+    cleanupAndExit 1 "unknown label $label" ERROR
     ;;
 esac
 
+# Are we only asked to return label name
+if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
+    printlog "Only returning label name." REQ
+    printlog "$name"
+    echo "$name"
+    exit
+fi
 
 # MARK: application download and installation starts here
 
+if [[ ${INTERRUPT_DND} = "no" ]]; then
+    # Check if a fullscreen app is active
+    if hasDisplaySleepAssertion; then
+        cleanupAndExit 1 "active display sleep assertion detected, aborting" ERROR
+    fi
+fi
+
 printlog "BLOCKING_PROCESS_ACTION=${BLOCKING_PROCESS_ACTION}"
 printlog "NOTIFY=${NOTIFY}"
+printlog "LOGGING=${LOGGING}"
 
 # Finding LOGO to use in dialogs
 case $LOGO in
@@ -28,14 +43,22 @@ case $LOGO in
     mosyleb)
         # Mosyle Business
         LOGO="/Applications/Self-Service.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Mosyle Corporation MDM"; fi
         ;;
     mosylem)
         # Mosyle Manager (education)
         LOGO="/Applications/Manager.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Mosyle Corporation MDM"; fi
         ;;
     addigy)
         # Addigy
         LOGO="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
+        ;;
+    microsoft)
+        # Microsoft Endpoint Manager (Intune)
+        LOGO="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Management Profile"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
@@ -45,7 +68,9 @@ if [[ ! -a "${LOGO}" ]]; then
         LOGO="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
     fi
 fi
-printlog "LOGO=${LOGO}"
+printlog "LOGO=${LOGO}" INFO
+
+printlog "Label type: $type" INFO
 
 # MARK: extract info from data
 if [ -z "$archiveName" ]; then
@@ -67,6 +92,7 @@ if [ -z "$archiveName" ]; then
             ;;
     esac
 fi
+printlog "archiveName: $archiveName" INFO
 
 if [ -z "$appName" ]; then
     # when not given derive from name
@@ -84,14 +110,13 @@ if [ -z "$targetDir" ]; then
         updateronly)
             ;;
         *)
-            printlog "Cannot handle type $type"
-            cleanupAndExit 99
+            cleanupAndExit 99 "Cannot handle type $type" ERROR
             ;;
     esac
 fi
 
 if [[ -z $blockingProcesses ]]; then
-    printlog "no blocking processes defined, using $name as default"
+    printlog "no blocking processes defined, using $name as default" INFO
     blockingProcesses=( $name )
 fi
 
@@ -105,10 +130,9 @@ else
 fi
 
 # MARK: change directory to temporary working directory
-printlog "Changing directory to $tmpDir"
+printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
-    printlog "error changing directory $tmpDir"
-    cleanupAndExit 1
+    cleanupAndExit 1 "error changing directory $tmpDir" ERROR
 fi
 
 # MARK: get installed version
@@ -116,9 +140,8 @@ getAppVersion
 printlog "appversion: $appversion"
 
 # MARK: Exit if new version is the same as installed version (appNewVersion specified)
-# credit: Søren Theilgaard (@theilgaard)
-if [[ $INSTALL == "force" ]]; then
-    printlog "Using force to install, so not using updateTool."
+if [[ "$type" != "updateronly" && ($INSTALL == "force" || $IGNORE_APP_STORE_APPS == "yes") ]]; then
+    printlog "Label is not of type “updateronly”, and it’s set to use force to install or ignoring app store apps, so not using updateTool."
     updateTool=""
 fi
 if [[ -n $appNewVersion ]]; then
@@ -132,10 +155,10 @@ if [[ -n $appNewVersion ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No newer version."
+                cleanupAndExit 0 "No newer version." REQ
             fi
         else
-            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app."
+            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app." WARN
         fi
     fi
 else
@@ -148,13 +171,12 @@ if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     if [[ $DEBUG -ne 1 ]]; then
         if runUpdateTool; then
             finishing
-            cleanupAndExit 0
+            cleanupAndExit 0 "updateTool has run" REQ
         elif [[ $type == "updateronly" ]];then
-            printlog "type is $type so we end here."
-            cleanupAndExit 0
+            cleanupAndExit 0 "type is $type so we end here." REQ
         fi # otherwise continue
     else
-        printlog "DEBUG mode 1 enabled, not running update tool"
+        printlog "DEBUG mode 1 enabled, not running update tool" WARN
     fi
 fi
 
@@ -162,8 +184,8 @@ fi
 if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
     printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
-    # download the dmg
-    printlog "Downloading $downloadURL to $archiveName"
+    # download
+    printlog "Downloading $downloadURL to $archiveName" REQ
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
         printlog "notifying"
         if [[ $updateDetected == "YES" ]]; then
@@ -172,8 +194,12 @@ else
             displaynotification "Downloading new $name" "Download in progress …"
         fi
     fi
-    if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
-        printlog "error downloading $downloadURL"
+    curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+    curlDownloadStatus=$(echo $?)
+    deduplicatelogs "$curlDownload"
+    if [[ $curlDownloadStatus -ne 0 ]]; then
+    #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
+        printlog "error downloading $downloadURL" ERROR
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
@@ -183,8 +209,13 @@ else
                 displaynotification "$message" "Error installing $name"
             fi
         fi
-        cleanupAndExit 2
+        printlog "File list: $(ls -lh "$archiveName")" ERROR
+        printlog "File type: $(file "$archiveName")" ERROR
+        cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
     fi
+    printlog "File list: $(ls -lh "$archiveName")" DEBUG
+    printlog "File type: $(file "$archiveName")" DEBUG
+    printlog "curl output was:\n$logoutput" DEBUG
 fi
 
 # MARK: when user is logged in, and app is running, prompt user to quit app
@@ -201,7 +232,7 @@ else
 fi
 
 # MARK: install the download
-printlog "Installing $name"
+printlog "Installing $name" REQ
 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
     if [[ $updateDetected == "YES" ]]; then
@@ -213,7 +244,7 @@ fi
 
 if [ -n "$installerTool" ]; then
     # installerTool defined, and we use that for installation
-    printlog "installerTool used: $installerTool"
+    printlog "installerTool used: $installerTool" REQ
     appName="$installerTool"
 fi
 
@@ -240,8 +271,7 @@ case $type in
         installAppInDmgInZip
         ;;
     *)
-        printlog "Cannot handle type $type"
-        cleanupAndExit 99
+        cleanupAndExit 99 "Cannot handle type $type" ERROR
         ;;
 esac
 
@@ -249,4 +279,4 @@ esac
 finishing
 
 # all done!
-cleanupAndExit 0
+cleanupAndExit 0 "All done!" REQ
