@@ -1338,6 +1338,13 @@ bluejeans)
     appNewVersion=$(echo $downloadURL | cut -d '/' -f6)
     expectedTeamID="HE4P42JBGN"
     ;;
+bluejeansevents)
+    name="BlueJeans Events"
+    type="pkg"
+    downloadURL=$(curl -fs "https://www.bluejeans.com/downloads" | xmllint --html --format - 2>/dev/null | grep -o "https://swdl.bluejeans.com/events/release/beta/downloads/BlueJeans_Events.pkg" )
+    appNewVersion=$(echo $downloadURL | cut -d '/' -f6)
+    expectedTeamID="HE4P42JBGN"
+    ;;
 boxdrive)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Box"
