@@ -53,6 +53,7 @@ bettertouchtool
 bitwarden
 blender
 bluejeans
+bluejeansevents
 boxdrive
 boxsync
 boxtools
