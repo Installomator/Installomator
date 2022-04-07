@@ -1,3 +1,5 @@
+- if `spctl`-check is `rejected` then we now show an error that it can be due to Gatekeepr only allowing apps from App Store only. Installomator requires that all identified developers are accepted as well.
+
 ## v9.1
 
 **Note**: Both Google and Mozilla recommend using the pkg installers instead of the dmg downloads for managed deployments. So far, Installomator has provided labels for both. (`googlechrome` and `googlechromepkg` or `firefox` and `firefoxpkg`, respectively) Since there are problems with the dmg downloads, a future release of Installomator will _disable_ the `firefox` and `googlechrome` dmg labels. You should switch to using the respective pkg labels instead.
