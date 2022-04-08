@@ -1,5 +1,6 @@
+logioptions|\
 logitechoptions)
-    name="Logitech Options"
+    name="Logi Options"
     type="pkgInZip"
     #downloadURL=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-11.0" | tr "," "\n" | grep -A 10 "macOS" | grep -oie "https.*/.*/options/.*\.zip" | head -1)
     downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/options/options_installer.zip"
