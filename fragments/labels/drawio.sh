@@ -5,4 +5,5 @@ drawio)
     downloadURL="$(downloadURLFromGit jgraph drawio-desktop)"
     appNewVersion="$(versionFromGit jgraph drawio-desktop)"
     expectedTeamID="UZEUFB4N53"
+    blockingProcesses=( draw.io )
     ;;
