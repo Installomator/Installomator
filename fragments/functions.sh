@@ -426,7 +426,11 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     if [[ $appVerifyStatus -ne 0 ]] ; then
     #if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
         if [[ "$(echo $appVerify | head -1 | grep -oi rejected)" = "rejected" ]]; then
-            printlog "Gatekeeper check rejected. Could be that gatekeeper settings only accept App Store apps." ERROR
+            if [[ "$(echo $appVerify | tail -1)" = "source=no usable signature" ]]; then
+                printlog "Gatekeeper check rejected. No usable signature." ERROR
+            else
+                printlog "Gatekeeper check rejected. Could be that gatekeeper settings only accept App Store apps." ERROR
+            fi
         fi
         cleanupAndExit 4 "Error verifying $appPath error:\n$logoutput" ERROR
     fi
@@ -582,7 +586,11 @@ installFromPKG() {
     if [[ $spctlStatus -ne 0 ]] ; then
     #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
         if [[ "$(echo $spctlOut | head -1 | grep -oi rejected)" = "rejected" ]]; then
-            printlog "Gatekeeper check rejected. Could be that gatekeeper settings only accept App Store apps." ERROR
+            if [[ "$(echo $spctlOut | tail -1)" = "source=no usable signature" ]]; then
+                printlog "Gatekeeper check rejected. No usable signature." ERROR
+            else
+                printlog "Gatekeeper check rejected. Could be that gatekeeper settings only accept App Store apps." ERROR
+            fi
         fi
         cleanupAndExit 4 "Error verifying $archiveName error:\n$logoutput" ERROR
     fi
