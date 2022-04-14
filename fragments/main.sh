@@ -165,6 +165,12 @@ else
     printlog "Latest version not specified."
 fi
 
+# Mark: unset updateTool if IGNORE_UPDATETOOL is yes
+if [[ $IGNORE_UPDATETOOL == "yes" ]]; then
+    printlog "Ignoring updatetool, using full installer instead."
+    updateTool=""
+fi
+
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "appversion & updateTool"

@@ -302,3 +302,9 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
+
+# Option to ignore a defined updatetool
+IGNORE_UPDATETOOL="no"
+# options:
+# - yes          If an internal updatetool is defined it will be ignored and the regular installer will be used.
+# - no           The internal updatetool will be used if defined.
