@@ -238,7 +238,7 @@ IGNORE_DND_APPS=""
 # - updateToolArguments:
 #   When Installomator detects an existing installation of the application,
 #   and the updateTool variable is set
-#      $updateTool $updateArguments
+#       $updateTool $updateArguments
 #   Will be run instead of of downloading and installing a complete new version.
 #   Use this when the updateTool does differential and optimized downloads.
 #   e.g. msupdate on various Microsoft labels
@@ -253,7 +253,7 @@ IGNORE_DND_APPS=""
 #   We need to define `name` for the installed app (to be version checked), as well as
 #   `installerTool` for the installer app (if named differently than `name`. Installomator
 #   will add the path to the folder/disk image with the binary, and it will be called like this:
-     `$CLIInstaller $CLIArguments`
+#       $CLIInstaller $CLIArguments
 #   For most installations `CLIInstaller` should contain the `installerTool` for the CLI call
 #   (if it’s the same).
 #   We can support a whole range of other software titles by implementing this.
