@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# This script is an MDM/management platform agnostic way to install Installomator
-# The only requirement is an Internet connection.
+# This script is meant to povide the simplest MDM/management platform agnostic way to install Installomator
+# The only requirement is an Internet connection
 
 # Get the URL of the latest PKG From the Installomator GitHub repo
 url=$(curl --silent --fail "https://api.github.com/repos/Installomator/Installomator/releases/latest" | awk -F '"' "/browser_download_url/ && /pkg\"/ { print \$4; exit }")
