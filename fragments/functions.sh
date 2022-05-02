@@ -629,8 +629,17 @@ installFromPKG() {
 
     # install pkg
     printlog "Installing $archiveName to $targetDir"
-    pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
-    pkgInstallStatus=$(echo $?)
+    if [[ -z "$choiceChangesXML" ]]; then
+        pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+        pkgInstallStatus=$(echo $?)
+    else
+        plistLocation="${tmpDir}/choiceChangesXML.plist"
+        printlog "writing choiceChangesXML to ${plistLocation}"
+        printlog "XML=${choiceChangesXML}"
+        echo "${choiceChangesXML}" > "${plistLocation}"
+        pkgInstall=$(installer -verbose -dumplog -applyChoiceChangesXML "${plistLocation}" -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+        pkgInstallStatus=$(echo $?)
+    fi
     sleep 1
     pkgEndTime=$(date "+$LogDateFormat")
     pkgInstall+=$(echo "\nOutput of /var/log/install.log below this line.\n")
