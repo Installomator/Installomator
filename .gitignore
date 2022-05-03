@@ -12,4 +12,3 @@ scratch/
 # do include Installomator .pkg files
 #!Installomator-*.pkg
 checkLabelCurrent.sh
-Installomator.sh
