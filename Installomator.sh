@@ -302,8 +302,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="9.1"
-VERSIONDATE="2022-03-18"
+VERSION="9.2beta"
+VERSIONDATE="2022-05-03"
 
 # MARK: Functions
 
@@ -2533,6 +2533,24 @@ icons)
     downloadURL=$(downloadURLFromGit sap macOS-icon-generator )
     appNewVersion=$(versionFromGit sap macOS-icon-generator )
     expectedTeamID="7R5ZEU67FQ"
+    ;;
+idrive)
+    name="IDrive"
+    type="pkgInDmg"
+    pkgName="IDrive.pkg"
+    downloadURL=$(curl -fs https://static.idriveonlinebackup.com/downloads/version_mac.js | sed 's/.*href\([^;]*\).*/\1/' | sed 's/.*\(https.*dmg\).*/\1/g')
+    appNewVersion=$(curl -fs https://static.idriveonlinebackup.com/downloads/version_mac.js | sed 's/.*mac_vernum=\([^;]*\).*/\1/' | sed 's/.*Version \([0-9.]*\).*/\1/')
+    versionKey="CFBundleVersion"
+    expectedTeamID="JWDCNYZ922"
+    ;;
+idrivethin)
+    name="IDrive"
+    type="pkgInDmg"
+    pkgName="IDriveThin.pkg"
+    downloadURL=$(curl -fs https://static.idriveonlinebackup.com/downloads/idrivethin/thin_version.js | sed 's/.*thinclient-mac\([^;]*\).*/\1/' | sed 's/.*\(https.*dmg\).*/\1/g')
+    appNewVersion=$(curl -fs https://static.idriveonlinebackup.com/downloads/idrivethin/thin_version.js | sed 's/.*thin_mac_ver=\([^;]*\).*/\1/' | sed 's/.*Version \([0-9.]*\).*/\1/')
+    versionKey="CFBundleVersion"
+    expectedTeamID="JWDCNYZ922"
     ;;
 iina)
     name="IINA"
