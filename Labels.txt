@@ -322,6 +322,7 @@ secretive
 sequelpro
 sfsymbols
 shield
+shottr
 sidekick
 signal
 silnite
