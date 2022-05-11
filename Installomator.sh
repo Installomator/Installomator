@@ -374,7 +374,7 @@ displaynotification() { # $1: message $2: title
     if [[ -x "$manageaction" ]]; then
          "$manageaction" -message "$message" -title "$title"
     elif [[ -x "$hubcli" ]]; then
-         sudo "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
+         "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
     else
         runAsUser osascript -e "display notification \"$message\" with title \"$title\""
     fi
