@@ -242,8 +242,8 @@ getAppVersion() {
 #        printlog "App(s) found: ${applist}" DEBUG
 #        applist=$(mdfind "kind:application AND name:$appName" -0 )
     fi
-    if [[ -z applist ]]; then
-        printlog "No previous app found" INFO
+    if [[ -z $applist ]]; then
+        printlog "No previous app found" WARN
     else
         printlog "App(s) found: ${applist}" INFO
     fi
@@ -265,7 +265,7 @@ getAppVersion() {
             if [[ -d "$installedAppPath"/Contents/_MASReceipt ]];then
                 printlog "Installed $appName is from App Store, use “IGNORE_APP_STORE_APPS=yes” to replace."
                 if [[ $IGNORE_APP_STORE_APPS == "yes" ]]; then
-                    printlog "Replacing App Store apps, no matter the version"
+                    printlog "Replacing App Store apps, no matter the version" WARN
                     appversion=0
                 else
                     cleanupAndExit 1 "App previously installed from App Store, and we respect that" ERROR
