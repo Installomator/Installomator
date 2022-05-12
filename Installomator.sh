@@ -1564,6 +1564,13 @@ atext)
     downloadURL="https://trankynam.com/atext/downloads/aText.dmg"
     expectedTeamID="KHEMQ2FD9E"
     ;;
+atextlegacy)
+    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+    name="aText"
+    type="dmg"
+    downloadURL="https://trankynam.com/atext/downloads/aTextLegacy.dmg"
+    expectedTeamID="KHEMQ2FD9E"
+    ;;
 atom)
     name="Atom"
     type="zip"
