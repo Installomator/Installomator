@@ -13,12 +13,12 @@ We have put a lot of work into making it stable and safe, but we cannot - of cou
 ## Authors
 
 Intallomator was originally inspired by the download scripts from William Smith and Sander Schram, and created by:
-    Armin Briegel - @scriptingosx
+- [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
 
-Later on a few more contributers came on the project:
-    Isaac Ordonez - @issacatmann
-    Søren Theilgaard - @Theile
-    Adam Codega - @acodega
+Later on a few more members came on the project:
+- Isaac Ordonez - @issacatmann
+- [Søren Theilgaard - @Theile](https://github.com/Theile)
+- [Adam Codega - @acodega](https://github.com/acodega)
 
  And with numerous contributions from many others.
 
