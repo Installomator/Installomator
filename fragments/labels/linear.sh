@@ -11,3 +11,5 @@ linear)
     versionKey="CFBundleShortVersionString"
     appName="Linear.app"
     blockingProcesses=( "Linear" )
+    ;;
+    
