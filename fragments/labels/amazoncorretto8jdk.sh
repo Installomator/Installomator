@@ -9,4 +9,4 @@ type="pkg"
         appNewVersion=$(curl -s https://raw.githubusercontent.com/corretto/corretto-8/develop/CHANGELOG.md | grep "## Corretto version" | head -n 1 | awk '{ print $4; exit}')
     fi
 expectedTeamID="94KV3E626L"
-;;   
+;;
