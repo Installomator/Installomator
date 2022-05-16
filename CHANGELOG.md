@@ -6,7 +6,7 @@
 - documentation updates (#485, #494)
 - new labels:
     - 1password8 (#514)
-	- UltimakerCura
+	- ultimakercura
 	- androidstudio (#547)
 	- atextlegacy (#464)
 	- camtasia2019, camtasia2020 (#499)
@@ -47,11 +47,7 @@
 	- citrixworkspace (#508)
 	- dbeaverce (#450)
 	- dropbox
-	- firefox
-	- firefox_da
-	- firefox_intl (#495)
-	- firefoxesr_intl (#496)
-	- firefoxpkg
+	- firefox, firefox_da, firefox_intl (#495), firefoxesr_intl (#496), firefoxpkg
 	- googlechrome, googlechromepkg (#484)
 	- gpgsuite (#465)
 	- grammarly (#515)
