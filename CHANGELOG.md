@@ -1,6 +1,71 @@
+## v9.2
+
+**Note**: Both Google and Mozilla recommend using the pkg installers instead of the dmg downloads for managed deployments. So far, Installomator has provided labels for both. (`googlechrome` and `googlechromepkg` or `firefox` and `firefoxpkg`, respectively) Since there are problems with the dmg downloads, a future release of Installomator will _disable_ the `firefox` and `googlechrome` dmg labels. You should switch to using `googlechromepkg` and `firefoxpkg` labels instead.
+
+- bug fix (#434)
+- documentation updates (#485, #494)
+- new labels:
+    - 1password8 (#514)
+	- ultimakercura
+	- androidstudio (#547)
+	- atextlegacy (#464)
+	- camtasia2019, camtasia2020 (#499)
+	- clue, cluefull (#481)
+	- craftmanagerforsketch
+	- displaylinkmanager (#448)
+	- drawio (#480)
+	- duckduckgo
+	- egnytewebedit (#512)
+	- filezilla (#522)
+	- firefoxpkg_intl
+	- flycut (#501)
+	- fontexplorer (#523)
+	- hype (#524)
+	- idrive (#507), idrivethin (#509)
+	- imageoptim (#525)
+	- linear (#519)
+	- macoslaps (#502)
+	- mightymike
+	- mindmanager (#479)
+	- pika (#526)
+	- propresenter7 (#394)
+	- qgis-pr
+	- shottr (#516)
+	- slab (#487)
+	- snagit2019, snagit2020, snagit2021 (#498)
+	- sonobus (#490)
+	- talkdeskcxcloud (#452)
+	- thunderbird_intl (#497)
+	- unnaturalscrollwheels (#503)
+	- wechat (#510)
+	- xeroxworkcentre7800 (#527)
+	- zohoworkdrivegenie
+- updated labels
+	- adobereaderdc-update, adobereaderdc (#503)
+	- amazoncorretto8jdk (#461)
+	- camtasia (#499)
+	- citrixworkspace (#508)
+	- dbeaverce (#450)
+	- dropbox
+	- firefox, firefox_da, firefox_intl (#495), firefoxesr_intl (#496), firefoxpkg
+	- googlechrome, googlechromepkg (#484)
+	- gpgsuite (#465)
+	- grammarly (#515)
+	- logitechoptions (#478)
+	- onlyofficedesktop (#454)
+	- postman (#458)
+	- rancherdesktop (#463)
+	- remotedesktopmanagerenterprise
+	- remotedesktopmanagerfree
+	- ringcentralapp (#492)
+	- sketch
+	- snagit (#498)
+	- talkdeskcallbar (#453)
+
+
+
 ## v9.1
 
-**Note**: Both Google and Mozilla recommend using the pkg installers instead of the dmg downloads for managed deployments. So far, Installomator has provided labels for both. (`googlechrome` and `googlechromepkg` or `firefox` and `firefoxpkg`, respectively) Since there are problems with the dmg downloads, a future release of Installomator will _disable_ the `firefox` and `googlechrome` dmg labels. You should switch to using the respective pkg labels instead.
 
 - added option for Microsoft Endpoint Manager (Intune) to `LOGO` (#446)
 - minor fixes (#427, #434, #436)

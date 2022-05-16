@@ -1,10 +1,11 @@
 PKG_ID="com.scriptingosx.Installomator"
-TARGET_VERSION="8.0"
+TARGET_VERSION="9.1"
 URLDOWNLOAD="%MosyleCDNFile:blah-blah-blah%"
 ######################################################################
-# Installation using Installomator (enter the software to install separated with spaces in the "what"-variable)
-what="handbrake theunarchiver microsoftoffice365"
+# Installation using Installomator (enter the software to install separated with spaces in the "whatList"-variable)
+whatList="handbrake theunarchiver microsoftoffice365"
 # Covered by Mosyle Catalog: "brave firefox googlechrome microsoftedge microsoftteams signal sublimetext vlc webex zoom" among others
+LOGO="mosyleb" # or "mosylem"
 ######################################################################
 
 ## Mark: Code here
@@ -56,12 +57,17 @@ if [ ! -e "${destFile}" ]; then
     caffexit 99
 fi
 
-for item in $what; do
+for what in $whatList; do
     #echo $item
-    ${destFile} ${item} LOGO=mosyle NOTIFY=all BLOCKING_PROCESS_ACTION=tell_user #NOTIFY=silent BLOCKING_PROCESS_ACTION=quit_kill #INSTALL=force
-    if [ $? != 0 ]; then
-    # Error handling
-        echo "[$(DATE)] Error installing ${item}. Exit code $?"
+    # Install software using Installomator
+    cmdOutput="$(${destFile} ${what} LOGO=$LOGO NOTIFY=all BLOCKING_PROCESS_ACTION=tell_user || true)" # NOTIFY=silent BLOCKING_PROCESS_ACTION=quit_kill INSTALL=force
+    # Check result
+    exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
+    if [[ ${exitStatus} -ne 0 ]] ; then
+        echo "Error installing ${what}. Exit code ${exitStatus}"
+        #echo "$cmdOutput"
+        errorOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "error" || true )"
+        echo "$errorOutput"
         let errorCount++
     fi
 done
