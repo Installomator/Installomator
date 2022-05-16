@@ -59,14 +59,16 @@ Pull requests against the `Installomator.sh` script in the root of the repo will
 
 ### When you are familiar with git and GitHub
 
-- Create a new branch in your local Installomator fork repo.
+- If you haven't already, create a fork of the Installomator repo. Clone the for to your local Mac.
+- Create a new branch in your local Installomator (fork) repo.
 - Copy the new or modified label file to `fragments/labels`. (replacing the original, when necessary)
-- Create a pull request against the main Installomator dev branch.
-- Don't use this branch for any other modifications, unless you need to update this particular PR. (Pull Requests are against a _branch_, not a particular commit.)
+- Test (push the change to your fork on GitHub. You can check that out on testing devices or vms.)
+- Create a pull request against the Installomator `main` branch.
+- Don't use this branch for _any_ other modifications, unless you need to update this particular PR. (Pull Requests are against a _branch_, not a particular commit.)
 
-If you have multiple labels you want to contribute, please create a separate local branch and a separate pull request for each label.
+If you have multiple labels (or other changes) you want to contribute, please create a _separate_ local branch and a _separate_ pull request for each label. This allows us to accept, modify, or reject each label separately and simplifies the process. 
 
-Once your Pull Request is merged into the main repo, you can pull the change to your fork and delete the branch.
+Once your Pull Request is merged into the main repo, you can pull the change to your local repo, push it to your fork, and delete the branch, because it should be fully merged.
 
 ### When you are not familiar with git and GitHub
 
