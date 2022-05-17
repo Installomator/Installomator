@@ -1750,6 +1750,7 @@ blender)
     fi
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g' )
     expectedTeamID="68UA947AUU"
+    ;;
 bluejeans)
     name="BlueJeans"
     type="pkg"
