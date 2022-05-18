@@ -21,13 +21,13 @@ Make sure you branch off of main for new and updated labels and off of `dev` for
 
 ## Labels
 
-If you need a new label for a piece of software, please take a look at the tutorials in the Wiki, if those can be helpful for starting out on the creation of the label.
+If you need a new label for a piece of software, please take a look [at the tutorials in the Wiki](https://github.com/Installomator/Installomator/wiki#tutorials), those can be helpful for starting out on the creation of the label.
 
 We expect you to try out finding the __version__ of the software online, so that `appNewVersion` can be filled in the label. It helps a lot when the software needs update, and greatly improve user experience.
 
 Please document what you found out about the __version__ of the software if it's not included. We will not accept a new label if this is not documented, we will ask about this if it was not included. This is very important for the quality and reliability of Installomator.
 
-When creating a new label, please file a pull request (PR). And feel free to ask questions or make your comments about what else is needed, if we should take a look at the label, or help out in finding the version or isolating URLs or anything else.
+When creating a new label, please file a pull request (PR). And feel free to ask questions or make your comments about what else is needed, if we should take a look at the label, or help out in finding the version or isolating URLs or anything else. You can find [a tutorial on how to create a PR here](https://github.com/Installomator/Installomator/wiki/GitHub-howto-create-PRs).
 
 Please include the log of installing this label in the description, like this:
 ```
@@ -39,11 +39,13 @@ Please include the log of installing this label in the description, like this:
 
 Please have one label per PR, so we can separate these. Also if you change/fix a label.
 
-Thank you very much for your contribution!
+__Thank you very much for your contribution!__
 
 
 ## Issues
 
 Do not create an issue just when you have a questions, but do file an issue or pull request (PR) for bugs or wrong behavior. Include the full log and include the version of Installomator you're running.
+
+Join [the MacAdmins Slack](https://macadmins.org) and find us in the `#intallomator` channel for questions, support and discussions. 
 
 When in doubt, use the MacAdmins.org Slack as described in [README.md](https://github.com/Installomator/Installomator/)
