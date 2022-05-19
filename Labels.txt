@@ -68,6 +68,7 @@ calibre
 camostudio
 camtasia
 camtasia2019
+camtasia2020
 camtasia2021
 canva
 chatwork
