@@ -22,7 +22,7 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "$2" $3
     fi
     printlog "################## End Installomator, exit code $1 \n" REQ
-    
+
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
         1=0 # If only label name should be returned we exit without any errors
@@ -829,6 +829,13 @@ finishing() {
             displaynotification "$message" "$name installation complete!"
         fi
     fi
+
+    if [[ $JAMF_RECON_ON_SUCCESS == "yes" ]]; then
+        if [[ -f /usr/local/bin/jamf ]]; then
+            printlog "running jamf recon"
+            /usr/local/bin/jamf recon
+        fi
+    fi
 }
 
 # Detect if there is an app actively making a display sleep assertion, e.g.
@@ -857,4 +864,3 @@ hasDisplaySleepAssertion() {
     # No relevant display sleep assertion detected
     return 1
 }
-
