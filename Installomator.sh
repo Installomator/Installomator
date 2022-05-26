@@ -1145,7 +1145,7 @@ finishing() {
     if [[ $JAMF_RECON_ON_SUCCESS == "yes" ]]; then
         if [[ -f /usr/local/bin/jamf ]]; then
             printlog "running jamf recon"
-            /usr/local/bin/jamf recon
+            jamf recon
         fi
     fi
 }
