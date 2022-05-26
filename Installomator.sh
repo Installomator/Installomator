@@ -138,7 +138,7 @@ IGNORE_DND_APPS=""
 # example that will ignore browsers when evaluating DND:
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
-#Should jamf recon after success
+# Run jamf recon after success
 JAMF_RECON_ON_SUCCESS="no"
 # options:
 #  - no           Script will not run a jamf recon on success.
