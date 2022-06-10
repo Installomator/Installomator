@@ -1727,7 +1727,6 @@ axurerp10)
     expectedTeamID="HUMW6UU796"
     versionKey="CFBundleVersion"
     appName="Axure RP 10.app"
-    blockingProcesses=( "Axure RP 10" )
     ;;
 balenaetcher)
     name="balenaEtcher"
@@ -1847,7 +1846,6 @@ caffeine)
     downloadURL=$(downloadURLFromGit IntelliScape caffeine)
     appNewVersion=$(versionFromGit IntelliScape caffeine)
     expectedTeamID="YD6LEYT6WZ"
-    blockingProcesses=( Caffeine )
     ;;
 cakebrew)
     name="Cakebrew"
@@ -2204,7 +2202,6 @@ drawio)
     downloadURL="$(downloadURLFromGit jgraph drawio-desktop)"
     appNewVersion="$(versionFromGit jgraph drawio-desktop)"
     expectedTeamID="UZEUFB4N53"
-    blockingProcesses=( draw.io )
     ;;
 drift)
     # credit Elena Ackley (@elenaelago)
@@ -2261,7 +2258,6 @@ egnytewebedit)
     appName="Egnyte WebEdit.app"
     blockingProcesses=( NONE )
     ;;
-
 element)
     name="Element"
     type="dmg"
@@ -2501,7 +2497,6 @@ flux)
     downloadURL="https://justgetflux.com/mac/Flux.zip"
     expectedTeamID="VZKSA7H9J9"
     ;;
-
 flycut)
     name="Flycut"
     type="zip"
@@ -3153,9 +3148,7 @@ linear)
     expectedTeamID="7VZ2S3V9RV"
     versionKey="CFBundleShortVersionString"
     appName="Linear.app"
-    blockingProcesses=( "Linear" )
     ;;
-
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -3337,7 +3330,6 @@ azuredatastudio)
     appNewVersion=$(versionFromGit microsoft azuredatastudio )
     expectedTeamID="UBF8T346G9"
     appName="Azure Data Studio.app"
-    blockingProcesses=( "Azure Data Studio" )
     ;;
 microsoftazurestorageexplorer)
     name="Microsoft Azure Storage Explorer"
@@ -4161,7 +4153,6 @@ remotedesktopmanagerenterprise)
     downloadURL=$(curl -fs https://devolutions.net/remote-desktop-manager/home/thankyou/rdmmacbin | grep -oe "http.*\.dmg" | head -1)
     appNewVersion=$(echo "$downloadURL" | sed -E 's/.*\.Mac\.([0-9.]*)\.dmg/\1/g')
     expectedTeamID="N592S9ASDB"
-    blockingProcesses=( "$name" )
     ;;
 remotedesktopmanagerfree)
     name="Remote Desktop Manager Free"
@@ -4215,14 +4206,12 @@ ringcentralapp)
         downloadURL="https://app.ringcentral.com/download/RingCentral.pkg"
     fi
     expectedTeamID="M932RC5J66"
-    blockingProcesses=( "Ringcentral" )
     ;;
 ringcentralclassicapp)
     name="Glip"
     type="dmg"
     downloadURL="https://downloads.ringcentral.com/glip/rc/GlipForMac"
     expectedTeamID="M932RC5J66"
-    blockingProcesses=( "Glip" )
     #blockingProcessesMaxCPU="5"
     ;;
 ringcentralmeetings)
@@ -4253,7 +4242,6 @@ rocketchat)
     downloadURL=$(downloadURLFromGit RocketChat Rocket.Chat.Electron)
     appNewVersion=$(versionFromGit RocketChat Rocket.Chat.Electron)
     expectedTeamID="S6UPZG7ZR3"
-    blockingProcesses=( Rocket.Chat )
     ;;
 rodeconnect)
     name="RODE Connect"
@@ -4292,7 +4280,6 @@ scaleft)
     downloadURL="https://dist.scaleft.com/client-tools/mac/latest/ScaleFT.pkg"
     appNewVersion=$(curl -sf "https://dist.scaleft.com/client-tools/mac/" | awk '/dir/{i++}i==2' | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
     expectedTeamID="HV2G9Z3RP5"
-    blockingProcesses=( ScaleFT )
     ;;
 screamingfrogseospider)
     name="Screaming Frog SEO Spider"
@@ -4329,7 +4316,6 @@ secretive)
     appNewVersion=$(versionFromGit maxgoedjen secretive)
     expectedTeamID="Z72PRUAWF6"
     ;;
-
 sequelpro)
     name="Sequel Pro"
     type="dmg"
@@ -4529,14 +4515,12 @@ sqlpropostgres)
     type="zip"
     downloadURL="https://macpostgresclient.com/download.php"
     expectedTeamID="LKJB72232C"
-    blockingProcesses=( "SQLPro for Postgres" )
     ;;
 sqlprostudio)
     name="SQLPro Studio"
     type="zip"
     downloadURL="https://www.sqlprostudio.com/download.php"
     expectedTeamID="LKJB72232C"
-    blockingProcesses=( "SQLPro Studio" )
     ;;
 steelseriesengine)
     name="SteelSeries GG"
@@ -4857,7 +4841,6 @@ unnaturalscrollwheels)
     downloadURL="$(downloadURLFromGit ther0n UnnaturalScrollWheels)"
     appNewVersion="$(versionFromGit ther0n UnnaturalScrollWheels)"
     expectedTeamID="D6H5W2T379"
-    blockingProcesses=( UnnaturalScrollWheels )
     ;;
 utm)
     name="UTM"
@@ -5158,7 +5141,6 @@ zoomclient)
     fi
     expectedTeamID="BJ4HAAB9B3"
     #appNewVersion=$(curl -is "https://beta2.communitypatch.com/jamf/v1/ba1efae22ae74a9eb4e915c31fef5dd2/patch/zoom.us" | grep currentVersion | tr ',' '\n' | grep currentVersion | cut -d '"' -f 4) # Does not match packageID
-    blockingProcesses=( zoom.us )
     #blockingProcessesMaxCPU="5"
     ;;
 zoomgov)
