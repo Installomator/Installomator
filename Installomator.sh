@@ -669,6 +669,7 @@ checkRunningProcesses() {
 
 	# stop/remove user LaunchAgents that could interfere with installation
 	for x in ${LaunchAgentsToStop}; do
+	    printlog "stopping $x LaunchAgent"
 		runAsUser launchctl stop "$x"
 		runAsUser launchctl remove "$x"
 	done
@@ -1346,7 +1347,7 @@ valuesfromarguments)
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[0-9a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="2BUA8C4S2C"
 	LaunchAgentsToStop=( 2BUA8C4S2C.com.agilebits.onepassword7-helper )
-    blockingProcesses=( "Safari" "1Password (Safari)" "1PasswordSafariAppExtension" "Google Chrome" "Firefox" "1Password 7" "1Password Extension Helper" )
+    blockingProcesses=( "Safari" "1Password (Safari)" "1PasswordSafariAppExtension" "Google Chrome" "firefox" "1Password 7" "1Password Extension Helper" )
     #forcefulQuit=YES
     ;;
 1password8)
