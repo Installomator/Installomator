@@ -592,7 +592,7 @@ getAppVersion() {
 
 QuitOrKillGently() {
 	# function that gets called with process name as $1
-	printlog "telling app $1 to quit"
+	printlog "telling app \"$1\" to quit"
 	runAsUser osascript -e "tell app \"$1\" to quit"
 	sleep 5
 	if pgrep -xq "$1"; then
@@ -605,15 +605,17 @@ QuitOrKillGently() {
 	RemainingPIDs=($(pgrep "$1"))
 	Iteration=0
 	while [ ${#RemainingPIDs[@]} -gt 0 -a ${Iteration} -lt 3 ] ; do
-		for PID in $(seq 0 $(( ${#RemainingPIDs[@]} -1 )) ) ; do
-			printlog "sending SIGTERM to PID ${RemainingPIDs[$PID]} associated with process $1"
-			kill ${RemainingPIDs[$PID]}
+		for PID in ${RemainingPIDs} ; do
+			Process="$(ps ${PID} | awk -F" /" "/${PID}/ {print \"/\"\$2}")"
+			printlog "sending SIGTERM to PID ${PID}: ${Process}"
+			kill ${PID}
 		done
-		sleep 3
+		sleep 5
 		RemainingPIDs=($(pgrep "$1"))
-		for PID in $(seq 0 $(( ${#RemainingPIDs[@]} -1 )) ) ; do
-			printlog "sending SIGKILL to PID ${RemainingPIDs[$PID]} associated with process $1"
-			kill -9 ${RemainingPIDs[$PID]}
+		for PID in ${RemainingPIDs} ; do
+			Process="$(ps ${PID} | awk -F" /" "/${PID}/ {print \"/\"\$2}")"
+			printlog "sending SIGKILL to PID ${PID}: ${Process}"
+			kill -9 ${PID}
 		done
 		sleep 3
 		RemainingPIDs=($(pgrep "$1"))
@@ -1337,7 +1339,7 @@ valuesfromarguments)
     downloadURL="https://app-updates.agilebits.com/download/OPM7"
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[0-9a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="2BUA8C4S2C"
-    blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password (Safari)" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
+    blockingProcesses=( "Safari" "1Password (Safari)" "1PasswordSafariAppExtension" "Google Chrome" "Firefox" "1Password 7" "1Password Extension Helper" )
     #forcefulQuit=YES
     ;;
 1password8)
@@ -1352,7 +1354,7 @@ valuesfromarguments)
         downloadURL="https://downloads.1password.com/mac/1Password-latest-x86_64.zip"
     fi
     expectedTeamID="2BUA8C4S2C"
-    blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password" "1Password (Safari)" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
+    blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password" "1Password (Safari)" "1PasswordSafariAppExtension" )
     #forcefulQuit=YES
     ;;
 1passwordcli)
