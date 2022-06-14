@@ -169,6 +169,17 @@ fi
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "appversion & updateTool"
     if [[ $DEBUG -ne 1 ]]; then
+       if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
+           printlog "ignoring blocking processes"
+       else
+           if [[ $currentUser != "loginwindow" ]]; then
+               if [[ ${#blockingProcesses} -gt 0 ]]; then
+                   if [[ ${blockingProcesses[1]} != "NONE" ]]; then
+                       checkRunningProcesses
+               fi
+           fi
+       fi
+    fi
         if runUpdateTool; then
             finishing
             cleanupAndExit 0 "updateTool has run" REQ
