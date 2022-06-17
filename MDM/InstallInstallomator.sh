@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script is meant to povide the simplest MDM/management platform agnostic way to install Installomator
 # The only requirement is an Internet connection
@@ -15,7 +15,6 @@ exitCode=0
 if [ ! -e "/usr/local/Installomator/Installomator.sh" ]; then
   echo "Installomator not found. Installing."
   # Create temporary working directory
-  workDirectory=$( basename "$0" )
   tempDirectory=$( mktemp -d )
   echo "Created working directory '$tempDirectory'"
   # Download the installer package
