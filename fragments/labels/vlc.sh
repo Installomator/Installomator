@@ -1,12 +1,13 @@
 vlc)
     name="VLC"
     type="dmg"
+    releaseURL="https://download.videolan.org/pub/videolan/vlc/last/macosx/"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-arm64.xml | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
-        appNewVersion=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-arm64.xml | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null | cut -d '"' -f 2 )
+    	appNewVersion=$(curl -sf $releaseURL | grep -m 1 "arm64.dmg" | sed "s|.*vlc-\(.*\)-arm64.*|\\1|")
+        downloadURL="https://download.videolan.org/pub/videolan/vlc/last/macosx/vlc-"$appNewVersion"-arm64.dmg"
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-intel64.xml | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
-        appNewVersion=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-intel64.xml | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null | cut -d '"' -f 2 )
+    	appNewVersion=$(curl -sf $releaseURL | grep -m 1 "intel64.dmg" | sed "s|.*vlc-\(.*\)-intel64.*|\\1|")
+        downloadURL="https://download.videolan.org/pub/videolan/vlc/last/macosx/vlc-"$appNewVersion"-intel64.dmg"
     fi
     expectedTeamID="75GAHG3SZQ"
     ;;
