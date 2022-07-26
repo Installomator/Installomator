@@ -34,6 +34,12 @@ NOTIFY=success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
 
+# show swiftDialog window with download and install progress
+SHOWPROGRESS="no"
+# options:
+#   - no           do not show download or install progress
+#   - yes          show download or install progress
+DIALOGCMDFILE="/var/tmp/dialog.log"
 
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user

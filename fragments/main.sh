@@ -194,8 +194,33 @@ else
             displaynotification "Downloading new $name" "Download in progress …"
         fi
     fi
-    curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
-    curlDownloadStatus=$(echo $?)
+
+    if [[ $SHOWPROGRESS == "yes" ]]; then
+        # pipe
+        pipe="/tmp/dlpipe"
+        # initialise named pipe for curl output
+        initNamedPipe create $pipe
+        
+        # run the pipe read in the background
+        readDownloadPipe $pipe "$DIALOGCMDFILE" &
+        downloadPipePID=$!
+
+        # launch dialog
+        launchDialog "$name" "$DIALOGCMDFILE" &
+
+        # curl (extract - line in "# MARK: download the archive" of Installomator.sh)
+        curlDownload=$(curl -fL -# --show-error "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+        # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+        curlDownloadStatus=$(echo $pipestatus[1])
+        killProcess $downloadPipePID
+
+        #enableDialogButtonAndSetToDone "$DIALOGCMDFILE"
+        #quitDialog $DIALOGCMDFILE
+    else
+        curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+        curlDownloadStatus=$(echo $?)
+    fi
+    
     deduplicatelogs "$curlDownload"
     if [[ $curlDownloadStatus -ne 0 ]]; then
     #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then

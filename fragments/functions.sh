@@ -14,6 +14,11 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
+    # If displaying progres, quit dialog
+    if [[ $SHOWPROGRESS == "yes" ]]; then
+        quitDialog "$DIALOGCMDFILE"
+    fi
+
     # If we closed any processes, reopen the app again
     reopenClosedProcess
     if [[ -n $2 && $1 -ne 0 ]]; then
@@ -112,8 +117,10 @@ printlog(){
         while IFS= read -r logmessage; do
             if [[ "$(whoami)" == "root" ]]; then
                 echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}" | tee -a $log_location
+                updateDialogProgressText "${logmessage}" "$DIALOGCMDFILE"
             else
                 echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}"
+                updateDialogProgressText "${logmessage}" "$DIALOGCMDFILE"
             fi
         done <<< "$log_message"
     fi
@@ -868,3 +875,109 @@ hasDisplaySleepAssertion() {
     return 1
 }
 
+initNamedPipe() {
+    # create or delete a named pipe
+    # commands are "create" or "delete"
+
+    local cmd=$1
+    local pipe=$2
+    case $cmd in
+        "create")
+            if [[ -e $pipe ]]; then
+                rm $pipe
+            fi
+            # make named pipe
+            mkfifo -m 644 $pipe
+            ;;
+        "delete")
+            # clean up 
+            rm $pipe
+            ;;
+        *)
+            ;;
+    esac
+}
+
+readDownloadPipe() {
+    # reads from a previously created named pipe
+    # output from curl with --progress-bar. % downloaded is read in and then sent to the specified log file
+    local pipe=$1
+    local log=$2
+    # set up read from pipe
+    while IFS= read -k 1 -u 0 char; do
+        [[ $char =~ [0-9] ]] && keep=1 ;
+        [[ $char == % ]] && updateDialogProgressText "Downloading - $progress%" $log && updateDialogProgress "$progress" $log && progress="" && keep=0 ;
+        [[ $keep == 1 ]] && progress="$progress$char" ;
+    done < $pipe
+}
+
+readPKGInstallPipe() {
+    # reads from a previously created named pipe
+    # output from installer with -verboseR. % install status is read in and then sent to the specified log file
+    local pipe=$1
+    local log=$2
+    local appname=$3
+    while read -k 1 -u 0 char; do
+        [[ $char == % ]] && keep=1 ;
+        [[ $char =~ [0-9] ]] && [[ $keep == 1 ]] && progress="$progress$char" ;
+        [[ $char == . ]] && [[ $keep == 1 ]] && updateDialogProgressText "Installing $appname $progress%" $log && updateDialogProgress "$progress" $log && progress="" && keep=0 ;
+    done < $pipe
+}
+
+killProcess() {
+    # will silently kill the specified PID
+    builtin kill $1 2>/dev/null
+}
+
+updateDialogProgress() {
+    local progress=$1
+    local log=$2
+    echo "progress: $progress" >> $log
+}
+
+updateDialogProgressText() {
+    local message=$1
+    local log=$2
+    echo "progresstext: $message" >> $log
+}
+
+launchDialog() {
+    # launches a dialog window to display download and/or install progress.
+    local name=$1
+    local log=$2
+    if [[ -z "$log" ]]; then
+        log="/var/tmp/dialog.log"
+    fi
+    # check for laptop or desktop
+    if /usr/bin/pmset -g batt | grep -iq "battery"; then
+        icon="SF=laptopcomputer.and.arrow.down"
+    else
+        icon="SF=desktopcomputer.and.arrow.down"
+    fi
+
+    # launch dialog
+    /usr/local/bin/dialog --progress 100 -o \
+            --title "Installing $name" \
+            --message "Please wait while $name installs..." \
+            --alignment centre \
+            --icon "$icon" \
+            --iconsize 100 \
+            --height 300 --width 550 \
+            --centreicon \
+            --position bottomright \
+            --button1disabled \
+            --button1text "Please Wait" \
+            --commandfile "$log"
+}
+
+quitDialog() {
+    # sends the quit command to dialog
+    local log=$1
+    echo "quit:" >> "$log"
+}
+
+enableDialogButtonAndSetToDone() {
+    local log=$1
+    echo "button1text: Done" >> $log
+    echo "button1: enable" >> $log
+}
