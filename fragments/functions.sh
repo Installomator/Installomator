@@ -829,6 +829,9 @@ runUpdateTool() {
 
 finishing() {
     printlog "Finishing..."
+    if [[ $SHOWPROGRESS == "yes" ]]; then
+        updateDialogProgress "complete" "$DIALOGCMDFILE"
+    fi
     sleep 10 # wait a moment to let spotlight catch up
     getAppVersion
 
@@ -959,10 +962,10 @@ launchDialog() {
     icon="SF=arrow.down.to.line,colour=green,bgcolour=white,weight=regular"
 
     # launch dialog
-    /usr/local/bin/dialog --progress 100 -o \
+    /usr/local/bin/dialog -o \
             --title "none" \
             --message "## Installing $name\n\nPlease wait..." \
-            --progress 150 \
+            --progress 120 \
             --alignment centre \
             --icon "$LOGO" \
             --overlayicon "$icon" \
