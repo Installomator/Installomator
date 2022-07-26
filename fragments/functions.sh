@@ -118,9 +118,11 @@ printlog(){
             if [[ "$(whoami)" == "root" ]]; then
                 echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}" | tee -a $log_location
                 updateDialogProgressText "${logmessage}" "$DIALOGCMDFILE"
+                updateDialogProgress "increment" "$DIALOGCMDFILE"
             else
                 echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}"
                 updateDialogProgressText "${logmessage}" "$DIALOGCMDFILE"
+                updateDialogProgress "increment" "$DIALOGCMDFILE"
             fi
         done <<< "$log_message"
     fi
@@ -949,20 +951,22 @@ launchDialog() {
         log="/var/tmp/dialog.log"
     fi
     # check for laptop or desktop
-    if /usr/bin/pmset -g batt | grep -iq "battery"; then
-        icon="SF=laptopcomputer.and.arrow.down"
-    else
-        icon="SF=desktopcomputer.and.arrow.down"
-    fi
+    #if /usr/bin/pmset -g batt | grep -iq "battery"; then
+    #    icon="SF=laptopcomputer.and.arrow.down"
+    #else
+    #    icon="SF=desktopcomputer.and.arrow.down"
+    #fi
+    icon="SF=arrow.down.to.line,colour=green,bgcolour=white,weight=regular"
 
     # launch dialog
     /usr/local/bin/dialog --progress 100 -o \
-            --title "Installing $name" \
-            --message "Please wait while $name installs..." \
+            --title "none" \
+            --message "## Installing $name\n\nPlease wait..." \
+            --progress 150 \
             --alignment centre \
-            --icon "$icon" \
-            --iconsize 100 \
-            --height 300 --width 550 \
+            --icon "$LOGO" \
+            --overlayicon "$icon" \
+            --height 350 --width 550 \
             --centreicon \
             --position bottomright \
             --button1disabled \
