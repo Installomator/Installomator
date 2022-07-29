@@ -24,6 +24,7 @@ fakeInstallDelay=5
 items=(
     "firefoxpkg|Firefox"
     "googlechromepkg|Google Chrome"
+    "microsoftoffice365|Microsoft Office 365"
  )
 
 # MARK: Constants
@@ -66,9 +67,6 @@ dialogActivate() {
 progressUpdate() {
     # $1: progress text (optional)
     local text=$1
-    progressindex=$((progressindex + 1))
-    dialogUpdate "progress: $progressindex"
-    echo $progressindex > $progressIndexPath
     if [[ -n $text ]]; then
         dialogUpdate "progresstext: $text"
     fi
@@ -78,7 +76,6 @@ startItem() {
     local description=$1
 
     echo "Starting Item: $description"
-    echo $description > $currentItemPath
     dialogUpdate "listitem: $description: wait"
     progressUpdate $description
 }
@@ -88,7 +85,6 @@ completeItem() {
     local itemStatus=$2
 
     dialogUpdate "listitem: $description: $itemStatus"
-    echo "$description: $itemStatus" >> $completedItemsPath
     echo "completed item $description: $itemStatus"
 }
 
@@ -138,15 +134,10 @@ cleanupAndExit() {
         rm -rf $tmpDir
     fi
 
-    # remove dialog command file
-    if [[ -e $dialog_command_file ]]; then
-        rm $dialog_command_file
-    fi
-
-    # remove completed Items file
-    if [[ -e $completedItemsPath ]]; then
-        rm $completedItemsPath
-    fi
+#     # remove dialog command file
+#     if [[ -e $dialog_command_file ]]; then
+#         rm $dialog_command_file
+#     fi
 }
 
 checkInstallomator() {
@@ -199,6 +190,12 @@ checkInstallomator() {
     fi
 }
 
+checkSwiftDialog() {
+    if [[ ! -x $dialog ]]; then
+        installomator swiftdialog "Swift Dialog"
+    fi
+}
+
 
 # MARK: sanity checks
 
@@ -217,7 +214,6 @@ fi
 
 # MARK: Setup
 
-
 # No sleeping
 caffeinate -dimsu & caffeinatePID=$!
 
@@ -227,14 +223,8 @@ trap cleanupAndExit EXIT
 # get a temp
 tmpDir=$(mktemp -d)
 
-completedItemsPath=$tmpDir/completedItems.txt
-currentItemPath=$tmpDir/currentItem.txt
-progressIndexPath=$tmpDir/progressIndexPath.txt
-
 # setup first list
 itemCount=${#items}
-progressCount=$((item + 2))
-progressindex=0
 
 listitems=( "--listitem" "Configure Tools" )
 
@@ -250,7 +240,7 @@ checkInstallomator
 
 # download and install Swift Dialog
 echo "installing Swift Dialog"
-installomator swiftdialog
+checkSwiftDialog
 
 # display first screen
 $dialog --title "Configuring your Mac" \

@@ -117,12 +117,12 @@ printlog(){
         while IFS= read -r logmessage; do
             if [[ "$(whoami)" == "root" ]]; then
                 echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}" | tee -a $log_location
-                updateDialogProgressText "${logmessage}" "$DIALOGCMDFILE"
-                updateDialogProgress "increment" "$DIALOGCMDFILE"
+                updateDialogProgressText "${logmessage}"
+#                 updateDialogProgress "increment"
             else
                 echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}"
-                updateDialogProgressText "${logmessage}" "$DIALOGCMDFILE"
-                updateDialogProgress "increment" "$DIALOGCMDFILE"
+                updateDialogProgressText "${logmessage}"
+#                 updateDialogProgress "increment"
             fi
         done <<< "$log_message"
     fi
@@ -830,7 +830,7 @@ runUpdateTool() {
 finishing() {
     printlog "Finishing..."
     if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
-        updateDialogProgress "complete" "$DIALOGCMDFILE"
+        updateDialogProgress "complete"
     fi
 
     sleep 5 # wait a moment to let spotlight catch up
@@ -911,9 +911,20 @@ readDownloadPipe() {
     local log=${2:-$DIALOG_CMD_FILE}
     # set up read from pipe
     while IFS= read -k 1 -u 0 char; do
-        [[ $char =~ [0-9] ]] && keep=1 ;
-        [[ $char == % ]] && updateDialogProgressText "Downloading - $progress%" $log && updateDialogProgress "$progress" $log && progress="" && keep=0 ;
-        [[ $keep == 1 ]] && progress="$progress$char" ;
+        if [[ $char =~ [0-9] ]]; then
+            keep=1
+        fi
+
+        if [[ $char == % ]]; then
+            updateDialogProgressText "Downloading $name - $progress%"
+            updateDialogProgress "$progress"
+            progress=""
+            keep=0
+        fi
+
+        if [[ $keep == 1 ]]; then
+            progress="$progress$char"
+        fi
     done < $pipe
 }
 

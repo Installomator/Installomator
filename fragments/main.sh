@@ -202,7 +202,7 @@ else
         initNamedPipe create $pipe
 
         # run the pipe read in the background
-        readDownloadPipe $pipe "$DIALOGCMDFILE" & downloadPipePID=$!
+        readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
 
         # curl (extract - line in "# MARK: download the archive" of Installomator.sh)
         curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
