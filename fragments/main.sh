@@ -195,20 +195,14 @@ else
         fi
     fi
 
-    if [[ $DIALOG_PROGRESS == "yes" ]]; then
+    if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
         # pipe
-        pipe="/tmp/dlpipe"
+        pipe="$tmpDir/downloadpipe"
         # initialise named pipe for curl output
         initNamedPipe create $pipe
 
         # run the pipe read in the background
         readDownloadPipe $pipe "$DIALOGCMDFILE" & downloadPipePID=$!
-
-        # TODO: this should _not_ be part of Installomator.
-        # Also there should be a check if DIALOG_PROGRESS is set but dialog is not installed
-
-        # launch dialog
-        launchDialog "$name" "$DIALOGCMDFILE" &
 
         # curl (extract - line in "# MARK: download the archive" of Installomator.sh)
         curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)

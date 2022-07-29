@@ -14,10 +14,10 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
-    # If displaying progres, quit dialog
-    if [[ $SHOWPROGRESS == "yes" ]]; then
-        quitDialog "$DIALOGCMDFILE"
-    fi
+#     # If displaying progres, quit dialog
+#     if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
+#         quitDialog "$DIALOGCMDFILE"
+#     fi
 
     # If we closed any processes, reopen the app again
     reopenClosedProcess
@@ -829,10 +829,11 @@ runUpdateTool() {
 
 finishing() {
     printlog "Finishing..."
-    if [[ $SHOWPROGRESS == "yes" ]]; then
+    if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
         updateDialogProgress "complete" "$DIALOGCMDFILE"
     fi
-    sleep 10 # wait a moment to let spotlight catch up
+
+    sleep 5 # wait a moment to let spotlight catch up
     getAppVersion
 
     if [[ -z $appversion ]]; then
@@ -951,7 +952,7 @@ launchDialog() {
     local name=$1
     local log=${2:-$DIALOG_CMD_FILE}
     if [[ -z "$log" ]]; then
-        log="/var/tmp/dialog.log"
+        log="/private/var/tmp/dialog.log"
     fi
     # check for laptop or desktop
     #if /usr/bin/pmset -g batt | grep -iq "battery"; then

@@ -141,8 +141,10 @@ IGNORE_DND_APPS=""
 DIALOG_PROGRESS="no"
 # options:
 #   - no           do not show download or install progress (default)
-#   - yes          show download or install progress
-DIALOG_CMD_FILE="/var/tmp/dialog.log"
+#   - main         show download or install progress in the main progress bar
+#   - list         show download or install progress with each list item
+#                  the `-list` option requires the DIALOG_LIST_INDEX to be set
+DIALOG_CMD_FILE="/private/var/tmp/dialog.log"
 
 
 
