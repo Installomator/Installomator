@@ -895,7 +895,7 @@ initNamedPipe() {
             mkfifo -m 644 $pipe
             ;;
         "delete")
-            # clean up 
+            # clean up
             rm $pipe
             ;;
         *)
@@ -907,7 +907,7 @@ readDownloadPipe() {
     # reads from a previously created named pipe
     # output from curl with --progress-bar. % downloaded is read in and then sent to the specified log file
     local pipe=$1
-    local log=$2
+    local log=${2:-$DIALOG_CMD_FILE}
     # set up read from pipe
     while IFS= read -k 1 -u 0 char; do
         [[ $char =~ [0-9] ]] && keep=1 ;
@@ -936,20 +936,20 @@ killProcess() {
 
 updateDialogProgress() {
     local progress=$1
-    local log=$2
+    local log=${2:-$DIALOG_CMD_FILE}
     echo "progress: $progress" >> $log
 }
 
 updateDialogProgressText() {
     local message=$1
-    local log=$2
+    local log=${2:-$DIALOG_CMD_FILE}
     echo "progresstext: $message" >> $log
 }
 
 launchDialog() {
     # launches a dialog window to display download and/or install progress.
     local name=$1
-    local log=$2
+    local log=${2:-$DIALOG_CMD_FILE}
     if [[ -z "$log" ]]; then
         log="/var/tmp/dialog.log"
     fi
@@ -979,12 +979,12 @@ launchDialog() {
 
 quitDialog() {
     # sends the quit command to dialog
-    local log=$1
+    local log=${1:-$DIALOG_CMD_FILE}
     echo "quit:" >> "$log"
 }
 
 enableDialogButtonAndSetToDone() {
-    local log=$1
+    local log=${1:-$DIALOG_CMD_FILE}
     echo "button1text: Done" >> $log
     echo "button1: enable" >> $log
 }

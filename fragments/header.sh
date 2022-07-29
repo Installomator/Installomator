@@ -7,7 +7,7 @@ label="" # if no label is sent to the script, this will be used
 # 2020-2021 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
-# 
+#
 # Contributers:
 #    Armin Briegel - @scriptingosx
 #    Isaac Ordonez - @issacatmann
@@ -23,7 +23,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-# debug mode 1 will download to the directory the script is run in, but will not check the version 
+# debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
 DEBUG=1
 
@@ -33,13 +33,6 @@ NOTIFY=success
 #   - success      notify the user on success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
-
-# show swiftDialog window with download and install progress
-SHOWPROGRESS="no"
-# options:
-#   - no           do not show download or install progress
-#   - yes          show download or install progress
-DIALOGCMDFILE="/var/tmp/dialog.log"
 
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user
@@ -144,6 +137,14 @@ IGNORE_DND_APPS=""
 # example that will ignore browsers when evaluating DND:
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
+# show swiftDialog window with download and install progress
+DIALOG_PROGRESS="no"
+# options:
+#   - no           do not show download or install progress (default)
+#   - yes          show download or install progress
+DIALOG_CMD_FILE="/var/tmp/dialog.log"
+
+
 
 # NOTE: How labels work
 
@@ -190,7 +191,7 @@ IGNORE_DND_APPS=""
 #   How we get version number from app. Possible values:
 #     - CFBundleShortVersionString
 #     - CFBundleVersion
-#   Not all software titles uses fields the same. 
+#   Not all software titles uses fields the same.
 #   See Opera label.
 #
 # - appCustomVersion(){}: (optional function)

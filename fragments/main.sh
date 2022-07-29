@@ -195,21 +195,23 @@ else
         fi
     fi
 
-    if [[ $SHOWPROGRESS == "yes" ]]; then
+    if [[ $DIALOG_PROGRESS == "yes" ]]; then
         # pipe
         pipe="/tmp/dlpipe"
         # initialise named pipe for curl output
         initNamedPipe create $pipe
-        
+
         # run the pipe read in the background
-        readDownloadPipe $pipe "$DIALOGCMDFILE" &
-        downloadPipePID=$!
+        readDownloadPipe $pipe "$DIALOGCMDFILE" & downloadPipePID=$!
+
+        # TODO: this should _not_ be part of Installomator.
+        # Also there should be a check if DIALOG_PROGRESS is set but dialog is not installed
 
         # launch dialog
         launchDialog "$name" "$DIALOGCMDFILE" &
 
         # curl (extract - line in "# MARK: download the archive" of Installomator.sh)
-        curlDownload=$(curl -fL -# --show-error "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+        curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
         # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
         curlDownloadStatus=$(echo $pipestatus[1])
         killProcess $downloadPipePID
@@ -220,7 +222,7 @@ else
         curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
         curlDownloadStatus=$(echo $?)
     fi
-    
+
     deduplicatelogs "$curlDownload"
     if [[ $curlDownloadStatus -ne 0 ]]; then
     #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
