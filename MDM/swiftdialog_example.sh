@@ -24,7 +24,7 @@ fakeInstallDelay=5
 items=(
     "firefoxpkg|Firefox"
     "googlechromepkg|Google Chrome"
-    "microsoftoffice365|Microsoft Office 365"
+    "microsoftedge|Microsoft Edge"
  )
 
 # MARK: Constants
@@ -97,7 +97,7 @@ installomator() {
     startItem $description
 
     $installomator $label \
-                   DIALOG_PROGRESS=main \
+                   DIALOG_PROGRESS="list" \
                    DIALOG_CMD_FILE=$dialog_command_file \
                    DEBUG=$DEBUG
 
@@ -186,7 +186,7 @@ checkInstallomator() {
         fi
     else
         # update installomator
-        installomator installomator
+        # installomator installomator
     fi
 }
 

@@ -916,8 +916,12 @@ readDownloadPipe() {
         fi
 
         if [[ $char == % ]]; then
-            updateDialogProgressText "Downloading $name - $progress%"
-            updateDialogProgress "$progress"
+            if [[ $DIALOG_PROGRESS == "main" ]]; then
+                updateDialogProgressText "Downloading $name - $progress%"
+                updateDialogProgress "$progress"
+            elif [[ $DIALOG_PROGRESS == "list" ]]; then
+                echo "listitem: title: $name, statustext: Downloading... $progress%, progress: $progress" >> $log
+            fi
             progress=""
             keep=0
         fi
