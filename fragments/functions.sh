@@ -648,8 +648,32 @@ installFromPKG() {
 
     # install pkg
     printlog "Installing $archiveName to $targetDir"
-    pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
-    pkgInstallStatus=$(echo $?)
+
+    if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
+        # pipe
+        pipe="$tmpDir/installpipe"
+        # initialise named pipe for installer output
+        initNamedPipe create $pipe
+
+        # run the pipe read in the background
+        readPKGInstallPipe $pipe "$DIALOG_CMD_FILE" & installPipePID=$!
+        printlog "listening to output of installer with pipe $pipe and command file $DIALOG_CMD_FILE on PID $installPipePID" DEBUG
+
+        # curl (extract - line in "# MARK: download the archive" of Installomator.sh)
+        pkgInstall=$(installer -verboseR -pkg "$archiveName" -tgt "$targetDir" 2>&1 | tee $pipe)
+        pkgInstallStatus=$pipestatus[1]
+            # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+        killProcess $installPipePID
+
+        #enableDialogButtonAndSetToDone "$DIALOGCMDFILE"
+        #quitDialog $DIALOGCMDFILE
+    else
+        pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+        pkgInstallStatus=$(echo $?)
+    fi
+
+
+
     sleep 1
     pkgEndTime=$(date "+$LogDateFormat")
     pkgInstall+=$(echo "\nOutput of /var/log/install.log below this line.\n")
@@ -920,7 +944,7 @@ readDownloadPipe() {
                 updateDialogProgressText "Downloading $name - $progress%"
                 updateDialogProgress "$progress"
             elif [[ $DIALOG_PROGRESS == "list" ]]; then
-                echo "listitem: title: $name, statustext: Downloading... $progress%, progress: $progress" >> $log
+                updateDialogListItem $progress $name "Downloading..." $log
             fi
             progress=""
             keep=0
@@ -936,12 +960,26 @@ readPKGInstallPipe() {
     # reads from a previously created named pipe
     # output from installer with -verboseR. % install status is read in and then sent to the specified log file
     local pipe=$1
-    local log=$2
-    local appname=$3
+    local log=${2:-$DIALOG_CMD_FILE}
+    local appname=${3:-$name}
+
     while read -k 1 -u 0 char; do
-        [[ $char == % ]] && keep=1 ;
-        [[ $char =~ [0-9] ]] && [[ $keep == 1 ]] && progress="$progress$char" ;
-        [[ $char == . ]] && [[ $keep == 1 ]] && updateDialogProgressText "Installing $appname $progress%" $log && updateDialogProgress "$progress" $log && progress="" && keep=0 ;
+        if [[ $char == % ]]; then
+            keep=1
+        fi
+        if [[ $char =~ [0-9] && $keep == 1 ]]; then
+            progress="$progress$char"
+        fi
+        if [[ $char == . && $keep == 1 ]]; then
+            if [[ $DIALOG_PROGRESS == "main" ]]; then
+                updateDialogProgressText "Installing $appname $progress%" $log
+                updateDialogProgress "$progress" $log
+            elif [[ $DIALOG_PROGRESS == "list" ]]; then
+                updateDialogListItem $progress $name "Installing..." $log
+            fi
+            progress=""
+            keep=0
+        fi
     done < $pipe
 }
 
@@ -962,45 +1000,10 @@ updateDialogProgressText() {
     echo "progresstext: $message" >> $log
 }
 
-launchDialog() {
-    # launches a dialog window to display download and/or install progress.
-    local name=$1
-    local log=${2:-$DIALOG_CMD_FILE}
-    if [[ -z "$log" ]]; then
-        log="/private/var/tmp/dialog.log"
-    fi
-    # check for laptop or desktop
-    #if /usr/bin/pmset -g batt | grep -iq "battery"; then
-    #    icon="SF=laptopcomputer.and.arrow.down"
-    #else
-    #    icon="SF=desktopcomputer.and.arrow.down"
-    #fi
-    icon="SF=arrow.down.to.line,colour=green,bgcolour=white,weight=regular"
-
-    # launch dialog
-    /usr/local/bin/dialog -o \
-            --title "none" \
-            --message "## Installing $name\n\nPlease wait..." \
-            --progress 120 \
-            --alignment centre \
-            --icon "$LOGO" \
-            --overlayicon "$icon" \
-            --height 350 --width 550 \
-            --centreicon \
-            --position bottomright \
-            --button1disabled \
-            --button1text "Please Wait" \
-            --commandfile "$log"
-}
-
-quitDialog() {
-    # sends the quit command to dialog
-    local log=${1:-$DIALOG_CMD_FILE}
-    echo "quit:" >> "$log"
-}
-
-enableDialogButtonAndSetToDone() {
-    local log=${1:-$DIALOG_CMD_FILE}
-    echo "button1text: Done" >> $log
-    echo "button1: enable" >> $log
+updateDialogListItem() {
+    local progress=$1
+    local listitem=${2:-$name}
+    local action=${3:-"Processing..."}
+    local log=${4:-$DIALOG_CMD_FILE}
+    echo "listitem: title: $listitem, statustext: $action, progress: $progress" >> $log
 }

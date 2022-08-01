@@ -203,6 +203,7 @@ else
 
         # run the pipe read in the background
         readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
+        printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
 
         # curl (extract - line in "# MARK: download the archive" of Installomator.sh)
         curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
@@ -213,6 +214,7 @@ else
         #enableDialogButtonAndSetToDone "$DIALOGCMDFILE"
         #quitDialog $DIALOGCMDFILE
     else
+        printlog "No Dialog connection, just download" DEBUG
         curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
         curlDownloadStatus=$(echo $?)
     fi

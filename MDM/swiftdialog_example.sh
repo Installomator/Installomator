@@ -14,7 +14,11 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # set to 1 to not require root and not actually do any changes
 # set to 0 for production
-DEBUG=1
+if [[ $1 == "NODEBUG" ]]; then
+    DEBUG=0
+else
+    DEBUG=1
+fi
 
 # the delay to simulate an install in DEBUG mode
 fakeInstallDelay=5
@@ -24,7 +28,6 @@ fakeInstallDelay=5
 items=(
     "firefoxpkg|Firefox"
     "googlechromepkg|Google Chrome"
-    "microsoftedge|Microsoft Edge"
  )
 
 # MARK: Constants
@@ -32,11 +35,11 @@ items=(
 scriptDir=$(dirname ${0:A})
 repoDir=$(dirname $scriptDir)
 
-if [[ $DEBUG -eq 1 ]]; then
+# if [[ $DEBUG -eq 1 ]]; then
     installomator="$repoDir/utils/assemble.sh"
-else
-    installomator="/usr/local/Installomator/Installomator.sh"
-fi
+# else
+#     installomator="/usr/local/Installomator/Installomator.sh"
+# fi
 
 dialog="/usr/local/bin/dialog"
 
@@ -99,7 +102,8 @@ installomator() {
     $installomator $label \
                    DIALOG_PROGRESS="list" \
                    DIALOG_CMD_FILE=$dialog_command_file \
-                   DEBUG=$DEBUG
+                   DEBUG=$DEBUG \
+                   LOGGING=DEBUG
 
 #     if [[ $DEBUG -eq 0 ]]; then
 #         $installomator $label DIALOG_PROGRESS=yes DIALOG_CMD_FILE=$dialog_command_file
@@ -210,7 +214,6 @@ if [[ $DEBUG -eq 0 && $(id -u) -ne 0 ]]; then
     echo "This script should be run as root"
     exit 97
 fi
-
 
 # MARK: Setup
 
