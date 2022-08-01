@@ -127,6 +127,8 @@ if [[ $buildScript -eq 1 ]]; then
     echo "# copying script to $repo_dir/Installomator.sh"
     cp $destination_file $repo_dir/Installomator.sh
     chmod 755 $repo_dir/Installomator.sh
+    # also update Labels.txt
+    $repo_dir/Installomator.sh | tail -n +2 > $repo_dir/Labels.txt
 fi
 
 # build a pkg when flag is set

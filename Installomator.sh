@@ -81,6 +81,7 @@ LOGO=appstore
 #   - mosylem       Mosyle Manager (Education)
 #   - addigy        Addigy
 #   - microsoft     Microsoft Endpoint Manager (Intune)
+#   - ws1           Workspace ONE (AirWatch)
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
@@ -367,10 +368,13 @@ displaydialogContinue() { # $1: message $2: title
 displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
+    hubcli="/usr/local/bin/hubcli"
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
 
     if [[ -x "$manageaction" ]]; then
          "$manageaction" -message "$message" -title "$title"
+    elif [[ -x "$hubcli" ]]; then
+         "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
     else
         runAsUser osascript -e "display notification \"$message\" with title \"$title\""
     fi
@@ -5263,6 +5267,11 @@ case $LOGO in
         # Microsoft Endpoint Manager (Intune)
         LOGO="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="Management Profile"; fi
+        ;;
+    ws1)
+        # Workspace ONE
+        LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Device Manager"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
