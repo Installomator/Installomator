@@ -304,7 +304,5 @@ updateDialog "wait" "Finishing..."
 # MARK: Finishing — print installed application location and version
 finishing
 
-updateDialog "success" "$appversion"
-
 # all done!
 cleanupAndExit 0 "All done!" REQ

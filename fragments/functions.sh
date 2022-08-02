@@ -430,6 +430,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # verify with spctl
     printlog "Verifying: $appPath" INFO
+    updateDialog "wait" "Verifying..."
     printlog "App size: $(du -sh "$appPath")" DEBUG
     appVerify=$(spctl -a -vv "$appPath" 2>&1 )
     appVerifyStatus=$(echo $?)
@@ -575,6 +576,7 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
+    updateDialog "wait" "Verifying..."
     printlog "File list: $(ls -lh "$archiveName")" DEBUG
     printlog "File type: $(file "$archiveName")" DEBUG
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
@@ -954,7 +956,7 @@ readPKGInstallPipe() {
             progress="$progress$char"
         fi
         if [[ $char == . && $keep == 1 ]]; then
-            updateDialog $progress "Installing $appname"
+            updateDialog $progress "Installing..."
             progress=""
             keep=0
         fi

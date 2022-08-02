@@ -44,7 +44,6 @@ repoDir=$(dirname $scriptDir)
 
 dialog="/usr/local/bin/dialog"
 
-
 if [[ DEBUG -eq 0 ]]; then
     dialog_command_file="/var/tmp/dialog.log"
 else
@@ -82,14 +81,6 @@ startItem() {
     progressUpdate $description
 }
 
-completeItem() {
-    local description=$1
-    local itemStatus=$2
-
-    dialogUpdate "listitem: $description: $itemStatus"
-    echo "completed item $description: $itemStatus"
-}
-
 installomator() {
     # $1: label
     # $2: description
@@ -110,80 +101,12 @@ cleanupAndExit() {
         kill $caffeinatePID
     fi
 
-    # kill dialog process
-#     if [[ -n $dialogPID ]]; then
-#         dialogUpdate "quit:"
-#         kill $dialogPID
-#     fi
-
     # clean up tmp dir
     if [[ -n $tmpDir && -d $tmpDir ]]; then
         echo "removing tmpDir $tmpDir"
         rm -rf $tmpDir
     fi
-
-#     # remove dialog command file
-#     if [[ -e $dialog_command_file ]]; then
-#         rm $dialog_command_file
-#     fi
 }
-
-checkInstallomator() {
-    if [[ ! -e $installomator ]]; then
-        echo "Installomator not found at path $installomator. Installing"
-
-        installomatorPkg="$tmpDir/Installomator.pkg"
-
-        # download Installomator pkg
-        if ! downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/Installomator/Installomator/releases/latest" \
-        | awk -F '"' "/browser_download_url/ && /pkg\"/ { print \$4; exit }"); then
-            echo "could not get Installomator download url"
-            exit 96
-        fi
-
-        echo "downloading Installomator from $downloadURL"
-        if ! curl --fail --silent -L --show-error "$downloadURL" -o $installomatorPkg; then
-            echo "could not download Installomator"
-            exit 95
-        fi
-
-        echo "verifying Installomator"
-        # verify pkg
-        if ! spctlout=$(spctl -a -vv -t install "$installomatorPkg" 2>&1 ); then
-            echo "Error verifying $installomatorPkg"
-            exit 94
-        fi
-        teamID=$(echo $spctlout | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
-        if [ "JME5BW3F3R" != "$teamID" ]; then
-            echo "Team IDs do not match!"
-            exit 93
-        fi
-        # Install pkg
-
-        echo "Installing Installomator"
-        if [[ DEBUG -eq 0 ]]; then
-            installer -pkg $installomatorPkg -tgt / -verbose
-
-            # check if Installomator is correctly installed
-            if [[ ! -x $installomator ]]; then
-                echo "failed to install Installomator"
-                exit 92
-            fi
-        else
-            echo "DEBUG enabled, skipping Installomator install"
-        fi
-    else
-        # update installomator
-        # installomator installomator
-    fi
-}
-
-checkSwiftDialog() {
-    if [[ ! -x $dialog ]]; then
-        installomator swiftdialog "Swift Dialog"
-    fi
-}
-
 
 # MARK: sanity checks
 
@@ -199,6 +122,19 @@ if [[ $DEBUG -eq 0 && $(id -u) -ne 0 ]]; then
     exit 97
 fi
 
+# check for installomator
+if [[ ! -x $installomator ]]; then
+    echo "Cannot find Installomator at $installomator"
+    exit 96
+fi
+
+# check for Swift Dialog
+if [[ ! -x $dialog ]]; then
+    echo "Cannot find dialog at $dialog"
+    exit 95
+fi
+
+
 # MARK: Setup
 
 # No sleeping
@@ -207,27 +143,16 @@ caffeinate -dimsu & caffeinatePID=$!
 # trap exit for cleanup
 trap cleanupAndExit EXIT
 
-# get a temp
-tmpDir=$(mktemp -d)
-
 # setup first list
-itemCount=$((${#items} + 2))
+itemCount=$((${#items} + 1))
 
-listitems=( "--listitem" "Configure Tools" )
+listitems=( )
 
 for item in $items; do
     label=$(cut -d '|' -f 1 <<< $item)
     description=$(cut -d '|' -f 2 <<< $item)
     listitems+=( "--listitem" ${description} )
 done
-
-# download and install Installomator
-startItem "Configure Tools"
-checkInstallomator
-
-# download and install Swift Dialog
-echo "installing Swift Dialog"
-checkSwiftDialog
 
 # display first screen
 $dialog --title "More Software" \
@@ -244,9 +169,6 @@ $dialog --title "More Software" \
 sleep 0.1
 
 itemCounter=0
-progressUpdate "ConfigureTools"
-
-completeItem "Configure Tools" "success"
 
 for item in $items; do
     label=$(cut -d '|' -f 1 <<< $item)
