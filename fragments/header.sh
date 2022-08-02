@@ -137,14 +137,24 @@ IGNORE_DND_APPS=""
 # example that will ignore browsers when evaluating DND:
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
-# show swiftDialog window with download and install progress
-DIALOG_PROGRESS="no"
-# options:
-#   - no           do not show download or install progress (default)
-#   - main         show download or install progress in the main progress bar
-#   - list         show download or install progress with each list item
-#                  the `-list` option requires the DIALOG_LIST_INDEX to be set
-DIALOG_CMD_FILE="/private/var/tmp/dialog.log"
+
+# Swift Dialog integration
+
+# These variables will allow Installomator to communicate progress with Swift Dialog
+# https://github.com/bartreardon/swiftDialog
+
+# This requires Swift Dialog 2.11.2 or higher.
+
+DIALOG_CMD_FILE=""
+# When this variable is set, Installomator will write Swift Dialog commands to this path.
+# Installomator will not launch Swift Dialog. The process calling Installomator will have
+# launch and configure Swift Dialog to listen to this file.
+# See `MDM/swiftdialog_example.sh` for an example.
+
+DIALOG_LIST_ITEM_NAME=""
+# When this variable is set, progress for downloads and installs will be sent to this
+# listitem.
+# When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
 
 
 

@@ -117,12 +117,8 @@ printlog(){
         while IFS= read -r logmessage; do
             if [[ "$(whoami)" == "root" ]]; then
                 echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}" | tee -a $log_location
-                updateDialogProgressText "${logmessage}"
-#                 updateDialogProgress "increment"
             else
                 echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}"
-                updateDialogProgressText "${logmessage}"
-#                 updateDialogProgress "increment"
             fi
         done <<< "$log_message"
     fi
@@ -649,7 +645,7 @@ installFromPKG() {
     # install pkg
     printlog "Installing $archiveName to $targetDir"
 
-    if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
+    if [[ $DIALOG_CMD_FILE != "" ]]; then
         # pipe
         pipe="$tmpDir/installpipe"
         # initialise named pipe for installer output
@@ -659,14 +655,11 @@ installFromPKG() {
         readPKGInstallPipe $pipe "$DIALOG_CMD_FILE" & installPipePID=$!
         printlog "listening to output of installer with pipe $pipe and command file $DIALOG_CMD_FILE on PID $installPipePID" DEBUG
 
-        # curl (extract - line in "# MARK: download the archive" of Installomator.sh)
         pkgInstall=$(installer -verboseR -pkg "$archiveName" -tgt "$targetDir" 2>&1 | tee $pipe)
         pkgInstallStatus=$pipestatus[1]
             # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
         killProcess $installPipePID
 
-        #enableDialogButtonAndSetToDone "$DIALOGCMDFILE"
-        #quitDialog $DIALOGCMDFILE
     else
         pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
         pkgInstallStatus=$(echo $?)
@@ -853,11 +846,9 @@ runUpdateTool() {
 
 finishing() {
     printlog "Finishing..."
-    if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
-        updateDialogProgress "complete"
-    fi
+    updateDialog "wait" "Finishing..."
 
-    sleep 5 # wait a moment to let spotlight catch up
+    sleep 3 # wait a moment to let spotlight catch up
     getAppVersion
 
     if [[ -z $appversion ]]; then
@@ -940,12 +931,7 @@ readDownloadPipe() {
         fi
 
         if [[ $char == % ]]; then
-            if [[ $DIALOG_PROGRESS == "main" ]]; then
-                updateDialogProgressText "Downloading $name - $progress%"
-                updateDialogProgress "$progress"
-            elif [[ $DIALOG_PROGRESS == "list" ]]; then
-                updateDialogListItem $progress $name "Downloading..." $log
-            fi
+            updateDialog $progress "Downloading $name - $progress%"
             progress=""
             keep=0
         fi
@@ -971,12 +957,7 @@ readPKGInstallPipe() {
             progress="$progress$char"
         fi
         if [[ $char == . && $keep == 1 ]]; then
-            if [[ $DIALOG_PROGRESS == "main" ]]; then
-                updateDialogProgressText "Installing $appname $progress%" $log
-                updateDialogProgress "$progress" $log
-            elif [[ $DIALOG_PROGRESS == "list" ]]; then
-                updateDialogListItem $progress $name "Installing..." $log
-            fi
+            updateDialog $progress "Installing $appname"
             progress=""
             keep=0
         fi
@@ -988,22 +969,40 @@ killProcess() {
     builtin kill $1 2>/dev/null
 }
 
-updateDialogProgress() {
-    local progress=$1
-    local log=${2:-$DIALOG_CMD_FILE}
-    echo "progress: $progress" >> $log
-}
+updateDialog() {
+    local state=$1
+    local message=$2
+    local listitem=${3:-$DIALOG_LIST_ITEM_NAME}
+    local cmd_file=${4:-$DIALOG_CMD_FILE}
+    local progress=""
 
-updateDialogProgressText() {
-    local message=$1
-    local log=${2:-$DIALOG_CMD_FILE}
-    echo "progresstext: $message" >> $log
-}
+    if [[ state =~ [0-9]* \
+       || state == "reset" \
+       || state == "increment" \
+       || state == "complete" \
+       || state == "indeterminate" ]]; then
+        progress=$state
+    fi
 
-updateDialogListItem() {
-    local progress=$1
-    local listitem=${2:-$name}
-    local action=${3:-"Processing..."}
-    local log=${4:-$DIALOG_CMD_FILE}
-    echo "listitem: title: $listitem, statustext: $action, progress: $progress" >> $log
+    # when to cmdfile is set, do nothing
+    if [[ $$cmd_file == "" ]]; then
+        return
+    fi
+
+    if [[ $listitem == "" ]]; then
+        # no listitem set, update main progress bar and progress text
+        if [[ $progress != "" ]]; then
+            echo "progress: $progress" >> $cmd_file
+        fi
+        if [[ $message != "" ]]; then
+            echo "progresstext: $message" >> $cmd_file
+        fi
+    else
+        # list item has a value, so we update the progress and text in the list
+        if [[ $progress != "" ]]; then
+            echo "listitem: title: $listitem, statustext: $message, progress: $progress" >> $cmd_file
+        else
+            echo "listitem: title: $listitem, statustext: $message, status: $state" >> $cmd_file
+        fi
+    fi
 }

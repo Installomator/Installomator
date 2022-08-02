@@ -195,7 +195,7 @@ else
         fi
     fi
 
-    if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
+    if [[ $DIALOG_CMD_FILE != "" ]]; then
         # pipe
         pipe="$tmpDir/downloadpipe"
         # initialise named pipe for curl output
@@ -205,14 +205,11 @@ else
         readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
         printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
 
-        # curl (extract - line in "# MARK: download the archive" of Installomator.sh)
         curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
         # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
         curlDownloadStatus=$(echo $pipestatus[1])
         killProcess $downloadPipePID
 
-        #enableDialogButtonAndSetToDone "$DIALOGCMDFILE"
-        #quitDialog $DIALOGCMDFILE
     else
         printlog "No Dialog connection, just download" DEBUG
         curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)

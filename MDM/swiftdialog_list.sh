@@ -100,8 +100,8 @@ installomator() {
     startItem $description
 
     $installomator $label \
-                   DIALOG_PROGRESS="list" \
-                   DIALOG_CMD_FILE=$dialog_command_file \
+                   DIALOG_CMD_FILE=${(q)dialog_command_file} \
+                   DIALOG_LIST_ITEM_NAME=${(q)description} \
                    DEBUG=$DEBUG \
                    LOGGING=DEBUG
 
