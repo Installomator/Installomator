@@ -27,6 +27,7 @@ fakeInstallDelay=5
 
 items=(
     "firefoxpkg|Firefox"
+    "error|Expected Error"
     "googlechromepkg|Google Chrome"
  )
 
@@ -63,13 +64,11 @@ dialogUpdate() {
     fi
 }
 
-dialogActivate() {
-    osascript -e 'tell app "Dialog" to activate'
-}
-
 progressUpdate() {
     # $1: progress text (optional)
     local text=$1
+    itemCounter=$((itemCounter + 1))
+    dialogUpdate "progress: $itemCounter"
     if [[ -n $text ]]; then
         dialogUpdate "progresstext: $text"
     fi
@@ -97,26 +96,11 @@ installomator() {
     local label=$1
     local description=$2
 
-    startItem $description
-
     $installomator $label \
                    DIALOG_CMD_FILE=${(q)dialog_command_file} \
                    DIALOG_LIST_ITEM_NAME=${(q)description} \
                    DEBUG=$DEBUG \
                    LOGGING=DEBUG
-
-#     if [[ $DEBUG -eq 0 ]]; then
-#         $installomator $label DIALOG_PROGRESS=yes DIALOG_CMD_FILE=$dialog_command_file
-#     else
-#         echo "DEBUG enabled, this would be 'Installomator $label'"
-#         for ((c=0; c<$fakeInstallDelay; c++ )); do
-#             p=$((c * 100 / fakeInstallDelay))
-#             dialogUpdate "progress: $p"
-#             sleep 1
-#         done
-#     fi
-
-    completeItem $description "success"
 }
 
 cleanupAndExit() {
@@ -227,7 +211,7 @@ trap cleanupAndExit EXIT
 tmpDir=$(mktemp -d)
 
 # setup first list
-itemCount=${#items}
+itemCount=$((${#items} + 2))
 
 listitems=( "--listitem" "Configure Tools" )
 
@@ -246,10 +230,10 @@ echo "installing Swift Dialog"
 checkSwiftDialog
 
 # display first screen
-$dialog --title "Configuring your Mac" \
+$dialog --title "More Software" \
         --icon "SF=gear" \
-        --message "Setting up some more things..." \
-        --progress 100 \
+        --message "We are downloading and installing some extra Apps. Hold on for minute..." \
+        --progress $itemCount \
         "${listitems[@]}" \
         --button1disabled \
         --big \
@@ -258,14 +242,25 @@ $dialog --title "Configuring your Mac" \
         --messagefont size=16 \
         --commandfile $dialog_command_file & dialogPID=$!
 sleep 0.1
-dialogActivate
+
+itemCounter=0
+progressUpdate "ConfigureTools"
 
 completeItem "Configure Tools" "success"
 
 for item in $items; do
     label=$(cut -d '|' -f 1 <<< $item)
     description=$(cut -d '|' -f 2 <<< $item)
+
+    startItem $description
     installomator $label $description
 done
 
-dialogUpdate "quit:"
+# clean up UI
+
+dialogUpdate "progress: complete"
+dialogUpdate "progresstext: Finished"
+
+dialogUpdate "button1: enable"
+dialogUpdate "button1text: Done"
+

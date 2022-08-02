@@ -14,17 +14,15 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
-#     # If displaying progres, quit dialog
-#     if [[ $DIALOG_PROGRESS == "main" || $DIALOG_PROGRESS == "list" ]]; then
-#         quitDialog "$DIALOGCMDFILE"
-#     fi
 
     # If we closed any processes, reopen the app again
     reopenClosedProcess
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2" $3
+        updateDialog "fail" "Error ($1; $2)"
     else
         printlog "$2" $3
+        updateDialog "success" ""
     fi
     printlog "################## End Installomator, exit code $1 \n" REQ
 
@@ -846,7 +844,6 @@ runUpdateTool() {
 
 finishing() {
     printlog "Finishing..."
-    updateDialog "wait" "Finishing..."
 
     sleep 3 # wait a moment to let spotlight catch up
     getAppVersion
@@ -931,7 +928,7 @@ readDownloadPipe() {
         fi
 
         if [[ $char == % ]]; then
-            updateDialog $progress "Downloading $name - $progress%"
+            updateDialog $progress "Downloading..."
             progress=""
             keep=0
         fi
@@ -976,11 +973,11 @@ updateDialog() {
     local cmd_file=${4:-$DIALOG_CMD_FILE}
     local progress=""
 
-    if [[ state =~ [0-9]* \
-       || state == "reset" \
-       || state == "increment" \
-       || state == "complete" \
-       || state == "indeterminate" ]]; then
+    if [[ $state =~ '^[0-9]' \
+       || $state == "reset" \
+       || $state == "increment" \
+       || $state == "complete" \
+       || $state == "indeterminate" ]]; then
         progress=$state
     fi
 
@@ -995,7 +992,7 @@ updateDialog() {
             echo "progress: $progress" >> $cmd_file
         fi
         if [[ $message != "" ]]; then
-            echo "progresstext: $message" >> $cmd_file
+            echo "progresstext: $name - $message" >> $cmd_file
         fi
     else
         # list item has a value, so we update the progress and text in the list

@@ -168,6 +168,8 @@ fi
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "appversion & updateTool"
+    updateDialog "wait" "Updating..."
+
     if [[ $DEBUG -ne 1 ]]; then
         if runUpdateTool; then
             finishing
@@ -257,8 +259,10 @@ if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
     if [[ $updateDetected == "YES" ]]; then
         displaynotification "Updating $name" "Installation in progress …"
+        updateDialog "wait" "Updating..."
     else
         displaynotification "Installing $name" "Installation in progress …"
+        updateDialog "wait" "Installing..."
     fi
 fi
 
@@ -295,8 +299,12 @@ case $type in
         ;;
 esac
 
+updateDialog "wait" "Finishing..."
+
 # MARK: Finishing — print installed application location and version
 finishing
+
+updateDialog "success" "$appversion"
 
 # all done!
 cleanupAndExit 0 "All done!" REQ
