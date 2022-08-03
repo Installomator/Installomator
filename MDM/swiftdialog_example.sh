@@ -20,13 +20,9 @@ else
     DEBUG=1
 fi
 
-# list of Installomator labels
+# the label to install:
+label="googlechromepkg"
 
-items=(
-    "firefoxpkg|Firefox"
-    "error|Expected Error"
-    "googlechromepkg|Google Chrome"
- )
 
 # MARK: Constants
 
@@ -78,19 +74,6 @@ startItem() {
     progressUpdate $description
 }
 
-installomator() {
-    # $1: label
-    # $2: description
-    local label=$1
-    local description=$2
-
-    $installomator $label \
-                   DIALOG_CMD_FILE=${(q)dialog_command_file} \
-                   DIALOG_LIST_ITEM_NAME=${(q)description} \
-                   DEBUG=$DEBUG \
-                   LOGGING=DEBUG
-}
-
 cleanupAndExit() {
     # kill caffeinate process
     if [[ -n $caffeinatePID ]]; then
@@ -140,46 +123,31 @@ caffeinate -dimsu & caffeinatePID=$!
 # trap exit for cleanup
 trap cleanupAndExit EXIT
 
-# setup first list
-itemCount=$((${#items} + 1))
-
-listitems=( )
-
-for item in $items; do
-    label=$(cut -d '|' -f 1 <<< $item)
-    description=$(cut -d '|' -f 2 <<< $item)
-    listitems+=( "--listitem" ${description} )
-done
-
 # display first screen
-$dialog --title "More Software" \
-        --icon "SF=gear" \
-        --message "We are downloading and installing some extra Apps..." \
-        --progress $itemCount \
-        "${listitems[@]}" \
+$dialog --title none \
+        --message "" \
+        --hideicon \
+        --progress 100 \
         --button1disabled \
-        --big \
+        --height 40 \
+        --width 500 \
+        --position bottomright \
         --ontop \
-        --liststyle compact \
-        --width 700 \
+        --movable \
         --commandfile $dialog_command_file & dialogPID=$!
+
 sleep 0.1
 
-itemCounter=0
-
-for item in $items; do
-    label=$(cut -d '|' -f 1 <<< $item)
-    description=$(cut -d '|' -f 2 <<< $item)
-
-    startItem $description
-    installomator $label $description
-done
+$installomator $label \
+               DIALOG_CMD_FILE="$dialog_command_file" \
+               DEBUG=$DEBUG
 
 # clean up UI
 
 dialogUpdate "progress: complete"
-dialogUpdate "progresstext: Finished"
+dialogUpdate "progresstext: Done"
 
-dialogUpdate "button1: enable"
-dialogUpdate "button1text: Done"
+sleep 0.5
+
+dialogUpdate "quit:"
 
