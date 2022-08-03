@@ -15,7 +15,9 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     fi
 
     # If we closed any processes, reopen the app again
-    reopenClosedProcess
+    if [[ $1 -ne 10 ]]; then
+        reopenClosedProcess
+    fi
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2" $3
     else
@@ -867,4 +869,3 @@ hasDisplaySleepAssertion() {
     # No relevant display sleep assertion detected
     return 1
 }
-
