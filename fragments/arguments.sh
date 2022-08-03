@@ -7,19 +7,6 @@ if ! is-at-least 10.14 $installedOSversion; then
     exit 98
 fi
 
-# check Swift Dialog presence and version
-DIALOG_CMD="/usr/local/bin/dialog"
-
-if [[ -x $DIALOG_CMD ]]; then
-    # Swift Dialog is not installed, clear cmd file variable to ignore
-    DIALOG_CMD_FILE=""
-fi
-
-if ! is-at-least 1.11.2 "$(/usr/local/bindialog --version)"; then
-    # list item progress is only available with SD 1.11.2 and higher
-    DIALOG_LIST_ITEM_NAME=""
-fi
-
 
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
@@ -111,6 +98,15 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR
+fi
+
+
+# check Swift Dialog presence and version
+DIALOG_CMD="/usr/local/bin/dialog"
+
+if [[ -x $DIALOG_CMD ]]; then
+    # Swift Dialog is not installed, clear cmd file variable to ignore
+    DIALOG_CMD_FILE=""
 fi
 
 # MARK: labels in case statement
