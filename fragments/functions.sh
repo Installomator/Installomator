@@ -325,6 +325,7 @@ checkRunningProcesses() {
                     prompt_user|prompt_user_then_kill)
                       button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
+                        appClosed=0
                         cleanupAndExit 10 "user aborted update" ERROR
                       else
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
@@ -867,4 +868,3 @@ hasDisplaySleepAssertion() {
     # No relevant display sleep assertion detected
     return 1
 }
-
