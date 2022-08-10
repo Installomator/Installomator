@@ -124,13 +124,11 @@ caffeinate -dimsu & caffeinatePID=$!
 trap cleanupAndExit EXIT
 
 # display first screen
-$dialog --title none \
+$dialog --title "Installing $label" \
         --message "" \
         --hideicon \
+        --mini \
         --progress 100 \
-        --button1disabled \
-        --height 40 \
-        --width 500 \
         --position bottomright \
         --ontop \
         --movable \

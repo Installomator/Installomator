@@ -25,7 +25,7 @@ fi
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" WARN
+        printlog "setting variable from argument $1" INFO
         eval $1
     else
         # assume it's a label
@@ -104,8 +104,9 @@ fi
 # check Swift Dialog presence and version
 DIALOG_CMD="/usr/local/bin/dialog"
 
-if [[ -x $DIALOG_CMD ]]; then
+if [[ ! -x $DIALOG_CMD ]]; then
     # Swift Dialog is not installed, clear cmd file variable to ignore
+    printlog "SwiftDialog is not installed, clear cmd file var"
     DIALOG_CMD_FILE=""
 fi
 
