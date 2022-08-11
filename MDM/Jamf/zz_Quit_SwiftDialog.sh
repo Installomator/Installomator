@@ -5,16 +5,16 @@ dialog_command_file=${4:-"/var/tmp/dialog.log"}
 
 dialogUpdate() {
     # $1: dialog command
-    local dcommand=$1
+    local dcommand="$1"
 
     if [[ -n $dialog_command_file ]]; then
-        echo "$dcommand" >> $dialog_command_file
+        echo "$dcommand" >> "$dialog_command_file"
         echo "Dialog: $dcommand"
     fi
 }
 
 # check minimal macOS requirement
-if [[ $(sw_vers -buildVersion ) < "20" ]]; then
+if [[ $(sw_vers -buildVersion ) < "20A" ]]; then
     echo "This script requires at least macOS 11 Big Sur."
     exit 98
 fi

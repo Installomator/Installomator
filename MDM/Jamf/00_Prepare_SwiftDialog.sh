@@ -14,10 +14,10 @@ icon=${6:-"/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"}
 
 dialogUpdate() {
     # $1: dialog command
-    local dcommand=$1
+    local dcommand="$1"
 
     if [[ -n $dialog_command_file ]]; then
-        echo "$dcommand" >> $dialog_command_file
+        echo "$dcommand" >> "$dialog_command_file"
         echo "Dialog: $dcommand"
     fi
 }
@@ -25,7 +25,7 @@ dialogUpdate() {
 # MARK: sanity checks
 
 # check minimal macOS requirement
-if [[ $(sw_vers -buildVersion ) < "20" ]]; then
+if [[ $(sw_vers -buildVersion ) < "20A" ]]; then
     echo "This script requires at least macOS 11 Big Sur."
     exit 98
 fi
@@ -55,6 +55,6 @@ open -a /Library/Application\ Support/Dialog/Dialog.app --args \
         --position bottomright \
         --ontop \
         --movable \
-        --commandfile $dialog_command_file
+        --commandfile "$dialog_command_file"
 
 sleep 0.1
