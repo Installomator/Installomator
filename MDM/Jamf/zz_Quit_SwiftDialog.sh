@@ -46,6 +46,9 @@ sleep 0.5
 
 dialogUpdate "quit:"
 
+# let everything catch up
+sleep 0.5
+
 # just to be safe
 killall "Dialog"
 
