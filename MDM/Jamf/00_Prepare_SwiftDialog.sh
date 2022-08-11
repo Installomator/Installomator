@@ -62,7 +62,6 @@ open -a "$dialogApp" --args \
         --mini \
         --progress 100 \
         --position bottomright \
-        --ontop \
         --movable \
         --commandfile "$dialog_command_file"
 
