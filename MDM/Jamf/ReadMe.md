@@ -38,7 +38,7 @@ You can add more configurations to the Installomator script when needed.
 
 `zz_Quit_SwiftDialog`
 
-Parameter 4: `\var\log\dialog.log` (the swiftDialog command file, this has to be the same value as parameter 4 in the first script)
+Parameter 4: `/var/log/dialog.log` (the swiftDialog command file, this has to be the same value as parameter 4 in the first script)
 
 Then setup the remainder of the Jamf Policy to your needs. This works best with Self Service policies.
 
