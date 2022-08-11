@@ -1,7 +1,12 @@
 #!/bin/zsh
 
-dialog="/usr/local/bin/dialog"
+# MARK: Arguments/Parameters
+
+# Parameter 4: path to the swiftDialog command file
 dialog_command_file=${4:-"/var/tmp/dialog.log"}
+
+# MARK: Constants
+dialogApp="/Library/Application Support/Dialog/Dialog.app"
 
 dialogUpdate() {
     # $1: dialog command
@@ -26,8 +31,8 @@ if [[ $DEBUG -eq 0 && $(id -u) -ne 0 ]]; then
 fi
 
 # check for Swift Dialog
-if [[ ! -x $dialog ]]; then
-    echo "Cannot find dialog at $dialog"
+if [[ ! -d $dialogApp ]]; then
+    echo "Cannot find dialog at $dialogApp"
     exit 95
 fi
 
@@ -36,6 +41,7 @@ fi
 dialogUpdate "progress: complete"
 dialogUpdate "progresstext: Done"
 
+# pause a moment
 sleep 0.5
 
 dialogUpdate "quit:"
@@ -43,4 +49,6 @@ dialogUpdate "quit:"
 # just to be safe
 killall "Dialog"
 
+# the killall command above will return error when Dialog is already quit
+# but we don't want that to register as a failure in Jamf,  so always exit 0
 exit 0

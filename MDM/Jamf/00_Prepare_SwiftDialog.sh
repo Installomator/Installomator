@@ -2,13 +2,22 @@
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
+# MARK: Arguments/Parameters
+
+# Parameter 4: path to the swiftDialog command file
+dialog_command_file=${4:-"/var/tmp/dialog.log"}
+
+# Parameter 5: message displayed over the progress bar
+message=${5:-"Self Service Progress"}
+
+# Parameter 6: path or URL to an icon
+icon=${6:-"/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"}
+# see Dan Snelson's advice on how to get a URL to an icon in Self Service
+# https://rumble.com/v119x6y-harvesting-self-service-icons.html
+
 # MARK: Constants
 
-dialog="/usr/local/bin/dialog"
-
-dialog_command_file=${4:-"/var/tmp/dialog.log"}
-message=${5:-"Self Service Progress"}
-icon=${6:-"/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"}
+dialogApp="/Library/Application Support/Dialog/Dialog.app"
 
 # MARK: Functions
 
@@ -37,16 +46,16 @@ if [[ $DEBUG -eq 0 && $(id -u) -ne 0 ]]; then
 fi
 
 # check for Swift Dialog
-if [[ ! -x $dialog ]]; then
-    echo "Cannot find dialog at $dialog"
+if [[ ! -d $dialogApp ]]; then
+    echo "Cannot find dialog at $dialogApp"
     exit 95
 fi
 
 
-# MARK: Setup
+# MARK: Configure and display swiftDialog
 
 # display first screen
-open -a /Library/Application\ Support/Dialog/Dialog.app --args \
+open -a "$dialogApp" --args \
         --title none \
         --icon "$icon" \
         --message "$message" \
@@ -57,4 +66,5 @@ open -a /Library/Application\ Support/Dialog/Dialog.app --args \
         --movable \
         --commandfile "$dialog_command_file"
 
+# give everything a moment to catch up
 sleep 0.1
