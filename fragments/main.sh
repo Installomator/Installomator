@@ -18,7 +18,7 @@ fi
 if [[ ${INTERRUPT_DND} = "no" ]]; then
     # Check if a fullscreen app is active
     if hasDisplaySleepAssertion; then
-        cleanupAndExit 1 "active display sleep assertion detected, aborting" ERROR
+        cleanupAndExit 24 "active display sleep assertion detected, aborting" ERROR
     fi
 fi
 
@@ -132,7 +132,7 @@ fi
 # MARK: change directory to temporary working directory
 printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
-    cleanupAndExit 1 "error changing directory $tmpDir" ERROR
+    cleanupAndExit 13 "error changing directory $tmpDir" ERROR
 fi
 
 # MARK: get installed version

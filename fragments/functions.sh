@@ -163,7 +163,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
         downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*\.$filetype")
     fi
     if [ -z "$downloadURL" ]; then
-        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
+        cleanupAndExit 14 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
     else
         echo "$downloadURL"
         return 0
@@ -279,7 +279,7 @@ getAppVersion() {
                     printlog "Replacing App Store apps, no matter the version" WARN
                     appversion=0
                 else
-                    cleanupAndExit 1 "App previously installed from App Store, and we respect that" ERROR
+                    cleanupAndExit 23 "App previously installed from App Store, and we respect that" ERROR
                 fi
             fi
         else
@@ -476,7 +476,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "Error updating $name!"
             fi
-            cleanupAndExit 6 "Installed macOS is too old for this app." ERROR
+            cleanupAndExit 15 "Installed macOS is too old for this app." ERROR
         fi
     fi
 
@@ -535,7 +535,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         deduplicatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
-            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
+            cleanupAndExit 16 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
         else
             printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments" INFO
         fi
@@ -733,7 +733,7 @@ installPkgInZip() {
         printlog "Found pkg(s):\n$findfiles" DEBUG
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in zip $archiveName" ERROR
+            cleanupAndExit 21 "couldn't find pkg in zip $archiveName" ERROR
         fi
         # it is now safe to overwrite archiveName for installFromPKG
         archiveName="${filearray[1]}"
@@ -746,7 +746,7 @@ installPkgInZip() {
             findfiles=$(find "$tmpDir" -iname "$pkgName")
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
+                cleanupAndExit 21 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
@@ -769,7 +769,7 @@ installAppInDmgInZip() {
         findfiles=$(find "$tmpDir" -iname "*.dmg" -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find dmg in zip $archiveName" ERROR
+            cleanupAndExit 22 "couldn't find dmg in zip $archiveName" ERROR
         fi
         archiveName="$(basename ${filearray[1]})"
         # it is now safe to overwrite archiveName for installFromDMG
