@@ -22,7 +22,7 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "$2" $3
     fi
     printlog "################## End Installomator, exit code $1 \n" REQ
-    
+
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
         1=0 # If only label name should be returned we exit without any errors
@@ -156,11 +156,11 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 
     if [ -n "$archiveName" ]; then
-    downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+        #downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+        downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*$archiveName.*")
     else
-    downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        #downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*\.$filetype")
     fi
     if [ -z "$downloadURL" ]; then
         cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
@@ -176,7 +176,8 @@ versionFromGit() {
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
-    appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
+    #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
+    appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
         appNewVersion=""
@@ -199,6 +200,16 @@ xpath() {
 	fi
 }
 
+# from @Pico: https://macadmins.slack.com/archives/CGXNNJXJ9/p1652222365989229?thread_ts=1651786411.413349&cid=CGXNNJXJ9
+getJSONValue() {
+	# $1: JSON string OR file path to parse (tested to work with up to 1GB string and 2GB file).
+	# $2: JSON key path to look up (using dot or bracket notation).
+	printf '%s' "$1" | /usr/bin/osascript -l 'JavaScript' \
+		-e "let json = $.NSString.alloc.initWithDataEncoding($.NSFileHandle.fileHandleWithStandardInput.readDataToEndOfFile$(/usr/bin/uname -r | /usr/bin/awk -F '.' '($1 > 18) { print "AndReturnError(ObjC.wrap())" }'), $.NSUTF8StringEncoding)" \
+		-e 'if ($.NSFileManager.defaultManager.fileExistsAtPath(json)) json = $.NSString.stringWithContentsOfFileEncodingError(json, $.NSUTF8StringEncoding, ObjC.wrap())' \
+		-e "const value = JSON.parse(json.js)$([ -n "${2%%[.[]*}" ] && echo '.')$2" \
+		-e 'if (typeof value === "object") { JSON.stringify(value, null, 4) } else { value }'
+}
 
 getAppVersion() {
     # modified by: Søren Theilgaard (@theilgaard) and Isaac Ordonez

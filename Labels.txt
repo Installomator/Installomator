@@ -56,7 +56,7 @@ bettertouchtool
 bitwarden
 blender
 bluejeans
-bluejeansevents
+bluejeanswithaudiodriver
 boxdrive
 boxsync
 boxtools
@@ -69,6 +69,7 @@ calibre
 camostudio
 camtasia
 camtasia2019
+camtasia2020
 camtasia2021
 canva
 chatwork
@@ -110,6 +111,7 @@ drawio
 drift
 dropbox
 duckduckgo
+duodevicehealth
 easeusdatarecoverywizard
 easyfind
 egnyte
@@ -146,6 +148,7 @@ gimp
 githubdesktop
 golang
 googlechrome
+googlechromeenterprise
 googlechromepkg
 googledrive
 googledrivebackupandsync
@@ -181,6 +184,7 @@ insomnia
 installomator
 installomator_theile
 intellijideace
+ipswupdater
 istatmenus
 iterm2
 itsycal
@@ -259,6 +263,7 @@ microsoftyammer
 mightymike
 mindmanager
 miro
+mmhmm
 mobikinassistantforandroid
 mochakeyboard
 mochatelnet
@@ -274,6 +279,7 @@ netnewswire
 nextcloud
 nomad
 nomadlogin
+nordlayer
 notion
 nudge
 nvivo
@@ -317,6 +323,7 @@ promiseutilityr
 propresenter7
 protonvpn
 proxyman
+prune
 pycharmce
 pymol
 qgis-pr
@@ -437,6 +444,7 @@ webex
 webexmeetings
 webexteams
 wechat
+whatroute
 whatsapp
 wickrme
 wickrpro
