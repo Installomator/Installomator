@@ -14,12 +14,15 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
+
     # If we closed any processes, reopen the app again
     reopenClosedProcess
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2" $3
+        updateDialog "fail" "Error ($1; $2)"
     else
         printlog "$2" $3
+        updateDialog "success" ""
     fi
     printlog "################## End Installomator, exit code $1 \n" REQ
 
@@ -428,6 +431,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # verify with spctl
     printlog "Verifying: $appPath" INFO
+    updateDialog "wait" "Verifying..."
     printlog "App size: $(du -sh "$appPath")" DEBUG
     appVerify=$(spctl -a -vv "$appPath" 2>&1 )
     appVerifyStatus=$(echo $?)
@@ -573,6 +577,7 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
+    updateDialog "wait" "Verifying..."
     printlog "File list: $(ls -lh "$archiveName")" DEBUG
     printlog "File type: $(file "$archiveName")" DEBUG
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
@@ -640,8 +645,29 @@ installFromPKG() {
 
     # install pkg
     printlog "Installing $archiveName to $targetDir"
-    pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
-    pkgInstallStatus=$(echo $?)
+
+    if [[ $DIALOG_CMD_FILE != "" ]]; then
+        # pipe
+        pipe="$tmpDir/installpipe"
+        # initialise named pipe for installer output
+        initNamedPipe create $pipe
+
+        # run the pipe read in the background
+        readPKGInstallPipe $pipe "$DIALOG_CMD_FILE" & installPipePID=$!
+        printlog "listening to output of installer with pipe $pipe and command file $DIALOG_CMD_FILE on PID $installPipePID" DEBUG
+
+        pkgInstall=$(installer -verboseR -pkg "$archiveName" -tgt "$targetDir" 2>&1 | tee $pipe)
+        pkgInstallStatus=$pipestatus[1]
+            # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+        killProcess $installPipePID
+
+    else
+        pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+        pkgInstallStatus=$(echo $?)
+    fi
+
+
+
     sleep 1
     pkgEndTime=$(date "+$LogDateFormat")
     pkgInstall+=$(echo "\nOutput of /var/log/install.log below this line.\n")
@@ -821,7 +847,8 @@ runUpdateTool() {
 
 finishing() {
     printlog "Finishing..."
-    sleep 10 # wait a moment to let spotlight catch up
+
+    sleep 3 # wait a moment to let spotlight catch up
     getAppVersion
 
     if [[ -z $appversion ]]; then
@@ -869,3 +896,113 @@ hasDisplaySleepAssertion() {
     return 1
 }
 
+initNamedPipe() {
+    # create or delete a named pipe
+    # commands are "create" or "delete"
+
+    local cmd=$1
+    local pipe=$2
+    case $cmd in
+        "create")
+            if [[ -e $pipe ]]; then
+                rm $pipe
+            fi
+            # make named pipe
+            mkfifo -m 644 $pipe
+            ;;
+        "delete")
+            # clean up
+            rm $pipe
+            ;;
+        *)
+            ;;
+    esac
+}
+
+readDownloadPipe() {
+    # reads from a previously created named pipe
+    # output from curl with --progress-bar. % downloaded is read in and then sent to the specified log file
+    local pipe=$1
+    local log=${2:-$DIALOG_CMD_FILE}
+    # set up read from pipe
+    while IFS= read -k 1 -u 0 char; do
+        if [[ $char =~ [0-9] ]]; then
+            keep=1
+        fi
+
+        if [[ $char == % ]]; then
+            updateDialog $progress "Downloading..."
+            progress=""
+            keep=0
+        fi
+
+        if [[ $keep == 1 ]]; then
+            progress="$progress$char"
+        fi
+    done < $pipe
+}
+
+readPKGInstallPipe() {
+    # reads from a previously created named pipe
+    # output from installer with -verboseR. % install status is read in and then sent to the specified log file
+    local pipe=$1
+    local log=${2:-$DIALOG_CMD_FILE}
+    local appname=${3:-$name}
+
+    while read -k 1 -u 0 char; do
+        if [[ $char == % ]]; then
+            keep=1
+        fi
+        if [[ $char =~ [0-9] && $keep == 1 ]]; then
+            progress="$progress$char"
+        fi
+        if [[ $char == . && $keep == 1 ]]; then
+            updateDialog $progress "Installing..."
+            progress=""
+            keep=0
+        fi
+    done < $pipe
+}
+
+killProcess() {
+    # will silently kill the specified PID
+    builtin kill $1 2>/dev/null
+}
+
+updateDialog() {
+    local state=$1
+    local message=$2
+    local listitem=${3:-$DIALOG_LIST_ITEM_NAME}
+    local cmd_file=${4:-$DIALOG_CMD_FILE}
+    local progress=""
+
+    if [[ $state =~ '^[0-9]' \
+       || $state == "reset" \
+       || $state == "increment" \
+       || $state == "complete" \
+       || $state == "indeterminate" ]]; then
+        progress=$state
+    fi
+
+    # when to cmdfile is set, do nothing
+    if [[ $$cmd_file == "" ]]; then
+        return
+    fi
+
+    if [[ $listitem == "" ]]; then
+        # no listitem set, update main progress bar and progress text
+        if [[ $progress != "" ]]; then
+            echo "progress: $progress" >> $cmd_file
+        fi
+        if [[ $message != "" ]]; then
+            echo "progresstext: $name - $message" >> $cmd_file
+        fi
+    else
+        # list item has a value, so we update the progress and text in the list
+        if [[ $progress != "" ]]; then
+            echo "listitem: title: $listitem, statustext: $message, progress: $progress" >> $cmd_file
+        else
+            echo "listitem: title: $listitem, statustext: $message, status: $state" >> $cmd_file
+        fi
+    fi
+}
