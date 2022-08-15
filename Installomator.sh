@@ -298,7 +298,7 @@ LogDateFormat="%Y-%m-%d %H:%M:%S"
 starttime=$(date "+$LogDateFormat")
 
 # Check if we have rosetta installed
-if [[ $(/usr/bin/arch) == "arm64" ]]; then
+if [[ $(/usr/bin/arch) == "arm*" ]]; then
     if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then # pgrep oahd >/dev/null 2>&1
         rosetta2=no
     fi
@@ -1310,7 +1310,7 @@ valuesfromarguments)
     name="1Password 8"
     appName="1Password.app"
     type="zip"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         archiveName="1Password-latest-aarch64.zip"
         downloadURL="https://downloads.1password.com/mac/1Password-latest-aarch64.zip"
     elif [[ $(arch) == "i386" ]]; then
@@ -1375,7 +1375,7 @@ adobecreativeclouddesktop)
     name="Adobe Creative Cloud"
     #appName="Install.app"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o "https*.*macarm64.*dmg" | cut -d '"' -f1 | head -1)
     elif [[ $(arch) == "i386" ]]; then
         downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o "https*.*osx10.*dmg" | cut -d '"' -f1 | head -1)
@@ -1472,7 +1472,7 @@ amazonchime)
 amazoncorretto8jdk)
 name="Amazon Corretto 8 JDK"
 type="pkg"
-	if [[ $(arch) == "arm64" ]]; then
+	if [[ $(arch) == "arm*" ]]; then
 		downloadURL="https://corretto.aws/downloads/latest/amazon-corretto-8-aarch64-macos-jdk.pkg"
 		appNewVersion=$(curl -s https://raw.githubusercontent.com/corretto/corretto-8/develop/CHANGELOG.md | grep "## Corretto version" | head -n 1 | awk '{ print $4; exit}')
 	elif [[ $(arch) == "i386" ]]; then
@@ -1498,7 +1498,7 @@ androidfiletransfer)
 androidstudio)
     name="Android Studio"
     type="dmg"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
 	 downloadURL=$(curl -fsL "https://developer.android.com/studio#downloads" | grep -i arm.dmg | head -2 | grep -o -i -E "https.*" | cut -d '"' -f1)
 	 appNewVersion=$( echo "${downloadURL}" | head -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )
     elif [[ $(arch) == i386 ]]; then
@@ -1682,7 +1682,7 @@ awsvpnclient)
 axurerp10)
     name="Axure RP 10"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://d3uii9pxdigrx1.cloudfront.net/AxureRP-Setup-arm64.dmg"
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://d3uii9pxdigrx1.cloudfront.net/AxureRP-Setup.dmg"
@@ -1754,7 +1754,7 @@ blender)
 bluejeans)
     name="BlueJeans"
     type="pkg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL=$(curl -fs "https://www.bluejeans.com/downloads" | xmllint --html --format - 2>/dev/null | grep -o "https://.*BlueJeans.*Installer.*arm.*.pkg" )
     elif [[ $(arch) == "i386" ]]; then
         downloadURL=$(curl -fs "https://www.bluejeans.com/downloads" | xmllint --html --format - 2>/dev/null | grep -o "https://.*BlueJeansInstaller.*x86.*.dmg" | sed 's/dmg/pkg/g')
@@ -1873,7 +1873,7 @@ camtasia2020)
 canva)
     name="Canva"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL=https://desktop-release.canva.com/Canva-latest-arm64.dmg
         appNewVersion=$( curl -fsLI -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "accept-encoding: gzip, deflate, br" -H "accept-language: en-US,en;q=0.9" -H "Referrer Policy: strict-origin-when-cross-origin" -H "upgrade-insecure-requests: 1" -H "sec-fetch-dest: document" -H "sec-gpc: 1" -H "sec-fetch-user: ?1" -H "sec-fetch-mode: navigate" -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.canva.com/download/mac/arm/canva-desktop/" | grep -i "^location" | cut -d " " -f2 | tr -d '\r' | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-*.*\.dmg/\1/g' )
     elif [[ $(arch) == "i386" ]]; then
@@ -1961,7 +1961,7 @@ code42)
     type="pkgInDmg"
     if [[ $(arch) == i386 ]]; then
        downloadURL="https://download.code42.com/installs/agent/latest-mac.dmg"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
        downloadURL="https://download.code42.com/installs/agent/latest-mac-arm64.dmg"
     fi
     expectedTeamID="9YV9435DHD"
@@ -2044,7 +2044,7 @@ darktable)
 dbeaverce)
     name="DBeaver"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg"
         appNewVersion="$(curl -fsIL "${downloadURL}" | grep -i ^location | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' | head -1)"
     elif [[ $(arch) == "i386" ]]; then
@@ -2142,7 +2142,7 @@ displaylinkmanager)
 docker)
     name="Docker"
     type="dmg"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
      downloadURL="https://desktop.docker.com/mac/stable/arm64/Docker.dmg"
      appNewVersion=$( curl -fs "https://desktop.docker.com/mac/main/arm64/appcast.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[last()]' 2>/dev/null | cut -d '"' -f2 )
     elif [[ $(arch) == i386 ]]; then
@@ -2302,7 +2302,7 @@ favro)
 ferdi)
     name="Ferdi"
     type="zip"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         archiveName="arm64-mac.zip"
     elif [[ $(arch) == "i386" ]]; then
         archiveName="Ferdi-[0-9.]*-mac.zip"
@@ -2314,7 +2314,7 @@ ferdi)
 figma)
     name="Figma"
     type="zip"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://desktop.figma.com/mac-arm/Figma.zip"
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://desktop.figma.com/mac/Figma.zip"
@@ -2485,7 +2485,7 @@ fontexplorer)
 front)
     name="Front"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://dl.frontapp.com/macos/Front-arm64.dmg"
         appNewVersion=$(curl -fs "https://dl.frontapp.com/desktop/updates/latest/mac-arm64/latest-mac.yml" | grep -i version | cut -d " " -f2)
     elif [[ $(arch) == "i386" ]]; then
@@ -2511,7 +2511,7 @@ gimp)
 githubdesktop)
     name="GitHub Desktop"
     type="zip"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://central.github.com/deployments/desktop/desktop/latest/darwin-arm64"
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://central.github.com/deployments/desktop/desktop/latest/darwin"
@@ -2714,7 +2714,7 @@ hyper)
     type="dmg"
     if [[ $(arch) == i386 ]]; then
       archiveName="mac-x64.dmg"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
       archiveName="mac-arm64.dmg"
     fi
     downloadURL=$(downloadURLFromGit vercel hyper )
@@ -2877,7 +2877,7 @@ jetbrainsclion)
     type="dmg"
     jetbrainscode="CL"
     jetbrainsdistribution="mac"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2890,7 +2890,7 @@ jetbrainsdatagrip)
     jetbrainscode="DG"
     if [[ $(arch) == i386 ]]; then
         jetbrainsdistribution="mac"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2903,7 +2903,7 @@ jetbrainsintellijidea)
     jetbrainscode="II"
     if [[ $(arch) == i386 ]]; then
         jetbrainsdistribution="mac"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2917,7 +2917,7 @@ intellijideace)
     jetbrainscode="IIC"
     if [[ $(arch) == i386 ]]; then
         jetbrainsdistribution="mac"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2930,7 +2930,7 @@ jetbrainsphpstorm)
     jetbrainscode="PS"
     if [[ $(arch) == i386 ]]; then
         jetbrainsdistribution="mac"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2943,7 +2943,7 @@ jetbrainspycharm)
     type="dmg"
     jetbrainscode="PCP"
     jetbrainsdistribution="mac"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2956,7 +2956,7 @@ pycharmce)
     type="dmg"
     jetbrainscode="PCC"
     jetbrainsdistribution="mac"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2969,7 +2969,7 @@ jetbrainsrubymine)
      jetbrainscode="RM"
      if [[ $(arch) == i386 ]]; then
          jetbrainsdistribution="mac"
-     elif [[ $(arch) == arm64 ]]; then
+     elif [[ $(arch) == arm* ]]; then
          jetbrainsdistribution="macM1"
      fi
      downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2981,7 +2981,7 @@ jetbrainstoolbox)
     type="dmg"
     jetbrainscode="TBA"
     jetbrainsdistribution="mac"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -2993,7 +2993,7 @@ jetbrainswebstorm)
     type="dmg"
     jetbrainscode="WS"
     jetbrainsdistribution="mac"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
@@ -3013,7 +3013,7 @@ keepassxc)
     type="dmg"
     if [[ $(arch) == i386 ]]; then
       archiveName="x86_64.dmg"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
       archiveName="arm64.dmg"
     fi
     downloadURL=$(downloadURLFromGit keepassxreboot keepassxc)
@@ -3095,7 +3095,7 @@ lexarrecoverytool)
 libreoffice)
     name="LibreOffice"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://download.documentfoundation.org/libreoffice/stable/$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)/mac/aarch64/LibreOffice_$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)_MacOS_aarch64.dmg"
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://download.documentfoundation.org/libreoffice/stable/$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)/mac/x86_64/LibreOffice_$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)_MacOS_x86-64.dmg"
@@ -3107,7 +3107,7 @@ libreoffice)
 linear)
     name="Linear"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://desktop.linear.app/mac/dmg/arm64"
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://desktop.linear.app/mac/dmg"
@@ -3133,7 +3133,7 @@ logitechoptions)
 logseq)
     name="Logseq"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         archiveName="darwin-arm64-[0-9.]*.dmg"
         downloadURL=$(downloadURLFromGit logseq logseq)
     elif [[ $(arch) == "i386" ]]; then
@@ -3147,7 +3147,7 @@ loom)
     # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
     name="Loom"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /arm64/ && /dmg/ {print $3}' | head -1)
     elif [[ $(arch) == "i386" ]]; then
         downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /dmg/ {print $3}' | head -1)
@@ -3737,7 +3737,7 @@ notion)
     # credit: Søren Theilgaard (@theilgaard)
     name="Notion"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://www.notion.so/desktop/apple-silicon/download"
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://www.notion.so/desktop/mac/download"
@@ -3852,7 +3852,7 @@ onionshare)
 onlyofficedesktop)
     name="ONLYOFFICE"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
     downloadURL="https://download.onlyoffice.com/install/desktop/editors/mac/arm/distrib/ONLYOFFICE.dmg"
     elif [[ $(arch) == "i386" ]]; then
     downloadURL="https://download.onlyoffice.com/install/desktop/editors/mac/x86_64/distrib/ONLYOFFICE.dmg"
@@ -3987,7 +3987,7 @@ plisteditpro)
 postman)
     name="Postman"
     type="zip"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
     	downloadURL="https://dl.pstmn.io/download/latest/osx_arm64"
 		appNewVersion=$(curl -fsL --head "${downloadURL}" | grep "content-disposition:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
 	elif [[ $(arch) == "i386" ]]; then
@@ -4006,7 +4006,7 @@ pritunl)
     name="Pritunl"
     type="pkgInZip"
     packageID="com.pritunl.pkg.Pritunl"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         archiveName="Pritunl.arm64.pkg.zip"
     elif [[ $(arch) == "i386" ]]; then
         archiveName="Pritunl.pkg.zip"
@@ -4092,7 +4092,7 @@ ramboxce)
 rancherdesktop)
     name="Rancher Desktop"
     type="zip"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
       archiveName="Rancher.Desktop-[0-9.]*-mac.aarch64.zip"
       downloadURL="$(downloadURLFromGit rancher-sandbox rancher-desktop)"
     elif [[ $(arch) == "i386" ]]; then
@@ -4379,7 +4379,7 @@ slab)
     type="dmg"
     if [[ $(arch) == i386 ]]; then
        archiveName="Slab-[0-9.]*-darwin-x64.dmg"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
        archiveName="Slab-[0-9.]*-darwin-arm64.dmg"
     fi
     downloadURL=$(downloadURLFromGit slab desktop-releases)
@@ -4396,7 +4396,7 @@ slack)
 smartgit)
     name="SmartGit"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
     downloadURL="https://www.syntevo.com$(curl -fs "https://www.syntevo.com/smartgit/download/" | grep -i -o -E "/downloads/.*/smartgit.*\.dmg" | tail -1)"
     elif [[ $(arch) == "i386" ]]; then
     downloadURL="https://www.syntevo.com$(curl -fs "https://www.syntevo.com/smartgit/download/" | grep -i -o -E "/downloads/.*/smartgit.*\.dmg" | head -1)"
@@ -4479,7 +4479,7 @@ splashtopsos)
 spotify)
     name="Spotify"
     type="dmg"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
         downloadURL="https://download.scdn.co/SpotifyARM64.dmg"
     elif [[ $(arch) == i386 ]]; then
         downloadURL="https://download.scdn.co/Spotify.dmg"
@@ -4528,7 +4528,7 @@ sublimetext)
 superhuman)
     name="superhuman"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL="https://download.superhuman.com/Superhuman-arm64.dmg"
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://download.superhuman.com/Superhuman.dmg"
@@ -4886,7 +4886,7 @@ vivaldi)
 vlc)
     name="VLC"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ $(arch) == "arm*" ]]; then
         downloadURL=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-arm64.xml | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
         appNewVersion=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-arm64.xml | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null | cut -d '"' -f 2 )
     elif [[ $(arch) == "i386" ]]; then
@@ -4932,7 +4932,7 @@ webexteams)
     # credit: Erik Stam (@erikstam)
     name="Webex"
     type="dmg"
-    if [[ $(arch) == arm64 ]]; then
+    if [[ $(arch) == arm* ]]; then
         downloadURL="https://binaries.webex.com/WebexDesktop-MACOS-Apple-Silicon-Gold/Webex.dmg"
     elif [[ $(arch) == i386 ]]; then
         downloadURL="https://binaries.webex.com/WebexTeamsDesktop-MACOS-Gold/Webex.dmg"
@@ -4982,7 +4982,7 @@ wireshark)
     type="dmg"
     if [[ $(arch) == i386 ]]; then
       downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Intel%2064.dmg"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
       downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Arm%2064.dmg"
     fi
     appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep -i "href.*_stable" | sed -E 's/.*\(([0-9.]*)\).*/\1/g')
@@ -5116,7 +5116,7 @@ zoomclient)
     packageID="us.zoom.pkg.videomeeting"
     if [[ $(arch) == i386 ]]; then
        downloadURL="https://zoom.us/client/latest/Zoom.pkg"
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
        downloadURL="https://zoom.us/client/latest/Zoom.pkg?archType=arm64"
     fi
     expectedTeamID="BJ4HAAB9B3"
@@ -5147,7 +5147,7 @@ zulujdk11)
     packageID="com.azulsystems.zulu.11"
     if [[ $(arch) == i386 ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu11.*ca-jdk11.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu11.*ca-jdk11.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
@@ -5160,7 +5160,7 @@ zulujdk13)
     packageID="com.azulsystems.zulu.13"
     if [[ $(arch) == i386 ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu13.*ca-jdk13.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu13.*ca-jdk13.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
@@ -5173,7 +5173,7 @@ zulujdk15)
     packageID="com.azulsystems.zulu.15"
     if [[ $(arch) == i386 ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu15.*ca-jdk15.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu15.*ca-jdk15.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
@@ -5186,7 +5186,7 @@ zulujdk17)
     packageID="com.azulsystems.zulu.17"
     if [[ $(arch) == i386 ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu17.*ca-jdk17.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu17.*ca-jdk17.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
@@ -5199,7 +5199,7 @@ zulujdk8)
     packageID="com.azulsystems.zulu.8"
     if [[ $(arch) == i386 ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu8.*ca-jdk8.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
-    elif [[ $(arch) == arm64 ]]; then
+    elif [[ $(arch) == arm* ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu8.*ca-jdk8.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
