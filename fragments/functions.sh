@@ -374,6 +374,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
+                      appClosed=0
                       cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
                 esac
