@@ -75,7 +75,7 @@ printlog "Label type: $type" INFO
 # MARK: extract info from data
 if [ -z "$archiveName" ]; then
     case $type in
-        dmg|pkg|zip|tbz)
+        dmg|pkg|zip|tbz|bz2)
             archiveName="${name}.$type"
             ;;
         pkgInDmg)
@@ -101,7 +101,7 @@ fi
 
 if [ -z "$targetDir" ]; then
     case $type in
-        dmg|zip|tbz|app*)
+        dmg|zip|tbz|bz2|app*)
             targetDir="/Applications"
             ;;
         pkg*)
@@ -282,7 +282,7 @@ case $type in
     zip)
         installFromZIP
         ;;
-    tbz)
+    tbz|bz2)
         installFromTBZ
         ;;
     pkgInDmg)
