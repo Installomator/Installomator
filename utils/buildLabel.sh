@@ -265,7 +265,7 @@ echo "archivePath: $archivePath"
 # So we want to investigate which one has the filename
 try1archiveName=${${archiveTempName##*/}%%\?*}
 try2archiveName=${${archivePath##*/}%%\?*}
-fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz|gz)$' # regular expression for matching
+fileName_re='^([a-zA-Z0-9\_.%-]*)\.(dmg|pkg|zip|tbz|gz|bz2)$' # regular expression for matching
 if [[ "${try1archiveName}" =~ $fileName_re ]]; then
     archiveName=${try1archiveName}
 elif [[ "${try2archiveName}" =~ $fileName_re ]]; then
@@ -293,7 +293,7 @@ if [ "$archiveExt" = "pkg" ]; then
 elif [ "$archiveExt" = "dmg" ]; then
     echo "Diskimage found"
     dmgInvestigation
-elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ]; then
+elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ] || [ "$archiveExt" = "bz2" ]; then
     echo "Compressed file found"
     # unzip the archive
     tar -xf "$archiveName"
