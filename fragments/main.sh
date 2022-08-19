@@ -155,6 +155,10 @@ if [[ -n $appNewVersion ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
+                if [[ $DIALOG_CMD_FILE != "" ]]; then
+                    updateDialog "complete" "Latest version already installed..."
+                    sleep 2
+                fi
                 cleanupAndExit 0 "No newer version." REQ
             fi
         else
