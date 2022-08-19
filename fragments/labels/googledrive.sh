@@ -7,7 +7,7 @@ googledrivefilestream)
     packageID="com.google.drivefs.x86_64"
     fi
 
-    if [[ $(arch) == "arm*" ]]; then
+    if [[ $(arch) == "arm64" ]]; then
     packageID="com.google.drivefs.arm64"
     fi
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
