@@ -1,6 +1,6 @@
 googledrive|\
 googledrivefilestream)
-    # credit: Eddie Vartanessian (@eddiev2)
+    # Eddie Vartanessian (@eddiev2)
     name="GoogleDrive"
     type="pkgInDmg"
     if [[ $(arch) == "i386" ]]; then
