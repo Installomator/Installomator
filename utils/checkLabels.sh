@@ -247,9 +247,6 @@ for fixedArch in i386 arm64; do
                         fi
                     else
                         githubPart="$(echo "$downloadURL" | cut -d "/" -f4-6)"
-                        echo "type: $type"
-                        echo "archiveName: $archiveName"
-                        echo "githubPart: $githubPart"
                         if [[ "$(curl -fsL "$downloadURL" | grep -io "${githubPart}.*\.${expectedExtension}")" != "" ]]; then
                             echo "${GREEN}OK: download extension MATCH on ${expectedExtension}${NC}"
                         else
