@@ -1,5 +1,5 @@
 colourcontrastanalyser)
-    name="Colour Contrast Analyser (CCA)"
+    name="Colour Contrast Analyser"
     type="dmg"
     archiveName="CCA-[0-9.]*.dmg"
     downloadURL=$(downloadURLFromGit ThePacielloGroup CCAe)
