@@ -54,7 +54,14 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     
     #githubPart="$gitusername/$gitreponame/releases/download"
     #echo "$githubPart"
-    downloadURL="https://github.com/$gitusername/$gitreponame/releases/latest"
+    #downloadURL="https://github.com/$gitusername/$gitreponame/releases/latest"
+    if [ -n "$archiveName" ]; then
+        #downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+        downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*$archiveName.*" | tail -1)
+    else
+        #downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*\.$filetype" | tail -1)
+    fi
     echo "$downloadURL"
     return 0
 }
@@ -188,7 +195,7 @@ for fixedArch in i386 arm64; do
             echo "Download URL: $downloadURL"
             echo "Type: $type"
             case $type in
-                dmg|pkg|zip|tbz)
+                dmg|pkg|zip|tbz|bz2)
                     expectedExtension="$type"
                     ;;
                 pkgInDmg)
