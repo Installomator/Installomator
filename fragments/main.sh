@@ -15,6 +15,29 @@ fi
 
 # MARK: application download and installation starts here
 
+# Debug output of all variables in a label
+printlog "name=${name}" DEBUG
+printlog "appName=${appName}" DEBUG
+printlog "type=${type}" DEBUG
+printlog "archiveName=${archiveName}" DEBUG
+printlog "downloadURL=${downloadURL}" DEBUG
+printlog "curlOptions=${curlOptions}" DEBUG
+printlog "appNewVersion=${appNewVersion}" DEBUG
+printlog "appCustomVersion function: $(if type 'appCustomVersion' 2>/dev/null | grep -q 'function'; then echo "Defined. ${appCustomVersion}"; else; echo "Not defined"; fi)" DEBUG
+printlog "versionKey=${versionKey}" DEBUG
+printlog "packageID=${packageID}" DEBUG
+printlog "pkgName=${pkgName}" DEBUG
+printlog "choiceChangesXML=${choiceChangesXML}" DEBUG
+printlog "expectedTeamID=${expectedTeamID}" DEBUG
+printlog "blockingProcesses=${blockingProcesses}" DEBUG
+printlog "installerTool=${installerTool}" DEBUG
+printlog "CLIInstaller=${CLIInstaller}" DEBUG
+printlog "CLIArguments=${CLIArguments}" DEBUG
+printlog "updateTool=${updateTool}" DEBUG
+printlog "updateToolArguments=${updateToolArguments}" DEBUG
+printlog "updateToolRunAsCurrentUser=${updateToolRunAsCurrentUser}" DEBUG
+#printlog "Company=${Company}" DEBUG # Not used
+
 if [[ ${INTERRUPT_DND} = "no" ]]; then
     # Check if a fullscreen app is active
     if hasDisplaySleepAssertion; then
