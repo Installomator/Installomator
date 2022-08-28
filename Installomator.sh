@@ -7,7 +7,7 @@ label="" # if no label is sent to the script, this will be used
 # 2020-2021 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
-#
+# 
 # Contributers:
 #    Armin Briegel - @scriptingosx
 #    Isaac Ordonez - @issacatmann
@@ -23,7 +23,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-# debug mode 1 will download to the directory the script is run in, but will not check the version
+# debug mode 1 will download to the directory the script is run in, but will not check the version 
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
 DEBUG=1
 
@@ -184,7 +184,7 @@ IGNORE_DND_APPS=""
 #   How we get version number from app. Possible values:
 #     - CFBundleShortVersionString
 #     - CFBundleVersion
-#   Not all software titles uses fields the same.
+#   Not all software titles uses fields the same. 
 #   See Opera label.
 #
 # - appCustomVersion(){}: (optional function)
@@ -472,7 +472,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     if [ -z "$downloadURL" ]; then
         cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
     else
-        echo "$downloadURL" | head -1
+        echo "$downloadURL"
         return 0
     fi
 }
@@ -2258,7 +2258,7 @@ egnytewebedit)
     appName="Egnyte WebEdit.app"
     blockingProcesses=( NONE )
     ;;
-
+    
 element)
     name="Element"
     type="dmg"
@@ -2505,7 +2505,7 @@ flux)
     downloadURL="https://justgetflux.com/mac/Flux.zip"
     expectedTeamID="VZKSA7H9J9"
     ;;
-
+    
 flycut)
     name="Flycut"
     type="zip"
@@ -2610,7 +2610,7 @@ googledrivefilestream)
        packageID="com.google.drivefs.arm64"
     elif [[ $(arch) == "i386" ]]; then
        packageID="com.google.drivefs.x86_64"
-    fi
+    fi    
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg" # downloadURL="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
     blockingProcesses=( "Google Docs" "Google Drive" "Google Sheets" "Google Slides" )
     appName="Google Drive.app"
@@ -3159,11 +3159,11 @@ libreoffice)
     name="LibreOffice"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        arch_type="aarch64"
+        downloadURL="https://download.documentfoundation.org/libreoffice/stable/$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)/mac/aarch64/LibreOffice_$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)_MacOS_aarch64.dmg"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://download.documentfoundation.org/libreoffice/stable/$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)/mac/x86_64/LibreOffice_$(curl -s https://www.libreoffice.org/download/download/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)_MacOS_x86-64.dmg"
     fi
-    libreoffice_latest_version="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
-    downloadURL="https://download.documentfoundation.org/libreoffice/stable/${libreoffice_latest_version}/mac/${arch_type:-x86_64}/LibreOffice_${libreoffice_latest_version}_MacOS_${arch_type:-x86-64}.dmg"
-    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*)_.*/\1/g')
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*)_.*/\1/g' )
     expectedTeamID="7P5S3ZLCN7"
     blockingProcesses=( soffice )
     ;;
@@ -3181,7 +3181,7 @@ linear)
     appName="Linear.app"
     blockingProcesses=( "Linear" )
     ;;
-
+    
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -4385,7 +4385,7 @@ secretive)
     appNewVersion=$(versionFromGit maxgoedjen secretive)
     expectedTeamID="Z72PRUAWF6"
     ;;
-
+    
 sequelpro)
     name="Sequel Pro"
     type="dmg"
