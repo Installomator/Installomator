@@ -160,10 +160,10 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
     if [ -n "$archiveName" ]; then
         #downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
-        downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*$archiveName" | tail -1)
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "\/releases\/download\/.*$archiveName" | head -1)
     else
         #downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
-        downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*\.$filetype" | tail -1)
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "\/releases\/download\/.*\.$filetype" | head -1)
     fi
     if [ -z "$downloadURL" ]; then
         cleanupAndExit 14 "could not retrieve download URL for $gitusername/$gitreponame" ERROR

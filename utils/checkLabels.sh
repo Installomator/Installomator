@@ -52,13 +52,21 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
     
+    if [[ $type == "pkgInDmg" ]]; then
+        filetype="dmg"
+    elif [[ $type == "pkgInZip" ]]; then
+        filetype="zip"
+    else
+        filetype=$type
+    fi
+
     #githubPart="$gitusername/$gitreponame/releases/download"
     #echo "$githubPart"
     #downloadURL="https://github.com/$gitusername/$gitreponame/releases/latest"
     if [ -n "$archiveName" ]; then
-        downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*$archiveName" | tail -1)
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "\/releases\/download\/.*$archiveName" | head -1)
     else
-        downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*\.$type" | tail -1)
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "\/releases\/download\/.*\.$filetype" | head -1)
     fi
     echo "$downloadURL"
     return 0
