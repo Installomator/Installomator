@@ -64,9 +64,9 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     #echo "$githubPart"
     #downloadURL="https://github.com/$gitusername/$gitreponame/releases/latest"
     if [ -n "$archiveName" ]; then
-        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "\/releases\/download\/.*$archiveName" | head -1)
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
     else
-        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "\/releases\/download\/.*\.$filetype" | head -1)
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
     fi
     echo "$downloadURL"
     return 0
@@ -195,6 +195,7 @@ for fixedArch in i386 arm64; do
         
         #caseLabel
         if cat "${labels_dir}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
+            INSTALL=force # This is only to prevent various Microsoft labels from running "msupdate --list"
             source checkLabelCurrent.sh
 
             echo "Name: $name"
