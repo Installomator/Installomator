@@ -168,7 +168,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     if [ -z "$downloadURL" ]; then
         cleanupAndExit 14 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
     else
-        echo "$downloadURL" | head -1
+        echo "$downloadURL"
         return 0
     fi
 }
