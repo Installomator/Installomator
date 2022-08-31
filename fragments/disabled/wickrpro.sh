@@ -1,4 +1,5 @@
 wickrpro)
+    # Label  not working, haven't found a solution
     name="WickrPro"
     printlog "Label for $name broken in test" WARN
     type="dmg"
