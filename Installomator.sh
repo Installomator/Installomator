@@ -2927,6 +2927,15 @@ jamfpppcutility)
     appNewVersion=$(versionFromGit jamf PPPC-Utility)
     expectedTeamID="483DWKW443"
     ;;
+jamfprotect)
+    name="Jamf Protect"
+    type="pkg"
+    packageID="com.jamf.protect.daemon"
+    # download url can be found under Jamf Protect admin console —> Administrative —>
+    # Downloads —> Generate Download URL
+    downloadURL=“{download url}”
+    expectedTeamID="483DWKW443"
+    ;;
 jamfreenroller)
     # credit: Mischa van der Bent
     name="ReEnroller"

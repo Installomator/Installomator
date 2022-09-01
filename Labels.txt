@@ -193,6 +193,7 @@ jamfconnect
 jamfconnectconfiguration
 jamfmigrator
 jamfpppcutility
+jamfprotect
 jamfreenroller
 jetbrainsclion
 jetbrainsdatagrip
