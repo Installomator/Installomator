@@ -1,8 +1,11 @@
 xcreds)
     name="XCreds"
-    type="pkgInZip"
+    #type="pkgInZip"
     #packageID="com.twocanoes.pkg.secureremoteaccess"
-    downloadURL=$(curl -fs "https://twocanoes.com/products/mac/xcreds/" | grep -ioE "https://.*\.zip" | head -1)
-    appNewVersion=$(curl -fs "https://twocanoes.com/products/mac/xcreds/" | grep -io "Current Version:.*" | sed -E 's/.*XCreds *([0-9.]*)<.*/\1/g')
+    #downloadURL=$(curl -fs "https://twocanoes.com/products/mac/xcreds/" | grep -ioE "https://.*\.zip" | head -1)
+    #appNewVersion=$(curl -fs "https://twocanoes.com/products/mac/xcreds/" | grep -io "Current Version:.*" | sed -E 's/.*XCreds *([0-9.]*)<.*/\1/g')
+    type="pkg"
+    downloadURL="$(downloadURLFromGit twocanoes xcreds)"
+    appNewVersion="$(versionFromGit twocanoes xcreds)"
     expectedTeamID="UXP6YEHSPW"
     ;;
