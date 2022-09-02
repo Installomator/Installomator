@@ -1033,6 +1033,6 @@ addToDock() {
         loggedInUserDock="/Users/$currentUser/Library/Preferences/com.apple.dock.plist"
         /usr/local/bin/dockutil --add $installedAppPath/ $loggedInUserDock &> /dev/null
     else
-        printlog "$appNmae is a binary, will not add to dock"
+        printlog "$appName is a binary, will not add to dock"
     fi 
 }
