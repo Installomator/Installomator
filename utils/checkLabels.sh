@@ -52,9 +52,22 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
     
+    if [[ $type == "pkgInDmg" ]]; then
+        filetype="dmg"
+    elif [[ $type == "pkgInZip" ]]; then
+        filetype="zip"
+    else
+        filetype=$type
+    fi
+
     #githubPart="$gitusername/$gitreponame/releases/download"
     #echo "$githubPart"
-    downloadURL="https://github.com/$gitusername/$gitreponame/releases/latest"
+    #downloadURL="https://github.com/$gitusername/$gitreponame/releases/latest"
+    if [ -n "$archiveName" ]; then
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
+    else
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
+    fi
     echo "$downloadURL"
     return 0
 }
@@ -63,7 +76,7 @@ versionFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
     
-    appNewVersion=$(curl --silent --fail "https://github.com/$gitusername/$gitreponame/releases/latest" | sed -E 's/.*tag\/(.*)\">.*/\1/g' | sed 's/[^0-9\.]//g')
+    appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame: $appNewVersion"
         exit 9
@@ -182,13 +195,14 @@ for fixedArch in i386 arm64; do
         
         #caseLabel
         if cat "${labels_dir}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
+            INSTALL=force # This is only to prevent various Microsoft labels from running "msupdate --list"
             source checkLabelCurrent.sh
 
             echo "Name: $name"
             echo "Download URL: $downloadURL"
             echo "Type: $type"
             case $type in
-                dmg|pkg|zip|tbz)
+                dmg|pkg|zip|tbz|bz2)
                     expectedExtension="$type"
                     ;;
                 pkgInDmg)

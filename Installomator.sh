@@ -7,7 +7,7 @@ label="" # if no label is sent to the script, this will be used
 # 2020-2021 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
-# 
+#
 # Contributers:
 #    Armin Briegel - @scriptingosx
 #    Isaac Ordonez - @issacatmann
@@ -23,7 +23,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-# debug mode 1 will download to the directory the script is run in, but will not check the version 
+# debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
 DEBUG=1
 
@@ -33,7 +33,6 @@ NOTIFY=success
 #   - success      notify the user on success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
-
 
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user
@@ -139,6 +138,26 @@ IGNORE_DND_APPS=""
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
 
+# Swift Dialog integration
+
+# These variables will allow Installomator to communicate progress with Swift Dialog
+# https://github.com/bartreardon/swiftDialog
+
+# This requires Swift Dialog 2.11.2 or higher.
+
+DIALOG_CMD_FILE=""
+# When this variable is set, Installomator will write Swift Dialog commands to this path.
+# Installomator will not launch Swift Dialog. The process calling Installomator will have
+# launch and configure Swift Dialog to listen to this file.
+# See `MDM/swiftdialog_example.sh` for an example.
+
+DIALOG_LIST_ITEM_NAME=""
+# When this variable is set, progress for downloads and installs will be sent to this
+# listitem.
+# When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
+
+
+
 # NOTE: How labels work
 
 # Each workflow label needs to be listed in the case statement below.
@@ -184,7 +203,7 @@ IGNORE_DND_APPS=""
 #   How we get version number from app. Possible values:
 #     - CFBundleShortVersionString
 #     - CFBundleVersion
-#   Not all software titles uses fields the same. 
+#   Not all software titles uses fields the same.
 #   See Opera label.
 #
 # - appCustomVersion(){}: (optional function)
@@ -302,8 +321,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.0beta1"
-VERSIONDATE="2022-08-12"
+VERSION="10.0beta2"
+VERSIONDATE="2022-08-31"
 
 # MARK: Functions
 
@@ -321,12 +340,15 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
+
     # If we closed any processes, reopen the app again
     reopenClosedProcess
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2" $3
+        updateDialog "fail" "Error ($1; $2)"
     else
         printlog "$2" $3
+        updateDialog "success" ""
     fi
     printlog "################## End Installomator, exit code $1 \n" REQ
 
@@ -470,7 +492,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
         downloadURL=https://github.com$(curl -sL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -o "\/$gitusername\/$gitreponame.*\.$filetype")
     fi
     if [ -z "$downloadURL" ]; then
-        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
+        cleanupAndExit 14 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
     else
         echo "$downloadURL"
         return 0
@@ -586,7 +608,7 @@ getAppVersion() {
                     printlog "Replacing App Store apps, no matter the version" WARN
                     appversion=0
                 else
-                    cleanupAndExit 1 "App previously installed from App Store, and we respect that" ERROR
+                    cleanupAndExit 23 "App previously installed from App Store, and we respect that" ERROR
                 fi
             fi
         else
@@ -735,6 +757,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # verify with spctl
     printlog "Verifying: $appPath" INFO
+    updateDialog "wait" "Verifying..."
     printlog "App size: $(du -sh "$appPath")" DEBUG
     appVerify=$(spctl -a -vv "$appPath" 2>&1 )
     appVerifyStatus=$(echo $?)
@@ -783,7 +806,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "Error updating $name!"
             fi
-            cleanupAndExit 6 "Installed macOS is too old for this app." ERROR
+            cleanupAndExit 15 "Installed macOS is too old for this app." ERROR
         fi
     fi
 
@@ -842,7 +865,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         deduplicatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
-            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
+            cleanupAndExit 16 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
         else
             printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments" INFO
         fi
@@ -880,6 +903,7 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
+    updateDialog "wait" "Verifying..."
     printlog "File list: $(ls -lh "$archiveName")" DEBUG
     printlog "File type: $(file "$archiveName")" DEBUG
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
@@ -947,8 +971,29 @@ installFromPKG() {
 
     # install pkg
     printlog "Installing $archiveName to $targetDir"
-    pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
-    pkgInstallStatus=$(echo $?)
+
+    if [[ $DIALOG_CMD_FILE != "" ]]; then
+        # pipe
+        pipe="$tmpDir/installpipe"
+        # initialise named pipe for installer output
+        initNamedPipe create $pipe
+
+        # run the pipe read in the background
+        readPKGInstallPipe $pipe "$DIALOG_CMD_FILE" & installPipePID=$!
+        printlog "listening to output of installer with pipe $pipe and command file $DIALOG_CMD_FILE on PID $installPipePID" DEBUG
+
+        pkgInstall=$(installer -verboseR -pkg "$archiveName" -tgt "$targetDir" 2>&1 | tee $pipe)
+        pkgInstallStatus=$pipestatus[1]
+            # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+        killProcess $installPipePID
+
+    else
+        pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+        pkgInstallStatus=$(echo $?)
+    fi
+
+
+
     sleep 1
     pkgEndTime=$(date "+$LogDateFormat")
     pkgInstall+=$(echo "\nOutput of /var/log/install.log below this line.\n")
@@ -1040,7 +1085,7 @@ installPkgInZip() {
         printlog "Found pkg(s):\n$findfiles" DEBUG
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in zip $archiveName" ERROR
+            cleanupAndExit 21 "couldn't find pkg in zip $archiveName" ERROR
         fi
         # it is now safe to overwrite archiveName for installFromPKG
         archiveName="${filearray[1]}"
@@ -1053,7 +1098,7 @@ installPkgInZip() {
             findfiles=$(find "$tmpDir" -iname "$pkgName")
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
+                cleanupAndExit 21 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
@@ -1076,7 +1121,7 @@ installAppInDmgInZip() {
         findfiles=$(find "$tmpDir" -iname "*.dmg" -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find dmg in zip $archiveName" ERROR
+            cleanupAndExit 22 "couldn't find dmg in zip $archiveName" ERROR
         fi
         archiveName="$(basename ${filearray[1]})"
         # it is now safe to overwrite archiveName for installFromDMG
@@ -1128,7 +1173,8 @@ runUpdateTool() {
 
 finishing() {
     printlog "Finishing..."
-    sleep 10 # wait a moment to let spotlight catch up
+
+    sleep 3 # wait a moment to let spotlight catch up
     getAppVersion
 
     if [[ -z $appversion ]]; then
@@ -1176,6 +1222,116 @@ hasDisplaySleepAssertion() {
     return 1
 }
 
+initNamedPipe() {
+    # create or delete a named pipe
+    # commands are "create" or "delete"
+
+    local cmd=$1
+    local pipe=$2
+    case $cmd in
+        "create")
+            if [[ -e $pipe ]]; then
+                rm $pipe
+            fi
+            # make named pipe
+            mkfifo -m 644 $pipe
+            ;;
+        "delete")
+            # clean up
+            rm $pipe
+            ;;
+        *)
+            ;;
+    esac
+}
+
+readDownloadPipe() {
+    # reads from a previously created named pipe
+    # output from curl with --progress-bar. % downloaded is read in and then sent to the specified log file
+    local pipe=$1
+    local log=${2:-$DIALOG_CMD_FILE}
+    # set up read from pipe
+    while IFS= read -k 1 -u 0 char; do
+        if [[ $char =~ [0-9] ]]; then
+            keep=1
+        fi
+
+        if [[ $char == % ]]; then
+            updateDialog $progress "Downloading..."
+            progress=""
+            keep=0
+        fi
+
+        if [[ $keep == 1 ]]; then
+            progress="$progress$char"
+        fi
+    done < $pipe
+}
+
+readPKGInstallPipe() {
+    # reads from a previously created named pipe
+    # output from installer with -verboseR. % install status is read in and then sent to the specified log file
+    local pipe=$1
+    local log=${2:-$DIALOG_CMD_FILE}
+    local appname=${3:-$name}
+
+    while read -k 1 -u 0 char; do
+        if [[ $char == % ]]; then
+            keep=1
+        fi
+        if [[ $char =~ [0-9] && $keep == 1 ]]; then
+            progress="$progress$char"
+        fi
+        if [[ $char == . && $keep == 1 ]]; then
+            updateDialog $progress "Installing..."
+            progress=""
+            keep=0
+        fi
+    done < $pipe
+}
+
+killProcess() {
+    # will silently kill the specified PID
+    builtin kill $1 2>/dev/null
+}
+
+updateDialog() {
+    local state=$1
+    local message=$2
+    local listitem=${3:-$DIALOG_LIST_ITEM_NAME}
+    local cmd_file=${4:-$DIALOG_CMD_FILE}
+    local progress=""
+
+    if [[ $state =~ '^[0-9]' \
+       || $state == "reset" \
+       || $state == "increment" \
+       || $state == "complete" \
+       || $state == "indeterminate" ]]; then
+        progress=$state
+    fi
+
+    # when to cmdfile is set, do nothing
+    if [[ $$cmd_file == "" ]]; then
+        return
+    fi
+
+    if [[ $listitem == "" ]]; then
+        # no listitem set, update main progress bar and progress text
+        if [[ $progress != "" ]]; then
+            echo "progress: $progress" >> $cmd_file
+        fi
+        if [[ $message != "" ]]; then
+            echo "progresstext: $name - $message" >> $cmd_file
+        fi
+    else
+        # list item has a value, so we update the progress and text in the list
+        if [[ $progress != "" ]]; then
+            echo "listitem: title: $listitem, statustext: $message, progress: $progress" >> $cmd_file
+        else
+            echo "listitem: title: $listitem, statustext: $message, status: $state" >> $cmd_file
+        fi
+    fi
+}
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
@@ -1184,6 +1340,7 @@ if ! is-at-least 10.14 $installedOSversion; then
     printlog "Installomator requires at least macOS 10.14 Mojave." ERROR
     exit 98
 fi
+
 
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
@@ -1202,7 +1359,7 @@ fi
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" WARN
+        printlog "setting variable from argument $1" INFO
         eval $1
     else
         # assume it's a label
@@ -1275,6 +1432,16 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR
+fi
+
+
+# check Swift Dialog presence and version
+DIALOG_CMD="/usr/local/bin/dialog"
+
+if [[ ! -x $DIALOG_CMD ]]; then
+    # Swift Dialog is not installed, clear cmd file variable to ignore
+    printlog "SwiftDialog is not installed, clear cmd file var"
+    DIALOG_CMD_FILE=""
 fi
 
 # MARK: labels in case statement
@@ -3288,7 +3455,7 @@ macports)
             archiveName="Catalina.pkg"
             ;;
         *)
-            cleanupAndExit 1 "macOS 10.14 or earlier not supported by Installomator."
+            cleanupAndExit 98 "macOS 10.14 or earlier not supported by Installomator."
             ;;
     esac
     downloadURL=$(downloadURLFromGit macports macports-base)
@@ -4993,9 +5160,10 @@ vlc)
 vmwarehorizonclient)
     name="VMware Horizon Client"
     type="dmg"
-    downloadURL=$(curl -fsL "https://my.vmware.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=CART21FQ2_MAC_800&productId=1027&rPId=48989" | grep -o 'Url.*..dmg"' | cut -d '"' -f3)
-    appNewVersion=$(curl -fsL "https://my.vmware.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=CART21FQ2_MAC_800&productId=1027&rPId=48989" | sed 's/.*-\(.*\)-.*/\1/')
-    expectedTeamID="EG7KH642X6"
+    downloadGroup=$(curl -fsL "https://my.vmware.com/channel/public/api/v1.0/products/getRelatedDLGList?locale=en_US&category=desktop_end_user_computing&product=vmware_horizon_clients&version=horizon_8&dlgType=PRODUCT_BINARY" | grep -o '[^"]*_MAC_[^"]*')
+    fileName=$(curl -fsL "https://my.vmware.com/channel/public/api/v1.0/dlg/details?locale=en_US&category=desktop_end_user_computing&product=vmware_horizon_clients&dlgType=PRODUCT_BINARY&downloadGroup=${downloadGroup}" | grep -o '"fileName":"[^"]*"' | cut -d: -f2 | sed 's/"//g')
+    downloadURL="https://download3.vmware.com/software/$downloadGroup/${fileName}"
+    appNewVersion=$(curl -fsL "https://my.vmware.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=${downloadGroup}" | grep -o '[^"]*\.dmg[^"]*' | sed 's/.*-\(.*\)-.*/\1/')    expectedTeamID="EG7KH642X6"
     ;;
 vscodium)
     name="VSCodium"
@@ -5328,7 +5496,7 @@ fi
 if [[ ${INTERRUPT_DND} = "no" ]]; then
     # Check if a fullscreen app is active
     if hasDisplaySleepAssertion; then
-        cleanupAndExit 1 "active display sleep assertion detected, aborting" ERROR
+        cleanupAndExit 24 "active display sleep assertion detected, aborting" ERROR
     fi
 fi
 
@@ -5442,7 +5610,7 @@ fi
 # MARK: change directory to temporary working directory
 printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
-    cleanupAndExit 1 "error changing directory $tmpDir" ERROR
+    cleanupAndExit 13 "error changing directory $tmpDir" ERROR
 fi
 
 # MARK: get installed version
@@ -5478,6 +5646,8 @@ fi
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "appversion & updateTool"
+    updateDialog "wait" "Updating..."
+
     if [[ $DEBUG -ne 1 ]]; then
         if runUpdateTool; then
             finishing
@@ -5504,8 +5674,28 @@ else
             displaynotification "Downloading new $name" "Download in progress …"
         fi
     fi
-    curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
-    curlDownloadStatus=$(echo $?)
+
+    if [[ $DIALOG_CMD_FILE != "" ]]; then
+        # pipe
+        pipe="$tmpDir/downloadpipe"
+        # initialise named pipe for curl output
+        initNamedPipe create $pipe
+
+        # run the pipe read in the background
+        readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
+        printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
+
+        curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+        # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+        curlDownloadStatus=$(echo $pipestatus[1])
+        killProcess $downloadPipePID
+
+    else
+        printlog "No Dialog connection, just download" DEBUG
+        curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+        curlDownloadStatus=$(echo $?)
+    fi
+
     deduplicatelogs "$curlDownload"
     if [[ $curlDownloadStatus -ne 0 ]]; then
     #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
@@ -5547,8 +5737,10 @@ if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
     if [[ $updateDetected == "YES" ]]; then
         displaynotification "Updating $name" "Installation in progress …"
+        updateDialog "wait" "Updating..."
     else
         displaynotification "Installing $name" "Installation in progress …"
+        updateDialog "wait" "Installing..."
     fi
 fi
 
@@ -5584,6 +5776,8 @@ case $type in
         cleanupAndExit 99 "Cannot handle type $type" ERROR
         ;;
 esac
+
+updateDialog "wait" "Finishing..."
 
 # MARK: Finishing — print installed application location and version
 finishing
