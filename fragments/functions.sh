@@ -1023,6 +1023,11 @@ addToDock() {
         printlog "DEBUG mode 1, not modifying dock" DEBUG
         return
     fi
+    # Check that a user is logged in
+    if [[ $currentUser = "loginwindow" ]]; then
+        printlog "Can only add to dock when logged in"
+        return
+    fi
     # Check that dockutil is actually installed.
     if [ ! -e "/usr/local/bin/dockutil" ]; then
         printlog "Dockutil missing, cannot add $appName to dock"
