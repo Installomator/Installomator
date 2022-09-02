@@ -3,7 +3,10 @@
 1passwordcli
 4kvideodownloader
 8x8
+abetterfinderrename11
 abstract
+acroniscyberprotectconnect
+acroniscyberprotectconnectagent
 adobebrackets
 adobeconnect
 adobecreativeclouddesktop
@@ -72,6 +75,7 @@ camtasia2019
 camtasia2020
 camtasia2021
 canva
+carboncopycloner
 chatwork
 cisdem-documentreader
 citrixworkspace
@@ -82,12 +86,15 @@ closeio
 cloudya
 clue
 cluefull
+cocoapods
+coconutbattery
 code42
 coderunner
 colourcontrastanalyser
 cormorant
 craftmanager
 craftmanagerforsketch
+cricutdesignspace
 cryptomator
 cyberduck
 daisydisk
@@ -112,6 +119,7 @@ drift
 dropbox
 duckduckgo
 duodevicehealth
+dynalist
 easeusdatarecoverywizard
 easyfind
 egnyte
@@ -126,6 +134,7 @@ exifrenamer
 fantastical
 fastscripts
 favro
+fellow
 ferdi
 figma
 filezilla
@@ -138,6 +147,7 @@ firefoxesr_intl
 firefoxesrpkg
 firefoxpkg
 firefoxpkg_intl
+flexoptixapp
 flowjo
 flux
 flycut
@@ -147,6 +157,7 @@ fsmonitor
 gimp
 githubdesktop
 golang
+googleadseditor
 googlechrome
 googlechromeenterprise
 googlechromepkg
@@ -207,6 +218,7 @@ jetbrainswebstorm
 kap
 karabinerelements
 keepassxc
+keepingyouawake
 keka
 keybase
 keyboardmaestro
@@ -216,6 +228,7 @@ krisp
 krita
 lastpass
 launchbar
+lcadvancedvpnclient
 lexarrecoverytool
 libreoffice
 linear
@@ -235,8 +248,10 @@ malwarebytes
 marathon
 marathon2
 marathoninfinity
+masv
 mattermost
 menumeters
+merlinproject
 microsoftautoupdate
 microsoftazuredatastudio
 microsoftazurestorageexplorer
@@ -260,7 +275,6 @@ microsoftskypeforbusiness
 microsoftteams
 microsoftvisualstudiocode
 microsoftword
-microsoftyammer
 mightymike
 mindmanager
 miro
@@ -271,12 +285,14 @@ mochatelnet
 mochatn3270
 mochatn3812
 mochatn5250
+mongodbcompass
 montereyblocker
 mowgliiitsycal
 musescore
 muzzle
 nanosaur
 netnewswire
+netspot
 nextcloud
 nomad
 nomadlogin
@@ -333,6 +349,7 @@ ramboxce
 rancherdesktop
 rectangle
 redeye
+relatel
 remotedesktopmanagerenterprise
 remotedesktopmanagerfree
 remotix
@@ -377,6 +394,7 @@ snagit2020
 snagit2021
 snagit2022
 snapgeneviewer
+sonicvisualiser
 sonobus
 sonos
 sonoss1
@@ -387,6 +405,7 @@ spotify
 sqlpropostgres
 sqlprostudio
 steelseriesengine
+strongdm
 strongsync
 sublimetext
 superhuman
@@ -395,6 +414,8 @@ suspiciouspackage
 swiftdialog
 swiftruntimeforcommandlinetools
 sync
+synologyassistant
+synologydriveclient
 tableaudesktop
 tableaupublic
 tableaureader
@@ -408,6 +429,7 @@ teamviewerqs
 techsmithcapture
 telegram
 tembo
+tencentmeeting
 textexpander
 textmate
 theunarchiver
@@ -421,6 +443,7 @@ torbrowser
 trex
 tunnelbear
 tunnelblick
+typinator
 typora
 ultimakercura
 umbrellaroamingclient
@@ -447,11 +470,10 @@ webexteams
 wechat
 whatroute
 whatsapp
-wickrme
-wickrpro
 wireshark
 wordservice
 wwdc
+xcreds
 xeroxphaser7800
 xeroxworkcentre7800
 xink
