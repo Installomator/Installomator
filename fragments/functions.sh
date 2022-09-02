@@ -988,7 +988,7 @@ updateDialog() {
     fi
 
     # when to cmdfile is set, do nothing
-    if [[ $$cmd_file == "" ]]; then
+    if [[ $cmd_file == "" ]]; then
         return
     fi
 
