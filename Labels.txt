@@ -204,6 +204,7 @@ jetbrainspycharmce
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+kap
 karabinerelements
 keepassxc
 keka
