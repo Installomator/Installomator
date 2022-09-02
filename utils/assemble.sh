@@ -121,7 +121,6 @@ chmod +x $destination_file
 if [[ $runScript -eq 1 ]]; then
     $destination_file "$@"
     exit_code=$?
-    echo "exit_code is $exit_code"
 fi
 
 # copy the script to root of repo when flag is set
