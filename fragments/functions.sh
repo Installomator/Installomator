@@ -860,6 +860,8 @@ finishing() {
         message="Installed $name, version $appversion"
     fi
 
+    addToDock
+
     printlog "$message" REQ
 
     if [[ $currentUser != "loginwindow" && ( $NOTIFY == "success" || $NOTIFY == "all" ) ]]; then
@@ -1008,4 +1010,29 @@ updateDialog() {
             echo "listitem: title: $listitem, statustext: $message, status: $state" >> $cmd_file
         fi
     fi
+}
+
+addToDock() {
+    # don't add to dock if ADDTODOCK is not "yes"
+    if [[ $ADDTODOCK != "yes" ]]; then
+        printlog "ADDTODOCK=no, not adding to dock"
+        return
+    fi
+    # don't add to dock in DEBUG mode 1
+    if [[ $DEBUG -eq 1 ]]; then
+        printlog "DEBUG mode 1, not modifying dock" DEBUG
+        return
+    fi
+    # Check that dockutil is actually installed.
+    if [ ! -e "/usr/local/bin/dockutil" ]; then
+        printlog "Dockutil missing, cannot add $appName to dock"
+        return
+    fi
+    if [[ -d "$installedAppPath" ]]; then
+        printlog "Adding $appName to the dock."
+        loggedInUserDock="/Users/$currentUser/Library/Preferences/com.apple.dock.plist"
+        /usr/local/bin/dockutil --add $installedAppPath/ $loggedInUserDock &> /dev/null
+    else
+        printlog "$appNmae is a binary, will not add to dock"
+    fi 
 }
