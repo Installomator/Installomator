@@ -1013,9 +1013,9 @@ updateDialog() {
 }
 
 addToDock() {
-    # don't add to dock if ADDTODOCK is not "yes"
-    if [[ $ADDTODOCK != "yes" ]]; then
-        printlog "ADDTODOCK=no, not adding to dock"
+    # don't add to dock if ADD_TO_DOCK is not "yes"
+    if [[ $ADD_TO_DOCK != "yes" ]]; then
+        printlog "ADD_TO_DOCK=no, not adding to dock"
         return
     fi
     # don't add to dock in DEBUG mode 1

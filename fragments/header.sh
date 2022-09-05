@@ -157,9 +157,10 @@ DIALOG_LIST_ITEM_NAME=""
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
 
-# Add installed App to the end of existing user's using dockutil
-ADDTODOCK=""
+# Add installed App to the end of existing user's dock.
+ADD_TO_DOCK=""
 # When set to yes will use dockutil to add installed app to dock.
+# If the app is already present in the dock no changes will be made
 # Requires Dockutil by Kyle Crawford https://github.com/kcrawford/dockutil
 
 
