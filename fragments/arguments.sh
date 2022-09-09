@@ -7,6 +7,7 @@ if ! is-at-least 10.14 $installedOSversion; then
     exit 98
 fi
 
+
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
     if [[ -z $label ]]; then # check if label is set inside script
@@ -24,7 +25,7 @@ fi
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" WARN
+        printlog "setting variable from argument $1" INFO
         eval $1
     else
         # assume it's a label
@@ -97,6 +98,16 @@ currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print
 if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR
+fi
+
+
+# check Swift Dialog presence and version
+DIALOG_CMD="/usr/local/bin/dialog"
+
+if [[ ! -x $DIALOG_CMD ]]; then
+    # Swift Dialog is not installed, clear cmd file variable to ignore
+    printlog "SwiftDialog is not installed, clear cmd file var"
+    DIALOG_CMD_FILE=""
 fi
 
 # MARK: labels in case statement
