@@ -13,7 +13,7 @@ macports)
             archiveName="Catalina.pkg"
             ;;
         *)
-            cleanupAndExit 1 "macOS 10.14 or earlier not supported by Installomator."
+            cleanupAndExit 98 "macOS 10.14 or earlier not supported by Installomator."
             ;;
     esac
     downloadURL=$(downloadURLFromGit macports macports-base)
