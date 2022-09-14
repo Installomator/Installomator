@@ -163,7 +163,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
     if [ -n "$archiveName" ]; then
         downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
-        if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
+        if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName")" == "" ]]; then
             printlog "Trying GitHub API for download URL."
             downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
         fi
