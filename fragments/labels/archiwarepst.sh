@@ -1,4 +1,4 @@
-awpst)
+archiwarepst)
     name="P5"
     type="pkgInDmg"
     packageID="com.archiware.presstore"
