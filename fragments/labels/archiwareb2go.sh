@@ -1,4 +1,4 @@
-awb2go)
+archiwareb2go)
     name="P5 Workstation"
     type="pkgInDmg"
     packageID="com.archiware.presstore"
