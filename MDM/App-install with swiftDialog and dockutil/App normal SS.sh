@@ -1,87 +1,27 @@
 #!/bin/sh
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
-# Installation of software using `valuesfromarguments` to install a custom software using Installomator through GitHub
 
 LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-#item="gfxcardstatus" # enter the software to install (if it has a label in future version of Installomator)
-
-# Label variables below
-
-# GitHub functions
-downloadURLFromGit() { # $1 git user name, $2 git repo name
-    gitusername=${1?:"no git user name"}
-    gitreponame=${2?:"no git repo name"}
-
-    if [[ $type == "pkgInDmg" ]]; then
-        filetype="dmg"
-    elif [[ $type == "pkgInZip" ]]; then
-        filetype="zip"
-    else
-        filetype=$type
-    fi
-
-    if [ -n "$archiveName" ]; then
-        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1 || true)
-        if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName" || true)" == "" ]]; then
-            #printlog "Trying GitHub API for download URL."
-            downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }" || true)
-        fi
-    else
-        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1 || true)
-        if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype" || true)" == "" ]]; then
-            #printlog "Trying GitHub API for download URL."
-            downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }" || true)
-        fi
-    fi
-    if [ -z "$downloadURL" ]; then
-        echo "could not retrieve download URL for $gitusername/$gitreponame"
-        exit 1
-    else
-        echo "$downloadURL"
-        return 0
-    fi
-}
-versionFromGit() {
-    # credit: Søren Theilgaard (@theilgaard)
-    # $1 git user name, $2 git repo name
-    gitusername=${1?:"no git user name"}
-    gitreponame=${2?:"no git repo name"}
-
-    #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g' || true)
-    appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g' || true)
-    if [ -z "$appNewVersion" ]; then
-        #echo "could not retrieve version number for $gitusername/$gitreponame"
-        appNewVersion=""
-    else
-        echo "$appNewVersion"
-        return 0
-    fi
-}
-
-# Variables for label
-name="gfxCardStatus"
-type="zip"
-downloadURL="$(downloadURLFromGit codykrieger gfxCardStatus)"
-appNewVersion="$(versionFromGit codykrieger gfxCardStatus)"
-expectedTeamID="LF22FTQC25"
+item="cyberduck" # enter the software to install
+# Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
 
 # Dialog icon
-icon=""
-# icon should be a file system path or an URL to an online PNG.
+icon="https://mosylebusinessweb.blob.core.windows.net/envoit-public/customcommand_icon-envoit_666767b6276ff1f31b1ff9719639cf36f761f29f63f2ff17fc.png"
+# icon should be a file system path or an URL to an online PNG, so beginning with either “/” or “http”.
 # In Mosyle an URL can be found by copy picture address from a Custom Command icon.
 
 # dockutil variables
-addToDock="1" # with dockutil after installation (0 if not)
-appPath="/Applications/$name.app"
+addToDock="0" # with dockutil after installation (0 if not)
+appPath="/Applications/Cyberduck.app"
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
 dialogApp="/Library/Application Support/Dialog/Dialog.app"
 dockutil="/usr/local/bin/dockutil"
 
-installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=silent DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
+installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
 
 # Other installomatorOptions:
 #   LOGGING=REQ
@@ -95,9 +35,6 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=silent DIALOG_C
 #   BLOCKING_PROCESS_ACTION=prompt_user_then_kill
 #   BLOCKING_PROCESS_ACTION=quit
 #   BLOCKING_PROCESS_ACTION=kill
-#   NOTIFY=all
-#   NOTIFY=success
-#   NOTIFY=silent
 #   IGNORE_APP_STORE_APPS=yes
 #   INSTALL=force
 ######################################################################
@@ -105,9 +42,10 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=silent DIALOG_C
 # Fill the variable "item" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
-# v. 10.1 : github-functions added. Improved appIcon handling. Can add the app to Dock using dockutil.
-# v. 10   : Integration with Dialog and Installomator v. 10
-# v.  9.3 : Better logging handling and installomatorOptions fix.
+# v. 10.0.2 : Improved icon checks and failovers
+# v. 10.0.1 : Improved appIcon handling. Can add the app to Dock using dockutil
+# v. 10.0   : Integration with Dialog and Installomator v. 10
+# v.  9.3   : Better logging handling and installomatorOptions fix.
 ######################################################################
 
 # Mark: Script
@@ -178,7 +116,7 @@ if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion) < "20A" ]];
     echo "And macOS 11 Big Sur (build 20A) is required for Dialog. Installed build $(sw_vers -buildVersion)."
     installomatorNotify="NOTIFY=all"
 else
-    installomatorNotify=""
+    installomatorNotify="NOTIFY=silent"
     # check for Swift Dialog
     if [[ ! -d $dialogApp ]]; then
         echo "Cannot find dialog at $dialogApp"
@@ -188,8 +126,7 @@ else
     fi
 
     # Configure and display swiftDialog
-    #itemName=$( ${destFile} ${item} RETURN_LABEL_NAME=1 LOGGING=REQ INSTALL=force | tail -1 || true )
-    itemName="$name"
+    itemName=$( ${destFile} ${item} RETURN_LABEL_NAME=1 LOGGING=REQ INSTALL=force | tail -1 || true )
     if [[ "$itemName" != "#" ]]; then
         message="Installing ${itemName}…"
     else
@@ -197,6 +134,25 @@ else
     fi
     echo "$item $itemName"
     
+    #Check icon (expecting beginning with “http” to be web-link and “/” to be disk file)
+    echo "icon before check: $icon"
+    if [[ "$(echo ${icon} | grep -iE "^(http|ftp).*")" != ""  ]]; then
+        echo "icon looks to be web-link"
+        if ! curl -sfL --output /dev/null -r 0-0 "${icon}" ; then
+            echo "ERROR: Cannot download link. Reset icon."
+            icon=""
+        fi
+    elif [[ "$(echo ${icon} | grep -iE "^\/.*")" != "" ]]; then
+        echo "icon looks to be a file"
+        if [[ ! -a "${icon}" ]]; then
+            echo "ERROR: Cannot find file. Reset icon."
+            icon=""
+        fi
+    else
+        echo "ERROR: Cannot figure out icon. Reset icon."
+        icon=""
+    fi
+    echo "icon after first check: $icon"
     # If no icon defined we are trying to search for installed app icon
     if [[ "$icon" == "" ]]; then
         appPath=$(mdfind "kind:application AND name:$itemName" | head -1 || true)
@@ -205,12 +161,56 @@ else
             appIcon="${appIcon}.icns"
         fi
         icon="${appPath}/Contents/Resources/${appIcon}"
-        echo "${icon}"
+        echo "Icon before file check: ${icon}"
         if [ ! -f "${icon}" ]; then
-            icon="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+            # Using LOGO variable to show logo in swiftDialog
+            case $LOGO in
+                appstore)
+                    # Apple App Store on Mac
+                    if [[ $(sw_vers -buildVersion) > "19" ]]; then
+                        LOGO_PATH="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+                    else
+                        LOGO_PATH="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+                    fi
+                    ;;
+                jamf)
+                    # Jamf Pro
+                    LOGO_PATH="/Library/Application Support/JAMF/Jamf.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                mosyleb)
+                    # Mosyle Business
+                    LOGO_PATH="/Applications/Self-Service.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                mosylem)
+                    # Mosyle Manager (education)
+                    LOGO_PATH="/Applications/Manager.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                addigy)
+                    # Addigy
+                    LOGO_PATH="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
+                    ;;
+                microsoft)
+                    # Microsoft Endpoint Manager (Intune)
+                    LOGO_PATH="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                ws1)
+                    # Workspace ONE (AirWatch)
+                    LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+                    ;;
+            esac
+            if [[ ! -a "${LOGO_PATH}" ]]; then
+                printlog "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
+                if [[ $(/usr/bin/sw_vers -buildVersion) > "19" ]]; then
+                    LOGO_PATH="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+                else
+                    LOGO_PATH="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+                fi
+            fi
+            icon="${LOGO_PATH}"
         fi
     fi
-    echo "${icon}"
+    echo "LOGO: $LOGO"
+    echo "icon: ${icon}"
 
     # display first screen
     open -a "$dialogApp" --args \
@@ -227,15 +227,8 @@ else
     sleep 0.1
 fi
 
-# Install software using Installomator with valuesfromarguments
-cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
-    name=${name} \
-    type=${type} \
-    downloadURL=\"$downloadURL\" \
-    appNewVersion=${appNewVersion} \
-    expectedTeamID=${expectedTeamID} \
-    ${installomatorOptions} || true)"
-
+# Install software using Installomator
+cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installomatorNotify} || true)"
 checkCmdOutput $cmdOutput
 
 # Mark: dockutil stuff

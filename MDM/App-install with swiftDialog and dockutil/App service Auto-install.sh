@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
+# Installation using Installomator
 
-LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="addigy" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-item="" # enter the software to install
-# Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
+item="xink" # enter the software to install
+# Examples: desktoppr, dockutil, supportapp, applenyfonts, applesfpro, applesfmono, applesfcompact, nomad, nudge, shield, xink
 
 # Dialog icon
 icon=""
@@ -14,14 +14,14 @@ icon=""
 
 # dockutil variables
 addToDock="1" # with dockutil after installation (0 if not)
-appPath="/Applications/.app"
+appPath="/Applications/Xink.app"
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
 dialogApp="/Library/Application Support/Dialog/Dialog.app"
 dockutil="/usr/local/bin/dockutil"
 
-installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=silent DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
+installomatorOptions="BLOCKING_PROCESS_ACTION=ignore NOTIFY=silent DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
 
 # Other installomatorOptions:
 #   LOGGING=REQ
@@ -45,9 +45,10 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=silent DIALOG_C
 # Fill the variable "item" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
-# v. 10.1 : Improved appIcon handling. Can add the app to Dock using dockutil
-# v. 10   : Integration with Dialog and Installomator v. 10
-# v.  9.3 : Better logging handling and installomatorOptions fix.
+# v. 10.0.2 : Improved icon checks and failovers
+# v. 10.0.1 : Can add the app to Dock using dockutil
+# v. 10.0   : Integration with Dialog and Installomator v. 10
+# v.  9.3   : Better logging handling and installomatorOptions fix.
 ######################################################################
 
 # Mark: Script
@@ -118,7 +119,7 @@ if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion) < "20A" ]];
     echo "And macOS 11 Big Sur (build 20A) is required for Dialog. Installed build $(sw_vers -buildVersion)."
     installomatorNotify="NOTIFY=all"
 else
-    installomatorNotify=""
+    installomatorNotify="NOTIFY=silent"
     # check for Swift Dialog
     if [[ ! -d $dialogApp ]]; then
         echo "Cannot find dialog at $dialogApp"
@@ -136,6 +137,25 @@ else
     fi
     echo "$item $itemName"
     
+    #Check icon (expecting beginning with “http” to be web-link and “/” to be disk file)
+    echo "icon before check: $icon"
+    if [[ "$(echo ${icon} | grep -iE "^(http|ftp).*")" != ""  ]]; then
+        echo "icon looks to be web-link"
+        if ! curl -sfL --output /dev/null -r 0-0 "${icon}" ; then
+            echo "ERROR: Cannot download link. Reset icon."
+            icon=""
+        fi
+    elif [[ "$(echo ${icon} | grep -iE "^\/.*")" != "" ]]; then
+        echo "icon looks to be a file"
+        if [[ ! -a "${icon}" ]]; then
+            echo "ERROR: Cannot find file. Reset icon."
+            icon=""
+        fi
+    else
+        echo "ERROR: Cannot figure out icon. Reset icon."
+        icon=""
+    fi
+    echo "icon after first check: $icon"
     # If no icon defined we are trying to search for installed app icon
     if [[ "$icon" == "" ]]; then
         appPath=$(mdfind "kind:application AND name:$itemName" | head -1 || true)
@@ -144,12 +164,56 @@ else
             appIcon="${appIcon}.icns"
         fi
         icon="${appPath}/Contents/Resources/${appIcon}"
-        echo "${icon}"
+        echo "Icon before file check: ${icon}"
         if [ ! -f "${icon}" ]; then
-            icon="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+            # Using LOGO variable to show logo in swiftDialog
+            case $LOGO in
+                appstore)
+                    # Apple App Store on Mac
+                    if [[ $(sw_vers -buildVersion) > "19" ]]; then
+                        LOGO_PATH="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+                    else
+                        LOGO_PATH="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+                    fi
+                    ;;
+                jamf)
+                    # Jamf Pro
+                    LOGO_PATH="/Library/Application Support/JAMF/Jamf.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                mosyleb)
+                    # Mosyle Business
+                    LOGO_PATH="/Applications/Self-Service.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                mosylem)
+                    # Mosyle Manager (education)
+                    LOGO_PATH="/Applications/Manager.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                addigy)
+                    # Addigy
+                    LOGO_PATH="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
+                    ;;
+                microsoft)
+                    # Microsoft Endpoint Manager (Intune)
+                    LOGO_PATH="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                ws1)
+                    # Workspace ONE (AirWatch)
+                    LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+                    ;;
+            esac
+            if [[ ! -a "${LOGO_PATH}" ]]; then
+                printlog "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
+                if [[ $(/usr/bin/sw_vers -buildVersion) > "19" ]]; then
+                    LOGO_PATH="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+                else
+                    LOGO_PATH="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
+                fi
+            fi
+            icon="${LOGO_PATH}"
         fi
     fi
-    echo "${icon}"
+    echo "LOGO: $LOGO"
+    echo "icon: ${icon}"
 
     # display first screen
     open -a "$dialogApp" --args \
