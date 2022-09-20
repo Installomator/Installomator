@@ -4,17 +4,17 @@
 
 LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-item="cyberduck" # enter the software to install
+item="microsoftoffice365" # enter the software to install
 # Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
 
 # Dialog icon
-icon="https://mosylebusinessweb.blob.core.windows.net/envoit-public/customcommand_icon-envoit_666767b6276ff1f31b1ff9719639cf36f761f29f63f2ff17fc.png"
-# icon should be a file system path or an URL to an online PNG, so beginning with either “/” or “http”.
+icon=""
+# icon should be a file system path or an URL to an online PNG.
 # In Mosyle an URL can be found by copy picture address from a Custom Command icon.
 
 # dockutil variables
-addToDock="0" # with dockutil after installation (0 if not)
-appPath="/Applications/Cyberduck.app"
+addToDock="1" # with dockutil after installation (0 if not)
+appPaths=("/Applications/Microsoft Outlook.app" "/Applications/Microsoft Word.app" "/Applications/Microsoft Excel.app" "/Applications/Microsoft PowerPoint.app" "/Applications/Microsoft OneNote.app")
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
@@ -35,6 +35,9 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 #   BLOCKING_PROCESS_ACTION=prompt_user_then_kill
 #   BLOCKING_PROCESS_ACTION=quit
 #   BLOCKING_PROCESS_ACTION=kill
+#   NOTIFY=all
+#   NOTIFY=success
+#   NOTIFY=silent
 #   IGNORE_APP_STORE_APPS=yes
 #   INSTALL=force
 ######################################################################
@@ -45,7 +48,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 # v. 10.0.2 : Improved icon checks and failovers
 # v. 10.0.1 : Improved appIcon handling. Can add the app to Dock using dockutil
 # v. 10.0   : Integration with Dialog and Installomator v. 10
-# v.  9.3   : Better logging handling and installomatorOptions fix.
+# v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
 
 # Mark: Script
@@ -241,7 +244,10 @@ if [[ $addToDock -eq 1 ]]; then
         checkCmdOutput $cmdOutput
     fi
     echo "Adding to Dock"
-    $dockutil  --add "${appPath}" "${userHome}/Library/Preferences/com.apple.dock.plist" || true
+    for appPath in "${appPaths[@]}"; do
+        $dockutil --add "${appPath}" "${userHome}/Library/Preferences/com.apple.dock.plist" --no-restart || true
+    done
+    $dockutil --add "/AppThatDoesNotExistAnywhereOnDiskButMakingDockutilRestartTheDock" "${userHome}/Library/Preferences/com.apple.dock.plist" || true
     sleep 1
 else
     echo "Not adding to Dock."

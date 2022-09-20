@@ -48,7 +48,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user_then_quit DIALOG_CMD_FIL
 # v. 10.0.2 : Improved icon checks and failovers
 # v. 10.0.1 : Improved appIcon handling. Can add the app to Dock using dockutil
 # v. 10.0   : Integration with Dialog and Installomator v. 10
-# v.  9.3   : Better logging handling and installomatorOptions fix.
+# v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
 
 # Mark: Script

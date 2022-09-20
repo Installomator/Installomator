@@ -31,7 +31,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=all" # Separate
 # Fill the variable "what" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
-# v.  9.3 : Better logging handling and installomatorOptions fix.
+# v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
 
 # Mark: Script

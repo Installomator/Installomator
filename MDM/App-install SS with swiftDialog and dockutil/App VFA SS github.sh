@@ -1,11 +1,71 @@
 #!/bin/sh
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
+# Installation of software using `valuesfromarguments` to install a custom software using Installomator through GitHub
 
 LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-item="microsoftoffice365" # enter the software to install
-# Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
+#item="gfxcardstatus" # enter the software to install (if it has a label in future version of Installomator)
+
+# Label variables below
+
+# GitHub functions
+downloadURLFromGit() { # $1 git user name, $2 git repo name
+    gitusername=${1?:"no git user name"}
+    gitreponame=${2?:"no git repo name"}
+
+    if [[ $type == "pkgInDmg" ]]; then
+        filetype="dmg"
+    elif [[ $type == "pkgInZip" ]]; then
+        filetype="zip"
+    else
+        filetype=$type
+    fi
+
+    if [ -n "$archiveName" ]; then
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1 || true)
+        if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName" || true)" == "" ]]; then
+            #printlog "Trying GitHub API for download URL."
+            downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }" || true)
+        fi
+    else
+        downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1 || true)
+        if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype" || true)" == "" ]]; then
+            #printlog "Trying GitHub API for download URL."
+            downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }" || true)
+        fi
+    fi
+    if [ -z "$downloadURL" ]; then
+        echo "could not retrieve download URL for $gitusername/$gitreponame"
+        exit 1
+    else
+        echo "$downloadURL"
+        return 0
+    fi
+}
+versionFromGit() {
+    # credit: Søren Theilgaard (@theilgaard)
+    # $1 git user name, $2 git repo name
+    gitusername=${1?:"no git user name"}
+    gitreponame=${2?:"no git repo name"}
+
+    #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g' || true)
+    appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g' || true)
+    if [ -z "$appNewVersion" ]; then
+        #echo "could not retrieve version number for $gitusername/$gitreponame"
+        appNewVersion=""
+    else
+        echo "$appNewVersion"
+        return 0
+    fi
+}
+
+# Variables for label
+name="gfxCardStatus"
+type="zip"
+downloadURL="$(downloadURLFromGit codykrieger gfxCardStatus)"
+appNewVersion="$(versionFromGit codykrieger gfxCardStatus)"
+expectedTeamID="LF22FTQC25"
 
 # Dialog icon
 icon=""
@@ -14,7 +74,7 @@ icon=""
 
 # dockutil variables
 addToDock="1" # with dockutil after installation (0 if not)
-appPaths=("/Applications/Microsoft Outlook.app" "/Applications/Microsoft Word.app" "/Applications/Microsoft Excel.app" "/Applications/Microsoft PowerPoint.app" "/Applications/Microsoft OneNote.app")
+appPath="/Applications/$name.app"
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
@@ -46,9 +106,9 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 # Script will run this label through Installomator.
 ######################################################################
 # v. 10.0.2 : Improved icon checks and failovers
-# v. 10.0.1 : Improved appIcon handling. Can add the app to Dock using dockutil
+# v. 10.0.1 : github-functions added. Improved appIcon handling. Can add the app to Dock using dockutil.
 # v. 10.0   : Integration with Dialog and Installomator v. 10
-# v.  9.3   : Better logging handling and installomatorOptions fix.
+# v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
 
 # Mark: Script
@@ -230,8 +290,15 @@ else
     sleep 0.1
 fi
 
-# Install software using Installomator
-cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installomatorNotify} || true)"
+# Install software using Installomator with valuesfromarguments
+cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
+    name=${name} \
+    type=${type} \
+    downloadURL=\"$downloadURL\" \
+    appNewVersion=${appNewVersion} \
+    expectedTeamID=${expectedTeamID} \
+    ${installomatorOptions} || true)"
+
 checkCmdOutput $cmdOutput
 
 # Mark: dockutil stuff
@@ -244,10 +311,7 @@ if [[ $addToDock -eq 1 ]]; then
         checkCmdOutput $cmdOutput
     fi
     echo "Adding to Dock"
-    for appPath in "${appPaths[@]}"; do
-        $dockutil --add "${appPath}" "${userHome}/Library/Preferences/com.apple.dock.plist" --no-restart || true
-    done
-    $dockutil --add "/AppThatDoesNotExistAnywhereOnDiskButMakingDockutilRestartTheDock" "${userHome}/Library/Preferences/com.apple.dock.plist" || true
+    $dockutil  --add "${appPath}" "${userHome}/Library/Preferences/com.apple.dock.plist" || true
     sleep 1
 else
     echo "Not adding to Dock."

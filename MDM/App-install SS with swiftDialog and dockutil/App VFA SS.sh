@@ -1,11 +1,18 @@
 #!/bin/sh
 
-# Installation using Installomator
+# Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
+# Installation of software using `valuesfromarguments` to install a custom software using Installomator
 
-LOGO="addigy" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-item="xink" # enter the software to install
-# Examples: desktoppr, dockutil, supportapp, applenyfonts, applesfpro, applesfmono, applesfcompact, nomad, nudge, shield, xink
+#item="" # enter the software to install (if it has a label in future version of Installomator)
+
+# Variables for label
+name="ClickShare"
+type="appInDmgInZip"
+downloadURL="https://www.barco.com$( curl -fs "https://www.barco.com/en/clickshare/app" | grep -A6 -i "macos" | grep -i "FileNumber" | tr '"' "\n" | grep -i "FileNumber" )"
+appNewVersion="$(eval "$( echo $downloadURL | sed -E 's/.*(MajorVersion.*BuildVersion=[0-9]*).*/\1/' | sed 's/&amp//g' )" ; ((MajorVersion++)) ; ((MajorVersion--)); ((MinorVersion++)) ; ((MinorVersion--)); ((PatchVersion++)) ; ((PatchVersion--)); ((BuildVersion++)) ; ((BuildVersion--)); echo "${MajorVersion}.${MinorVersion}.${PatchVersion}-b${BuildVersion}")"
+expectedTeamID="P6CDJZR997"
 
 # Dialog icon
 icon=""
@@ -14,14 +21,14 @@ icon=""
 
 # dockutil variables
 addToDock="1" # with dockutil after installation (0 if not)
-appPath="/Applications/Xink.app"
+appPath="/Applications/$name.app"
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
 dialogApp="/Library/Application Support/Dialog/Dialog.app"
 dockutil="/usr/local/bin/dockutil"
 
-installomatorOptions="BLOCKING_PROCESS_ACTION=ignore NOTIFY=silent DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
+installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
 
 # Other installomatorOptions:
 #   LOGGING=REQ
@@ -46,9 +53,9 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=ignore NOTIFY=silent DIALOG_CMD_FI
 # Script will run this label through Installomator.
 ######################################################################
 # v. 10.0.2 : Improved icon checks and failovers
-# v. 10.0.1 : Can add the app to Dock using dockutil
+# v. 10.0.1 : Improved appIcon handling. Can add the app to Dock using dockutil
 # v. 10.0   : Integration with Dialog and Installomator v. 10
-# v.  9.3   : Better logging handling and installomatorOptions fix.
+# v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
 
 # Mark: Script
@@ -94,7 +101,8 @@ uid=$(id -u "$currentUser")
 userHome="$(dscl . -read /users/${currentUser} NFSHomeDirectory | awk '{print $2}')"
 
 # Verify that Installomator has been installed
-destFile="/usr/local/Installomator/Installomator.sh"
+#destFile="/usr/local/Installomator/Installomator.sh"
+destFile="/usr/local/Installomator/Installomator10.sh"
 if [ ! -e "${destFile}" ]; then
     echo "Installomator not found here:"
     echo "${destFile}"
@@ -230,8 +238,15 @@ else
     sleep 0.1
 fi
 
-# Install software using Installomator
-cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installomatorNotify} || true)"
+# Install software using Installomator with valuesfromarguments
+cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
+    name=${name} \
+    type=${type} \
+    downloadURL=\"$downloadURL\" \
+    appNewVersion=${appNewVersion} \
+    expectedTeamID=${expectedTeamID} \
+    ${installomatorOptions} || true)"
+
 checkCmdOutput $cmdOutput
 
 # Mark: dockutil stuff

@@ -1,27 +1,20 @@
 #!/bin/sh
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
-# Installation of software using `valuesfromarguments` to install a custom software using Installomator
 
 LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-#item="" # enter the software to install (if it has a label in future version of Installomator)
-
-# Variables for label
-name="ClickShare"
-type="appInDmgInZip"
-downloadURL="https://www.barco.com$( curl -fs "https://www.barco.com/en/clickshare/app" | grep -A6 -i "macos" | grep -i "FileNumber" | tr '"' "\n" | grep -i "FileNumber" )"
-appNewVersion="$(eval "$( echo $downloadURL | sed -E 's/.*(MajorVersion.*BuildVersion=[0-9]*).*/\1/' | sed 's/&amp//g' )" ; ((MajorVersion++)) ; ((MajorVersion--)); ((MinorVersion++)) ; ((MinorVersion--)); ((PatchVersion++)) ; ((PatchVersion--)); ((BuildVersion++)) ; ((BuildVersion--)); echo "${MajorVersion}.${MinorVersion}.${PatchVersion}-b${BuildVersion}")"
-expectedTeamID="P6CDJZR997"
+item="cyberduck" # enter the software to install
+# Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
 
 # Dialog icon
-icon=""
-# icon should be a file system path or an URL to an online PNG.
+icon="https://mosylebusinessweb.blob.core.windows.net/envoit-public/customcommand_icon-envoit_666767b6276ff1f31b1ff9719639cf36f761f29f63f2ff17fc.png"
+# icon should be a file system path or an URL to an online PNG, so beginning with either “/” or “http”.
 # In Mosyle an URL can be found by copy picture address from a Custom Command icon.
 
 # dockutil variables
-addToDock="1" # with dockutil after installation (0 if not)
-appPath="/Applications/$name.app"
+addToDock="0" # with dockutil after installation (0 if not)
+appPath="/Applications/Cyberduck.app"
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
@@ -42,9 +35,6 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 #   BLOCKING_PROCESS_ACTION=prompt_user_then_kill
 #   BLOCKING_PROCESS_ACTION=quit
 #   BLOCKING_PROCESS_ACTION=kill
-#   NOTIFY=all
-#   NOTIFY=success
-#   NOTIFY=silent
 #   IGNORE_APP_STORE_APPS=yes
 #   INSTALL=force
 ######################################################################
@@ -55,7 +45,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 # v. 10.0.2 : Improved icon checks and failovers
 # v. 10.0.1 : Improved appIcon handling. Can add the app to Dock using dockutil
 # v. 10.0   : Integration with Dialog and Installomator v. 10
-# v.  9.3   : Better logging handling and installomatorOptions fix.
+# v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
 
 # Mark: Script
@@ -101,8 +91,7 @@ uid=$(id -u "$currentUser")
 userHome="$(dscl . -read /users/${currentUser} NFSHomeDirectory | awk '{print $2}')"
 
 # Verify that Installomator has been installed
-#destFile="/usr/local/Installomator/Installomator.sh"
-destFile="/usr/local/Installomator/Installomator10.sh"
+destFile="/usr/local/Installomator/Installomator.sh"
 if [ ! -e "${destFile}" ]; then
     echo "Installomator not found here:"
     echo "${destFile}"
@@ -238,15 +227,8 @@ else
     sleep 0.1
 fi
 
-# Install software using Installomator with valuesfromarguments
-cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
-    name=${name} \
-    type=${type} \
-    downloadURL=\"$downloadURL\" \
-    appNewVersion=${appNewVersion} \
-    expectedTeamID=${expectedTeamID} \
-    ${installomatorOptions} || true)"
-
+# Install software using Installomator
+cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installomatorNotify} || true)"
 checkCmdOutput $cmdOutput
 
 # Mark: dockutil stuff
