@@ -1,28 +1,31 @@
 #!/bin/sh
 
-# Installation using Installomator
+# Installomator 1st installation with DEPNotify window (auto installation at enrollment)
 instance="Instance" # Name of used instance
 
 LOGO="mosyleb" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-what=(dialog dockutil microsoftautoupdate supportapp xink zohoworkdrivetruesync textmate applenyfonts applesfpro applesfmono applesfcompact 1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
+what=(dialog dockutil microsoftautoupdate supportapp applenyfonts applesfpro applesfmono applesfcompact xink zohoworkdrivetruesync textmate 1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
 # Remember: dialog dockutil
 
 installomatorOptions="NOTIFY=silent BLOCKING_PROCESS_ACTION=ignore INSTALL=force IGNORE_APP_STORE_APPS=yes LOGGING=REQ"
 
-# Error message to user if any occur
-showError="1" # Show error message if 1 (0 if it should not be shown)
+# DEPNotify display settings, change as desired
+title="Installing Apps and other software"
+message="Please wait while we download and install the needed software."
+endMessage="Installation complete! Please reboot to activate FileVault."
 errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 
 ######################################################################
-# Installomator 1st
+# Installomator 1st DEPNotify
 #
-# Installation using Installomator (use separate Installation1stProgress script to show progress)
+# Installation using Installomator showing progress with DEPNotify
+# Great stand-alone solution if installs are only done using Installomator.
 # No customization below…
 ######################################################################
 # This script can be used to install software using Installomator.
-# Script will display a dialog if any errors happens.
-# User is not notified about installations.
+# Script will start DEPNotify to display a progress bar.
+# Progress bar moves between installations
 ######################################################################
 # Other installomatorOptions:
 #   LOGGING=REQ
@@ -52,11 +55,14 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #
 ######################################################################
 scriptVersion="9.4"
-# v.  9.4   : 2022-09-14 : Making error message optional. downloadURL can fall back on GitHub API.
+# v.  9.4   : 2022-09-14 : downloadURL can fall back on GitHub API
 # v.  9.3   : 2022-08-29 : installomatorOptions in quotes and ignore blocking processes. Improved installation with looping if it fails, so it can try again. Improved GitHub handling. ws1 support.
 # v.  9.2.2 : 2022-06-17 : installomatorOptions introduced. Check 1.1.1.1 for internet connection.
 # v.  9.2.1 : 2022-05-30 : Some changes to logging
-# v.  9.2   : 2022-05-19 : Built in installer for Installomator, and display dialog if error happens. Now universal script for all supported MDMs based on LOGO variable.
+# v.  9.2   : 2022-05-19 : Built in installer for Installlomator, and display dialog if error happens. Now universal script for all supported MDMs based on LOGO variable.
+# v.  9.1   : 2022-04-13 : Using INSTALL=force in Label only, so Microsoft labels will not start updating
+# v.  9.0.1 : 2022-02-21 : LOGO=addigy, few more "true" lines, and errorOutput on error
+# v.  9.0.0 : 2022-02-14 : Updated for Inst. 9.0, Logging improved with printlog
 ######################################################################
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
@@ -77,7 +83,7 @@ case $LOGO in
 esac
 
 # Mark: Constants, logging and caffeinate
-log_message="$instance: Installomator 1st, v$scriptVersion"
+log_message="$instance: Installomator 1st with DEPNotify, v$scriptVersion"
 label="1st-v$scriptVersion"
 
 log_location="/private/var/log/Installomator.log"
@@ -94,7 +100,7 @@ printlog "[LOG-BEGIN] ${log_message}"
 # Internet check
 if [[ "$(nc -z -v -G 10 1.1.1.1 53 2>&1 | grep -io "succeeded")" != "succeeded" ]]; then
     printlog "ERROR. No internet connection, we cannot continue."
-    caffexit 90
+    exit 90
 fi
 
 # No sleeping
@@ -106,6 +112,9 @@ caffexit () {
     printlog "[LOG-END] Status $1"
     exit $1
 }
+
+# Command-file to DEPNotify
+DEPNOTIFY_LOG="/var/tmp/depnotify.log"
 
 # Counters
 errorCount=0
@@ -155,10 +164,31 @@ if [[ ! -a "${LOGO_PATH}" ]]; then
         LOGO_PATH="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
     fi
 fi
-printlog "LOGO: $LOGO – LOGO_PATH: $LOGO_PATH"
+printlog "LOGO: $LOGO - LOGO_PATH: $LOGO_PATH"
 
 # Mark: Functions
+printlog "depnotify_command function"
+echo "" > $DEPNOTIFY_LOG || true
+function depnotify_command(){
+    printlog "DEPNotify-command: $1"
+    echo "$1" >> $DEPNOTIFY_LOG || true
+}
+
+printlog "startDEPNotify function"
+function startDEPNotify() {
+    currentUser="$(stat -f "%Su" /dev/console)"
+    currentUserID=$(id -u "$currentUser")
+    launchctl asuser $currentUserID open -a "/Applications/Utilities/DEPNotify.app/Contents/MacOS/DEPNotify" --args -path "$DEPNOTIFY_LOG" || true # --args -fullScreen
+    sleep 5
+    depnotify_command "Command: KillCommandFile:"
+    depnotify_command "Command: MainTitle: $title"
+    depnotify_command "Command: Image: $LOGO_PATH"
+    depnotify_command "Command: MainText: $message"
+    depnotify_command "Command: Determinate: $countLabels"
+}
+
 # Notify the user using AppleScript
+printlog "displayDialog function"
 function displayDialog(){
     currentUser="$(stat -f "%Su" /dev/console)"
     currentUserID=$(id -u "$currentUser")
@@ -256,14 +286,33 @@ else
     printlog "$name version $appNewVersion already found. Perfect!"
 fi
 
+# Installing DEPNotify
+cmdOutput="$( ${destFile} depnotify LOGO=$LOGO NOTIFY=silent BLOCKING_PROCESS_ACTION=ignore LOGGING=WARN || true )"
+exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
+printlog "DEPNotify install result: $exitStatus"
+
+itemName=""
 errorLabels=""
 ((countLabels++))
 ((countLabels--))
 printlog "$countLabels labels to install"
 
+startDEPNotify
+
 for item in "${what[@]}"; do
-    printlog "$item"
+    # Check if DEPNotify is running and try open it if not
+    if ! pgrep -xq "DEPNotify"; then
+        startDEPNotify
+    fi
+    itemName=$( ${destFile} ${item} RETURN_LABEL_NAME=1 LOGGING=REQ INSTALL=force | tail -1 || true )
+    if [[ "$itemName" != "#" ]]; then
+        depnotify_command "Status: $itemName installing…"
+    else
+        depnotify_command "Status: $item installing…"
+    fi
+    printlog "$item $itemName"
     cmdOutput="$( ${destFile} ${item} LOGO=$LOGO ${installomatorOptions} || true )"
+    #cmdOutput="2022-05-19 13:20:45 : REQ   : installomator : ################## End Installomator, exit code 0"
     exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
     if [[ ${exitStatus} -eq 0 ]] ; then
         printlog "${item} succesfully installed."
@@ -292,14 +341,18 @@ fi
 # Show error to user if any
 printlog "Errors: $errorCount"
 if [[ $errorCount -ne 0 ]]; then
-    printlog "ERROR: Display error dialog to user!"
     errorMessage="${errorMessage} Total errors: $errorCount"
-    if [[ $showError -eq 1 ]]; then
-        message="$errorMessage"
-        displayDialog &
-    fi
+    message="$errorMessage"
+    displayDialog &
+    endMessage="$message"
     printlog "errorLabels: $errorLabels"
 fi
+
+depnotify_command "Command: MainText: $endMessage"
+depnotify_command "Command: Quit: $endMessage"
+
+sleep 1
+printlog "Remove $(rm -fv $DEPNOTIFY_LOG || true)"
 
 printlog "Ending"
 caffexit $errorCount

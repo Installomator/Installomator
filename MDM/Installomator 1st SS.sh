@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Installation using Installomator
+# Installomator 1st installation (for Self Service deployment)
 instance="Instance" # Name of used instance
 
 LOGO="mosyleb" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
@@ -11,6 +11,7 @@ what=(dialog dockutil microsoftautoupdate supportapp applenyfonts applesfpro app
 installomatorOptions="NOTIFY=all BLOCKING_PROCESS_ACTION=prompt_user"
 
 # Error message to user if any occur
+showError="1" # Show error message if 1 (0 if it should not be shown)
 errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 
 ######################################################################
@@ -51,11 +52,11 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #
 ######################################################################
 scriptVersion="9.4"
-# v.  9.4   : 2022-09-14 : downloadURL can fall back on GitHub API
+# v.  9.4   : 2022-09-14 : Making error message optional. downloadURL can fall back on GitHub API.
 # v.  9.3   : 2022-08-29 : installomatorOptions in quotes and ignore blocking processes. Improved installation with looping if it fails, so it can try again. Improved GitHub handling. ws1 support.
 # v.  9.2.2 : 2022-06-17 : installomatorOptions introduced. Check 1.1.1.1 for internet connection.
 # v.  9.2.1 : 2022-05-30 : Some changes to logging
-# v.  9.2   : 2022-05-19 : Built in installer for Installlomator, and display dialog if error happens. Now universal script for all supported MDMs based on LOGO variable.
+# v.  9.2   : 2022-05-19 : Built in installer for Installomator, and display dialog if error happens. Now universal script for all supported MDMs based on LOGO variable.
 ######################################################################
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
@@ -293,8 +294,10 @@ printlog "Errors: $errorCount"
 if [[ $errorCount -ne 0 ]]; then
     printlog "ERROR: Display error dialog to user!"
     errorMessage="${errorMessage} Total errors: $errorCount"
-    message="$errorMessage"
-    displayDialog &
+    if [[ $showError -eq 1 ]]; then
+        message="$errorMessage"
+        displayDialog &
+    fi
     printlog "errorLabels: $errorLabels"
 fi
 

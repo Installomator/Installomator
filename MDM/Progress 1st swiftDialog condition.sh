@@ -3,7 +3,7 @@
 # Mark: Addigy Condition on condition file
 # Install on success
 
-conditionFile="/var/db/.Installation1stProgressDone"
+conditionFile="/var/db/.Progress1stDone"
 if [ -e "$conditionFile" ]; then
     echo "$conditionFile exists. Exiting."
     exit 1

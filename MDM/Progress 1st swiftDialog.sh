@@ -1,68 +1,97 @@
 #!/bin/sh
 
-# Installation using Installomator with DEPNotify window
+# Progress 1st with swiftDialog (auto installation at enrollment)
 instance="Instance" # Name of used instance
 
 LOGO="mosyleb" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-what=(dialog dockutil microsoftautoupdate supportapp applenyfonts applesfpro applesfmono applesfcompact xink zohoworkdrivetruesync textmate 1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
-# Remember: dialog dockutil
+apps=(
+    "swiftDialog,/usr/local/bin/dialog"
+    "dockutil,/usr/local/bin/dockutil"
+    "desktoppr,/usr/local/bin/desktoppr"
+    "SupportApp,/Applications/Support.app"
+    "Xink,/Applications/Xink.app"
+    "Apple NewYork Font,/Library/Fonts/NewYork.ttf"
+    "Apple SF Pro Font,/Library/Fonts/SF-Pro.ttf"
+    "Apple SF Mono Font,/Library/Fonts/SF-Mono-Bold.otf"
+    "Apple SF Compact Font,/Library/Fonts/SF-Compact.ttf"
+    "Zoho WorkDrive TrueSync,/Applications/Zoho WorkDrive TrueSync.app"
+    "TextMate,/Applications/TextMate.app"
+    "Sublime Text,/Applications/Sublime Text.app"
+    "1Password,/Applications/1Password 7.app"
+    "Mactracker,/Applications/Mactracker.app"
+    "WWDC,/Applications/WWDC.app"
+    "The Unarchiver,/Applications/The Unarchiver.app"
+    "Keka,/Applications/Keka.app"
+    "Brave,/Applications/Brave Browser.app"
+    "Firefox,/Applications/Firefox.app"
+    "Microsoft AutoUpdate,/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app"
+    "Microsoft Edge,/Applications/Microsoft Edge.app"
+    "Microsoft Teams,/Applications/Microsoft Teams.app"
+    "Microsoft Excel,/Applications/Microsoft Excel.app"
+    "Microsoft OneNote,/Applications/Microsoft OneNote.app"
+    "Microsoft Outlook,/Applications/Microsoft Outlook.app"
+    "Microsoft PowerPoint,/Applications/Microsoft PowerPoint.app"
+    "Microsoft Word,/Applications/Microsoft Word.app"
+    "Microsoft OneDrive,/Applications/OneDrive.app"
+)
 
-installomatorOptions="NOTIFY=all BLOCKING_PROCESS_ACTION=prompt_user"
-
-# DEPNotify display settings, change as desired
+# Dialog display settings, change as desired
 title="Installing Apps and other software"
 message="Please wait while we download and install the needed software."
 endMessage="Installation complete! Please reboot to activate FileVault."
+displayEndMessageDialog=1 # Should endMessage be shown as a dialog? (0|1)
 errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 
 ######################################################################
-# Installomator 1st DEPNotify
+# Progress 1st Dialog
 #
-# Installation using Installomator showing progress with DEPNotify
-# Great stand-alone solution if installs are only done using Installomator.
+# Showing installation progress using swiftDialog
 # No customization below…
 ######################################################################
-# This script can be used to install software using Installomator.
-# Script will start DEPNotify to display a progress bar.
-# Progress bar moves between installations
-######################################################################
-# Other installomatorOptions:
-#   LOGGING=REQ
-#   LOGGING=DEBUG
-#   LOGGING=WARN
-#   BLOCKING_PROCESS_ACTION=ignore
-#   BLOCKING_PROCESS_ACTION=tell_user
-#   BLOCKING_PROCESS_ACTION=tell_user_then_quit
-#   BLOCKING_PROCESS_ACTION=prompt_user
-#   BLOCKING_PROCESS_ACTION=prompt_user_loop
-#   BLOCKING_PROCESS_ACTION=prompt_user_then_kill
-#   BLOCKING_PROCESS_ACTION=quit
-#   BLOCKING_PROCESS_ACTION=kill
-#   NOTIFY=all
-#   NOTIFY=success
-#   NOTIFY=silent
-#   IGNORE_APP_STORE_APPS=yes
-#   INSTALL=force
+# Complete script meant for running via MDM on device enrollment. This will download
+# and install Dialog on the fly before opening Dialog.
+#
+# Log: /private/var/log/InstallationProgress.log
+# This file prevents script from running again on Addigy and Microsoft Endpoint (Intune):
+# "/var/db/.Installation1stProgress"
+#
+# Display a Dialog with a list of applications and indicate when they’ve been installed
+# Useful when apps are deployed at random, perhaps without local logging.
+# Applies to Mosyle App Catalog installs, VPP app installs, Installomator installs etc.
+# The script watches the existence of files in the file system, so that is used to show progress.
+#
+# Requires Dialog v1.9.1 or later (will be installed) https://github.com/bartreardon/swiftDialog
+#
 ######################################################################
 #
 #  This script made by Søren Theilgaard
 #  https://github.com/Theile
 #  Twitter and MacAdmins Slack: @theilgaard
 #
+#  Based on the work by Adam Codega:
+#  https://github.com/acodega/dialog-scripts
+#
 #  Some functions and code from Installomator:
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
+# List of apps/installs to process in “apps” array.
+# Provide the display name as you prefer and the path to the app/file. ex:
+#       "Google Chrome,/Applications/Google Chrome.app"
+# A comma separates the display name from the path. Do not use commas in your display name text.
+#
+# Tip: Check for something like print drivers using the pkg receipt, like:
+#       "Konica-Minolta drivers,/var/db/receipts/jp.konicaminolta.print.package.C759.plist"
+#      Or fonts, like:
+#       "Apple SF Pro Font,/Library/Fonts/SF-Pro.ttf"
+######################################################################
 scriptVersion="9.4"
 # v.  9.4   : 2022-09-14 : downloadURL can fall back on GitHub API
-# v.  9.3   : 2022-08-29 : installomatorOptions in quotes and ignore blocking processes. Improved installation with looping if it fails, so it can try again. Improved GitHub handling. ws1 support.
-# v.  9.2.2 : 2022-06-17 : installomatorOptions introduced. Check 1.1.1.1 for internet connection.
-# v.  9.2.1 : 2022-05-30 : Some changes to logging
-# v.  9.2   : 2022-05-19 : Built in installer for Installlomator, and display dialog if error happens. Now universal script for all supported MDMs based on LOGO variable.
-# v.  9.1   : 2022-04-13 : Using INSTALL=force in Label only, so Microsoft labels will not start updating
-# v.  9.0.1 : 2022-02-21 : LOGO=addigy, few more "true" lines, and errorOutput on error
-# v.  9.0.0 : 2022-02-14 : Updated for Inst. 9.0, Logging improved with printlog
+# v.  9.3   : 2022-08-29 : Logging changed for current version. Improved installation with looping if it fails, so it can try again. Improved GitHub handling.
+# v.  9.2.2 : 2022-06-17 : Improved Dialog installation. Check 1.1.1.1 for internet connection.
+# v.  9.2   : 2022-05-19 : Not using GitHub api for download of Dialog, show a dialog when finished to make message more important. Now universal script for all supported MDMs based on LOGO variable.
+# v.  9.0   : 2022-05-16 : Based on acodega’s work, I have added progress bar, changed logging and use another log-location, a bit more error handling for Dialog download, added some "|| true"-endings to some lines to not make them fail in Addigy, and some more.
 ######################################################################
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
@@ -70,7 +99,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # Check before running
 case $LOGO in
     addigy|microsoft)
-        conditionFile="/var/db/.Installomator1stDone"
+        conditionFile="/var/db/.Progress1stDone"
         # Addigy and Microsoft Endpoint Manager (Intune) need a check for a touched file
         if [ -e "$conditionFile" ]; then
             echo "$LOGO setup detected"
@@ -82,12 +111,14 @@ case $LOGO in
         ;;
 esac
 
-# Mark: Constants, logging and caffeinate
-log_message="$instance: Installomator 1st with DEPNotify, v$scriptVersion"
-label="1st-v$scriptVersion"
+# Mark: Constants and logging
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-log_location="/private/var/log/Installomator.log"
-printlog(){
+log_message="$instance: Installation 1st Progress with Dialog, v$scriptVersion"
+label="D1st-v$scriptVersion"
+
+log_location="/private/var/log/Installation1stProgress.log"
+function printlog(){
     timestamp=$(date +%F\ %T)
     if [[ "$(whoami)" == "root" ]]; then
         echo "$timestamp :: $label : $1" | tee -a $log_location
@@ -103,23 +134,17 @@ if [[ "$(nc -z -v -G 10 1.1.1.1 53 2>&1 | grep -io "succeeded")" != "succeeded" 
     exit 90
 fi
 
-# No sleeping
-/usr/bin/caffeinate -d -i -m -u &
-caffeinatepid=$!
-caffexit () {
-    kill "$caffeinatepid" || true
-    pkill caffeinate || true
-    printlog "[LOG-END] Status $1"
-    exit $1
-}
-
-# Command-file to DEPNotify
-DEPNOTIFY_LOG="/var/tmp/depnotify.log"
+# Location of dialog and dialog command file
+dialogApp="/usr/local/bin/dialog"
+dialog_command_file="/var/tmp/dialog.log"
+counterFile="/var/tmp/Installation1stProgress.plist"
 
 # Counters
-errorCount=0
-countLabels=${#what[@]}
-printlog "Total installations: $countLabels"
+progress_index=0
+step_progress=0
+defaults write $counterFile step -int 0
+progress_total=${#apps[@]}
+printlog "Total watched installations: $progress_total"
 
 # Using LOGO variable to specify MDM and shown logo
 case $LOGO in
@@ -164,46 +189,44 @@ if [[ ! -a "${LOGO_PATH}" ]]; then
         LOGO_PATH="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
     fi
 fi
-printlog "LOGO: $LOGO - LOGO_PATH: $LOGO_PATH"
+printlog "LOGO: $LOGO – LOGO_PATH: $LOGO_PATH"
 
 # Mark: Functions
-printlog "depnotify_command function"
-echo "" > $DEPNOTIFY_LOG || true
-function depnotify_command(){
-    printlog "DEPNotify-command: $1"
-    echo "$1" >> $DEPNOTIFY_LOG || true
+# execute a dialog command
+echo "" > $dialog_command_file || true
+function dialog_command(){
+    printlog "Dialog-command: $1"
+    echo "$1" >> $dialog_command_file || true
 }
 
-printlog "startDEPNotify function"
-function startDEPNotify() {
-    currentUser="$(stat -f "%Su" /dev/console)"
-    currentUserID=$(id -u "$currentUser")
-    launchctl asuser $currentUserID open -a "/Applications/Utilities/DEPNotify.app/Contents/MacOS/DEPNotify" --args -path "$DEPNOTIFY_LOG" || true # --args -fullScreen
-    sleep 5
-    depnotify_command "Command: KillCommandFile:"
-    depnotify_command "Command: MainTitle: $title"
-    depnotify_command "Command: Image: $LOGO_PATH"
-    depnotify_command "Command: MainText: $message"
-    depnotify_command "Command: Determinate: $countLabels"
+function appCheck(){
+    dialog_command "listitem: $(echo "$app" | cut -d ',' -f1): wait"
+    while [ ! -e "$(echo "$app" | cut -d ',' -f2)" ]; do
+        sleep 2
+    done
+    dialog_command "progresstext: Install of “$(echo "$app" | cut -d ',' -f1)” complete"
+    dialog_command "listitem: $(echo "$app" | cut -d ',' -f1): ✅"
+    progress_index=$(defaults read $counterFile step)
+    progress_index=$(( progress_index + 1 ))
+    defaults write $counterFile step -int $progress_index
+    dialog_command "progress: $progress_index"
+    printlog "at item number $progress_index"
 }
 
 # Notify the user using AppleScript
-printlog "displayDialog function"
 function displayDialog(){
-    currentUser="$(stat -f "%Su" /dev/console)"
-    currentUserID=$(id -u "$currentUser")
     if [[ "$currentUser" != "" ]]; then
         launchctl asuser $currentUserID sudo -u $currentUser osascript -e "button returned of (display dialog \"$message\" buttons {\"OK\"} default button \"OK\" with icon POSIX file \"$LOGO_PATH\")" || true
     fi
 }
 
 # Mark: Code
-name="Installomator"
+name="Dialog"
 printlog "$name check for installation"
 # download URL, version and Expected Team ID
-# Method for GitHub pkg
-gitusername="Installomator"
-gitreponame="Installomator"
+# Method for GitHub pkg w. app version check
+gitusername="bartreardon"
+gitreponame="swiftDialog"
 #printlog "$gitusername $gitreponame"
 filetype="pkg"
 downloadURL="https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
@@ -214,15 +237,16 @@ fi
 #printlog "$downloadURL"
 appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
 #printlog "$appNewVersion"
-expectedTeamID="JME5BW3F3R"
+expectedTeamID="PWA5E9TQ59"
+destFile="/Library/Application Support/Dialog/Dialog.app"
+versionKey="CFBundleShortVersionString" #CFBundleVersion
 
-destFile="/usr/local/Installomator/Installomator.sh"
-currentInstalledVersion="$(${destFile} version 2>/dev/null || true)"
-printlog "${destFile} version: $currentInstalledVersion"
+currentInstalledVersion="$(defaults read "${destFile}/Contents/Info.plist" $versionKey || true)"
+printlog "${name} version: $currentInstalledVersion"
 if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; then
     printlog "$name not found or version not latest."
     printlog "${destFile}"
-    printlog "Installing version ${appNewVersion} ..."
+    printlog "Installing version ${appNewVersion}…"
     # Create temporary working directory
     tmpDir="$(mktemp -d || true)"
     printlog "Created working directory '$tmpDir'"
@@ -286,51 +310,65 @@ else
     printlog "$name version $appNewVersion already found. Perfect!"
 fi
 
-# Installing DEPNotify
-cmdOutput="$( ${destFile} depnotify LOGO=$LOGO NOTIFY=silent BLOCKING_PROCESS_ACTION=ignore LOGGING=WARN || true )"
-exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
-printlog "DEPNotify install result: $exitStatus"
 
-itemName=""
-errorLabels=""
-((countLabels++))
-((countLabels--))
-printlog "$countLabels labels to install"
+while [ "$(pgrep -l "Setup Assistant")" != "" ]; do
+    printlog "Setup Assistant Still Running. PID $setupAssistantProcess."
+    sleep 1
+done
+printlog "Out of Setup Assistant."
 
-startDEPNotify
+while [ "$(pgrep -l "Finder")" = "" ]; do
+    printlog "Finder process not found. Assuming device is at login screen. PID $finderProcess"
+    sleep 1
+done
+printlog "Finder is running…"
 
-for item in "${what[@]}"; do
-    # Check if DEPNotify is running and try open it if not
-    if ! pgrep -xq "DEPNotify"; then
-        startDEPNotify
-    fi
-    itemName=$( ${destFile} ${item} RETURN_LABEL_NAME=1 LOGGING=REQ INSTALL=force | tail -1 || true )
-    if [[ "$itemName" != "#" ]]; then
-        depnotify_command "Status: $itemName installing…"
-    else
-        depnotify_command "Status: $item installing…"
-    fi
-    printlog "$item $itemName"
-    cmdOutput="$( ${destFile} ${item} LOGO=$LOGO ${installomatorOptions} || true )"
-    #cmdOutput="2022-05-19 13:20:45 : REQ   : installomator : ################## End Installomator, exit code 0"
-    exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
-    if [[ ${exitStatus} -eq 0 ]] ; then
-        printlog "${item} succesfully installed."
-        warnOutput="$( echo "${cmdOutput}" | grep --binary-files=text "WARN" || true )"
-        printlog "$warnOutput"
-    else
-        printlog "Error installing ${item}. Exit code ${exitStatus}"
-        #printlog "$cmdOutput"
-        errorOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "error" || true )"
-        printlog "$errorOutput"
-        ((errorCount++))
-        errorLabels="$errorLabels ${item}"
-    fi
-    ((countLabels--))
-    itemName=""
+currentUser=$(stat -f "%Su" /dev/console)
+currentUserID=$(id -u "$currentUser")
+printlog "Logged in user is $currentUser with ID $currentUserID"
+
+# set icon based on whether computer is a desktop or laptop
+#hwType=$(system_profiler SPHardwareDataType | grep "Model Identifier" | grep "Book" || true)
+#if [ "$hwType" != "" ]; then
+#    LOGO_PATH="SF=laptopcomputer.and.arrow.down,weight=thin,colour1=#51a3ef,colour2=#5154ef"
+#else
+#    LOGO_PATH="SF=desktopcomputer.and.arrow.down,weight=thin,colour1=#51a3ef,colour2=#5154ef"
+#fi
+
+dialogCMD="$dialogApp -p --title \"$title\" \
+--message \"$message\" \
+--icon \"$LOGO_PATH\" \
+--progress $progress_total \
+--button1text \"Please Wait\" \
+--button1disabled"
+
+# create the list of apps
+listitems=""
+for app in "${apps[@]}"; do
+  listitems="$listitems --listitem '$(echo "$app" | cut -d ',' -f1)'"
 done
 
+# final command to execute
+dialogCMD="$dialogCMD $listitems"
+
+printlog "$dialogCMD"
+
+# Launch dialog and run it in the background sleep for a second to let thing initialise
+printlog "About to launch Dialog."
+eval "$dialogCMD" &
+sleep 2
+
+(for app in "${apps[@]}"; do
+    #step_progress=$(( 1 + progress_index ))
+    #dialog_command "progress: $step_progress"
+    sleep 0.5
+    appCheck &
+done
+
+wait)
+
 # Mark: Finishing
+
 # Prevent re-run of script if conditionFile is set
 if [[ ! -z "$conditionFile" ]]; then
     printlog "Touching condition file so script will not run again"
@@ -338,21 +376,20 @@ if [[ ! -z "$conditionFile" ]]; then
     printlog "$(ls -al "$conditionFile" || true)"
 fi
 
-# Show error to user if any
-printlog "Errors: $errorCount"
-if [[ $errorCount -ne 0 ]]; then
-    errorMessage="${errorMessage} Total errors: $errorCount"
-    message="$errorMessage"
+# all done. close off processing and enable the "Done" button
+printlog "Finalizing."
+dialog_command "progresstext: $endMessage"
+dialog_command "progress: complete"
+dialog_command "button1text: Done"
+dialog_command "button1: enable"
+
+if [[ $displayEndMessageDialog -eq 1 ]]; then
+    message="$endMessage"
     displayDialog &
-    endMessage="$message"
-    printlog "errorLabels: $errorLabels"
 fi
 
-depnotify_command "Command: MainText: $endMessage"
-depnotify_command "Command: Quit: $endMessage"
-
 sleep 1
-printlog "Remove $(rm -fv $DEPNOTIFY_LOG || true)"
+printlog $(rm -fv $dialog_command_file || true)
+printlog $(rm -fv $counterFile || true)
 
 printlog "Ending"
-caffexit $errorCount
