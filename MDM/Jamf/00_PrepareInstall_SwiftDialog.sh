@@ -1,67 +1,57 @@
-#!/bin/sh
-
-######################################################################
-# Installation of Installomator
-#
-# No customization below…
-######################################################################
-# This script can be used to install Installomator directly from GitHub.
-######################################################################
-#
-#  This script made by Søren Theilgaard
-#  https://github.com/Theile
-#  Twitter and MacAdmins Slack: @theilgaard
-#
-#  Some functions and code from Installomator:
-#  https://github.com/Installomator/Installomator
-#
-######################################################################
-scriptVersion="9.4"
-# v.  9.4   : 2022-09-14 : downloadURL can fall back on GitHub API
-# v.  9.3   : 2022-08-29 : Logging changed for current version. Improved installation with looping if it fails, so it can try again. Improved GitHub handling.
-# v.  9.2.2 : 2022-06-17 : Check 1.1.1.1 for internet connection.
-# v.  9.2   : 2022-05-19 : Built in installer for Installlomator. Universal script.
-######################################################################
+#!/bin/zsh
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-# Mark: Constants, logging and caffeinate
-log_message="Installomator install, v$scriptVersion"
-label="Inst-v$scriptVersion"
+# MARK: Arguments/Parameters
 
-log_location="/private/var/log/Installomator.log"
-printlog(){
-    timestamp=$(date +%F\ %T)
-    if [[ "$(whoami)" == "root" ]]; then
-        echo "$timestamp :: $label : $1" | tee -a $log_location
-    else
-        echo "$timestamp :: $label : $1"
+# Parameter 4: path to the swiftDialog command file
+dialog_command_file=${4:-"/var/tmp/dialog.log"}
+
+# Parameter 5: message displayed over the progress bar
+message=${5:-"Self Service Progress"}
+
+# Parameter 6: path or URL to an icon
+icon=${6:-"/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"}
+# see Dan Snelson's advice on how to get a URL to an icon in Self Service
+# https://rumble.com/v119x6y-harvesting-self-service-icons.html
+
+# MARK: Constants
+
+dialogApp="/Library/Application Support/Dialog/Dialog.app"
+
+# MARK: Functions
+
+dialogUpdate() {
+    # $1: dialog command
+    local dcommand="$1"
+
+    if [[ -n $dialog_command_file ]]; then
+        echo "$dcommand" >> "$dialog_command_file"
+        echo "Dialog: $dcommand"
     fi
 }
-printlog "[LOG-BEGIN] ${log_message}"
 
-# Internet check
-if [[ "$(nc -z -v -G 10 1.1.1.1 53 2>&1 | grep -io "succeeded")" != "succeeded" ]]; then
-    printlog "ERROR. No internet connection, we cannot continue."
-    exit 90
+# MARK: sanity checks
+
+# check minimal macOS requirement
+if [[ $(sw_vers -buildVersion ) < "20A" ]]; then
+    echo "This script requires at least macOS 11 Big Sur."
+    exit 98
 fi
 
-# No sleeping
-/usr/bin/caffeinate -d -i -m -u &
-caffeinatepid=$!
-caffexit () {
-    kill "$caffeinatepid" || true
-    pkill caffeinate || true
-    printlog "[LOG-END] Status $1"
-    exit $1
-}
+# check we are running as root
+if [[ $DEBUG -eq 0 && $(id -u) -ne 0 ]]; then
+    echo "This script should be run as root"
+    exit 97
+fi
 
-name="Installomator"
+# swiftDialog installation
+name="Dialog"
 printlog "$name check for installation"
 # download URL, version and Expected Team ID
-# Method for GitHub pkg with destFile
-gitusername="Installomator"
-gitreponame="Installomator"
+# Method for GitHub pkg w. app version check
+gitusername="bartreardon"
+gitreponame="swiftDialog"
 #printlog "$gitusername $gitreponame"
 filetype="pkg"
 downloadURL="https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
@@ -72,15 +62,16 @@ fi
 #printlog "$downloadURL"
 appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
 #printlog "$appNewVersion"
-expectedTeamID="JME5BW3F3R"
+expectedTeamID="PWA5E9TQ59"
+destFile="/Library/Application Support/Dialog/Dialog.app"
+versionKey="CFBundleShortVersionString" #CFBundleVersion
 
-destFile="/usr/local/Installomator/Installomator.sh"
-currentInstalledVersion="$(${destFile} version 2>/dev/null || true)"
-printlog "${destFile} version: $currentInstalledVersion"
+currentInstalledVersion="$(defaults read "${destFile}/Contents/Info.plist" $versionKey || true)"
+printlog "${name} version: $currentInstalledVersion"
 if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; then
     printlog "$name not found or version not latest."
     printlog "${destFile}"
-    printlog "Installing version ${appNewVersion} ..."
+    printlog "Installing version ${appNewVersion}…"
     # Create temporary working directory
     tmpDir="$(mktemp -d || true)"
     printlog "Created working directory '$tmpDir'"
@@ -144,4 +135,25 @@ else
     printlog "$name version $appNewVersion already found. Perfect!"
 fi
 
-caffexit 0
+# check for Swift Dialog
+if [[ ! -d $dialogApp ]]; then
+    echo "Cannot find dialog at $dialogApp"
+    exit 95
+fi
+
+
+# MARK: Configure and display swiftDialog
+
+# display first screen
+open -a "$dialogApp" --args \
+        --title none \
+        --icon "$icon" \
+        --message "$message" \
+        --mini \
+        --progress 100 \
+        --position bottomright \
+        --movable \
+        --commandfile "$dialog_command_file"
+
+# give everything a moment to catch up
+sleep 0.1
