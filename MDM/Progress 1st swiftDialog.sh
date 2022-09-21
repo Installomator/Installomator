@@ -54,7 +54,7 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #
 # Log: /private/var/log/InstallationProgress.log
 # This file prevents script from running again on Addigy and Microsoft Endpoint (Intune):
-# "/var/db/.Installation1stProgress"
+# "/var/db/.Progress1stDone"
 #
 # Display a Dialog with a list of applications and indicate when they’ve been installed
 # Useful when apps are deployed at random, perhaps without local logging.
@@ -114,10 +114,10 @@ esac
 # Mark: Constants and logging
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-log_message="$instance: Installation 1st Progress with Dialog, v$scriptVersion"
-label="D1st-v$scriptVersion"
+log_message="$instance: Progress 1st with Dialog, v$scriptVersion"
+label="P1st-v$scriptVersion"
 
-log_location="/private/var/log/Installation1stProgress.log"
+log_location="/private/var/log/Progress1st.log"
 function printlog(){
     timestamp=$(date +%F\ %T)
     if [[ "$(whoami)" == "root" ]]; then
@@ -137,7 +137,7 @@ fi
 # Location of dialog and dialog command file
 dialogApp="/usr/local/bin/dialog"
 dialog_command_file="/var/tmp/dialog.log"
-counterFile="/var/tmp/Installation1stProgress.plist"
+counterFile="/var/tmp/Progress1st.plist"
 
 # Counters
 progress_index=0
