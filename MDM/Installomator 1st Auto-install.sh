@@ -51,7 +51,8 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
-scriptVersion="9.4"
+scriptVersion="9.5"
+# v.  9.5   : 2022-09-21 : change of GitHub download
 # v.  9.4   : 2022-09-14 : Making error message optional. downloadURL can fall back on GitHub API.
 # v.  9.3   : 2022-08-29 : installomatorOptions in quotes and ignore blocking processes. Improved installation with looping if it fails, so it can try again. Improved GitHub handling. ws1 support.
 # v.  9.2.2 : 2022-06-17 : installomatorOptions introduced. Check 1.1.1.1 for internet connection.
@@ -176,7 +177,8 @@ gitusername="Installomator"
 gitreponame="Installomator"
 #printlog "$gitusername $gitreponame"
 filetype="pkg"
-downloadURL="https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
+#downloadURL="https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
+downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
 if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
     printlog "Trying GitHub API for download URL."
     downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
