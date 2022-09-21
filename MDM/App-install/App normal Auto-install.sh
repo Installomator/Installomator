@@ -4,7 +4,7 @@
 
 LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-what="" # enter the software to install
+item="" # enter the software to install
 # Examples: adobecreativeclouddesktop, textmate, vlc
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user" # Separated by space
@@ -28,7 +28,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user" # Separated by space
 #   INSTALL=force
 ######################################################################
 # To be used as a script sent out from a MDM.
-# Fill the variable "what" above with a label.
+# Fill the variable "item" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
 # v.  9.2.1 : Better logging handling and installomatorOptions fix.
@@ -38,7 +38,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user" # Separated by space
 # PATH declaration
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-echo "$(date +%F\ %T) [LOG-BEGIN] $what"
+echo "$(date +%F\ %T) [LOG-BEGIN] $item"
 
 # Verify that Installomator has been installed
 destFile="/usr/local/Installomator/Installomator.sh"
@@ -59,16 +59,16 @@ caffexit () {
 }
 
 # Install software using Installomator
-cmdOutput="$(${destFile} ${what} LOGO=$LOGO ${installomatorOptions} || true)"
+cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} || true)"
 
 # Check result
 exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
 if [[ ${exitStatus} -eq 0 ]] ; then
-    echo "${what} succesfully installed."
+    echo "${item} succesfully installed."
     warnOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "warn" || true )"
     echo "$warnOutput"
 else
-    echo "ERROR installing ${what}. Exit code ${exitStatus}"
+    echo "ERROR installing ${item}. Exit code ${exitStatus}"
     echo "$cmdOutput"
     #errorOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "error" || true )"
     #echo "$errorOutput"

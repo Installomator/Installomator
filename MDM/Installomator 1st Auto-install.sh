@@ -17,7 +17,8 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 ######################################################################
 # Installomator 1st
 #
-# Installation using Installomator (use separate Installation1stProgress script to show progress)
+# Installation using Installomator
+# (use separate Progress 1st script to show progress)
 # No customization below…
 ######################################################################
 # This script can be used to install software using Installomator.

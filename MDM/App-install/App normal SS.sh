@@ -5,7 +5,8 @@
 LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 what="" # enter the software to install
-# Examples: adobecreativeclouddesktop, textmate, vlc
+# Examples: adobecreativeclouddesktop, canva, cyberduck, handbrake, inkscape, textmate, vlc
+
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=all" # Separated by space
 

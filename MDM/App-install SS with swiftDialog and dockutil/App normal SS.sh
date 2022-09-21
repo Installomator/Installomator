@@ -5,7 +5,7 @@
 LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 item="cyberduck" # enter the software to install
-# Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
+# Examples: adobecreativeclouddesktop, canva, cyberduck, handbrake, inkscape, textmate, vlc
 
 # Dialog icon
 icon=""
