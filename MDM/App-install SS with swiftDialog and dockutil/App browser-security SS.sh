@@ -8,7 +8,7 @@ item="firefoxpkg" # enter the software to install
 # Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
 
 # Dialog icon
-icon="https://mosylebusinessweb.blob.core.windows.net/envoit-public/customcommand_icon-envoit_3e37cc23e3fd8d29b1fbe85bc3b3923b323627dc83153cf673.png"
+icon=""
 # icon should be a file system path or an URL to an online PNG.
 # In Mosyle an URL can be found by copy picture address from a Custom Command icon.
 

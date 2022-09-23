@@ -118,7 +118,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 log_message="$instance: Progress 1st with Dialog, v$scriptVersion"
 label="P1st-v$scriptVersion"
 
-log_location="/private/var/log/Progress1st.log"
+log_location="/private/var/log/Installomator.log"
 function printlog(){
     timestamp=$(date +%F\ %T)
     if [[ "$(whoami)" == "root" ]]; then
