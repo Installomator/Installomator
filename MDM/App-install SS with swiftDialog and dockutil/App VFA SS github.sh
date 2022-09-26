@@ -3,7 +3,7 @@
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
 # Installation of software using `valuesfromarguments` to install a custom software using Installomator through GitHub
 
-LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 #item="gfxcardstatus" # enter the software to install (if it has a label in future version of Installomator)
 
@@ -63,8 +63,10 @@ versionFromGit() {
 # Variables for label
 name="gfxCardStatus"
 type="zip"
+packageID=""
 downloadURL="$(downloadURLFromGit codykrieger gfxCardStatus)"
 appNewVersion="$(versionFromGit codykrieger gfxCardStatus)"
+versionKey=""
 expectedTeamID="LF22FTQC25"
 
 # Dialog icon
@@ -294,10 +296,12 @@ fi
 cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
     name=${name} \
     type=${type} \
+    packageID=${packageID} \
     downloadURL=\"$downloadURL\" \
     appNewVersion=${appNewVersion} \
+    versionKey=${versionKey} \
     expectedTeamID=${expectedTeamID} \
-    ${installomatorOptions} || true)"
+    ${installomatorOptions} ${installomatorNotify} || true)"
 
 checkCmdOutput $cmdOutput
 
