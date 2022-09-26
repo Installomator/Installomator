@@ -64,6 +64,10 @@ Two different kinds of App-installation scripts have been made. Some that is ver
 - App service Auto-install.sh
 - App VFA.sh
 
+Here you can use scripts for Self Service (SS) or for Auto-install. THere will be a difference in how many notifications will be used and maybe handling of blocking processes.
+
+What is also differentiated is what kind of app it is. Is it of the kind of browser, that can often have critical security fixes, then we don’t want the user to postpone the installation, wheras a normal app can wait. A service app do not have to ask before installing, and should be able to install regardsliess if the app is currently running.
+
 ## “App-install SS with swiftDialog and dockutil”-folder
 
 - App browser-security SS.sh
@@ -72,3 +76,7 @@ Two different kinds of App-installation scripts have been made. Some that is ver
 - App service SS.sh
 - App VFA SS github.sh
 - App VFA SS.sh
+
+All of the notes for the above scripts are the same for these.
+
+But these scripts utilize __swiftDialog__ to show a more live progress for the installation, and they also have a setting to use __dockutil__ to add the software to the Dock of the user.
