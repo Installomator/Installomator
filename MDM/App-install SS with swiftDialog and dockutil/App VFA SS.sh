@@ -103,8 +103,7 @@ uid=$(id -u "$currentUser")
 userHome="$(dscl . -read /users/${currentUser} NFSHomeDirectory | awk '{print $2}')"
 
 # Verify that Installomator has been installed
-#destFile="/usr/local/Installomator/Installomator.sh"
-destFile="/usr/local/Installomator/Installomator10.sh"
+destFile="/usr/local/Installomator/Installomator.sh"
 if [ ! -e "${destFile}" ]; then
     echo "Installomator not found here:"
     echo "${destFile}"

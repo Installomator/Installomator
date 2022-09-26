@@ -10,8 +10,10 @@ LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 # Variables for label
 name="ClickShare"
 type="appInDmgInZip"
+packageID=""
 downloadURL="https://www.barco.com$( curl -fs "https://www.barco.com/en/clickshare/app" | grep -A6 -i "macos" | grep -i "FileNumber" | tr '"' "\n" | grep -i "FileNumber" )"
 appNewVersion="$(eval "$( echo $downloadURL | sed -E 's/.*(MajorVersion.*BuildVersion=[0-9]*).*/\1/' | sed 's/&amp//g' )" ; ((MajorVersion++)) ; ((MajorVersion--)); ((MinorVersion++)) ; ((MinorVersion--)); ((PatchVersion++)) ; ((PatchVersion--)); ((BuildVersion++)) ; ((BuildVersion--)); echo "${MajorVersion}.${MinorVersion}.${PatchVersion}-b${BuildVersion}")"
+versionKey=""
 expectedTeamID="P6CDJZR997"
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user LOGGING=INFO NOTIFY=all" # Separated by space
@@ -67,11 +69,14 @@ caffexit () {
 
 # Install software using Installomator with valuesfromarguments
 cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
-    name=${name} \
+    name=\"${name}\" \
     type=${type} \
+    packageID=${packageID} \
     downloadURL=\"$downloadURL\" \
     appNewVersion=${appNewVersion} \
+    versionKey=${versionKey} \
     expectedTeamID=${expectedTeamID} \
+    blockingProcesses=\"NONE\" \
     ${installomatorOptions} || true)"
 
 
