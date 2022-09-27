@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Progress 1st with swiftDialog (auto installation at enrollment)
-instance="Instance" # Name of used instance
+instance="" # Name of used instance
 
-LOGO="mosyleb" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 apps=(
     "swiftDialog,/usr/local/bin/dialog"
