@@ -2,7 +2,7 @@
 
 # Installation using Installomator
 
-LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 what="firefoxpkg" # enter the software to install
 # Examples: microsoftedge, brave, googlechromepkg, firefoxpkg

@@ -2,10 +2,10 @@
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
 
-LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 item="microsoftoffice365" # enter the software to install
-# Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
+# Examples: microsoftofficebusinesspro, microsoftoffice365
 
 # Dialog icon
 icon=""

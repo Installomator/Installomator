@@ -2,7 +2,7 @@
 
 # Installation using Installomator
 
-LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 item="" # enter the software to install
 # Examples: adobecreativeclouddesktop, textmate, vlc

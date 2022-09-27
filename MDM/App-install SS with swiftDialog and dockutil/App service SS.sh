@@ -2,9 +2,9 @@
 
 # Installation using Installomator
 
-LOGO="addigy" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-item="xink" # enter the software to install
+item="" # enter the software to install
 # Examples: desktoppr, dockutil, supportapp, applenyfonts, applesfpro, applesfmono, applesfcompact, nomad, nudge, shield, xink
 
 # Dialog icon

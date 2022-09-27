@@ -2,9 +2,9 @@
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
 
-LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-item="cyberduck" # enter the software to install
+item="" # enter the software to install
 # Examples: adobecreativeclouddesktop, canva, cyberduck, handbrake, inkscape, textmate, vlc
 
 # Dialog icon

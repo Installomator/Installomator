@@ -3,7 +3,7 @@
 # Installation using Installomator
 # Installation of software using valuesfromarguments to install a custom software using Installomator
 
-LOGO="mosyleb" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 #item="" # enter the software to install (if it has a label in future version of Installomator)
 
