@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # Installomator 1st installation with DEPNotify window (for self Service deployment)
-instance="Instance" # Name of used instance
+instance="" # Name of used instance
 
-LOGO="mosyleb" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-what=(dialog dockutil microsoftautoupdate supportapp applenyfonts applesfpro applesfmono applesfcompact xink zohoworkdrivetruesync textmate 1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
+items=(dialog dockutil microsoftautoupdate supportapp applenyfonts applesfpro applesfmono applesfcompact xink zohoworkdrivetruesync textmate 1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
 # Remember: dialog dockutil
 
 installomatorOptions="NOTIFY=all BLOCKING_PROCESS_ACTION=prompt_user"
@@ -119,7 +119,7 @@ DEPNOTIFY_LOG="/var/tmp/depnotify.log"
 
 # Counters
 errorCount=0
-countLabels=${#what[@]}
+countLabels=${#items[@]}
 printlog "Total installations: $countLabels"
 
 # Using LOGO variable to specify MDM and shown logo
@@ -301,7 +301,7 @@ printlog "$countLabels labels to install"
 
 startDEPNotify
 
-for item in "${what[@]}"; do
+for item in "${items[@]}"; do
     # Check if DEPNotify is running and try open it if not
     if ! pgrep -xq "DEPNotify"; then
         startDEPNotify

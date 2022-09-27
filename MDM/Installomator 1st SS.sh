@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # Installomator 1st installation (for Self Service deployment)
-instance="Instance" # Name of used instance
+instance="" # Name of used instance
 
-LOGO="mosyleb" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-what=(dialog dockutil microsoftautoupdate supportapp applenyfonts applesfpro applesfmono applesfcompact xink zohoworkdrivetruesync textmate  1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
+items=(dialog dockutil microsoftautoupdate supportapp applenyfonts applesfpro applesfmono applesfcompact xink zohoworkdrivetruesync textmate  1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
 # Remember: dialog dockutil
 
 installomatorOptions="NOTIFY=all BLOCKING_PROCESS_ACTION=prompt_user"
@@ -110,7 +110,7 @@ caffexit () {
 
 # Counters
 errorCount=0
-countLabels=${#what[@]}
+countLabels=${#items[@]}
 printlog "Total installations: $countLabels"
 
 # Using LOGO variable to specify MDM and shown logo
@@ -263,7 +263,7 @@ errorLabels=""
 ((countLabels--))
 printlog "$countLabels labels to install"
 
-for item in "${what[@]}"; do
+for item in "${items[@]}"; do
     printlog "$item"
     cmdOutput="$( ${destFile} ${item} LOGO=$LOGO ${installomatorOptions} || true )"
     exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
