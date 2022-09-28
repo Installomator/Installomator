@@ -5,7 +5,7 @@
 LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 item="" # enter the software to install
-# Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
+# Examples: brave, duckduckgo, firefoxpkg, googlechromepkg, microsoftedge, opera
 
 # Dialog icon
 icon=""

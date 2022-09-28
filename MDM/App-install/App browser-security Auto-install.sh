@@ -5,7 +5,7 @@
 LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 item="firefoxpkg" # enter the software to install
-# Examples: microsoftedge, brave, googlechromepkg, firefoxpkg
+# Examples: brave, duckduckgo, firefoxpkg, googlechromepkg, microsoftedge, opera
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user_then_quit" # Separated by space
 
