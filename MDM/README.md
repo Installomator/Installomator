@@ -51,7 +51,7 @@ For enrollment purposes, som 1st-scripts has been created. One is not showing an
 
 There are also Self Service scripts for this, if it’s somehow needed to have users running the installation manually.
 
-# App-installation
+# _App-install_ folders
 
 Two different kinds of App-installation scripts have been made. Some that is very similar to the old provided scripts that are only using __Installomator__ for notifications (if any). And others that can use __swiftDialog__ for installation progress, and can also add the app to the Dock using __dockutil__.
 
