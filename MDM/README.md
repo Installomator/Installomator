@@ -1,8 +1,16 @@
 # MDM scripts
 
-This is a long list of various scripts for certain use in MDM solutions that cannot call a script internally with parameters, like Jamf Pro can do it.
+This is a long list of various scripts for certain use in the various MDM solutions that we have used Installomator with.
 
-So for Mosyle, Addigy, and Microsoft Endpoint Manager (Intune), these are know to be good. If these works in other MDMs, let us know. 
+There are two categories of MDMs. Either like Jamf Pro, that can contain the full script, and call that as a software installation (called policy in Jamf Pro). If the MDM cannot do that, it have to be able to run a script on the clients. That script can call Installomator on the client, and should therefore be locally installed.
+
+## “Jamf”-folder
+
+Here you have scripts for using swiftDialog as part of the Installomator installation. Showing progress in a small window. Separate [ReadMe-file](Jamf/ReadMe.md) in this folder.
+
+## Script capable MDM-solutions
+
+So for Mosyle, Addigy, and Microsoft Endpoint Manager (Intune), we have tested these scripts. If these works in other MDMs, let us know. 
 
 Especially for Addigy, and maybe also for other MDMs, `condition`-scripts has been added if software installation will run on certain conditions. Also `prevention`-scripts has been added, if you manually need to eliminate the runnning of a script, this can be needed if you want to use the enrollment script, but don’t want it to run on the currently managed Macs Then you should sent out the `prevention`-script to make sure the file it creates is present on the Macs so the ordinary script will not do anything (it will detect this file and stop if found).
 
@@ -80,3 +88,12 @@ What is also differentiated is what kind of app it is. Is it of the kind of brow
 All of the notes for the above scripts are the same for these.
 
 But these scripts utilize __swiftDialog__ to show a more live progress for the installation, and they also have a setting to use __dockutil__ to add the software to the Dock of the user.
+
+# App-update
+
+These script verifies if the app is already installed, before runnning Installomator.
+
+- App browser-security Auto-install.sh
+- App normal Auto-install.sh
+
+These scripts only use Installomator, like “App-install”, but will check for the app to be installed first. Very usefull for Addigy and Microsoft.
