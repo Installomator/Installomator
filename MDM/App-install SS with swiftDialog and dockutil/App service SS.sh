@@ -5,7 +5,7 @@
 LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
 item="" # enter the software to install
-# Examples: applenyfonts, applesfarabic, applesfcompact, applesfmono, applesfpro, applesfsymbols, dialog, dockutil, knockknock, lulu, nomad, nudge, shield, supportapp, wordservice, xcreds, xink
+# Examples: applenyfonts, applesfarabic, applesfcompact, applesfmono, applesfpro, applesfsymbols, desktoppr, dialog, dockutil, knockknock, lulu, nomad, nudge, shield, supportapp, wordservice, xcreds, xink
 
 # Dialog icon
 icon=""
