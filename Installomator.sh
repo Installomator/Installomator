@@ -4115,6 +4115,7 @@ nomad)
     downloadURL="https://files.nomad.menu/NoMAD.pkg"
     appNewVersion=$(curl -fs https://nomad.menu/support/ | grep "NoMAD Downloads" | sed -E 's/.*Current Version ([0-9\.]*)<.*/\1/g')
     expectedTeamID="VRPY9KHGX6"
+    blockingProcesses=( NONE )
     ;;
 nomadlogin)
     # credit: Søren Theilgaard (@theilgaard)
@@ -4646,6 +4647,7 @@ santa)
     downloadURL=$(downloadURLFromGit google santa)
     appNewVersion=$(versionFromGit google santa)
     expectedTeamID="EQHXZ8M8AV"
+    blockingProcesses=( NONE )
     ;;
 scaleft)
     name="ScaleFT"
