@@ -285,6 +285,10 @@ getAppVersion() {
                     printlog "Replacing App Store apps, no matter the version" WARN
                     appversion=0
                 else
+                    if [[ $DIALOG_CMD_FILE != "" ]]; then
+                        updateDialog "wait" "Already installed from App Store. Not replaced."
+                        sleep 4
+                    fi
                     cleanupAndExit 23 "App previously installed from App Store, and we respect that" ERROR
                 fi
             fi
@@ -462,6 +466,10 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
             fi
+            if [[ $DIALOG_CMD_FILE != "" ]]; then
+                updateDialog "wait" "Latest version already installed..."
+                sleep 2
+            fi
             cleanupAndExit 0 "No new version to install" REG
         else
             printlog "Using force to install anyway."
@@ -627,6 +635,10 @@ installFromPKG() {
                 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
+                fi
+                if [[ $DIALOG_CMD_FILE != "" ]]; then
+                    updateDialog "wait" "Latest version already installed..."
+                    sleep 2
                 fi
                 cleanupAndExit 0 "No new version to install" REQ
             else
