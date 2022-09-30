@@ -130,6 +130,7 @@ dynalist
 easeusdatarecoverywizard
 easyfind
 egnyte
+egnytecore
 egnytewebedit
 element
 eraseinstall
