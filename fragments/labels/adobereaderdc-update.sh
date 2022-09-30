@@ -2,12 +2,19 @@ adobereaderdc-update)
     name="Adobe Acrobat Reader DC"
     type="pkgInDmg"
     if [[ -d "/Applications/Adobe Acrobat Reader DC.app" ]]; then
+        printlog "Found /Applications/Adobe Acrobat Reader DC.app"
         mkdir -p "/Library/Application Support/Adobe/Acrobat/11.0"
         defaults write "/Library/Application Support/Adobe/Acrobat/11.0/com.adobe.Acrobat.InstallerOverrides.plist" ReaderAppPath "/Applications/Adobe Acrobat Reader DC.app"
-        if ! [[ `defaults read "/Applications/Adobe Acrobat Reader DC.app/Contents/Resources/AcroLocale.plist"` ]]; then
-            printlog "Missing locale data, this will cause the updater to fail.  Deleting Adobe Acrobat Reader DC.app and installing fresh."
+        if ! defaults read "/Applications/Adobe Acrobat Reader DC.app/Contents/Resources/AcroLocale.plist" ; then
+            printlog "Missing locale data, this will cause the updater to fail. Deleting Adobe Acrobat Reader DC.app and installing fresh." WARN
             rm -Rf "/Applications/Adobe Acrobat Reader DC.app"
-            $0 $1 $2 $3 adobereaderdc-install $5 $6 $7 $8 $9 ${10} ${11}
+            if [[ $1 == "/" ]]; then
+                printlog "Running through Jamf: $0." INFO
+                $0 $1 $2 $3 adobereaderdc-install ${5} ${6} ${7} ${8} ${9} ${10} ${11}
+            else
+                printlog "Installomator running locally: $0." INFO
+                $0 adobereaderdc-install ${2} ${3} ${4} ${5} ${6} ${7} ${8} ${9} ${10} ${11}
+            fi
         fi
     fi
     adobecurrent=$(curl -sL https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | tr -d '.')
