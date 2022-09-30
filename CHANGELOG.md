@@ -1,3 +1,100 @@
+## v10beta2
+
+- fixed problem with GitHub labels (#659)
+- bz2 archive support (#659)
+- fixed WorkspaceOne support (#653)
+
+Plus everything from v10beta1
+
+- new labels:
+	- abetterfinderrename11 (#552)
+	- carboncopycloner (#553)
+	- cocoapods (#659)
+	- coconutbattery (#588)
+	- cricutdesignspace (#562)
+	- dynalist (#591)
+	- fellow (#591)
+	- flexoptixapp (#554)
+	- googleadseditor (#652, #541)
+	- kap (#568)
+	- keepingyouawake (#549)
+	- lcadvancedvpnclient (#584)
+	- masv (#569)
+	- merlinproject (#555)
+	- mongodbcompass (#654)
+	- netspot (#556)
+	- relatel (#619)
+	- sonicvisualiser (#575)
+	- strongdm (#559)
+	- synologyassistant (#557)
+	- synologydriveclient (#582)
+	- tencentmeeting (#570)
+	- typinator (#583)
+	- xcreds (#675)
+- updated labels:
+	- acroniscyberprotectconnect/remotix (#664)
+	- acroniscyberprotectconnectagent/remotixagent (#664)
+	- awsvpnclient (#586)
+	- boxtools (#589)
+	- clevershare2 (#664)
+	- coderunner (#664)
+	- colourcontrastanalyser (#664)
+	- cryptomator (#664)
+	- dangerzone (#664)
+	- drawio (#664)
+	- golang (#664)
+	- icons (#664)
+	- insomnia (#664)
+	- knockknock (#664)
+	- libreoffice (#672)
+	- macports
+	- opera (#664)
+	- supportapp (#664)
+	- vmwarehorizonclient (#645, #511)
+- deleted/deactivated labels:
+	- microsoftyammer (#664)
+	- wickrme (#664)
+	- wickrpro (#664)
+
+
+## v10beta1
+
+- [swiftDialog](https://github.com/bartreardon/swiftDialog) integration (#641, #632), many thanks to @bartreardon, [sample scripts](in the MDM folder)
+- added WorkspaceOne option for LOGO (#517)
+- added function for JSON parsing with JXA (#529)
+- updated assemble.sh script to update Labels.txt when script is rebuilt (#540)
+- added a no requisite install script (#493)
+- GitHub lookup now don't use API calls, this should avoid or at least reduce rate limiting (#543)
+- fixed redundant exit codes (#643, #561)
+
+NOTE: some exit codes have changed! see [Installomator Exit Codes](https://github.com/Installomator/Installomator/wiki/Installomator-Exit-Codes) for a list
+
+- new labels:
+	- bluejeanswithaudiodriver (#473)
+	- duodevicehealth (#548)
+	- googlechromeenterprise (#532)
+	- ipswupdater (#545)
+	- mmhmm (#571)
+	- nordlayer (#419)
+	- prune (#538)
+	- whatroute (#560)
+- updated labels:
+	- blender (#535, #622)
+	- camtasia2019 (#547)
+	- clickshare (#565)
+	- egnyte (#500)
+	- googledrive (#563)
+	- grammarly (#576)
+	- marathon, marathon2, marathoninfinity (#544)
+	- miro (#475, #539)
+	- notion (#566)
+	- ringcentralapp (#550)
+	- sublimetext (#593, #578, #567, #623, #626)
+	- talkdeskcallbar (#536)
+	- talkdeskcxcloud (#537)
+	- wireshark (#585)
+
+
 ## v9.2
 
 **Note**: Both Google and Mozilla recommend using the pkg installers instead of the dmg downloads for managed deployments. So far, Installomator has provided labels for both. (`googlechrome` and `googlechromepkg` or `firefox` and `firefoxpkg`, respectively) Since there are problems with the dmg downloads, a future release of Installomator will _disable_ the `firefox` and `googlechrome` dmg labels. You should switch to using `googlechromepkg` and `firefoxpkg` labels instead.
