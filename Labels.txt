@@ -7,10 +7,12 @@ abetterfinderrename11
 abstract
 acroniscyberprotectconnect
 acroniscyberprotectconnectagent
+adobeacrobatprodc
 adobebrackets
 adobeconnect
 adobecreativeclouddesktop
 adobereaderdc
+adobereaderdc-install
 adobereaderdc-install
 adobereaderdc-update
 aircall
@@ -35,6 +37,8 @@ applesfmono
 applesfpro
 applesfsymbols
 aquaskk
+archiwareb2go
+archiwarepst
 arq7
 asana
 atext
@@ -56,7 +60,7 @@ bartender
 basecamp3
 bbedit
 bettertouchtool
-bitwarden
+bitrix24
 blender
 bluejeans
 bluejeanswithaudiodriver
@@ -76,7 +80,9 @@ camtasia2020
 camtasia2021
 canva
 carboncopycloner
-chatwork
+charles
+chronoagent
+chronosync
 cisdem-documentreader
 citrixworkspace
 clevershare2
@@ -97,6 +103,7 @@ craftmanagerforsketch
 cricutdesignspace
 cryptomator
 cyberduck
+cytoscape
 daisydisk
 dangerzone
 darktable
@@ -137,6 +144,7 @@ favro
 fellow
 ferdi
 figma
+filemakerpro
 filezilla
 findanyfile
 firefox
@@ -154,6 +162,8 @@ flycut
 fontexplorer
 front
 fsmonitor
+fujifilmwebcam
+gfxcardstatus
 gimp
 githubdesktop
 golang
@@ -178,6 +188,7 @@ gyazogif
 hancock
 handbrake
 hazel
+horos
 houdahspot
 hpeasyadmin
 hpeasystart
@@ -227,6 +238,7 @@ knockknock
 krisp
 krita
 lastpass
+latexit
 launchbar
 lcadvancedvpnclient
 lexarrecoverytool
@@ -299,6 +311,7 @@ nomadlogin
 nordlayer
 notion
 nudge
+nudgesuite
 nvivo
 obs
 obsidian
@@ -316,7 +329,7 @@ onlyofficedesktop
 openvpnconnect
 openvpnconnectv3
 opera
-ottomatic
+origin
 overflow
 pacifist
 packages
@@ -330,6 +343,7 @@ pitch
 plantronicshub
 platypus
 plisteditpro
+polylens
 postman
 prism9
 pritunl
@@ -400,6 +414,7 @@ sonos
 sonoss1
 sonoss2
 sourcetree
+splashtopbusiness
 splashtopsos
 spotify
 sqlpropostgres
@@ -420,6 +435,7 @@ tableaudesktop
 tableaupublic
 tableaureader
 tageditor
+tailscale
 talkdeskcallbar
 talkdeskcxcloud
 taskpaper
@@ -489,7 +505,9 @@ zohoworkdrivetruesync
 zoom
 zoomclient
 zoomgov
+zoomoutlookplugin
 zoomrooms
+zotero
 zulujdk11
 zulujdk13
 zulujdk15
