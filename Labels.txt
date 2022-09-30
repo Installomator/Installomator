@@ -217,6 +217,7 @@ jamfconnectconfiguration
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jdk18
 jetbrainsclion
 jetbrainsdatagrip
 jetbrainsintellijidea
