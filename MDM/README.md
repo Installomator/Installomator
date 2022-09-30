@@ -14,6 +14,8 @@ So for Mosyle, Addigy, and Microsoft Endpoint Manager (Intune), we have tested t
 
 Especially for Addigy, and maybe also for other MDMs, `condition`-scripts has been added if software installation will run on certain conditions. Also `prevention`-scripts has been added, if you manually need to eliminate the runnning of a script, this can be needed if you want to use the enrollment script, but don’t want it to run on the currently managed Macs Then you should sent out the `prevention`-script to make sure the file it creates is present on the Macs so the ordinary script will not do anything (it will detect this file and stop if found).
 
+_The scripts utilizing __swiftDialog__ requires version 10 of __Installomator__, but will work with version 9. If runnning on version 9 it will set `NOTIFY=all` and use __Installomator__ notifications for showing progress, where as on version 10 it will be `NOTIFY=silent` as __swiftDialog__ is used instead._
+
 ### Shortenings
 
 - SS — Self Service — scripts designed for use through a Self Service catalog
