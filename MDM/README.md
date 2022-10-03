@@ -1,69 +1,53 @@
-# MDM scripts
+# Scripts for use with MDM
 
-This is a long list of various scripts for certain use in the various MDM solutions that we have used Installomator with.
+These example scripts are meant for use with MDM to run Installomator and process installs. Examples are also included which use swiftDialog to provide user feedback and dockutil to add app icons to the dock.
 
-There are two categories of MDMs. Either like Jamf Pro, that can contain the full script, and call that as a software installation (called policy in Jamf Pro). If the MDM cannot do that, it have to be able to run a script on the clients. That script can call Installomator on the client, and should therefore be locally installed.
+There are basically two ways to use Installomator with MDM. The "Jamf way" is where, through the MDM admin interface, your upload the Installomator script to a policy, and you provide additional parameters in the policy configuration like which app to install. The other way to use Installomator is by having the MDM install Installomator locally on the computer, just once, and then on subsequent runs the MDM runs a script which calls Installomator and provides the parameters.
 
-## “Jamf”-folder
+Examples of MDM which use the "other way" are Mosyle Manager/Mosyle Business, Addigy, and Microsoft Endpoint  Manager (Intune).
 
-Here you have scripts for using swiftDialog as part of the Installomator installation. Showing progress in a small window. Separate [ReadMe-file](Jamf/ReadMe.md) in this folder.
+The scripts utilizing __swiftDialog__  require version 10 of __Installomator__. If Installomator version 9 is installed, it will set `NOTIFY=all` and use the traditional __Installomator__ notifications for showing progress, where as on version 10 it will be `NOTIFY=silent` as __swiftDialog__ is used instead.
 
-## Script capable MDM-solutions
-
-So for Mosyle, Addigy, and Microsoft Endpoint Manager (Intune), we have tested these scripts. If these works in other MDMs, let us know. 
-
-Especially for Addigy, and maybe also for other MDMs, `condition`-scripts has been added if software installation will run on certain conditions. Also `prevention`-scripts has been added, if you manually need to eliminate the runnning of a script, this can be needed if you want to use the enrollment script, but don’t want it to run on the currently managed Macs Then you should sent out the `prevention`-script to make sure the file it creates is present on the Macs so the ordinary script will not do anything (it will detect this file and stop if found).
-
-_The scripts utilizing __swiftDialog__ requires version 10 of __Installomator__, but will work with version 9. If runnning on version 9 it will set `NOTIFY=all` and use __Installomator__ notifications for showing progress, where as on version 10 it will be `NOTIFY=silent` as __swiftDialog__ is used instead._
-
-### Shortenings
+## Abbreviations used in script names
 
 - SS — Self Service — scripts designed for use through a Self Service catalog
-- VFA — valuesfromarguments — a custom label call to Installomator
+- VFA — valuesfromarguments — a custom label call to Installomator. When using an MDM and the "other way", you can use these scripts to provide the label variables to Installomator for custom labels.
 
-# To be installed on all the Macs
+## Condition scripts
 
-In order for our MDM scripts to work, we need Installomator locally installed using the pkg we provide in our release.
+Scripts with the `condition` suffix are for use with MDMs like Addigy, where a script is run to determine if the rest of the policy should run.
 
-So I suggest to install these on enrollment.
+## Prevention scripts
 
-To utilize swiftDialog, we also need that installed.
+The `Installomator 1st` and `Progress 1st` scripts are meant to run automatically upon device enrollment. They check for the existance of a file, `/var/db/.Installomator1stDone`, to determine whether the computer has already been deployed. You can run the prevention scripts on existing Macs to ensure the 1st scripts won't inadvertently run on them.
 
-If you need dockutil, that should be maintained as well, but if missing the MDM scripts will install it.
+## "Jamf" folder
 
-## Maintenance of Installomator, swiftDialog, and dockutil
+This folder has Jamf specific examples using swiftDialog as part of the Installomator installation. Perfect for use with Jamf Self Service. Separate [ReadMe-file](Jamf/ReadMe.md) in this folder.
 
-I suggest to check weekly, and maybe at each boot, it newer versions have been released of these tools.
+# Scripts to install prerequisites
 
-The verious MDMs have various ways of running scheduled, but it is possible.
-
-### Scripts to use for installing these components
-
-These do not require anything to be installed on macOS:
+Use these scripts to handle installing Installomator itself. Additionally, you may want to install swiftDialog manually instead of having Installomator install it.
 
 - `install Installomator direct.sh` — can be run at enrollment and as maintenance at any time to install __Installomator__.
 
 - `install swiftDialog direct.sh` — can be used at enrollment and as maintenance at any time to install __swiftDialog__.
 
-Once Installomator has been installed, __dockutil__ can be installed using Installomator (as a service), using this script:
+Once Installomator has been installed, __dockutil__ can be installed by Installomator, using this script:
 
 - `App-install/App service Auto-install.sh` — This script uses pre-installed installomator to install dockutil.
 
 # Enrollment scripts
 
-For enrollment purposes, som 1st-scripts has been created. One is not showing anything to the end-user while running and another is using __DEPNotify__ to show progress (so hopefully the user will wait for the installation to finish):
+For enrollment purposes, some 1st-scripts has been created. One runs silently, another is using __DEPNotify__ to show progress and feedback:
 
 - `Installomator 1st Auto-install DEPNotify.sh` — will install __DEPNotify__ first, start that up, and change progress on the installation bar at each installed label. Very good for Addigy.
 
 - `Installomator 1st Auto-install.sh` — runnning silently installing Installomator labels in the given order. Can be used in combination with the Progress-script.
 
-- `Progress 1st swiftDialog.sh` — It will install __swiftDialog__ and start that up with a list of software it will look for. It will look for an installed file/folder in the file system for each item. This is great for Mosyle that can install software using various methods, and then this script can show when it has been installed. 
+- `Progress 1st swiftDialog.sh` — It will install __swiftDialog__ and start that up with a list of software it will look for. It will look for an installed file/folder in the file system for each item. This is great if some apps are being installed outside of Installomator, like by Apple Apps & Books, and then this script can show when it has been installed. 
 
-There are also Self Service scripts for this, if it’s somehow needed to have users running the installation manually.
-
-# _App-install_ folders
-
-Two different kinds of App-installation scripts have been made. Some that is very similar to the old provided scripts that are only using __Installomator__ for notifications (if any). And others that can use __swiftDialog__ for installation progress, and can also add the app to the Dock using __dockutil__.
+There are also Self Service versions of the above.
 
 ## “App-install”-folder
 
@@ -74,9 +58,11 @@ Two different kinds of App-installation scripts have been made. Some that is ver
 - App service Auto-install.sh
 - App VFA.sh
 
-Here you can use scripts for Self Service (SS) or for Auto-install. THere will be a difference in how many notifications will be used and maybe handling of blocking processes.
+Here you can use scripts for Self Service (SS) or for Auto-install. There will be a difference in how many notifications will be used and maybe handling of blocking processes.
 
-What is also differentiated is what kind of app it is. Is it of the kind of browser, that can often have critical security fixes, then we don’t want the user to postpone the installation, wheras a normal app can wait. A service app do not have to ask before installing, and should be able to install regardsliess if the app is currently running.
+`browser-security`: For an app like a web browser, you'll want the install performed right away, so there isn't a deferral option.
+`normal`: The user can defer the update.
+`service`: These are apps where we don't need to ask the user to allow the update. Menu bar apps and utilities would fall under this category.
 
 ## “App-install SS with swiftDialog and dockutil”-folder
 
@@ -87,15 +73,11 @@ What is also differentiated is what kind of app it is. Is it of the kind of brow
 - App VFA SS github.sh
 - App VFA SS.sh
 
-All of the notes for the above scripts are the same for these.
-
-But these scripts utilize __swiftDialog__ to show a more live progress for the installation, and they also have a setting to use __dockutil__ to add the software to the Dock of the user.
+These scripts are similar to the App-install folder but alos utilize __swiftDialog__ to show user feedback and installation status, and they also have an option to use __dockutil__ to add the installed software to the Dock.
 
 # App-update
 
-These script verifies if the app is already installed, before runnning Installomator.
+A common requested behavior is to only update an app if it is already installed. These script verifies if the app is already installed before runnning Installomator.
 
 - App browser-security Auto-install.sh
 - App normal Auto-install.sh
-
-These scripts only use Installomator, like “App-install”, but will check for the app to be installed first. Very usefull for Addigy and Microsoft.
