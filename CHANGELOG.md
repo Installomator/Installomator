@@ -7,45 +7,46 @@
 Plus everything from beta1 and beta2.
 
 - new labels:
-    - adobeacrobatprodc
-    - adobereaderdc-install
-    - archiwareb2go
-    - archiwarepst
-    - bitrix24
-    - charles
-    - chronoagent
-    - chronosync
-    - cytoscape
+    - adobeacrobatprodc (#707)
+    - adobereaderdc-install (#707)
+    - archiwareb2go (#625, #707)
+    - archiwarepst (#624)
+    - bitrix24 (#661)
+    - charles (#670)
+    - chronoagent (#617)
+    - chronosync (#616)
+    - cytoscape (#689)
     - egnytecore (#655)
     - fellow
     - filemakerpro (#609)
     - fujifilmwebcam
-    - gfxcardstatus
+    - gfxcardstatus (#690)
     - horos (#610)
     - jdk18 (#608)
-    - latexit
-    - nudgesuite
-    - origin
-    - parallelsrasclient
-    - polylens
-    - splashtopbusiness
-    - tailscale
-    - zoomoutlookplugin
-    - zotero
+    - latexit (#684)
+    - nudgesuite (#633)
+    - origin (#662)
+    - parallelsrasclient (#607)
+    - polylens (#671)
+    - splashtopbusiness (#660)
+    - tailscale (#620)
+    - zoomoutlookplugin (#656)
+    - zotero (#634)
+    - zulujdk18 (#612)
 
 - updated labels:
-    - acroniscyberprotectconnectagent
-    - adobecreativeclouddesktop
-    - adobereaderdc-update
-    - audacity
-    - duckduckgo
+    - acroniscyberprotectconnectagent (#678)
+    - adobecreativeclouddesktop (#687)
+    - adobereaderdc-update (#707)
+    - audacity (#708)
+    - duckduckgo (#704)
     - libreoffice (#605)
     - nudge
-    - obs
-    - r
+    - obs (#692)
+    - r (#702)
     - rstudio
     - screamingfrogseospider
-    - vlc
+    - vlc (#705, #606)
     - xcreds
 
 
