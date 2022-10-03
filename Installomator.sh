@@ -323,7 +323,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.0beta3"
-VERSIONDATE="2022-09-30"
+VERSIONDATE="2022-10-03"
 
 # MARK: Functions
 
@@ -2072,7 +2072,8 @@ bitrix24)
      downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop.dmg"
      expectedTeamID="5B3T3A994N"
      blockingProcesses=( "Bitrix24" )
-     ;;bitwarden)
+     ;;
+bitwarden)
     name="Bitwarden"
     type="dmg"
     downloadURL=$(downloadURLFromGit bitwarden desktop )
@@ -2247,7 +2248,8 @@ charles)
     appNewVersion=$(curl -fs https://www.charlesproxy.com/download/latest-release/ | sed -nE 's/.*version.*value="([^"]*).*/\1/p')
     downloadURL="https://www.charlesproxy.com/assets/release/$appNewVersion/charles-proxy-$appNewVersion.dmg"
     expectedTeamID="9A5PCU4FSD"
-    ;;chatwork)
+    ;;
+chatwork)
      name="Chatwork"
      type="dmg"
      downloadURL="https://desktop-app.chatwork.com/installer/Chatwork.dmg"
@@ -3306,6 +3308,15 @@ imazingprofileeditor)
     type="dmg"
     downloadURL="https://downloads.imazing.com/mac/iMazing-Profile-Editor/iMazingProfileEditorMac.dmg"
     expectedTeamID="J5PR93692Y"
+    ;;
+inetclearreportsdesigner)
+    name="i-Net Clear Reports Designer"
+    type="appindmg"
+    appNewVersion=$(curl -s https://www.inetsoftware.de/products/clear-reports/designer | grep "Latest release:" | cut -d ">" -f 4 | cut -d \  -f 2)
+    downloadURL=$(curl -s https://www.inetsoftware.de/products/clear-reports/designer | grep $appNewVersion | grep dmg | cut -d ">" -f 12 | cut -d \" -f 2)
+    expectedTeamID="9S2Y97K3D9"
+    blockingProcesses=( "clear-reports-designer" )
+    #forcefulQuit=YES
     ;;
 inkscape)
     # credit: Søren Theilgaard (@theilgaard)
@@ -4538,7 +4549,8 @@ origin)
      downloadURL="https://www.dm.origin.com/mac/download/Origin.dmg"
      expectedTeamID="TSTV75T6Q5"
      blockingProcesses=( "Origin" )
-     ;;ottomatic)
+     ;;
+ottomatic)
     name="Otto Matic"
     type="dmg"
     downloadURL=$(downloadURLFromGit jorio OttoMatic)
@@ -4576,6 +4588,13 @@ pandoc)
     appNewVersion=$(versionFromGit jgm pandoc )
     archiveName="mac.pkg"
     expectedTeamID="5U2WKE6DES"
+    ;;
+parallelsrasclient)
+    name="Parallels Client"
+    type="pkg"
+    appNewVersion=$(curl -sf "https://download.parallels.com/ras/v18/RAS%20Client%20for%20Mac%20Changelog.txt" | grep -m 1 "Parallels Client for Mac Version" | sed "s|.*Version \(.*\) -.*|\\1|" | sed 's/ /./g' | sed 's/[^0-9.]//g')
+    downloadURL=$(appMajorVersion=`sed 's/\..*//' <<< $appNewVersion` && appHyphenVersion=`curl -sf "https://download.parallels.com/ras/v18/RAS%20Client%20for%20Mac%20Changelog.txt" | grep -m 1 "Parallels Client for Mac Version" | sed "s|.*Version \(.*\) -.*|\\1|" | sed 's/ /-/g' | sed 's/[^0-9.-]//g'` && echo https://download.parallels.com/ras/v"$appMajorVersion"/"$appNewVersion"/RasClient-Mac-Notarized-"$appHyphenVersion".pkg)
+    expectedTeamID="4C6364ACXT"
     ;;
 paretosecurity)
     name="Pareto Security"
@@ -5955,6 +5974,19 @@ zulujdk17)
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu17.*ca-jdk17.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     elif [[ $(arch) == arm64 ]]; then
         downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu17.*ca-jdk17.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
+    fi
+    expectedTeamID="TDTHCUPYFR"
+    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
+    appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    ;;
+zulujdk18)
+    name="Zulu JDK 18"
+    type="pkgInDmg"
+    packageID="com.azulsystems.zulu.18"
+    if [[ $(arch) == i386 ]]; then
+        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu18.*ca-jdk18.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
+    elif [[ $(arch) == arm64 ]]; then
+        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu18.*ca-jdk18.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
     appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }

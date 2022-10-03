@@ -61,6 +61,7 @@ basecamp3
 bbedit
 bettertouchtool
 bitrix24
+bitwarden
 blender
 bluejeans
 bluejeanswithaudiodriver
@@ -81,6 +82,7 @@ camtasia2021
 canva
 carboncopycloner
 charles
+chatwork
 chronoagent
 chronosync
 cisdem-documentreader
@@ -202,6 +204,7 @@ idrivethin
 iina
 imageoptim
 imazingprofileeditor
+inetclearreportsdesigner
 inkscape
 insomnia
 installomator
@@ -332,10 +335,12 @@ openvpnconnect
 openvpnconnectv3
 opera
 origin
+ottomatic
 overflow
 pacifist
 packages
 pandoc
+parallelsrasclient
 paretosecurity
 parsec
 pdfsam
@@ -514,4 +519,5 @@ zulujdk11
 zulujdk13
 zulujdk15
 zulujdk17
+zulujdk18
 zulujdk8
