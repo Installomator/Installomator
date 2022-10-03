@@ -1,8 +1,61 @@
+## v10beta3
+
+- option to add item to dock if dockutil is installed (#701 requires dockutil https://github.com/kcrawford/dockutil )
+- further improvements to GitHub downloads (#691)
+- updated user dialog when app is already on the latest version (#658)
+
+Plus everything from beta1 and beta2.
+
+- new labels:
+    - adobeacrobatprodc
+    - adobereaderdc-install
+    - archiwareb2go
+    - archiwarepst
+    - bitrix24
+    - charles
+    - chronoagent
+    - chronosync
+    - cytoscape
+    - egnytecore (#655)
+    - fellow
+    - filemakerpro (#609)
+    - fujifilmwebcam
+    - gfxcardstatus
+    - horos (#610)
+    - jdk18 (#608)
+    - latexit
+    - nudgesuite
+    - origin
+    - parallelsrasclient
+    - polylens
+    - splashtopbusiness
+    - tailscale
+    - zoomoutlookplugin
+    - zotero
+
+- updated labels:
+    - acroniscyberprotectconnectagent
+    - adobecreativeclouddesktop
+    - adobereaderdc-update
+    - audacity
+    - duckduckgo
+    - libreoffice (#605)
+    - nudge
+    - obs
+    - r
+    - rstudio
+    - screamingfrogseospider
+    - vlc
+    - xcreds
+
+
+
 ## v10beta2
 
 - fixed problem with GitHub labels (#659)
 - bz2 archive support (#659)
 - fixed WorkspaceOne support (#653)
+- updated how `aapNewVersion` is determined (#680)
 
 Plus everything from v10beta1
 
