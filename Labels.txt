@@ -7,10 +7,12 @@ abetterfinderrename11
 abstract
 acroniscyberprotectconnect
 acroniscyberprotectconnectagent
+adobeacrobatprodc
 adobebrackets
 adobeconnect
 adobecreativeclouddesktop
 adobereaderdc
+adobereaderdc-install
 adobereaderdc-install
 adobereaderdc-update
 aircall
@@ -35,6 +37,8 @@ applesfmono
 applesfpro
 applesfsymbols
 aquaskk
+archiwareb2go
+archiwarepst
 arq7
 asana
 atext
@@ -56,6 +60,7 @@ bartender
 basecamp3
 bbedit
 bettertouchtool
+bitrix24
 bitwarden
 blender
 bluejeans
@@ -76,7 +81,10 @@ camtasia2020
 camtasia2021
 canva
 carboncopycloner
+charles
 chatwork
+chronoagent
+chronosync
 cisdem-documentreader
 citrixworkspace
 clevershare2
@@ -97,6 +105,7 @@ craftmanagerforsketch
 cricutdesignspace
 cryptomator
 cyberduck
+cytoscape
 daisydisk
 dangerzone
 darktable
@@ -123,6 +132,7 @@ dynalist
 easeusdatarecoverywizard
 easyfind
 egnyte
+egnytecore
 egnytewebedit
 element
 eraseinstall
@@ -137,6 +147,7 @@ favro
 fellow
 ferdi
 figma
+filemakerpro
 filezilla
 findanyfile
 firefox
@@ -154,6 +165,8 @@ flycut
 fontexplorer
 front
 fsmonitor
+fujifilmwebcam
+gfxcardstatus
 gimp
 githubdesktop
 golang
@@ -178,6 +191,7 @@ gyazogif
 hancock
 handbrake
 hazel
+horos
 houdahspot
 hpeasyadmin
 hpeasystart
@@ -190,6 +204,7 @@ idrivethin
 iina
 imageoptim
 imazingprofileeditor
+inetclearreportsdesigner
 inkscape
 insomnia
 installomator
@@ -205,6 +220,7 @@ jamfconnectconfiguration
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jdk18
 jetbrainsclion
 jetbrainsdatagrip
 jetbrainsintellijidea
@@ -227,6 +243,7 @@ knockknock
 krisp
 krita
 lastpass
+latexit
 launchbar
 lcadvancedvpnclient
 lexarrecoverytool
@@ -299,6 +316,7 @@ nomadlogin
 nordlayer
 notion
 nudge
+nudgesuite
 nvivo
 obs
 obsidian
@@ -316,11 +334,13 @@ onlyofficedesktop
 openvpnconnect
 openvpnconnectv3
 opera
+origin
 ottomatic
 overflow
 pacifist
 packages
 pandoc
+parallelsrasclient
 paretosecurity
 parsec
 pdfsam
@@ -330,6 +350,7 @@ pitch
 plantronicshub
 platypus
 plisteditpro
+polylens
 postman
 prism9
 pritunl
@@ -400,6 +421,7 @@ sonos
 sonoss1
 sonoss2
 sourcetree
+splashtopbusiness
 splashtopsos
 spotify
 sqlpropostgres
@@ -420,6 +442,7 @@ tableaudesktop
 tableaupublic
 tableaureader
 tageditor
+tailscale
 talkdeskcallbar
 talkdeskcxcloud
 taskpaper
@@ -489,9 +512,12 @@ zohoworkdrivetruesync
 zoom
 zoomclient
 zoomgov
+zoomoutlookplugin
 zoomrooms
+zotero
 zulujdk11
 zulujdk13
 zulujdk15
 zulujdk17
+zulujdk18
 zulujdk8
