@@ -17,11 +17,12 @@ Plus everything from beta1 and beta2.
     - chronosync (#616)
     - cytoscape (#689)
     - egnytecore (#655)
-    - fellow
+    - fellow (#599)
     - filemakerpro (#609)
-    - fujifilmwebcam
+    - fujifilmwebcam (#598)
     - gfxcardstatus (#690)
     - horos (#610)
+    - inetclearreportsdesigner (#601)
     - jdk18 (#608)
     - latexit (#684)
     - nudgesuite (#633)
@@ -44,8 +45,8 @@ Plus everything from beta1 and beta2.
     - nudge
     - obs (#692)
     - r (#702)
-    - rstudio
-    - screamingfrogseospider
+    - rstudio (#702)
+    - screamingfrogseospider (#665)
     - vlc (#705, #606)
     - xcreds
 
