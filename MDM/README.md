@@ -1,10 +1,10 @@
 # Scripts for use with MDM
 
-These example scripts are meant for use with MDM to run Installomator and process installs. Examples are also included which use swiftDialog to provide user feedback and dockutil to add app icons to the dock.
+These example scripts are meant for use with MDM to run __Installomator__ and process installs. Examples are also included which use swiftDialog to provide user feedback and dockutil to add app icons to the dock.
 
-There are basically two ways to use Installomator with MDM. The "Jamf way" is where, through the MDM admin interface, your upload the Installomator script to a policy, and you provide additional parameters in the policy configuration like which app to install. The other way to use Installomator is by having the MDM install Installomator locally on the computer, just once, and then on subsequent runs the MDM runs a script which calls Installomator and provides the parameters.
+There are basically two ways to use Installomator with MDM. The _“Jamf way”_ is where, through the MDM admin interface, your upload the Installomator script to a policy, and you provide additional parameters in the policy configuration like which app to install. The _“other way”_ to use Installomator is by having the MDM install Installomator locally on the computer, just once, and then on subsequent runs the MDM runs a script which calls Installomator and provides the parameters.
 
-Examples of MDM which use the "other way" are Mosyle Manager/Mosyle Business, Addigy, and Microsoft Endpoint  Manager (Intune).
+Examples of MDMs which use the “other way” are Mosyle Manager/Mosyle Business, Addigy, and Microsoft Endpoint Manager (Intune).
 
 The scripts utilizing __swiftDialog__  require version 10 of __Installomator__. If Installomator version 9 is installed, it will set `NOTIFY=all` and use the traditional __Installomator__ notifications for showing progress, where as on version 10 it will be `NOTIFY=silent` as __swiftDialog__ is used instead.
 
@@ -23,7 +23,7 @@ The `Installomator 1st` and `Progress 1st` scripts are meant to run automaticall
 
 ## "Jamf" folder
 
-This folder has Jamf specific examples using swiftDialog as part of the Installomator installation. Perfect for use with Jamf Self Service. Separate [ReadMe-file](Jamf/ReadMe.md) in this folder.
+This folder has Jamf specific examples using __swiftDialog__ as part of the Installomator installation. Perfect for use with Jamf Self Service. Separate [ReadMe-file](Jamf/ReadMe.md) in this folder.
 
 # Scripts to install prerequisites
 
@@ -35,13 +35,13 @@ Use these scripts to handle installing Installomator itself. Additionally, you m
 
 Once Installomator has been installed, __dockutil__ can be installed by Installomator, using this script:
 
-- `App-install/App service Auto-install.sh` — This script uses pre-installed installomator to install dockutil.
+- `App-install/App service Auto-install.sh` — This script uses pre-installed installomator to install __dockutil__.
 
 # Enrollment scripts
 
 For enrollment purposes, some 1st-scripts has been created. One runs silently, another is using __DEPNotify__ to show progress and feedback:
 
-- `Installomator 1st Auto-install DEPNotify.sh` — will install __DEPNotify__ first, start that up, and change progress on the installation bar at each installed label. Very good for Addigy.
+- `Installomator 1st Auto-install DEPNotify.sh` — will install __DEPNotify__ first, start that up, and change progress on the installation bar at each installed label. Very good for Addigy an Microsoft.
 
 - `Installomator 1st Auto-install.sh` — runnning silently installing Installomator labels in the given order. Can be used in combination with the Progress-script.
 
@@ -60,9 +60,9 @@ There are also Self Service versions of the above.
 
 Here you can use scripts for Self Service (SS) or for Auto-install. There will be a difference in how many notifications will be used and maybe handling of blocking processes.
 
-`browser-security`: For an app like a web browser, you'll want the install performed right away, so there isn't a deferral option.
-`normal`: The user can defer the update.
-`service`: These are apps where we don't need to ask the user to allow the update. Menu bar apps and utilities would fall under this category.
+`browser-security`: For an app like a web browser, you’ll want the install performed right away, so there isn’t a deferral option.
+`normal`: The user can defer/skip the update.
+`service`: These are apps where we don’t need to ask the user to allow the update. Menu bar apps and utilities would fall under this category.
 
 ## “App-install SS with swiftDialog and dockutil”-folder
 
@@ -73,7 +73,7 @@ Here you can use scripts for Self Service (SS) or for Auto-install. There will b
 - App VFA SS github.sh
 - App VFA SS.sh
 
-These scripts are similar to the App-install folder but alos utilize __swiftDialog__ to show user feedback and installation status, and they also have an option to use __dockutil__ to add the installed software to the Dock.
+These scripts are similar to the App-install folder but also utilize __swiftDialog__ to show user feedback and installation status, and they also have an option to use __dockutil__ to add the installed software to the Dock.
 
 # App-update
 
