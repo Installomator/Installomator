@@ -1,6 +1,6 @@
-# This is beta-software!
+# Note: The main repo is a beta version
 
-Please locate “Releases” on the right, and download the latest 9.2 release for a supported release. 
+Please locate “Releases” on the right, and download the latest 9.2 release (either pkg or zip) for a supported release. 
 
 # Installomator
 
