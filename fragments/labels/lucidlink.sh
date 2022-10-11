@@ -1,5 +1,5 @@
-lucid)
-    name="lucid"
+lucidlink)
+    name="lucidlink"
     type="pkg"
     packageID="com.lucidlink"
     downloadURL="https://www.lucidlink.com/download/latest/osx/stable/"
