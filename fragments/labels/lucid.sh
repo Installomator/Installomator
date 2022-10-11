@@ -1,39 +1,9 @@
 lucid)
     name="lucid-2.1.4032"
     type="pkg"
-    packageID="com.lucidlink
-org.mantle.Mantle
-Lucid.app/Contents/Frameworks/Mantle.framework
-com.lucidlink.build.helper.Renderer
-Lucid.app/Contents/Frameworks/Lucid
-com.lucidlink.lucidfs
-Lucid.app/Contents/Resources/lucidfs/lucidfs.fs
-com.lucidlink.build.helper
-Lucid.app/Contents/Frameworks/Lucid
-com.lucidlink.lucidfs.frameworks.lucidfs
-Lucid.app/Contents/Resources/lucidfs/lucidfs.fs/Contents/Frameworks/LucidFS.framework
-com.github.Electron.framework
-Lucid.app/Contents/Frameworks/Electron
-com.lucidlink.build.helper.GPU
-Lucid.app/Contents/Frameworks/Lucid
-com.lucidlink.lucidfs.filesystems.lucidfs
-Lucid.app/Contents/Resources/lucidfs/lucidfs.fs/Contents/Resources/mount_lucidfs.app/Contents/Extensions/10.12/lucidfs.kext
-com.lucidlink.build
-Lucid.app/Contents/Resources/ProxyResolver.app
-com.lucidlink.build.helper.Plugin
-Lucid.app/Contents/Frameworks/Lucid
-com.lucidlink.LucidFinderExt
-Lucid.app/Contents/PlugIns/LucidFinderExt.appex
-com.lucidlink
-Lucid.app
-org.reactivecocoa.ReactiveCocoa
-Lucid.app/Contents/Resources/ProxyResolver.app/Contents/Frameworks/ReactiveCocoa.framework
-com.lucidlink.lucidfs.Mounter
-Lucid.app/Contents/Resources/lucidfs/lucidfs.fs/Contents/Resources/mount_lucidfs.app
-com.github.Squirrel
-Lucid.app/Contents/Resources/ProxyResolver.app/Contents/Frameworks/Squirrel.framework"
+    packageID="com.lucidlink"
     downloadURL="https://d3il9duqikhdqy.cloudfront.net/latest/osx/lucid-2.1.4032.pkg"
-    appNewVersion=""
+    appNewVersion="2.1.4032"
     expectedTeamID="Y4KMJPU2B4"
     blockingProcesses=( Lucid )
     ;;
