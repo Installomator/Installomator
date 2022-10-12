@@ -1,4 +1,5 @@
-adobereaderdc)
+adobereaderdc|\
+adobereaderdc-install)
     name="Adobe Acrobat Reader DC"
     type="pkgInDmg"
     packageID="com.adobe.acrobat.DC.reader.app.pkg.MUI"
