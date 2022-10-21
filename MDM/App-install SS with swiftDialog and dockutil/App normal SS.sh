@@ -69,8 +69,10 @@ checkCmdOutput () {
     exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
     if [[ ${exitStatus} -eq 0 ]] ; then
         echo "${item} succesfully installed."
-        warnOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "warn" || true )"
-        echo "$warnOutput"
+        selectedOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i ": warn" || true )"
+        echo "$selectedOutput"
+        selectedOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i ": req" || true )"
+        echo "$selectedOutput"
     else
         echo "ERROR installing ${item}. Exit code ${exitStatus}"
         echo "$cmdOutput"
@@ -112,8 +114,9 @@ caffexit () {
 installomatorVersion="$(${destFile} version | cut -d "." -f1 || true)"
 
 if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion) < "20A" ]]; then
-    echo "Installomator should be at least version 10 to support Dialog. Installed version $installomatorVersion."
-    echo "And macOS 11 Big Sur (build 20A) is required for Dialog. Installed build $(sw_vers -buildVersion)."
+    echo "Skipping swiftDialog UI, using notifications."
+    #echo "Installomator should be at least version 10 to support swiftDialog. Installed version $installomatorVersion."
+    #echo "And macOS 11 Big Sur (build 20A) is required for swiftDialog. Installed build $(sw_vers -buildVersion)."
     installomatorNotify="NOTIFY=all"
 else
     installomatorNotify="NOTIFY=silent"
