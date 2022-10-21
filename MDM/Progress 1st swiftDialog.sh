@@ -245,6 +245,7 @@ versionKey="CFBundleShortVersionString" #CFBundleVersion
 
 currentInstalledVersion="$(defaults read "${destFile}/Contents/Info.plist" $versionKey || true)"
 printlog "${name} version: $currentInstalledVersion"
+destFile="/usr/local/bin/dialog"
 if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; then
     printlog "$name not found or version not latest."
     printlog "${destFile}"
