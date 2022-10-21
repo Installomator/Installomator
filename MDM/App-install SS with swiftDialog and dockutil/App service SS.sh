@@ -67,19 +67,19 @@ dialogUpdate() {
     fi
 }
 checkCmdOutput () {
-    # $1: cmdOutput
-    local cmdOutput="$1"
-    exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
+    local checkOutput="$1"
+    exitStatus="$( echo "${checkOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
     if [[ ${exitStatus} -eq 0 ]] ; then
         echo "${item} succesfully installed."
-        selectedOutput="$( echo "${cmdOutput}" | grep --binary-files=text -E ": (REQ|ERROR|WARN)" || true )"
+        selectedOutput="$( echo "${checkOutput}" | grep --binary-files=text -E ": (REQ|ERROR|WARN)" || true )"
         echo "$selectedOutput"
     else
         echo "ERROR installing ${item}. Exit code ${exitStatus}"
-        echo "$cmdOutput"
-        #errorOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "error" || true )"
+        echo "$checkOutput"
+        #errorOutput="$( echo "${checkOutput}" | grep --binary-files=text -i "error" || true )"
         #echo "$errorOutput"
     fi
+    #echo "$checkOutput"
 }
 
 # Check the currently logged in user
@@ -233,7 +233,7 @@ fi
 
 # Install software using Installomator
 cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installomatorNotify} || true)"
-checkCmdOutput $cmdOutput
+checkCmdOutput "${cmdOutput}"
 
 # Mark: dockutil stuff
 if [[ $addToDock -eq 1 ]]; then
@@ -252,9 +252,7 @@ else
 fi
 
 # Mark: Ending
-if [[ $installomatorVersion -lt 10 ]]; then
-    echo "Again skipping Dialog stuff."
-else
+if [[ $installomatorVersion -ge 10 ]] && [[ $(sw_vers -buildVersion) >= "20" ]]; then
     # close and quit dialog
     dialogUpdate "progress: complete"
     dialogUpdate "progresstext: Done"

@@ -5,15 +5,14 @@
 
 LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-#item="" # enter the software to install (if it has a label in future version of Installomator)
+item="clickshare" # enter the software to install (if it has a label in future version of Installomator)
 
 # Variables for label
-name="ClickShare"
+name="ClickShare" # Spaces in the name will not work
 type="appInDmgInZip"
 packageID=""
 downloadURL="https://www.barco.com$( curl -fs "https://www.barco.com/en/clickshare/app" | grep -A6 -i "macos" | grep -i "FileNumber" | tr '"' "\n" | grep -i "FileNumber" )"
 appNewVersion="$(eval "$( echo $downloadURL | sed -E 's/.*(MajorVersion.*BuildVersion=[0-9]*).*/\1/' | sed 's/&amp//g' )" ; ((MajorVersion++)) ; ((MajorVersion--)); ((MinorVersion++)) ; ((MinorVersion--)); ((PatchVersion++)) ; ((PatchVersion--)); ((BuildVersion++)) ; ((BuildVersion--)); echo "${MajorVersion}.${MinorVersion}.${PatchVersion}-b${BuildVersion}")"
-versionKey=""
 expectedTeamID="P6CDJZR997"
 
 # Dialog icon
@@ -66,6 +65,10 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 echo "$(date +%F\ %T) [LOG-BEGIN] $item"
 
+if [[ -z "$item" ]]; then
+    item="$name"
+fi
+
 dialogUpdate() {
     # $1: dialog command
     local dcommand="$1"
@@ -76,24 +79,24 @@ dialogUpdate() {
     fi
 }
 checkCmdOutput () {
-    # $1: cmdOutput
-    local cmdOutput="$1"
-    exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
+    local checkOutput="$1"
+    exitStatus="$( echo "${checkOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
     if [[ ${exitStatus} -eq 0 ]] ; then
         echo "${item} succesfully installed."
-        selectedOutput="$( echo "${cmdOutput}" | grep --binary-files=text -E ": (REQ|ERROR|WARN)" || true )"
+        selectedOutput="$( echo "${checkOutput}" | grep --binary-files=text -E ": (REQ|ERROR|WARN)" || true )"
         echo "$selectedOutput"
     else
         echo "ERROR installing ${item}. Exit code ${exitStatus}"
-        echo "$cmdOutput"
-        #errorOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "error" || true )"
+        echo "$checkOutput"
+        #errorOutput="$( echo "${checkOutput}" | grep --binary-files=text -i "error" || true )"
         #echo "$errorOutput"
     fi
+    #echo "$checkOutput"
 }
 
 # Check the currently logged in user
 currentUser=$(stat -f "%Su" /dev/console)
-if [ -z "$currentUser" ] || [ "$currentUser" = "loginwindow" ] || [ "$currentUser" = "_mbsetupuser" ] || [ "$currentUser" = "root" ]; then
+if [[ -z "$currentUser" ]] || [[ "$currentUser" = "loginwindow" ]] || [[ "$currentUser" = "_mbsetupuser" ]] || [[ "$currentUser" = "root" ]]; then
     echo "ERROR. Logged in user is $currentUser! Cannot proceed."
     exit 97
 fi
@@ -251,7 +254,7 @@ cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
     expectedTeamID=${expectedTeamID} \
     ${installomatorOptions} ${installomatorNotify} || true)"
 
-checkCmdOutput $cmdOutput
+checkCmdOutput "${cmdOutput}"
 
 # Mark: dockutil stuff
 if [[ $addToDock -eq 1 ]]; then
@@ -270,9 +273,7 @@ else
 fi
 
 # Mark: Ending
-if [[ $installomatorVersion -lt 10 ]]; then
-    echo "Again skipping Dialog stuff."
-else
+if [[ $installomatorVersion -ge 10 ]] && [[ $(sw_vers -buildVersion) >= "20" ]]; then
     # close and quit dialog
     dialogUpdate "progress: complete"
     dialogUpdate "progresstext: Done"
