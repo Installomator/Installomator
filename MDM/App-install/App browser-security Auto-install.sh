@@ -66,8 +66,8 @@ cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} || true)"
 exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
 if [[ ${exitStatus} -eq 0 ]] ; then
     echo "${item} succesfully installed."
-    warnOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "warn" || true )"
-    echo "$warnOutput"
+    selectedOutput="$( echo "${cmdOutput}" | grep --binary-files=text -E ": (REQ|ERROR|WARN)" || true )"
+    echo "$selectedOutput"
 else
     echo "ERROR installing ${item}. Exit code ${exitStatus}"
     echo "$cmdOutput"
