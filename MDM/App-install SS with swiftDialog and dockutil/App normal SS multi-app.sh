@@ -127,7 +127,7 @@ else
         echo "Cannot find dialog at $dialogApp"
         # Install using Installlomator
         cmdOutput="$(${destFile} dialog LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
-        checkCmdOutput $cmdOutput
+        checkCmdOutput "${cmdOutput}"
     fi
 
     # Configure and display swiftDialog
@@ -243,7 +243,7 @@ if [[ $addToDock -eq 1 ]]; then
         echo "Cannot find dockutil at $dockutil, trying installation"
         # Install using Installlomator
         cmdOutput="$(${destFile} dockutil LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
-        checkCmdOutput $cmdOutput
+        checkCmdOutput "${cmdOutput}"
     fi
     echo "Adding to Dock"
     for appPath in "${appPaths[@]}"; do
