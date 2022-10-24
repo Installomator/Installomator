@@ -45,6 +45,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=ignore NOTIFY=silent DIALOG_CMD_FI
 # Fill the variable "item" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
+# v. 10.0.3 : A bit more logging on succes, and change in ending Dialog part.
 # v. 10.0.2 : Improved icon checks and failovers
 # v. 10.0.1 : Can add the app to Dock using dockutil
 # v. 10.0   : Integration with Dialog and Installomator v. 10
@@ -114,7 +115,7 @@ caffexit () {
 # Mark: Installation begins
 installomatorVersion="$(${destFile} version | cut -d "." -f1 || true)"
 
-if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion) < "20A" ]]; then
+if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     echo "Skipping swiftDialog UI, using notifications."
     #echo "Installomator should be at least version 10 to support swiftDialog. Installed version $installomatorVersion."
     #echo "And macOS 11 Big Sur (build 20A) is required for swiftDialog. Installed build $(sw_vers -buildVersion)."
@@ -252,7 +253,7 @@ else
 fi
 
 # Mark: Ending
-if [[ $installomatorVersion -ge 10 ]] && [[ $(sw_vers -buildVersion) >= "20" ]]; then
+if [[ $installomatorVersion -ge 10 && $(sw_vers -buildVersion | cut -c1-2) -ge 20 ]]; then
     # close and quit dialog
     dialogUpdate "progress: complete"
     dialogUpdate "progresstext: Done"

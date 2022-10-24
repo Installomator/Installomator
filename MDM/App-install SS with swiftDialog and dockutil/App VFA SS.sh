@@ -5,10 +5,14 @@
 
 LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
+# Have the label been submittet in a PR for Installomator?
+# What version of Installomator is it expected to be included in?
+# Version 10.0
+
 item="clickshare" # enter the software to install (if it has a label in future version of Installomator)
 
 # Variables for label
-name="ClickShare" # Spaces in the name will not work
+name="ClickShare" # If spaces in the name, fill out "${name}" in Installomator-call below, circa line 249. Spaces should be escaped in that line.
 type="appInDmgInZip"
 packageID=""
 downloadURL="https://www.barco.com$( curl -fs "https://www.barco.com/en/clickshare/app" | grep -A6 -i "macos" | grep -i "FileNumber" | tr '"' "\n" | grep -i "FileNumber" )"
@@ -50,9 +54,10 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 #   INSTALL=force
 ######################################################################
 # To be used as a script sent out from a MDM.
-# Fill the variable "item" above with a label.
+# Fill out the label variables above, and those will be included in the Installomator call, circa on line 248
 # Script will run this label through Installomator.
 ######################################################################
+# v. 10.0.3 : A bit more logging on succes, and change in ending Dialog part.
 # v. 10.0.2 : Improved icon checks and failovers
 # v. 10.0.1 : Improved appIcon handling. Can add the app to Dock using dockutil
 # v. 10.0   : Integration with Dialog and Installomator v. 10
@@ -126,7 +131,7 @@ caffexit () {
 # Mark: Installation begins
 installomatorVersion="$(${destFile} version | cut -d "." -f1 || true)"
 
-if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion) < "20A" ]]; then
+if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     echo "Skipping swiftDialog UI, using notifications."
     #echo "Installomator should be at least version 10 to support swiftDialog. Installed version $installomatorVersion."
     #echo "And macOS 11 Big Sur (build 20A) is required for swiftDialog. Installed build $(sw_vers -buildVersion)."
@@ -245,7 +250,7 @@ fi
 
 # Install software using Installomator with valuesfromarguments
 cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
-    name=${name} \
+    name=\"${name}\" \
     type=${type} \
     packageID=${packageID} \
     downloadURL=\"$downloadURL\" \
@@ -273,7 +278,7 @@ else
 fi
 
 # Mark: Ending
-if [[ $installomatorVersion -ge 10 ]] && [[ $(sw_vers -buildVersion) >= "20" ]]; then
+if [[ $installomatorVersion -ge 10 && $(sw_vers -buildVersion | cut -c1-2) -ge 20 ]]; then
     # close and quit dialog
     dialogUpdate "progress: complete"
     dialogUpdate "progresstext: Done"
