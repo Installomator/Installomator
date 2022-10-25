@@ -5,5 +5,4 @@ nudge)
     downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
     expectedTeamID="9GQZ7KUFR6"
-
     ;;
