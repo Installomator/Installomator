@@ -210,24 +210,24 @@ else
     echo "$item $itemName"
     
     #Check icon (expecting beginning with “http” to be web-link and “/” to be disk file)
-    echo "icon before check: $icon"
+    #echo "icon before check: $icon"
     if [[ "$(echo ${icon} | grep -iE "^(http|ftp).*")" != ""  ]]; then
-        echo "icon looks to be web-link"
+        #echo "icon looks to be web-link"
         if ! curl -sfL --output /dev/null -r 0-0 "${icon}" ; then
-            echo "ERROR: Cannot download link. Reset icon."
+            echo "ERROR: Cannot download ${icon} link. Reset icon."
             icon=""
         fi
     elif [[ "$(echo ${icon} | grep -iE "^\/.*")" != "" ]]; then
-        echo "icon looks to be a file"
+        #echo "icon looks to be a file"
         if [[ ! -a "${icon}" ]]; then
-            echo "ERROR: Cannot find file. Reset icon."
+            echo "ERROR: Cannot find icon file ${icon}. Reset icon."
             icon=""
         fi
     else
-        echo "ERROR: Cannot figure out icon. Reset icon."
+        echo "ERROR: Cannot figure out icon ${icon}. Reset icon."
         icon=""
     fi
-    echo "icon after first check: $icon"
+    #echo "icon after first check: $icon"
     # If no icon defined we are trying to search for installed app icon
     if [[ "$icon" == "" ]]; then
         appPath=$(mdfind "kind:application AND name:$itemName" | head -1 || true)
@@ -236,7 +236,7 @@ else
             appIcon="${appIcon}.icns"
         fi
         icon="${appPath}/Contents/Resources/${appIcon}"
-        echo "Icon before file check: ${icon}"
+        #echo "Icon before file check: ${icon}"
         if [ ! -f "${icon}" ]; then
             # Using LOGO variable to show logo in swiftDialog
             case $LOGO in
