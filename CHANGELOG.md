@@ -1,8 +1,63 @@
+## v10beta3
+
+- option to add item to dock if dockutil is installed (#701 requires dockutil https://github.com/kcrawford/dockutil )
+- further improvements to GitHub downloads (#691)
+- updated user dialog when app is already on the latest version (#658)
+
+Plus everything from beta1 and beta2.
+
+- new labels:
+    - adobeacrobatprodc (#707)
+    - adobereaderdc-install (#707)
+    - archiwareb2go (#625, #707)
+    - archiwarepst (#624)
+    - bitrix24 (#661)
+    - charles (#670)
+    - chronoagent (#617)
+    - chronosync (#616)
+    - cytoscape (#689)
+    - egnytecore (#655)
+    - fellow (#599)
+    - filemakerpro (#609)
+    - fujifilmwebcam (#598)
+    - gfxcardstatus (#690)
+    - horos (#610)
+    - inetclearreportsdesigner (#601)
+    - jdk18 (#608)
+    - latexit (#684)
+    - nudgesuite (#633)
+    - origin (#662)
+    - parallelsrasclient (#607)
+    - polylens (#671)
+    - splashtopbusiness (#660)
+    - tailscale (#620)
+    - zoomoutlookplugin (#656)
+    - zotero (#634)
+    - zulujdk18 (#612)
+
+- updated labels:
+    - acroniscyberprotectconnectagent (#678)
+    - adobecreativeclouddesktop (#687)
+    - adobereaderdc-update (#707)
+    - audacity (#708)
+    - duckduckgo (#704)
+    - libreoffice (#605)
+    - nudge
+    - obs (#692)
+    - r (#702)
+    - rstudio (#702)
+    - screamingfrogseospider (#665)
+    - vlc (#705, #606)
+    - xcreds
+
+
+
 ## v10beta2
 
 - fixed problem with GitHub labels (#659)
 - bz2 archive support (#659)
 - fixed WorkspaceOne support (#653)
+- updated how `aapNewVersion` is determined (#680)
 
 Plus everything from v10beta1
 
