@@ -3,7 +3,7 @@ microsoftteams)
     type="pkg"
     packageID="com.microsoft.teams"
     downloadURL=$(curl -fs https://teams.microsoft.com/desktopclient/installer/osx)
-    appNewVersion=$(echo ${downloadURL} | egrep -o '([0-9]+\.?){1,4}')
+    appNewVersion=$(echo ${downloadURL} | egrep -o '([0-9]+\.?){1,4}' | sed -E 's/([0-9]+)\.?([0-9]*)\.?([0-9]*)\.?([0-9]*)\.?/\1.\3.\2\4/')
     # Looks like macadmin.software has package ID version. At least on 202105-28 version 1.00.411161 is matched on installed version and homepage.
     expectedTeamID="UBF8T346G9"
     blockingProcesses=( Teams "Microsoft Teams Helper" )
