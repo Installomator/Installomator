@@ -814,12 +814,11 @@ runUpdateTool() {
 finishing() {
     printlog "Finishing..."
     sleep 10 # wait a moment to let spotlight catch up
-    getAppVersion
 
-    if [[ -z $appversion ]]; then
+    if [[ -z $appNewVersion ]]; then
         message="Installed $name"
     else
-        message="Installed $name, version $appversion"
+        message="Installed $name, version $appNewVersion"
     fi
 
     printlog "$message" REQ
