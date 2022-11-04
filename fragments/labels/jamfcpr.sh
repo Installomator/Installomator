@@ -1,5 +1,5 @@
 jamfcpr)
-    name="Jamf Cloud Package Replicator"
+    name="jamfcpr"
     type="zip"
     downloadURL="$(downloadURLFromGit BIG-RAT jamfcpr)"
     appNewVersion="$(versionFromGit BIG-RAT jamfcpr)"
