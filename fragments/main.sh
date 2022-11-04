@@ -30,6 +30,7 @@ printlog "pkgName=${pkgName}" DEBUG
 printlog "choiceChangesXML=${choiceChangesXML}" DEBUG
 printlog "expectedTeamID=${expectedTeamID}" DEBUG
 printlog "blockingProcesses=${blockingProcesses}" DEBUG
+printlog "blockingProcessesAltName=${blockingProcessesAltName}" DEBUG
 printlog "installerTool=${installerTool}" DEBUG
 printlog "CLIInstaller=${CLIInstaller}" DEBUG
 printlog "CLIArguments=${CLIArguments}" DEBUG
