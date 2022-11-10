@@ -319,6 +319,7 @@ nudge
 nudgesuite
 nvivo
 obs
+observeitautoupdater
 obsidian
 odrive
 omnidisksweeper
