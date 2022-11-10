@@ -217,6 +217,7 @@ itsycal
 jabradirect
 jamfconnect
 jamfconnectconfiguration
+jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfreenroller
@@ -282,6 +283,8 @@ microsoftexcel
 microsoftlicenseremovaltool
 microsoftoffice365
 microsoftofficebusinesspro
+microsoftofficefactoryreset
+microsoftofficeremoval)
 microsoftonedrive
 microsoftonenote
 microsoftoutlook
@@ -295,8 +298,11 @@ microsoftword
 mightymike
 mindmanager
 miro
+mist
+mist-cli
 mmhmm
 mobikinassistantforandroid
+mobiletolocal
 mochakeyboard
 mochatelnet
 mochatn3270
