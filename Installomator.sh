@@ -323,7 +323,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.0beta3"
-VERSIONDATE="2022-10-03"
+VERSIONDATE="2022-11-09"
 
 # MARK: Functions
 
@@ -1345,7 +1345,7 @@ updateDialog() {
             echo "progress: $progress" >> $cmd_file
         fi
         if [[ $message != "" ]]; then
-            echo "progresstext: $name - $message" >> $cmd_file
+            echo "progresstext: $message" >> $cmd_file
         fi
     else
         # list item has a value, so we update the progress and text in the list
@@ -3399,6 +3399,13 @@ jamfconnectconfiguration)
     downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
     expectedTeamID="483DWKW443"
     ;;
+jamfcpr)
+    name="jamfcpr"
+    type="zip"
+    downloadURL="$(downloadURLFromGit BIG-RAT jamfcpr)"
+    appNewVersion="$(versionFromGit BIG-RAT jamfcpr)"
+    expectedTeamID="PS2F6S478M"
+    ;;
 jamfmigrator)
     # credit: Mischa van der Bent
     name="jamf-migrator"
@@ -4030,6 +4037,20 @@ microsoftofficebusinesspro)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install )
     ;;
+microsoftofficefactoryreset)
+    name="Microsoft Office Factory Reset"
+    type="pkg"
+    packageID="com.microsoft.reset.Factory"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Factory_Reset.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
+    ;;
+microsoftofficeremoval)
+    name="Microsoft Office Removal"
+    type="pkg"
+    packageID="com.microsoft.remove.Office"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Office_Removal.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
+    ;;
 microsoftonedrive)
     name="OneDrive"
     type="pkg"
@@ -4185,6 +4206,24 @@ miro)
     fi
     expectedTeamID="M3GM7MFY7U"
     ;;
+mist-cli)
+    name="Mist-CLI"
+    type="pkg"
+    packageID="com.ninxsoft.pkg.mist-cli"
+    downloadURL=$(downloadURLFromGit "ninxsoft" "mist-cli")
+    appNewVersion=$(versionFromGit "ninxsoft" "mist-cli")
+    expectedTeamID="7K3HVCLV7Z"
+    blockingProcesses=( NONE )
+    ;;
+mist)
+    name="Mist"
+    type="pkg"
+    packageID="com.ninxsoft.pkg.mist"
+    downloadURL=$(downloadURLFromGit "ninxsoft" "mist")
+    appNewVersion=$(versionFromGit "ninxsoft" "mist")
+    expectedTeamID="7K3HVCLV7Z"
+    blockingProcesses=( NONE )
+    ;;
 mmhmm)
     name="mmhmm"
     type="pkg"
@@ -4200,6 +4239,13 @@ mobikinassistantforandroid)
     versionKey="CFBundleVersion"
     appNewVersion=$(curl -fs https://www.mobikin.com/assistant-for-android-mac/ | grep -i "version:" | sed -E 's/.*Version: ([0-9.]*)<.*/\1/g')
     expectedTeamID="YNL42PA5C4"
+    ;;
+mobiletolocal)
+    name="Mobile to Local"
+    type="zip"
+    downloadURL="$(downloadURLFromGit BIG-RAT mobile_to_local)"
+    appNewVersion="$(versionFromGit BIG-RAT mobile_to_local)"
+    expectedTeamID="PS2F6S478M"
     ;;
 mochakeyboard)
     name="Mocha Keyboard"
@@ -4396,7 +4442,6 @@ nudge)
     downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
     expectedTeamID="9GQZ7KUFR6"
-
     ;;
 nudgesuite)
     name="Nudge Suite"
@@ -4427,6 +4472,12 @@ obs)
     downloadURL=$(downloadURLFromGit obsproject obs-studio )
     appNewVersion=$(versionFromGit obsproject obs-studio )
     expectedTeamID="2MMRE5MTB8"
+    ;;
+observeitautoupdater)
+    name="ObserveIT Auto Updater"
+    type="pkgInZip"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-autoupdater.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
     ;;
 obsidian)
     # credit: Søren Theilgaard (@theilgaard)
