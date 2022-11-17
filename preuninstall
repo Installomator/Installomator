@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Copyright 2017 ObserveIT Ltd.  All rights reserved.
+# Use is subject to license terms.
+#
+# Preuninstall script for OSX remote deploy manager
+#
+
+
+# Insert a password if required for OIT uninstall
+PASSWORD=
+
+# run uninstall_OIT
+if [ ${#PASSWORD} -ne 0 ]; then
+  /etc/omonitor/uninstall_OIT.sh -r -p $PASSWORD >& /tmp/it_remote_uninstall.log
+else
+  /etc/omonitor/uninstall_OIT.sh -r >& /tmp/it_remote_uninstall.log
+fi
+

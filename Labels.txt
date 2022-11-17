@@ -326,6 +326,7 @@ nudgesuite
 nvivo
 obs
 observeitautoupdater
+observeitcloudagent-lts
 obsidian
 odrive
 omnidisksweeper

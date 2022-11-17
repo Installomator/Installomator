@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# Copyright 2017 ObserveIT Ltd.  All rights reserved.
+# Use is subject to license terms.
+#
+# Preinstall script for OSX remote deploy manager
+#
+
+# Either... Write a content of a preconfig file in this section
+# cat << EOF > /tmp/preconfig.json
+# (Preconfig content)
+# EOF
+
+# Or... Write location of preconfig file into /tmp/it_remote_install.cfg:
+echo 'PRECONFIG_FILENAME=/tmp/preconfig.json' > /tmp/it_remote_install.cfg
+
+# Validate preconfig file path leads to readable file, and .cfg is parsable, to avoid later installation failure.
+preconfigline=`grep "PRECONFIG_FILENAME="  /tmp/it_remote_install.cfg`
+preconfig_file_path=${preconfigline#*=}
+if [ ! -r "$preconfig_file_path" ]; then
+	echo "Error: No readable preconfig file found at: $preconfig_file_path. Verify and run script again."
+	exit 1
+fi
+
+
+# User name to prompt for accessibility or All to prompt to all users
+#echo 'ACCESSIBILITY_PROMPT=' >> /tmp/it_remote_install.cfg
+
+# Allow - popup of screen recording permission for all users, Never - No popup for screen recording for any user (all users will be in MetaData Only mode) or Username - User name to prompt for screen recording
+#echo 'ALLOWPOPUP=' >> /tmp/it_remote_install.cfg
+
+# Agent process name, default is 'logger' 
+# echo 'LOGGER_NAME=logger' >> /tmp/it_remote_install.cfg
+
