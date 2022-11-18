@@ -5,7 +5,11 @@
 
 LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-#item="gfxcardstatus" # enter the software to install (if it has a label in future version of Installomator)
+# Have the label been submittet in a PR for Installomator?
+# What version of Installomator is it expected to be included in?
+# Version 10.0
+
+item="gfxcardstatus" # enter the software to install (if it has a label in future version of Installomator)
 
 # Label variables below
 
@@ -104,9 +108,10 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 #   INSTALL=force
 ######################################################################
 # To be used as a script sent out from a MDM.
-# Fill the variable "item" above with a label.
+# Fill out the label variables above, and those will be included in the Installomator call, circa on line 248
 # Script will run this label through Installomator.
 ######################################################################
+# v. 10.0.3 : A bit more logging on succes, and change in ending Dialog part.
 # v. 10.0.2 : Improved icon checks and failovers
 # v. 10.0.1 : github-functions added. Improved appIcon handling. Can add the app to Dock using dockutil.
 # v. 10.0   : Integration with Dialog and Installomator v. 10
@@ -119,6 +124,10 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 echo "$(date +%F\ %T) [LOG-BEGIN] $item"
 
+if [[ -z "$item" ]]; then
+    item="$name"
+fi
+
 dialogUpdate() {
     # $1: dialog command
     local dcommand="$1"
@@ -129,19 +138,19 @@ dialogUpdate() {
     fi
 }
 checkCmdOutput () {
-    # $1: cmdOutput
-    local cmdOutput="$1"
-    exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
+    local checkOutput="$1"
+    exitStatus="$( echo "${checkOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
     if [[ ${exitStatus} -eq 0 ]] ; then
         echo "${item} succesfully installed."
-        warnOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "warn" || true )"
-        echo "$warnOutput"
+        selectedOutput="$( echo "${checkOutput}" | grep --binary-files=text -E ": (REQ|ERROR|WARN)" || true )"
+        echo "$selectedOutput"
     else
         echo "ERROR installing ${item}. Exit code ${exitStatus}"
-        echo "$cmdOutput"
-        #errorOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "error" || true )"
+        echo "$checkOutput"
+        #errorOutput="$( echo "${checkOutput}" | grep --binary-files=text -i "error" || true )"
         #echo "$errorOutput"
     fi
+    #echo "$checkOutput"
 }
 
 # Check the currently logged in user
@@ -176,9 +185,10 @@ caffexit () {
 # Mark: Installation begins
 installomatorVersion="$(${destFile} version | cut -d "." -f1 || true)"
 
-if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion) < "20A" ]]; then
-    echo "Installomator should be at least version 10 to support Dialog. Installed version $installomatorVersion."
-    echo "And macOS 11 Big Sur (build 20A) is required for Dialog. Installed build $(sw_vers -buildVersion)."
+if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
+    echo "Skipping swiftDialog UI, using notifications."
+    #echo "Installomator should be at least version 10 to support swiftDialog. Installed version $installomatorVersion."
+    #echo "And macOS 11 Big Sur (build 20A) is required for swiftDialog. Installed build $(sw_vers -buildVersion)."
     installomatorNotify="NOTIFY=all"
 else
     installomatorNotify="NOTIFY=silent"
@@ -187,7 +197,7 @@ else
         echo "Cannot find dialog at $dialogApp"
         # Install using Installlomator
         cmdOutput="$(${destFile} dialog LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
-        checkCmdOutput $cmdOutput
+        checkCmdOutput "${cmdOutput}"
     fi
 
     # Configure and display swiftDialog
@@ -200,24 +210,24 @@ else
     echo "$item $itemName"
     
     #Check icon (expecting beginning with “http” to be web-link and “/” to be disk file)
-    echo "icon before check: $icon"
+    #echo "icon before check: $icon"
     if [[ "$(echo ${icon} | grep -iE "^(http|ftp).*")" != ""  ]]; then
-        echo "icon looks to be web-link"
+        #echo "icon looks to be web-link"
         if ! curl -sfL --output /dev/null -r 0-0 "${icon}" ; then
-            echo "ERROR: Cannot download link. Reset icon."
+            echo "ERROR: Cannot download ${icon} link. Reset icon."
             icon=""
         fi
     elif [[ "$(echo ${icon} | grep -iE "^\/.*")" != "" ]]; then
-        echo "icon looks to be a file"
+        #echo "icon looks to be a file"
         if [[ ! -a "${icon}" ]]; then
-            echo "ERROR: Cannot find file. Reset icon."
+            echo "ERROR: Cannot find icon file ${icon}. Reset icon."
             icon=""
         fi
     else
-        echo "ERROR: Cannot figure out icon. Reset icon."
+        echo "ERROR: Cannot figure out icon ${icon}. Reset icon."
         icon=""
     fi
-    echo "icon after first check: $icon"
+    #echo "icon after first check: $icon"
     # If no icon defined we are trying to search for installed app icon
     if [[ "$icon" == "" ]]; then
         appPath=$(mdfind "kind:application AND name:$itemName" | head -1 || true)
@@ -226,7 +236,7 @@ else
             appIcon="${appIcon}.icns"
         fi
         icon="${appPath}/Contents/Resources/${appIcon}"
-        echo "Icon before file check: ${icon}"
+        #echo "Icon before file check: ${icon}"
         if [ ! -f "${icon}" ]; then
             # Using LOGO variable to show logo in swiftDialog
             case $LOGO in
@@ -294,7 +304,7 @@ fi
 
 # Install software using Installomator with valuesfromarguments
 cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
-    name=${name} \
+    name=\"${name}\" \
     type=${type} \
     packageID=${packageID} \
     downloadURL=\"$downloadURL\" \
@@ -303,7 +313,7 @@ cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
     expectedTeamID=${expectedTeamID} \
     ${installomatorOptions} ${installomatorNotify} || true)"
 
-checkCmdOutput $cmdOutput
+checkCmdOutput "${cmdOutput}"
 
 # Mark: dockutil stuff
 if [[ $addToDock -eq 1 ]]; then
@@ -312,7 +322,7 @@ if [[ $addToDock -eq 1 ]]; then
         echo "Cannot find dockutil at $dockutil, trying installation"
         # Install using Installlomator
         cmdOutput="$(${destFile} dockutil LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
-        checkCmdOutput $cmdOutput
+        checkCmdOutput "${cmdOutput}"
     fi
     echo "Adding to Dock"
     $dockutil  --add "${appPath}" "${userHome}/Library/Preferences/com.apple.dock.plist" || true
@@ -322,9 +332,7 @@ else
 fi
 
 # Mark: Ending
-if [[ $installomatorVersion -lt 10 ]]; then
-    echo "Again skipping Dialog stuff."
-else
+if [[ $installomatorVersion -ge 10 && $(sw_vers -buildVersion | cut -c1-2) -ge 20 ]]; then
     # close and quit dialog
     dialogUpdate "progress: complete"
     dialogUpdate "progresstext: Done"
