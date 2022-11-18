@@ -334,6 +334,7 @@ checkRunningProcesses() {
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update" ERROR
                       elif [[ $button = "" ]]; then
+                        appClosed=0
                         cleanupAndExit 25 "timed out waiting for user response" ERROR
                       else
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
