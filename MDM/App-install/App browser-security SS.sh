@@ -31,6 +31,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user_then_quit NOTIFY=all" # 
 # Fill the variable "what" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
+# v.  9.2.2 : A bit more logging on succes.
 # v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
 
@@ -65,8 +66,8 @@ cmdOutput="$(${destFile} ${what} LOGO=$LOGO ${installomatorOptions} || true)"
 exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
 if [[ ${exitStatus} -eq 0 ]] ; then
     echo "${what} succesfully installed."
-    warnOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "warn" || true )"
-    echo "$warnOutput"
+    selectedOutput="$( echo "${cmdOutput}" | grep --binary-files=text -E ": (REQ|ERROR|WARN)" || true )"
+    echo "$selectedOutput"
 else
     echo "ERROR installing ${what}. Exit code ${exitStatus}"
     echo "$cmdOutput"
