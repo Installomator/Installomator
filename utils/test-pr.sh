@@ -14,7 +14,9 @@ if ! gh pr checkout $pr_num -b "pr/$pr_num"; then
 fi
 
 if ! utils/assemble.sh $label; then
+    exitcode=$?
     echo "something went wrong, stopping here"
+    echo "exit code: $exitcode"
 else
     echo
     echo "All good!"
