@@ -424,6 +424,10 @@ Depending on the application or pkg there are a few more variables you can or ne
   When a workflow has no blocking processes, use
     `blockingProcesses=( NONE )`
 
+- `blockingProcessesAltName`: (optional)
+  Associative array of alternative names for the defined `blockingProcesses`. Some applications have process names that differ between what is found via `pgrep` in the script and what is shown in Activity Monitor. You can define this using a key value pair using the name you define in `blockingProcesses` as the key and the value is what the application name is in Activity Monitor.
+  e.g: If `blockingProcesses=( Teams "Microsoft Teams Helper" )` is defined and `Teams` needs an alternative name, you can define it as `blockingProcessesAltName=( [Teams]="Microsoft Teams" )`
+
 - `pkgName`: (optional, only used for `dmgInPkg` and `dmgInZip`)
   File name of the pkg file _inside_ the dmg or zip.
   When not given the pkgName is set to `$name.pkg`.
