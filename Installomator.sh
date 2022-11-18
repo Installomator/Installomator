@@ -322,8 +322,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.0beta3"
-VERSIONDATE="2022-10-03"
+VERSION="10.0"
+VERSIONDATE="2022-11-18"
 
 # MARK: Functions
 
@@ -1345,7 +1345,7 @@ updateDialog() {
             echo "progress: $progress" >> $cmd_file
         fi
         if [[ $message != "" ]]; then
-            echo "progresstext: $name - $message" >> $cmd_file
+            echo "progresstext: $message" >> $cmd_file
         fi
     else
         # list item has a value, so we update the progress and text in the list
@@ -3030,7 +3030,9 @@ googleadseditor)
     name="Google Ads Editor"
     type="dmg"
     downloadURL="https://dl.google.com/adwords_editor/google_ads_editor.dmg"
-    appNewVersion=""
+    # Version not found in installed app, but on we it is here
+    #appNewVersion="$(curl -fs "https://support.google.com/google-ads/editor/answer/30513" | grep "Current Mac version" | sed -E 's/.*Current Mac version: *([0-9.]*)<.*/\1/')"
+    #appCustomVersion(){  }
     expectedTeamID="EQHXZ8M8AV"
     ;;
 googlechrome)
@@ -3261,6 +3263,14 @@ ibarcoder)
     appNewVersion="$(curl -fs "https://cristallight.com/iBarcoder/" | grep -i version: | head -1 | awk '{print $2}')"
     expectedTeamID="JAXVB9AH9M"
     ;;
+ibmnotifier)
+    name="IBM Notifier"
+    type="zip"
+    downloadURL="$(downloadURLFromGit IBM mac-ibm-notifications)"
+    #appNewVersion="$(versionFromGit IBM mac-ibm-notifications)"
+    appNewVersion="$(curl -sLI "https://github.com/IBM/mac-ibm-notifications/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | cut -d "-" -f2 | sed 's/[^0-9\.]//g')"
+    expectedTeamID="PETKK2G752"
+    ;;
 icons)
     name="Icons"
     type="zip"
@@ -3353,6 +3363,15 @@ ipswupdater)
     downloadURL=$(getJSONValue "$ipswupdaterVersions" "[0].url")
     appNewVersion=$(getJSONValue "$ipswupdaterVersions" "[0].version")
     expectedTeamID="YRW6NUGA63"
+    ;;
+ipvisionconnect)
+    name="ipvision Connect"
+    type="dmg"
+    # Description: A softphone client from ipvision.dk
+    downloadStore="https://my.ipvision.dk/connect/"
+    downloadURL="${downloadStore}$(curl -fs "https://my.ipvision.dk/connect/" | grep osx | sort | tail -1 | cut -d '"' -f2)"
+    appNewVersion="$(curl -fs "${downloadStore}" | grep osx | sort | tail -1 | sed -E 's/.*ipvision_connect_([0-9_]*)_osx.*/\1/' | tr "_" ".")"
+    expectedTeamID="5RLWBLKGL2"
     ;;
 istatmenus)
     # credit: AP Orlebeke (@apizz)
@@ -3733,6 +3752,17 @@ logitechoptions)
     pkgName=LogiMgr.pkg
     expectedTeamID="QED4VVPZWA"
     ;;
+logitechoptionsplus)
+    name="Logi Options+"
+    archiveName="logioptionsplus_installer.zip"
+    appName="logioptionsplus_installer.app"
+    type="zip"
+    downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer.zip"
+    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-11.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
+    CLIInstaller="logioptionsplus_installer.app/Contents/MacOS/logioptionsplus_installer"
+    CLIArguments=(--quiet)
+    expectedTeamID="QED4VVPZWA"
+    ;;
 logseq)
     name="Logseq"
     type="dmg"
@@ -3764,6 +3794,14 @@ lowprofile)
     downloadURL="$(downloadURLFromGit ninxsoft LowProfile)"
     appNewVersion="$(versionFromGit ninxsoft LowProfile)"
     expectedTeamID="7K3HVCLV7Z"
+    ;;
+lucidlink)
+    name="Lucid"
+    # https://www.lucidlink.com/download
+    type="pkg"
+    downloadURL="https://www.lucidlink.com/download/latest/osx/stable/"
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    expectedTeamID="Y4KMJPU2B4"
     ;;
 lucifer)
     # credit: Drew Diver (@grumpydrew on MacAdmins Slack)
@@ -3835,6 +3873,13 @@ macports)
     appNewVersion=$(versionFromGit macports macports-base)
     appCustomVersion(){ if [ -x /opt/local/bin/port ]; then /opt/local/bin/port version | awk '{print $2}'; else "0"; fi }
     expectedTeamID="QTA3A3B7F3"
+    ;;
+mactex)
+    name="MacTeX"
+    appName="TeX Live Utility.app"
+    type="pkg"
+    downloadURL="https://mirror.ctan.org/systems/mac/mactex/MacTeX.pkg"
+    expectedTeamID="RBGCY5RJWM"
     ;;
 malwarebytes)
     name="Malwarebytes"
@@ -4520,6 +4565,15 @@ onlyofficedesktop)
     appNewVersion=$(versionFromGit ONLYOFFICE DesktopEditors)
     expectedTeamID="2WH24U26GJ"
     ;;
+onscreencontrol)
+    name="OnScreen Control"
+    type="pkgInZip"
+    packageID="com.LGSI.OnScreen-Control"
+    releaseURL="https://www.lg.com/de/support/software-select-category-result?csSalesCode=34WK95U-W.AEU"
+    appNewVersion=$(curl -sf $releaseURL | grep -m 1 "Mac_OSC_" | sed -E 's/.*OSC_([0-9.]*).zip.*/\1/g')
+    downloadURL=$(curl -sf $releaseURL | grep -m 1 "Mac_OSC_" | sed "s|.*href=\"\(.*\)\" title.*|\\1|")
+    expectedTeamID="5SKT5H4CPQ"
+    ;;
 openvpnconnect)
     # credit: Erik Stam (@erikstam)
     name="OpenVPN"
@@ -4532,6 +4586,11 @@ openvpnconnectv3)
     # credit: @lotnix
     name="OpenVPN Connect"
     type="pkgInDmg"
+    if [[ $(arch) == "arm64" ]]; then
+        pkgName="/OpenVPN_Connect_[0-9_()]*_arm64_Installer_signed.pkg"
+    elif [[ $(arch) == "i386" ]]; then
+        pkgName="OpenVPN_Connect_[0-9_()]*_x86_64_Installer_signed.pkg"
+    fi
     downloadURL="https://openvpn.net/downloads/openvpn-connect-v3-macos.dmg"
     expectedTeamID="ACV7L3WCD8"
     ;;
@@ -4710,6 +4769,12 @@ proctortrack)
     type="zip"
     downloadURL="https://storage.googleapis.com/verificientstatic/ProctortrackApp/Production/Proctortrack.zip"
     expectedTeamID="SNHZD6TJE6"
+    ;;
+projectplace)
+    name="Projectplace"
+    type="dmg"
+    downloadURL="https://service.projectplace.com/client_apps/desktop/Projectplace-for-mac.dmg"
+    expectedTeamID="8333HW99E8"
     ;;
 promiseutility|\
 promiseutilityr)
@@ -5231,6 +5296,24 @@ strongsync)
     versionKey="CFBundleVersion"
     expectedTeamID="CH86M498V4"
     ;;
+subethaedit)
+    name="SubEthaEdit"
+    # Home: https://github.com/subethaedit/SubEthaEdit
+    # Description: General purpose plain text editor for macOS. Widely known for its live collaboration feature.
+    type="zip"
+    downloadURL="$(downloadURLFromGit subethaedit SubEthaEdit)"
+    appNewVersion="$(versionFromGit subethaedit SubEthaEdit)"
+    expectedTeamID="S76GCAG929"
+    ;;
+sublimemerge)
+    # Home: https://www.sublimemerge.com
+    # Description: Git Client, done Sublime. Line-by-line Staging. Commit Editing. Unmatched Performance.
+    name="Sublime Merge"
+    type="zip"
+    downloadURL="$(curl -fs "https://www.sublimemerge.com/download_thanks?target=mac#direct-downloads" | grep -io "https://download.*_mac.zip" | head -1)"
+    appNewVersion=$(curl -fs https://www.sublimemerge.com/download | grep -i -A 4 "id.*changelog" | grep -io "Build [0-9]*")
+    expectedTeamID="Z6D26JE4Y4"
+    ;;
 sublimetext)
     # credit: Søren Theilgaard (@theilgaard)
     name="Sublime Text"
@@ -5528,6 +5611,7 @@ tunnelblick)
     name="Tunnelblick"
     type="dmg"
     downloadURL=$(downloadURLFromGit TunnelBlick Tunnelblick )
+    appNewVersion=$(curl -sf https://github.com/Tunnelblick/Tunnelblick/releases | grep -m 1 "/Tunnelblick/Tunnelblick/releases/tag/" | sed -r 's/.*Tunnelblick ([^<]+).*/\1/')
     expectedTeamID="Z2SG5H3HC8"
     ;;
 typinator)
@@ -5604,6 +5688,14 @@ vanilla)
     downloadURL="https://macrelease.matthewpalmer.net/Vanilla.dmg"
     expectedTeamID="Z4JV2M65MH"
     ;;
+venturablocker)
+    name="venturablocker"
+    type="pkg"
+    packageID="dk.envo-it.venturablocker"
+    downloadURL=$(downloadURLFromGit Theile venturablocker )
+    appNewVersion=$(versionFromGit Theile venturablocker )
+    expectedTeamID="FXW6QXBFW5"
+    ;;
 veracrypt)
     name="VeraCrypt"
     type="pkgInDmg"
@@ -5672,6 +5764,13 @@ vscodium)
     appNewVersion="$(versionFromGit VSCodium vscodium)"
     expectedTeamID="C7S3ZQ2B8V"
     blockingProcesses=( Electron )
+    ;;
+vysor)
+    name="Vysor"
+    type="zip"
+    downloadURL="$(downloadURLFromGit koush vysor.io)"
+    appNewVersion="$(versionFromGit koush vysor.io)"
+    expectedTeamID="XT4C9EJNUG"
     ;;
 wacomdrivers)
     name="Wacom Desktop Center"
