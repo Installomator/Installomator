@@ -198,6 +198,7 @@ hpeasystart
 hype
 hyper
 ibarcoder
+ibmnotifier
 icons
 idrive
 idrivethin
@@ -211,6 +212,7 @@ installomator
 installomator_theile
 intellijideace
 ipswupdater
+ipvisionconnect
 istatmenus
 iterm2
 itsycal
@@ -252,9 +254,11 @@ libreoffice
 linear
 logioptions
 logitechoptions
+logitechoptionsplus
 logseq
 loom
 lowprofile
+lucidlink
 lucifer
 lulu
 macadminspython
@@ -262,6 +266,7 @@ maccyapp
 macfuse
 macoslaps
 macports
+mactex
 malwarebytes
 marathon
 marathon2
@@ -339,6 +344,7 @@ omniplan4
 omnipresence
 onionshare
 onlyofficedesktop
+onscreencontrol
 openvpnconnect
 openvpnconnectv3
 opera
@@ -364,6 +370,7 @@ prism9
 pritunl
 privileges
 proctortrack
+projectplace
 promiseutility
 promiseutilityr
 propresenter7
@@ -437,6 +444,8 @@ sqlprostudio
 steelseriesengine
 strongdm
 strongsync
+subethaedit
+sublimemerge
 sublimetext
 superhuman
 supportapp
@@ -484,6 +493,7 @@ unnaturalscrollwheels
 utm
 vagrant
 vanilla
+venturablocker
 veracrypt
 vimac
 virtualbox
@@ -493,6 +503,7 @@ vivaldi
 vlc
 vmwarehorizonclient
 vscodium
+vysor
 wacomdrivers
 wallyezflash
 webex
