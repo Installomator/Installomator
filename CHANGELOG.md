@@ -1,3 +1,30 @@
+## v10
+
+- updates to MDM sample scripts (#738)
+- updates to Swift Dialog integration (#717)
+- documentation updates (#711)
+
+And everything from the betas ([beta1](https://github.com/Installomator/Installomator/releases/tag/v10beta1), [beta2](https://github.com/Installomator/Installomator/releases/tag/v10beta2), [beta3](https://github.com/Installomator/Installomator/releases/tag/v10beta3))
+
+- new labels:
+    - ibmnotifier (#716)
+    - ipvisionconnect (#749)
+    - logitechoptionsplus (#719)
+    - lucidlink (#722)
+    - mactex (#685)
+    - onscreencontrol (#581)
+    - projectplace (#688)
+    - subethaedit (#728)
+    - sublimemerge (#729)
+    - venturablocker (#712)
+    - vysor (#710)
+
+- updated labels:
+    - googleadseditor (#739)
+    - openvpnconnectv3 (#750)
+    - tunnelblick (#618)
+
+
 ## v10beta3
 
 - option to add item to dock if dockutil is installed (#701 requires dockutil https://github.com/kcrawford/dockutil )
