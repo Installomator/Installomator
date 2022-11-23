@@ -435,7 +435,7 @@ reopenClosedProcess() {
     fi
 }
 
-installAppWithPath() { # $1: path to app to install in $targetDir
+installAppWithPath() { # $1: path to app to install in $targetDir $2: path to folder (with app inside) to copy to $targetDir
     # modified by: Søren Theilgaard (@theilgaard)
     appPath=${1?:"no path to app"}
     folderPath="${2}"
