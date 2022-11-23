@@ -438,7 +438,10 @@ reopenClosedProcess() {
 installAppWithPath() { # $1: path to app to install in $targetDir $2: path to folder (with app inside) to copy to $targetDir
     # modified by: Søren Theilgaard (@theilgaard)
     appPath=${1?:"no path to app"}
-    folderPath="${2}"
+    # If $2 ends in "/" then a folderName has not been specified so don't set it.
+    if [[ ! "${2}" == */ ]]; then
+        folderPath="${2}"
+    fi
 
     # check if app exists
     if [ ! -e "$appPath" ]; then
@@ -446,7 +449,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
     fi
 
     # check if folder path exists if it is set
-    if [ ! -z $folderPath ] && [ ! -e "$folderPath" ]; then
+    if [[ -n "$folderPath" ]] && [[ ! -e "$folderPath" ]]; then
         cleanupAndExit 8 "could not find folder: $folderPath" ERROR
     fi
 
@@ -537,7 +540,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
 
         # copy app to /Applications
         printlog "Copy $appPath to $targetDir"
-        if [ ! -z $folderPath ]; then
+        if [[ -n $folderPath ]]; then
             copyAppOut=$(ditto -v "$folderPath" "$targetDir/$folderName" 2>&1)
         else
             copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
