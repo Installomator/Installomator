@@ -131,7 +131,7 @@ $dialog --title "Installing $label" \
         --progress 100 \
         --position bottomright \
         --ontop \
-        --moveable \
+        --movable \
         --commandfile $dialog_command_file & dialogPID=$!
 
 sleep 0.1
