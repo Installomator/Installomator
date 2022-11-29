@@ -25,7 +25,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=0
+DEBUG=1
 
 # notify behavior
 NOTIFY=success
@@ -2675,7 +2675,7 @@ egnytewebedit)
     appName="Egnyte WebEdit.app"
     blockingProcesses=( NONE )
     ;;
-
+    
 element)
     name="Element"
     type="dmg"
@@ -2944,7 +2944,7 @@ flux)
     downloadURL="https://justgetflux.com/mac/Flux.zip"
     expectedTeamID="VZKSA7H9J9"
     ;;
-
+    
 flycut)
     name="Flycut"
     type="zip"
@@ -3076,7 +3076,7 @@ googledrivefilestream)
        packageID="com.google.drivefs.arm64"
     elif [[ $(arch) == "i386" ]]; then
        packageID="com.google.drivefs.x86_64"
-    fi
+    fi    
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg" # downloadURL="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
     blockingProcesses=( "Google Docs" "Google Drive" "Google Sheets" "Google Slides" )
     appName="Google Drive.app"
@@ -3747,7 +3747,7 @@ linear)
     appName="Linear.app"
     blockingProcesses=( "Linear" )
     ;;
-
+    
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -4418,12 +4418,13 @@ nanosaur)
     expectedTeamID="RVNL7XC27G"
     ;;
 nessusagent)
-name="Nessus Agent"
-type="pkgInDmg"
-packageID="com.tenablesecurity.nessusagent"
-downloadURL="https://www.tenable.com/downloads/api/v1/public/pages/nessus-agents/downloads/17740/download?i_agree_to_tenable_license_agreement=true"
-expectedTeamID="4B8J598M7U"
-;;
+     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
+     name="Nessus Agent"
+     type="pkgInDmg"
+     packageID="com.tenablesecurity.nessusagent"
+     downloadURL="https://www.tenable.com/downloads/api/v1/public/pages/nessus-agents/downloads/17920/download?i_agree_to_tenable_license_agreement=true"
+     expectedTeamID="4B8J598M7U"
+     ;;
 netnewswire)
     name="NetNewsWire"
     type="zip"
@@ -5105,7 +5106,7 @@ secretive)
     appNewVersion=$(versionFromGit maxgoedjen secretive)
     expectedTeamID="Z72PRUAWF6"
     ;;
-
+    
 sequelpro)
     name="Sequel Pro"
     type="dmg"
