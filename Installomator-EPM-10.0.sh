@@ -323,7 +323,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.0"
-VERSIONDATE="2022-11-28"
+VERSIONDATE="2022-11-30"
 
 # MARK: Functions
 
@@ -4418,7 +4418,6 @@ nanosaur)
     expectedTeamID="RVNL7XC27G"
     ;;
 nessusagent)
-     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
      name="Nessus Agent"
      type="pkgInDmg"
      packageID="com.tenablesecurity.nessusagent"
@@ -4530,6 +4529,12 @@ observeitautoupdater)
     name="ObserveIT Auto Updater"
     type="pkgInZip"
     downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-autoupdater.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
+    ;;
+observeitcloudagent-lts)
+    name="ObserveIT Cloud Agent (LTS)"
+    type="pkgInZip"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-cloudagent-OSX-bundle-1.*.tar.gz" | sed -n '1p' | cut -c 9-)
     expectedTeamID="DJR63QYCGL"
     ;;
 obsidian)
