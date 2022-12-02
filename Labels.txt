@@ -23,6 +23,8 @@ alephone
 alfred
 alttab
 amazonchime
+amazoncorretto11jdk
+amazoncorretto17jdk
 amazoncorretto8jdk
 amazonworkspaces
 androidfiletransfer
@@ -59,12 +61,14 @@ balsamiqwireframes
 bartender
 basecamp3
 bbedit
+bbeditpkg
 bettertouchtool
 bitrix24
 bitwarden
 blender
 bluejeans
 bluejeanswithaudiodriver
+boop
 boxdrive
 boxsync
 boxtools
@@ -79,6 +83,7 @@ camtasia
 camtasia2019
 camtasia2020
 camtasia2021
+camtasia2022
 canva
 carboncopycloner
 charles
@@ -219,6 +224,7 @@ itsycal
 jabradirect
 jamfconnect
 jamfconnectconfiguration
+jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfreenroller
@@ -230,6 +236,7 @@ jetbrainsintellijideace
 jetbrainsphpstorm
 jetbrainspycharm
 jetbrainspycharmce
+jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
@@ -249,6 +256,7 @@ latexit
 launchbar
 lcadvancedvpnclient
 lexarrecoverytool
+lgcalibrationstudio
 libreoffice
 linear
 logioptions
@@ -272,6 +280,7 @@ marathon2
 marathoninfinity
 masv
 mattermost
+mendeleyreferencemanager
 menumeters
 merlinproject
 microsoftautoupdate
@@ -287,6 +296,8 @@ microsoftexcel
 microsoftlicenseremovaltool
 microsoftoffice365
 microsoftofficebusinesspro
+microsoftofficefactoryreset
+microsoftofficeremoval
 microsoftonedrive
 microsoftonenote
 microsoftoutlook
@@ -300,8 +311,11 @@ microsoftword
 mightymike
 mindmanager
 miro
+mist
+mist-cli
 mmhmm
 mobikinassistantforandroid
+mobiletolocal
 mochakeyboard
 mochatelnet
 mochatn3270
@@ -313,6 +327,7 @@ mowgliiitsycal
 musescore
 muzzle
 nanosaur
+netiquette
 netnewswire
 netspot
 nextcloud
@@ -469,9 +484,11 @@ things
 thunderbird
 thunderbird_intl
 tidal
+todoist
 toggltrack
 tom4aconverter
 torbrowser
+transfer
 trex
 tunnelbear
 tunnelblick
@@ -494,6 +511,7 @@ visualstudiocode
 vivaldi
 vlc
 vmwarehorizonclient
+vpntracker365
 vscodium
 vysor
 wacomdrivers
@@ -517,6 +535,7 @@ yed
 yubikeymanagerqt
 zappy
 zeplin
+zerotier
 zohoworkdrive
 zohoworkdrivegenie
 zohoworkdrivetruesync
