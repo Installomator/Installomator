@@ -65,6 +65,7 @@ bitwarden
 blender
 bluejeans
 bluejeanswithaudiodriver
+boop
 boxdrive
 boxsync
 boxtools
