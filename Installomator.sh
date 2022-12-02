@@ -1346,8 +1346,8 @@ updateDialog() {
         fi
         if [[ $message != "" ]]; then
             if [[ $appNewVersion != "" ]]; then
-                appNewVersion=${appNewVersion// /}
-                echo "progresstext: v$appNewVersion $message" >> $cmd_file
+                appVersionProgressText=${appNewVersion// /}
+                echo "progresstext: v$appVersionProgressText $message" >> $cmd_file
             else
                 echo "progresstext: $message" >> $cmd_file
             fi
