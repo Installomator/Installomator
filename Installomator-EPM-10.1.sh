@@ -323,7 +323,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.1"
-VERSIONDATE="2022-12-02"
+VERSIONDATE="2022-12-06"
 
 # MARK: Functions
 
@@ -4520,6 +4520,13 @@ nanosaur)
     appNewVersion=$(versionFromGit jorio Nanosaur)
     expectedTeamID="RVNL7XC27G"
     ;;
+nessusagent)
+     name="Nessus Agent"
+     type="pkgInDmg"
+     packageID="com.tenablesecurity.nessusagent"
+     downloadURL="https://www.tenable.com/downloads/api/v1/public/pages/nessus-agents/downloads/17920/download?i_agree_to_tenable_license_agreement=true"
+     expectedTeamID="4B8J598M7U"
+     ;;
 netiquette)
     name="Netiquette"
     type="zip"
@@ -4627,6 +4634,19 @@ obs)
     downloadURL=$(downloadURLFromGit obsproject obs-studio )
     appNewVersion=$(versionFromGit obsproject obs-studio )
     expectedTeamID="2MMRE5MTB8"
+    ;;
+observeitautoupdater)
+    name="ObserveIT Auto Updater"
+    type="pkgInZip"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-autoupdater.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
+    ;;
+observeitcloudagent-lts)
+    name="ObserveIT Cloud Agent (LTS)"
+    type="pkgInZip"
+    pkgName="observeit-cloudagent-OSX-1."*"9.0.11.pkg"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-cloudagent-OSX-bundle-1.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
     ;;
 obsidian)
     # credit: Søren Theilgaard (@theilgaard)
