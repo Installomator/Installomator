@@ -1,5 +1,5 @@
-amazoncorretto8jdk)
-    name="Amazon Corretto 8 JDK"
+amazoncorretto17jdk)
+    name="Amazon Corretto 17 JDK"
     type="pkg"
     case $(arch) in
         "arm64")
@@ -9,9 +9,9 @@ amazoncorretto8jdk)
             cpu_arch="x64"
         ;;
     esac
-    downloadURL="https://corretto.aws/downloads/latest/amazon-corretto-8-${cpu_arch}-macos-jdk.pkg"
+    downloadURL="https://corretto.aws/downloads/latest/amazon-corretto-17-${cpu_arch}-macos-jdk.pkg"
     appNewVersion="$(
-        curl -Ls https://raw.githubusercontent.com/corretto/corretto-8/develop/CHANGELOG.md \
+        curl -Ls https://raw.githubusercontent.com/corretto/corretto-17/develop/CHANGELOG.md \
             | grep "## Corretto version" \
             | head -n 1 \
             | awk '{ print $NF}'

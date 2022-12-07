@@ -54,10 +54,14 @@ fi
 
 # MARK: Configure and display swiftDialog
 
+# Use Self Service's icon for the overlayicon
+overlayicon=$( defaults read /Library/Preferences/com.jamfsoftware.jamf.plist self_service_app_path )
+
 # display first screen
 open -a "$dialogApp" --args \
         --title none \
         --icon "$icon" \
+        --overlayicon "$overlayicon" \
         --message "$message" \
         --mini \
         --progress 100 \

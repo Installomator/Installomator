@@ -97,7 +97,7 @@ At some point, in 2018, Armin got frustrated at the number of scripts he was mai
 
 So Armin made the version for Jamf Pro but universally for any MDM to adopt.
 
-Søren looked at this, and wanted this approach to work in Mosyle and Addigy, and for these solutions we need Installomator to be locally installed on. the Mac, and then the MDM can call this script from their scripts features. For some time Søren had a version of Installomator that was supplied with a notarized pkg, so it could be deployed as part of DEP or however was needed.
+Søren looked at this, and wanted this approach to work in Mosyle and Addigy, and for these solutions we need Installomator to be locally installed on the Mac, and then the MDM can call this script from their scripts features. For some time Søren had a version of Installomator that was supplied with a notarized pkg, so it could be deployed as part of DEP or however was needed.
 
 This has now been merged into Installomator, and with contributions of Isaac and Adam, new features and labels have been added more frequently.
 
