@@ -332,6 +332,7 @@ nudgesuite
 nvivo
 obs
 observeitautoupdater
+observeitcloudagent-bundle-lts
 observeitcloudagent-lts
 obsidian
 odrive

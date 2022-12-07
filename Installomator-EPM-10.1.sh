@@ -25,7 +25,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=0
+DEBUG=1
 
 # notify behavior
 NOTIFY=success
@@ -323,7 +323,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.0"
-VERSIONDATE="2022-11-30"
+VERSIONDATE="2022-12-06"
 
 # MARK: Functions
 
@@ -2675,7 +2675,7 @@ egnytewebedit)
     appName="Egnyte WebEdit.app"
     blockingProcesses=( NONE )
     ;;
-
+    
 element)
     name="Element"
     type="dmg"
@@ -2944,7 +2944,7 @@ flux)
     downloadURL="https://justgetflux.com/mac/Flux.zip"
     expectedTeamID="VZKSA7H9J9"
     ;;
-
+    
 flycut)
     name="Flycut"
     type="zip"
@@ -3076,7 +3076,7 @@ googledrivefilestream)
        packageID="com.google.drivefs.arm64"
     elif [[ $(arch) == "i386" ]]; then
        packageID="com.google.drivefs.x86_64"
-    fi
+    fi    
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg" # downloadURL="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
     blockingProcesses=( "Google Docs" "Google Drive" "Google Sheets" "Google Slides" )
     appName="Google Drive.app"
@@ -3747,7 +3747,7 @@ linear)
     appName="Linear.app"
     blockingProcesses=( "Linear" )
     ;;
-
+    
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -4534,6 +4534,7 @@ observeitautoupdater)
 observeitcloudagent-lts)
     name="ObserveIT Cloud Agent (LTS)"
     type="pkgInZip"
+    pkgName="observeit-cloudagent-OSX-1."*"9.0.11.pkg"
     downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-cloudagent-OSX-bundle-1.*.tar.gz" | sed -n '1p' | cut -c 9-)
     expectedTeamID="DJR63QYCGL"
     ;;
@@ -5111,7 +5112,7 @@ secretive)
     appNewVersion=$(versionFromGit maxgoedjen secretive)
     expectedTeamID="Z72PRUAWF6"
     ;;
-
+    
 sequelpro)
     name="Sequel Pro"
     type="dmg"
