@@ -341,7 +341,9 @@ nvivo
 obs
 obsidian
 observeitautoupdater
-observeitcloudagent-bundle-lts
+observeitcloudagent-latest-stable-bundle
+observeitcloudagent-latest-stable
+observeitcloudagent-lts-bundle
 observeitcloudagent-lts
 odrive
 omnidisksweeper
