@@ -9,8 +9,6 @@ install_location="/usr/local/Installomator/"
 signature="Developer ID Installer: Armin Briegel (JME5BW3F3R)"
 
 # notarization
-dev_team="JME5BW3F3R" # asc-provider
-dev_account="developer@scriptingosx.com"
 dev_keychain_label="notary-scriptingosx"
 
 # parse arguments
@@ -19,7 +17,7 @@ zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -labels+:=l
 
 if (( ${opts[(I)(-h|--help)]} )); then
   echo "usage: assemble.sh [--script|--pkg|--notarize] [-labels path/to/labels ...] [arguments...]"
-  echo 
+  echo
   echo "builds and runs the installomator script from the fragements."
   echo "additional arguments are passed into the Installomator script for testing."
   exit
@@ -68,7 +66,7 @@ labels_dir="$fragments_dir/labels"
 # add default labels_dir to label_paths
 label_paths+=$labels_dir
 
-echo "label_paths: $label_paths"
+#echo "label_paths: $label_paths"
 
 fragment_files=( header.sh version.sh functions.sh arguments.sh main.sh )
 
@@ -122,6 +120,7 @@ chmod +x $destination_file
 # run script with remaining arguments
 if [[ $runScript -eq 1 ]]; then
     $destination_file "$@"
+    exit_code=$?
 fi
 
 # copy the script to root of repo when flag is set
@@ -129,12 +128,14 @@ if [[ $buildScript -eq 1 ]]; then
     echo "# copying script to $repo_dir/Installomator.sh"
     cp $destination_file $repo_dir/Installomator.sh
     chmod 755 $repo_dir/Installomator.sh
+    # also update Labels.txt
+    $repo_dir/Installomator.sh | tail -n +2 > $repo_dir/Labels.txt
 fi
 
 # build a pkg when flag is set
 if [[ buildPkg -eq 1 ]]; then
     echo "# building installer package"
-    
+
     tmpfolder=$(mktemp -d)
     payloadfolder="${tmpfolder}/payload"
 
@@ -186,3 +187,5 @@ if [[ $notarizePkg -eq 1 ]]; then
     echo "# Stapling $productpath"
     xcrun stapler staple "$productpath"
 fi
+
+exit $exit_code

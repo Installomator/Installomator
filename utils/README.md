@@ -1,6 +1,6 @@
 # How to assemble Installomator.sh
 
-Since the Installomator.sh script has grown to over 3000 lines, its management on git has become very unwieldy. The single file with all the logic and the data required to download and install the applications creates constant merge conflicts which add to the workload of the repo admins, especially when part of the team is working on the logic of the script while we still get PRs to add labels.
+Since the Installomator.sh script has grown to over 5000 lines, its management on git has become very unwieldy. The single file with all the logic and the data required to download and install the applications creates constant merge conflicts which add to the workload of the repo admins, especially when part of the team is working on the logic of the script while we still get PRs to add labels.
 
 Because of that we have split the main script into multiple files which are easier to manage. Having multiple files results in less merge conflicts.
 
@@ -53,26 +53,30 @@ Once you are certain that your new custom label works, you can use the code from
 
 The `Installomator.sh` script at the root of the repo does not really get involved in your building and testing. Similarly, if you want to apply, test, and contribute changes to the script's logic, you should modify the fragment file in question and test using the assemble script.
 
-Pull requests against the `Installomator.sh` script in the root of the repo will be rejected. (Excepting the backlog of existing PRs.)
+Pull requests against the `Installomator.sh` script in the root of the repo will be rejected.
 
 ## How do I contribute new or modified labels back to the Installomator project?
 
 ### When you are familiar with git and GitHub
 
-- Create a new branch in your local Installomator fork repo.
+- If you haven't already, create a fork of the Installomator repo. Clone the for to your local Mac.
+- Create a new branch in your local Installomator (fork) repo.
 - Copy the new or modified label file to `fragments/labels`. (replacing the original, when necessary)
-- Create a pull request against the main Installomator dev branch.
-- Don't use this branch for any other modifications, unless you need to update this particular PR. (Pull Requests are against a _branch_, not a particular commit.)
+- Test (push the change to your fork on GitHub. You can check that out on testing devices or vms.)
+- Create a pull request against the Installomator `main` branch.
+- Don't use this branch for _any_ other modifications, unless you need to update this particular PR. (Pull Requests are against a _branch_, not a particular commit.)
 
-If you have multiple labels you want to contribute, please create a separate local branch and a separate pull request for each label.
+If you have multiple labels (or other changes) you want to contribute, please create a _separate_ local branch and a _separate_ pull request for each label. This allows us to accept, modify, or reject each label separately and simplifies the process. 
 
-Once your Pull Request is merged into the main repo, you can pull the change to your fork and delete the branch.
+Once your Pull Request is merged into the main repo, you can pull the change to your local repo, push it to your fork, and delete the branch, because it should be fully merged.
+
+When you have multiple labels or changes, please create a separate issue for each label or change, unless they are closely related
+
 
 ### When you are not familiar with git and GitHub
 
-Create an Issue in the Installomator repo and include the contents of your custom label file.
+We have a tutorial on [How to create Pull Requests in GitHub](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue).
 
-If you have multiple labels, please create a separate issue for each label.
 
 ## Fragments
 
@@ -107,7 +111,7 @@ All the contents of the label files in `labels` (and any custom label locations 
 
 Finally, the `main.sh` fragment contains most of the main logic.
 
-The assemble script does not check _any_ of the files for syntax or completeness. You are responsible that everything fits together properly. (Pay special attention to remember the closing semi-colons `;;` in the label files.)
+The assemble script does not check _any_ of the files for syntax or completeness. You are responsible that everything fits together properly. (Pay special attention to remember the closing semi-colons `;;` and a final line break in the label files.)
 
 ## assemble.sh Usage
 

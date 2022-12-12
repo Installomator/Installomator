@@ -1,15 +1,53 @@
 *)
     # unknown label
     #printlog "unknown label $label"
-    cleanupAndExit 1 "unknown label $label"
+    cleanupAndExit 1 "unknown label $label" ERROR
     ;;
 esac
 
+# Are we only asked to return label name
+if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
+    printlog "Only returning label name." REQ
+    printlog "$name"
+    echo "$name"
+    exit
+fi
 
 # MARK: application download and installation starts here
 
+# Debug output of all variables in a label
+printlog "name=${name}" DEBUG
+printlog "appName=${appName}" DEBUG
+printlog "type=${type}" DEBUG
+printlog "archiveName=${archiveName}" DEBUG
+printlog "downloadURL=${downloadURL}" DEBUG
+printlog "curlOptions=${curlOptions}" DEBUG
+printlog "appNewVersion=${appNewVersion}" DEBUG
+printlog "appCustomVersion function: $(if type 'appCustomVersion' 2>/dev/null | grep -q 'function'; then echo "Defined. ${appCustomVersion}"; else; echo "Not defined"; fi)" DEBUG
+printlog "versionKey=${versionKey}" DEBUG
+printlog "packageID=${packageID}" DEBUG
+printlog "pkgName=${pkgName}" DEBUG
+printlog "choiceChangesXML=${choiceChangesXML}" DEBUG
+printlog "expectedTeamID=${expectedTeamID}" DEBUG
+printlog "blockingProcesses=${blockingProcesses}" DEBUG
+printlog "installerTool=${installerTool}" DEBUG
+printlog "CLIInstaller=${CLIInstaller}" DEBUG
+printlog "CLIArguments=${CLIArguments}" DEBUG
+printlog "updateTool=${updateTool}" DEBUG
+printlog "updateToolArguments=${updateToolArguments}" DEBUG
+printlog "updateToolRunAsCurrentUser=${updateToolRunAsCurrentUser}" DEBUG
+#printlog "Company=${Company}" DEBUG # Not used
+
+if [[ ${INTERRUPT_DND} = "no" ]]; then
+    # Check if a fullscreen app is active
+    if hasDisplaySleepAssertion; then
+        cleanupAndExit 24 "active display sleep assertion detected, aborting" ERROR
+    fi
+fi
+
 printlog "BLOCKING_PROCESS_ACTION=${BLOCKING_PROCESS_ACTION}"
 printlog "NOTIFY=${NOTIFY}"
+printlog "LOGGING=${LOGGING}"
 
 # Finding LOGO to use in dialogs
 case $LOGO in
@@ -28,14 +66,27 @@ case $LOGO in
     mosyleb)
         # Mosyle Business
         LOGO="/Applications/Self-Service.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Mosyle Corporation MDM"; fi
         ;;
     mosylem)
         # Mosyle Manager (education)
         LOGO="/Applications/Manager.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Mosyle Corporation MDM"; fi
         ;;
     addigy)
         # Addigy
         LOGO="/Library/Addigy/macmanage/MacManage.app/Contents/Resources/atom.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
+        ;;
+    microsoft)
+        # Microsoft Endpoint Manager (Intune)
+        LOGO="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Management Profile"; fi
+        ;;
+    ws1)
+        # Workspace ONE (AirWatch)
+        LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="Device Manager"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
@@ -45,12 +96,14 @@ if [[ ! -a "${LOGO}" ]]; then
         LOGO="/Applications/App Store.app/Contents/Resources/AppIcon.icns"
     fi
 fi
-printlog "LOGO=${LOGO}"
+printlog "LOGO=${LOGO}" INFO
+
+printlog "Label type: $type" INFO
 
 # MARK: extract info from data
 if [ -z "$archiveName" ]; then
     case $type in
-        dmg|pkg|zip|tbz)
+        dmg|pkg|zip|tbz|bz2)
             archiveName="${name}.$type"
             ;;
         pkgInDmg)
@@ -67,6 +120,7 @@ if [ -z "$archiveName" ]; then
             ;;
     esac
 fi
+printlog "archiveName: $archiveName" INFO
 
 if [ -z "$appName" ]; then
     # when not given derive from name
@@ -75,7 +129,7 @@ fi
 
 if [ -z "$targetDir" ]; then
     case $type in
-        dmg|zip|tbz|app*)
+        dmg|zip|tbz|bz2|app*)
             targetDir="/Applications"
             ;;
         pkg*)
@@ -84,19 +138,18 @@ if [ -z "$targetDir" ]; then
         updateronly)
             ;;
         *)
-            printlog "Cannot handle type $type"
-            cleanupAndExit 99
+            cleanupAndExit 99 "Cannot handle type $type" ERROR
             ;;
     esac
 fi
 
 if [[ -z $blockingProcesses ]]; then
-    printlog "no blocking processes defined, using $name as default"
+    printlog "no blocking processes defined, using $name as default" INFO
     blockingProcesses=( $name )
 fi
 
 # MARK: determine tmp dir
-if [ "$DEBUG" -ne 0 ]; then
+if [ "$DEBUG" -eq 1 ]; then
     # for debugging use script dir as working directory
     tmpDir=$(dirname "$0")
 else
@@ -105,10 +158,9 @@ else
 fi
 
 # MARK: change directory to temporary working directory
-printlog "Changing directory to $tmpDir"
+printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
-    printlog "error changing directory $tmpDir"
-    cleanupAndExit 1
+    cleanupAndExit 13 "error changing directory $tmpDir" ERROR
 fi
 
 # MARK: get installed version
@@ -116,11 +168,14 @@ getAppVersion
 printlog "appversion: $appversion"
 
 # MARK: Exit if new version is the same as installed version (appNewVersion specified)
-# credit: Søren Theilgaard (@theilgaard)
+if [[ "$type" != "updateronly" && ($INSTALL == "force" || $IGNORE_APP_STORE_APPS == "yes") ]]; then
+    printlog "Label is not of type “updateronly”, and it’s set to use force to install or ignoring app store apps, so not using updateTool."
+    updateTool=""
+fi
 if [[ -n $appNewVersion ]]; then
     printlog "Latest version of $name is $appNewVersion"
     if [[ $appversion == $appNewVersion ]]; then
-        if [[ $DEBUG -eq 0 ]]; then
+        if [[ $DEBUG -ne 1 ]]; then
             printlog "There is no newer version available."
             if [[ $INSTALL != "force" ]]; then
                 message="$name, version $appNewVersion, is  the latest version."
@@ -128,58 +183,93 @@ if [[ -n $appNewVersion ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
-                cleanupAndExit 0 "No newer version."
-            else
-                printlog "Using force to install anyway. Not using updateTool."
-                updateTool=""
+                if [[ $DIALOG_CMD_FILE != "" ]]; then
+                    updateDialog "complete" "Latest version already installed..."
+                    sleep 2
+                fi
+                cleanupAndExit 0 "No newer version." REQ
             fi
         else
-            printlog "DEBUG mode enabled, not exiting, but there is no new version of app."
+            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app." WARN
         fi
     fi
 else
     printlog "Latest version not specified."
-    if [[ $INSTALL == "force" ]]; then
-        printlog "Using force to install, so not using updateTool."
-        updateTool=""
-    fi
 fi
 
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "appversion & updateTool"
-    if [[ $DEBUG -eq 0 ]]; then
+    updateDialog "wait" "Updating..."
+
+    if [[ $DEBUG -ne 1 ]]; then
         if runUpdateTool; then
             finishing
-            cleanupAndExit 0
+            cleanupAndExit 0 "updateTool has run" REQ
         elif [[ $type == "updateronly" ]];then
-            printlog "type is $type so we end here."
-            cleanupAndExit 0
+            cleanupAndExit 0 "type is $type so we end here." REQ
         fi # otherwise continue
     else
-        printlog "DEBUG mode enabled, not running update tool"
+        printlog "DEBUG mode 1 enabled, not running update tool" WARN
     fi
 fi
 
 # MARK: download the archive
-if [ -f "$archiveName" ] && [ "$DEBUG" -ne 0 ]; then
-    printlog "$archiveName exists and DEBUG enabled, skipping download"
+if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
+    printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
-    # download the dmg
-    printlog "Downloading $downloadURL to $archiveName"
+    # download
+    printlog "Downloading $downloadURL to $archiveName" REQ
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
         printlog "notifying"
-        displaynotification "Downloading $name update" "Download in progress …"
+        if [[ $updateDetected == "YES" ]]; then
+            displaynotification "Downloading $name update" "Download in progress …"
+        else
+            displaynotification "Downloading new $name" "Download in progress …"
+        fi
     fi
-    if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
-        printlog "error downloading $downloadURL"
+
+    if [[ $DIALOG_CMD_FILE != "" ]]; then
+        # pipe
+        pipe="$tmpDir/downloadpipe"
+        # initialise named pipe for curl output
+        initNamedPipe create $pipe
+
+        # run the pipe read in the background
+        readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
+        printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
+
+        curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+        # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+        curlDownloadStatus=$(echo $pipestatus[1])
+        killProcess $downloadPipePID
+
+    else
+        printlog "No Dialog connection, just download" DEBUG
+        curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+        curlDownloadStatus=$(echo $?)
+    fi
+
+    deduplicatelogs "$curlDownload"
+    if [[ $curlDownloadStatus -ne 0 ]]; then
+    #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
+        printlog "error downloading $downloadURL" ERROR
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
-            displaynotification "$message" "Error installing/updating $name"
+            if [[ $updateDetected == "YES" ]]; then
+                displaynotification "$message" "Error updating $name"
+            else
+                displaynotification "$message" "Error installing $name"
+            fi
         fi
-        cleanupAndExit 2
+        printlog "File list: $(ls -lh "$archiveName")" ERROR
+        printlog "File type: $(file "$archiveName")" ERROR
+        cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
     fi
+    printlog "File list: $(ls -lh "$archiveName")" DEBUG
+    printlog "File type: $(file "$archiveName")" DEBUG
+    printlog "curl output was:\n$logoutput" DEBUG
 fi
 
 # MARK: when user is logged in, and app is running, prompt user to quit app
@@ -196,10 +286,22 @@ else
 fi
 
 # MARK: install the download
-printlog "Installing $name"
+printlog "Installing $name" REQ
 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
-    displaynotification "Installing $name" "Installation in progress …"
+    if [[ $updateDetected == "YES" ]]; then
+        displaynotification "Updating $name" "Installation in progress …"
+        updateDialog "wait" "Updating..."
+    else
+        displaynotification "Installing $name" "Installation in progress …"
+        updateDialog "wait" "Installing..."
+    fi
+fi
+
+if [ -n "$installerTool" ]; then
+    # installerTool defined, and we use that for installation
+    printlog "installerTool used: $installerTool" REQ
+    appName="$installerTool"
 fi
 
 case $type in
@@ -212,7 +314,7 @@ case $type in
     zip)
         installFromZIP
         ;;
-    tbz)
+    tbz|bz2)
         installFromTBZ
         ;;
     pkgInDmg)
@@ -225,13 +327,14 @@ case $type in
         installAppInDmgInZip
         ;;
     *)
-        printlog "Cannot handle type $type"
-        cleanupAndExit 99
+        cleanupAndExit 99 "Cannot handle type $type" ERROR
         ;;
 esac
+
+updateDialog "wait" "Finishing..."
 
 # MARK: Finishing — print installed application location and version
 finishing
 
 # all done!
-cleanupAndExit 0
+cleanupAndExit 0 "All done!" REQ
