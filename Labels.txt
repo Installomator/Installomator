@@ -131,6 +131,7 @@ dockutil
 drawio
 drift
 dropbox
+druvainsync
 duckduckgo
 duodevicehealth
 dynalist
