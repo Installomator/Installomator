@@ -62,6 +62,7 @@ bartender
 basecamp3
 bbedit
 bbeditpkg
+betterdisplay
 bettertouchtool
 bitrix24
 bitwarden
