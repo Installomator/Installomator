@@ -39,6 +39,7 @@ applesfmono
 applesfpro
 applesfsymbols
 aquaskk
+archimate
 archiwareb2go
 archiwarepst
 arq7
@@ -63,6 +64,7 @@ basecamp3
 bbedit
 bbeditpkg
 bettertouchtool
+betterdisplay
 bitrix24
 bitwarden
 blender
@@ -84,6 +86,7 @@ camtasia2019
 camtasia2020
 camtasia2021
 camtasia2022
+camunda
 canva
 carboncopycloner
 charles
