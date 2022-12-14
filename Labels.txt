@@ -340,11 +340,11 @@ nudgesuite
 nvivo
 obs
 obsidian
-observeitautoupdater
-observeitcloudagent-latest-stable-bundle
-observeitcloudagent-latest-stable
-observeitcloudagent-lts-bundle
-observeitcloudagent-lts
+proofpointautoupdater
+proofpointcloudagent-latest-stable-bundle
+proofpointcloudagent-latest-stable
+proofpointcloudagent-lts-bundle
+proofpoint-lts
 odrive
 omnidisksweeper
 omnifocus3
