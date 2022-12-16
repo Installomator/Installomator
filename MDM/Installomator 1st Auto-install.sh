@@ -147,7 +147,7 @@ case $LOGO in
         ;;
     ws1)
         # Workspace ONE (AirWatch)
-        LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+        LOGO_PATH="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
         ;;
 esac
 if [[ ! -a "${LOGO_PATH}" ]]; then
