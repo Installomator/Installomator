@@ -5,10 +5,14 @@
 
 LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
 
-#item="" # enter the software to install (if it has a label in future version of Installomator)
+# Have the label been submittet in a PR for Installomator?
+# What version of Installomator is it expected to be included in?
+# Version 10
+
+item="" # enter the software to install (if it has a label in future version of Installomator)
 
 # Variables for label
-name="ClickShare"
+name="ClickShare" # Spaces in the name will not work
 type="appInDmgInZip"
 packageID=""
 downloadURL="https://www.barco.com$( curl -fs "https://www.barco.com/en/clickshare/app" | grep -A6 -i "macos" | grep -i "FileNumber" | tr '"' "\n" | grep -i "FileNumber" )"
@@ -40,6 +44,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user LOGGING=INFO NOTIFY=al
 # Fill the variable "what" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
+# v.  9.2.2 : A bit more logging on succes.
 # v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
 
@@ -84,8 +89,8 @@ cmdOutput="$(${destFile} valuesfromarguments LOGO=$LOGO \
 exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
 if [[ ${exitStatus} -eq 0 ]] ; then
     echo "${what} succesfully installed."
-    warnOutput="$( echo "${cmdOutput}" | grep --binary-files=text -i "warn" || true )"
-    echo "$warnOutput"
+    selectedOutput="$( echo "${cmdOutput}" | grep --binary-files=text -E ": (REQ|ERROR|WARN)" || true )"
+    echo "$selectedOutput"
 else
     echo "ERROR installing ${what}. Exit code ${exitStatus}"
     echo "$cmdOutput"

@@ -1,3 +1,74 @@
+## v10.1
+
+- updated Jamf/Dialog scripts icon handling (#778)
+- Readme Updates (#744)
+- new labels:
+    - amazoncorretto11jdk (#721)
+    - amazoncorretto17jdk (#721)
+    - bbeditpkg (#720)
+    - boop (#781)
+    - camtasia2021, camtasia2022 (#730)
+    - jamfcpr (#753)
+    - jetbrainsrider
+    - lgcalibrationstudio (#763)
+    - mendeleyreferencemanager (#713)
+    - microsoftofficefactoryreset (#751)
+    - microsoftofficeremoval (#755)
+    - mist-cli (#733)
+    - mist (#732)
+    - mobiletolocal (#752)
+    - netiquette (#770)
+    - todoist (#769)
+    - transfer (#773)
+    - vpntracker365 (#760)
+    - zerotier (#785)
+
+- updated labels:
+    - 1password8 (#759)
+    - amazoncorretto8jdk (#721)
+    - camtasia (#730)
+    - citrixworkspace (#731)
+    - code42 (#766)
+    - drawio (#725)
+    - duodevicehealth (#761)
+    - idrive (#726)
+    - idrivethin (#727)
+    - macfuse (#714)
+    - microsoftazuredatastudio (#788)
+    - nudge (#754)
+    - prism9 (#746)
+    - skype (#762)
+    - synologydriveclient (#789)
+    - ultimakercura (#740)
+
+
+## v10
+
+- updates to MDM sample scripts (#738)
+- updates to Swift Dialog integration (#717)
+- documentation updates (#711)
+
+And everything from the betas ([beta1](https://github.com/Installomator/Installomator/releases/tag/v10beta1), [beta2](https://github.com/Installomator/Installomator/releases/tag/v10beta2), [beta3](https://github.com/Installomator/Installomator/releases/tag/v10beta3))
+
+- new labels:
+    - ibmnotifier (#716)
+    - ipvisionconnect (#749)
+    - logitechoptionsplus (#719)
+    - lucidlink (#722)
+    - mactex (#685)
+    - onscreencontrol (#581)
+    - projectplace (#688)
+    - subethaedit (#728)
+    - sublimemerge (#729)
+    - venturablocker (#712)
+    - vysor (#710)
+
+- updated labels:
+    - googleadseditor (#739)
+    - openvpnconnectv3 (#750)
+    - tunnelblick (#618)
+
+
 ## v10beta3
 
 - option to add item to dock if dockutil is installed (#701 requires dockutil https://github.com/kcrawford/dockutil )
