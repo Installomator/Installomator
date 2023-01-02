@@ -3,6 +3,7 @@ lsagent)
     #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version. 
     #Download: https://www.lansweeper.com/download/lsagent/
     #Icon: https://www.lansweeper.com/wp-content/uploads/2018/08/LsAgent-Scanning-Agent.png
+    # Not tested with "agentkey", but expecting server and port to be not needed if used.
 #Usage:
 #  --help                                      Display the list of valid options
 #  --version                                   Display product information
@@ -46,6 +47,12 @@ lsagent)
     fi
     if [[ -z $lsagentServer && -z $lsagentKey ]]; then
         cleanupAndExit 89 "This label requires more parameters: lsagentServer OR lsagentCloudKey, and maybe also lsagentPort, lsagentMode, and lsagentLanguage\nSee /Volumes/LsAgent/LsAgent-osx.app/Contents/MacOS/installbuilder.sh --help" ERROR
-    CLIArguments="--server $lsagentServer --port $lsagentPort --agentkey $lsagentKey --mode $lsagentMode --installer-language $lsagentLanguage"
+    fi
+    #CLIArguments=(--server $lsagentServer --port $lsagentPort --agentkey $lsagentKey --mode $lsagentMode --installer-language $lsagentLanguage)
+    if [[ -n $lsagentServer ]]; then
+        CLIArguments=(--server $lsagentServer --port $lsagentPort --mode $lsagentMode --installer-language $lsagentLanguage)
+    else
+        CLIArguments=(--agentkey $lsagentKey --mode $lsagentMode --installer-language $lsagentLanguage)
+    fi
     expectedTeamID="65LX6K7CBA"
     ;;
