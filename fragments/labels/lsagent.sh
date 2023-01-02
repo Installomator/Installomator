@@ -2,7 +2,7 @@ lsagent)
     name="LsAgent-osx"
     #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version. 
     #Download: https://www.lansweeper.com/download/lsagent/
-    # Needs to figure out how to send these arguments to the command
+    #Icon: https://www.lansweeper.com/wp-content/uploads/2018/08/LsAgent-Scanning-Agent.png
 #Usage:
 #  --help                                      Display the list of valid options
 #  --version                                   Display product information
@@ -30,12 +30,22 @@ lsagent)
 #                                              Default: 9524
 #  --agentkey <agentkey>                       Cloud Relay Authentication Key (Optional)
 #                                              Default: 
-
     type="dmg"
     downloadURL="https://content.lansweeper.com/lsagent-mac/"
     appNewVersion="$(curl -fsIL "$downloadURL" | grep -i "location" | cut -w -f2 | cut -d "/" -f5-6 | tr "/" ".")"
     installerTool="LsAgent-osx.app"
     CLIInstaller="LsAgent-osx.app/Contents/MacOS/installbuilder.sh"
-    CLIArguments=""
+    if [[ -z $lsagentPort ]]; then
+        lsagentPort=9524
+    fi
+    if [[ -z $lsagentMode ]]; then
+        lsagentMode="osx"
+    fi
+    if [[ -z $lsagentLanguage ]]; then
+        lsagentLanguage="en"
+    fi
+    if [[ -z $lsagentServer && -z $lsagentKey ]]; then
+        cleanupAndExit 89 "This label requires more parameters: lsagentServer OR lsagentCloudKey, and maybe also lsagentPort, lsagentMode, and lsagentLanguage\nSee /Volumes/LsAgent/LsAgent-osx.app/Contents/MacOS/installbuilder.sh --help" ERROR
+    CLIArguments="--server $lsagentServer --port $lsagentPort --agentkey $lsagentKey --mode $lsagentMode --installer-language $lsagentLanguage"
     expectedTeamID="65LX6K7CBA"
     ;;
