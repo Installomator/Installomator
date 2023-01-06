@@ -32,6 +32,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=all" # Separate
 # Fill the variable "item" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
+# v.  9.2.3 : Only kill the caffeinate process we create
 # v.  9.2.2 : A bit more logging on succes.
 # v.  9.2.1 : Better logging handling and installomatorOptions fix.
 ######################################################################
@@ -56,7 +57,6 @@ fi
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
-    pkill caffeinate
     exit $1
 }
 

@@ -86,7 +86,8 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #      Or fonts, like:
 #       "Apple SF Pro Font,/Library/Fonts/SF-Pro.ttf"
 ######################################################################
-scriptVersion="9.6"
+scriptVersion="9.7"
+# v.  9.7   : 2022-12-19 : Fix for LOGO_PATH for ws1
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
 # v.  9.5   : 2022-09-21 : change of GitHub download
 # v.  9.4   : 2022-09-14 : downloadURL can fall back on GitHub API
@@ -180,7 +181,7 @@ case $LOGO in
         ;;
     ws1)
         # Workspace ONE (AirWatch)
-        LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+        LOGO_PATH="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
         ;;
 esac
 if [[ ! -a "${LOGO_PATH}" ]]; then
