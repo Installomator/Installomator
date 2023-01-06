@@ -34,6 +34,15 @@ NOTIFY=success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
 
+# time in seconds to wait for a prompt to be answered before exiting the script
+PROMPT_TIMEOUT=86400
+# Common times translated into seconds
+# 60    =  1 minute
+# 300   =  5 minutes
+# 600   = 10 minutes
+# 3600  =  1 hour
+# 86400 = 24 hours (default)
+
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
@@ -322,7 +331,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.2"
+VERSION="11.0beta"
 VERSIONDATE="2023-01-06"
 
 # MARK: Functions
@@ -340,7 +349,6 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         deleteTmpOut=$(rm -Rfv "$tmpDir")
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
-
 
     # If we closed any processes, reopen the app again
     reopenClosedProcess
@@ -378,7 +386,7 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\" giving up after $PROMPT_TIMEOUT)"
 }
 
 displaydialogContinue() { # $1: message $2: title
@@ -669,9 +677,13 @@ checkRunningProcesses() {
                       sleep 5
                       ;;
                     prompt_user|prompt_user_then_kill)
-                      button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
+                        appClosed=0
                         cleanupAndExit 10 "user aborted update" ERROR
+                      elif [[ $button = "" ]]; then
+                        appClosed=0
+                        cleanupAndExit 25 "timed out waiting for user response" ERROR
                       else
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
@@ -686,7 +698,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     prompt_user_loop)
-                      button=$(displaydialog "Quit “$x” to continue updating? (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         if [[ $i < 2 ]]; then
                           printlog "user wants to wait an hour"
@@ -716,6 +728,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
+                      appClosed=0
                       cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
                 esac
@@ -762,13 +775,22 @@ reopenClosedProcess() {
     fi
 }
 
-installAppWithPath() { # $1: path to app to install in $targetDir
+installAppWithPath() { # $1: path to app to install in $targetDir $2: path to folder (with app inside) to copy to $targetDir
     # modified by: Søren Theilgaard (@theilgaard)
     appPath=${1?:"no path to app"}
+    # If $2 ends in "/" then a folderName has not been specified so don't set it.
+    if [[ ! "${2}" == */ ]]; then
+        folderPath="${2}"
+    fi
 
     # check if app exists
     if [ ! -e "$appPath" ]; then
         cleanupAndExit 8 "could not find: $appPath" ERROR
+    fi
+
+    # check if folder path exists if it is set
+    if [[ -n "$folderPath" ]] && [[ ! -e "$folderPath" ]]; then
+        cleanupAndExit 8 "could not find folder: $folderPath" ERROR
     fi
 
     # verify with spctl
@@ -858,7 +880,11 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # copy app to /Applications
         printlog "Copy $appPath to $targetDir"
-        copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
+        if [[ -n $folderPath ]]; then
+            copyAppOut=$(ditto -v "$folderPath" "$targetDir/$folderName" 2>&1)
+        else
+            copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
+        fi
         copyAppStatus=$(echo $?)
         deduplicatelogs "$copyAppOut"
         printlog "Debugging enabled, App copy output was:\n$logoutput" DEBUG
@@ -917,7 +943,7 @@ mountDMG() {
 
 installFromDMG() {
     mountDMG
-    installAppWithPath "$dmgmount/$appName"
+    installAppWithPath "$dmgmount/$appName" "$dmgmount/$folderName"
 }
 
 installFromPKG() {
@@ -1201,10 +1227,10 @@ finishing() {
     sleep 3 # wait a moment to let spotlight catch up
     getAppVersion
 
-    if [[ -z $appversion ]]; then
+    if [[ -z $appNewVersion ]]; then
         message="Installed $name"
     else
-        message="Installed $name, version $appversion"
+        message="Installed $name, version $appNewVersion"
     fi
 
     printlog "$message" REQ
@@ -1245,6 +1271,7 @@ hasDisplaySleepAssertion() {
     # No relevant display sleep assertion detected
     return 1
 }
+
 
 initNamedPipe() {
     # create or delete a named pipe
@@ -1345,12 +1372,7 @@ updateDialog() {
             echo "progress: $progress" >> $cmd_file
         fi
         if [[ $message != "" ]]; then
-            if [[ $appNewVersion != "" ]]; then
-                appVersionProgressText=${appNewVersion// /}
-                echo "progresstext: v$appVersionProgressText $message" >> $cmd_file
-            else
-                echo "progresstext: $message" >> $cmd_file
-            fi
+            echo "progresstext: $message" >> $cmd_file
         fi
     else
         # list item has a value, so we update the progress and text in the list
@@ -1361,6 +1383,7 @@ updateDialog() {
         fi
     fi
 }
+
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
@@ -2339,6 +2362,27 @@ chatwork)
      type="dmg"
      downloadURL="https://desktop-app.chatwork.com/installer/Chatwork.dmg"
      expectedTeamID="H34A3H2Y54"
+     ;;
+chemdoodle|\
+chemdoodle2d)
+     name="ChemDoodle"
+     type="dmg"
+     downloadURL="https://www.ichemlabs.com$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle-macos" | sed -r 's/.*href="([^"]+).*/\1/g')"
+     expectedTeamID="9XP397UW95"
+     folderName="ChemDoodle"
+     appName="${folderName}/ChemDoodle.app"
+     appNewVersion=$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle-macos" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
+     versionKey="CFBundleVersion"
+     ;;
+chemdoodle3d)
+     name="ChemDoodle3D"
+     type="dmg"
+     downloadURL="https://www.ichemlabs.com$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle3D-macos" | sed -r 's/.*href="([^"]+).*/\1/g')"
+     expectedTeamID="9XP397UW95"
+     folderName="ChemDoodle3D"
+     appName="${folderName}/ChemDoodle3D.app"
+     appNewVersion=$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle3D-macos" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
+     versionKey="CFBundleVersion"
      ;;
 chronoagent)
     name="ChronoAgent"

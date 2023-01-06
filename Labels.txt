@@ -91,6 +91,9 @@ canva
 carboncopycloner
 charles
 chatwork
+chemdoodle
+chemdoodle2d
+chemdoodle3d
 chronoagent
 chronosync
 cisdem-documentreader
