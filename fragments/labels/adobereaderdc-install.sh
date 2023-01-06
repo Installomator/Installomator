@@ -1,4 +1,4 @@
-adobereaderdc|
+adobereaderdc|\
 adobereaderdc-install)
     name="Adobe Acrobat Reader DC"
     type="pkgInDmg"
