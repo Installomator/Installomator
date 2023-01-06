@@ -50,7 +50,7 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\" giving up after $PROMPT_TIMEOUT)"
 }
 
 displaydialogContinue() { # $1: message $2: title
@@ -345,6 +345,9 @@ checkRunningProcesses() {
                       if [[ $button = "Not Now" ]]; then
                         appClosed=0
                         cleanupAndExit 10 "user aborted update" ERROR
+                      elif [[ $button = "" ]]; then
+                        appClosed=0
+                        cleanupAndExit 25 "timed out waiting for user response" ERROR
                       else
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
