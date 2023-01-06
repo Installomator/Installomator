@@ -15,10 +15,33 @@ fi
 
 # MARK: application download and installation starts here
 
+# Debug output of all variables in a label
+printlog "name=${name}" DEBUG
+printlog "appName=${appName}" DEBUG
+printlog "type=${type}" DEBUG
+printlog "archiveName=${archiveName}" DEBUG
+printlog "downloadURL=${downloadURL}" DEBUG
+printlog "curlOptions=${curlOptions}" DEBUG
+printlog "appNewVersion=${appNewVersion}" DEBUG
+printlog "appCustomVersion function: $(if type 'appCustomVersion' 2>/dev/null | grep -q 'function'; then echo "Defined. ${appCustomVersion}"; else; echo "Not defined"; fi)" DEBUG
+printlog "versionKey=${versionKey}" DEBUG
+printlog "packageID=${packageID}" DEBUG
+printlog "pkgName=${pkgName}" DEBUG
+printlog "choiceChangesXML=${choiceChangesXML}" DEBUG
+printlog "expectedTeamID=${expectedTeamID}" DEBUG
+printlog "blockingProcesses=${blockingProcesses}" DEBUG
+printlog "installerTool=${installerTool}" DEBUG
+printlog "CLIInstaller=${CLIInstaller}" DEBUG
+printlog "CLIArguments=${CLIArguments}" DEBUG
+printlog "updateTool=${updateTool}" DEBUG
+printlog "updateToolArguments=${updateToolArguments}" DEBUG
+printlog "updateToolRunAsCurrentUser=${updateToolRunAsCurrentUser}" DEBUG
+#printlog "Company=${Company}" DEBUG # Not used
+
 if [[ ${INTERRUPT_DND} = "no" ]]; then
     # Check if a fullscreen app is active
     if hasDisplaySleepAssertion; then
-        cleanupAndExit 1 "active display sleep assertion detected, aborting" ERROR
+        cleanupAndExit 24 "active display sleep assertion detected, aborting" ERROR
     fi
 fi
 
@@ -80,7 +103,7 @@ printlog "Label type: $type" INFO
 # MARK: extract info from data
 if [ -z "$archiveName" ]; then
     case $type in
-        dmg|pkg|zip|tbz)
+        dmg|pkg|zip|tbz|bz2)
             archiveName="${name}.$type"
             ;;
         pkgInDmg)
@@ -106,7 +129,7 @@ fi
 
 if [ -z "$targetDir" ]; then
     case $type in
-        dmg|zip|tbz|app*)
+        dmg|zip|tbz|bz2|app*)
             targetDir="/Applications"
             ;;
         pkg*)
@@ -137,7 +160,7 @@ fi
 # MARK: change directory to temporary working directory
 printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
-    cleanupAndExit 1 "error changing directory $tmpDir" ERROR
+    cleanupAndExit 13 "error changing directory $tmpDir" ERROR
 fi
 
 # MARK: get installed version
@@ -155,10 +178,14 @@ if [[ -n $appNewVersion ]]; then
         if [[ $DEBUG -ne 1 ]]; then
             printlog "There is no newer version available."
             if [[ $INSTALL != "force" ]]; then
-                message="$name, version $appNewVersion, is  the latest version."
+                message="$name, version $appNewVersion, is the latest version."
                 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
+                fi
+                if [[ $DIALOG_CMD_FILE != "" ]]; then
+                    updateDialog "complete" "Latest version already installed..."
+                    sleep 2
                 fi
                 cleanupAndExit 0 "No newer version." REQ
             fi
@@ -173,6 +200,8 @@ fi
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "appversion & updateTool"
+    updateDialog "wait" "Updating..."
+
     if [[ $DEBUG -ne 1 ]]; then
         if runUpdateTool; then
             finishing
@@ -199,8 +228,28 @@ else
             displaynotification "Downloading new $name" "Download in progress …"
         fi
     fi
-    curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
-    curlDownloadStatus=$(echo $?)
+
+    if [[ $DIALOG_CMD_FILE != "" ]]; then
+        # pipe
+        pipe="$tmpDir/downloadpipe"
+        # initialise named pipe for curl output
+        initNamedPipe create $pipe
+
+        # run the pipe read in the background
+        readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
+        printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
+
+        curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+        # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+        curlDownloadStatus=$(echo $pipestatus[1])
+        killProcess $downloadPipePID
+
+    else
+        printlog "No Dialog connection, just download" DEBUG
+        curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+        curlDownloadStatus=$(echo $?)
+    fi
+
     deduplicatelogs "$curlDownload"
     if [[ $curlDownloadStatus -ne 0 ]]; then
     #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
@@ -242,8 +291,10 @@ if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
     printlog "notifying"
     if [[ $updateDetected == "YES" ]]; then
         displaynotification "Updating $name" "Installation in progress …"
+        updateDialog "wait" "Updating..."
     else
         displaynotification "Installing $name" "Installation in progress …"
+        updateDialog "wait" "Installing..."
     fi
 fi
 
@@ -263,7 +314,7 @@ case $type in
     zip)
         installFromZIP
         ;;
-    tbz)
+    tbz|bz2)
         installFromTBZ
         ;;
     pkgInDmg)
@@ -279,6 +330,8 @@ case $type in
         cleanupAndExit 99 "Cannot handle type $type" ERROR
         ;;
 esac
+
+updateDialog "wait" "Finishing..."
 
 # MARK: Finishing — print installed application location and version
 finishing

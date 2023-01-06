@@ -1,8 +1,12 @@
+# Note: The main repo is a beta version
+
+Please locate “Releases” on the right, and download the latest 9.2 release (either pkg or zip) for a supported release. 
+
 # Installomator
 
 _The one installer script to rule them all._
 
-![](https://img.shields.io/github/v/release/scriptingosx/Installomator)&nbsp;![](https://img.shields.io/github/downloads/scriptingosx/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/scriptingosx/Installomator)
+![](https://img.shields.io/github/v/release/Installomator/Installomator)&nbsp;![](https://img.shields.io/github/downloads/Installomator/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/Installomator/Installomator)
 
 This script is in the “we find it useful, it is working for us” stage.
 
@@ -13,12 +17,12 @@ We have put a lot of work into making it stable and safe, but we cannot - of cou
 ## Authors
 
 Intallomator was originally inspired by the download scripts from William Smith and Sander Schram, and created by:
-    Armin Briegel - @scriptingosx
+- [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
 
-Later on a few more contributers came on the project:
-    Isaac Ordonez - @issacatmann
-    Søren Theilgaard - @Theile
-    Adam Codega - @acodega
+Later on a few more members came on the project:
+- Isaac Ordonez - @issacatmann
+- [Søren Theilgaard - @Theile](https://github.com/Theile)
+- [Adam Codega - @acodega](https://github.com/acodega)
 
  And with numerous contributions from many others.
 
@@ -93,7 +97,7 @@ At some point, in 2018, Armin got frustrated at the number of scripts he was mai
 
 So Armin made the version for Jamf Pro but universally for any MDM to adopt.
 
-Søren looked at this, and wanted this approach to work in Mosyle and Addigy, and for these solutions we need Installomator to be locally installed on. the Mac, and then the MDM can call this script from their scripts features. For some time Søren had a version of Installomator that was supplied with a notarized pkg, so it could be deployed as part of DEP or however was needed.
+Søren looked at this, and wanted this approach to work in Mosyle and Addigy, and for these solutions we need Installomator to be locally installed on the Mac, and then the MDM can call this script from their scripts features. For some time Søren had a version of Installomator that was supplied with a notarized pkg, so it could be deployed as part of DEP or however was needed.
 
 This has now been merged into Installomator, and with contributions of Isaac and Adam, new features and labels have been added more frequently.
 
