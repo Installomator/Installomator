@@ -452,6 +452,12 @@ Depending on the application or pkg there are a few more variables you can or ne
   Introduced as part of `CLIInstaller`. If the installer in the DMG or ZIP is named differently than the installed app, then this variable can be used to name the installer that should be located after mounting/expanding the downloaded archive.
   See label adobecreativeclouddesktop
 
+- `DIALOG_CMD_FILE`:
+  When this variable is set, Installomator will write Swift Dialog commands to this path. Installomator will not launch Swift Dialog. The process calling Installomator will have launch and configure Swift Dialog to listen to this file. See `MDM/swiftdialog_example.sh` for an example.
+
+- `DIALOG_LIST_ITEM_NAME`:
+When this variable is set, progress for downloads and installs will be sent to this listitem. When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
+
 ## Frequently Asked Questions
 
 ### What if the latest version of the app is already installed?
