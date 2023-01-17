@@ -13,7 +13,6 @@ adobeconnect
 adobecreativeclouddesktop
 adobereaderdc
 adobereaderdc-install
-adobereaderdc-install
 adobereaderdc-update
 aircall
 airserver
@@ -39,6 +38,7 @@ applesfmono
 applesfpro
 applesfsymbols
 aquaskk
+archimate
 archiwareb2go
 archiwarepst
 arq7
@@ -62,7 +62,9 @@ bartender
 basecamp3
 bbedit
 bbeditpkg
+betterdisplay
 bettertouchtool
+beyondcomparepro
 bitrix24
 bitwarden
 blender
@@ -84,6 +86,7 @@ camtasia2019
 camtasia2020
 camtasia2021
 camtasia2022
+camunda
 canva
 carboncopycloner
 charles
@@ -104,6 +107,7 @@ coconutbattery
 code42
 coderunner
 colourcontrastanalyser
+connectfonts
 cormorant
 craftmanager
 craftmanagerforsketch
@@ -174,6 +178,7 @@ fujifilmwebcam
 gfxcardstatus
 gimp
 githubdesktop
+gitkraken
 golang
 googleadseditor
 googlechrome
@@ -196,6 +201,7 @@ gyazogif
 hancock
 handbrake
 hazel
+hmavpn
 horos
 houdahspot
 hpeasyadmin
@@ -265,6 +271,7 @@ logitechoptionsplus
 logseq
 loom
 lowprofile
+lsagent
 lucidlink
 lucifer
 lulu
@@ -327,6 +334,7 @@ mowgliiitsycal
 musescore
 muzzle
 nanosaur
+nessusagent
 netiquette
 netnewswire
 netspot
@@ -369,14 +377,17 @@ pandoc
 parallelsrasclient
 paretosecurity
 parsec
+pcoipclient
 pdfsam
 perimeter81
 pika
+pingplotter
 pitch
 plantronicshub
 platypus
 plisteditpro
 polylens
+popsql
 postman
 prism9
 pritunl
@@ -402,6 +413,8 @@ remotedesktopmanagerenterprise
 remotedesktopmanagerfree
 remotix
 remotixagent
+renew
+renew-noagent
 resiliosynchome
 retrobatch
 ricohpsprinters

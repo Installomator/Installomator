@@ -1,3 +1,37 @@
+## v10.2
+
+- first install script fixes (#818)
+- minor text fix (#832)
+- new labels:
+    - archimate (#814)
+    - betterdisplay (#813)
+    - beyondcomparepro (#820)
+    - camunda (#815)
+    - connectfonts (#824)
+    - gitkraken (#819)
+    - hmavpn (#604)
+    - lsagent (#793)
+    - nessusagent (#827)
+    - pcoipclient (#723)
+    - pingplotter (#597)
+    - popsql (#825)
+    - renew-noagent (#821)
+    - renew (#821)
+    - scrollreverser (#830)
+- updated labels:
+    - adobereaderdc-install (#807)
+    - anydesk (#715, #786, #800)
+    - audacity (#829)
+    - gimp (#798, #799, #802)
+    - jabradirect (#804)
+    - keybase (#831)
+    - microsoftteams (#803)
+    - openvpnconnectv3 (#784, #796, #801)
+    - rstudio (#822, #823)
+    - teamviewer (#805)
+    - vagrant (#817)
+    - xquartz (#828)
+
 ## v10.1
 
 - updated Jamf/Dialog scripts icon handling (#778)
