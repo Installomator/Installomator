@@ -57,6 +57,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 # Fill out the label variables above, and those will be included in the Installomator call, circa on line 248
 # Script will run this label through Installomator.
 ######################################################################
+# v. 10.0.4 : Fix for LOGO_PATH for ws1, and only kill the caffeinate process we create
 # v. 10.0.3 : A bit more logging on succes, and change in ending Dialog part.
 # v. 10.0.2 : Improved icon checks and failovers
 # v. 10.0.1 : Improved appIcon handling. Can add the app to Dock using dockutil
@@ -124,7 +125,6 @@ fi
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
-    pkill caffeinate
     exit $1
 }
 
@@ -216,7 +216,7 @@ else
                     ;;
                 ws1)
                     # Workspace ONE (AirWatch)
-                    LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+                    LOGO_PATH="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
                     ;;
             esac
             if [[ ! -a "${LOGO_PATH}" ]]; then

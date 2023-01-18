@@ -14,7 +14,6 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
-
     # If we closed any processes, reopen the app again
     reopenClosedProcess
     if [[ -n $2 && $1 -ne 0 ]]; then
@@ -48,23 +47,23 @@ reloadAsUser() {
     fi
 }
 
-# return a human readable text for the TIMEOUT value
+# return a human readable text for the PROMPT_TIMEOUT value
 timeout_text() {
-    if [[ -z $TIMEOUT ]]; then
+    if [[ -z $PROMPT_TIMEOUT ]]; then
         echo ""
         return
-    elif [[ $TIMEOUT -lt 60 ]]; then
-        echo "$TIMEOUT seconds"
+    elif [[ $PROMPT_TIMEOUT -lt 60 ]]; then
+        echo "$PROMPT_TIMEOUT seconds"
         return
-    elif [[ $TIMEOUT -lt 3600 ]]; then
-        minutes=$(( $TIMEOUT / 60 ))
+    elif [[ $PROMPT_TIMEOUT -lt 3600 ]]; then
+        minutes=$(( $PROMPT_TIMEOUT / 60 ))
         minutes_text="$minutes minute"
 
         if [[ $minutes != 1 ]]; then
             minutes_text="${minutes_text}s"
         fi
 
-        seconds=$(( $TIMEOUT % 60 ))
+        seconds=$(( $PROMPT_TIMEOUT % 60 ))
         seconds_text=""
 
         if [[ $seconds -gt 0 ]]; then
@@ -79,14 +78,14 @@ timeout_text() {
         return
     fi
 
-    hours=$(( $TIMEOUT / 60 / 60 ))
+    hours=$(( $PROMPT_TIMEOUT / 60 / 60 ))
     hours_text="$hours hour"
 
     if [[ $hours != 1 ]]; then
         hours_text="${hours_text}s"
     fi
 
-    minutes=$(( $TIMEOUT / 60 % 60 ))
+    minutes=$(( $PROMPT_TIMEOUT / 60 % 60 ))
     minutes_text=""
 
     if [[ $minutes -gt 0 ]]; then
@@ -105,11 +104,11 @@ displaydialog() { # $1: message $2: title
     title=${2:-"Installomator"}
     giving_up=
 
-    if [ -n "$TIMEOUT" ]; then
-        giving_up=" giving up after $TIMEOUT"
+    if [ -n "$PROMPT_TIMEOUT" ]; then
+        giving_up=" giving up after $PROMPT_TIMEOUT"
     fi
 
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" $giving_up with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\" $giving_up)"
 }
 
 displaydialogContinue() { # $1: message $2: title
@@ -117,11 +116,11 @@ displaydialogContinue() { # $1: message $2: title
     title=${2:-"Installomator"}
     giving_up=
 
-    if [ -n "$TIMEOUT" ]; then
-        giving_up=" giving up after $TIMEOUT"
+    if [ -n "$PROMPT_TIMEOUT" ]; then
+        giving_up=" giving up after $PROMPT_TIMEOUT"
     fi
 
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" $giving_up with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\" $giving_up)"
 }
 
 displaynotification() { # $1: message $2: title
@@ -406,16 +405,18 @@ checkRunningProcesses() {
                       sleep 5
                       ;;
                     prompt_user|prompt_user_then_kill)
-                      if [ -n "$TIMEOUT" ]; then
+                      if [ -n "$PROMPT_TIMEOUT" ]; then
                         timer_message="(This dialogue will close in $(timeout_text))"
                       else
                         timer_message="(Leave this dialogue if you want to activate this update later)"
                       fi
-                      button=$(displaydialog "Quit “$x” to continue updating? $timer_message." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") $timer_message." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
+                        appClosed=0
                         cleanupAndExit 10 "user aborted update" ERROR
                       elif [[ $button = "" ]]; then
-                        cleanupAndExit 13 "dialog timed out after $(timeout_text)" ERROR
+                        appClosed=0
+                        cleanupAndExit 25 "timed out waiting for user response after $(timeout_text)" ERROR
                       else
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
@@ -431,12 +432,12 @@ checkRunningProcesses() {
                       fi
                       ;;
                     prompt_user_loop)
-                      if [ -n "$TIMEOUT" ]; then
+                      if [ -n "$PROMPT_TIMEOUT" ]; then
                         timer_message="(Click “Not Now” to be asked in 1 hour)"
                       else
                         timer_message="(Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)"
                       fi
-                      button=$(displaydialog "Quit “$x” to continue updating? $timer_message." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") $timer_message." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" || $button = "" ]]; then
                         if [[ $i < 2 ]]; then
                           printlog "user clicked not now or timed out after $(timeout_text), waiting for an hour"
@@ -455,7 +456,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     tell_user|tell_user_then_kill)
-                      if [ -n "$TIMEOUT" ]; then
+                      if [ -n "$PROMPT_TIMEOUT" ]; then
                         timer_message="(This important update will automatically proceed in $(timeout_text))"
                       else
                         timer_message="(This is an important update)"
@@ -473,6 +474,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
+                      appClosed=0
                       cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
                 esac
@@ -519,13 +521,22 @@ reopenClosedProcess() {
     fi
 }
 
-installAppWithPath() { # $1: path to app to install in $targetDir
+installAppWithPath() { # $1: path to app to install in $targetDir $2: path to folder (with app inside) to copy to $targetDir
     # modified by: Søren Theilgaard (@theilgaard)
     appPath=${1?:"no path to app"}
+    # If $2 ends in "/" then a folderName has not been specified so don't set it.
+    if [[ ! "${2}" == */ ]]; then
+        folderPath="${2}"
+    fi
 
     # check if app exists
     if [ ! -e "$appPath" ]; then
         cleanupAndExit 8 "could not find: $appPath" ERROR
+    fi
+
+    # check if folder path exists if it is set
+    if [[ -n "$folderPath" ]] && [[ ! -e "$folderPath" ]]; then
+        cleanupAndExit 8 "could not find folder: $folderPath" ERROR
     fi
 
     # verify with spctl
@@ -615,7 +626,11 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # copy app to /Applications
         printlog "Copy $appPath to $targetDir"
-        copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
+        if [[ -n $folderPath ]]; then
+            copyAppOut=$(ditto -v "$folderPath" "$targetDir/$folderName" 2>&1)
+        else
+            copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
+        fi
         copyAppStatus=$(echo $?)
         deduplicatelogs "$copyAppOut"
         printlog "Debugging enabled, App copy output was:\n$logoutput" DEBUG
@@ -674,7 +689,7 @@ mountDMG() {
 
 installFromDMG() {
     mountDMG
-    installAppWithPath "$dmgmount/$appName"
+    installAppWithPath "$dmgmount/$appName" "$dmgmount/$folderName"
 }
 
 installFromPKG() {
@@ -958,10 +973,10 @@ finishing() {
     sleep 3 # wait a moment to let spotlight catch up
     getAppVersion
 
-    if [[ -z $appversion ]]; then
+    if [[ -z $appNewVersion ]]; then
         message="Installed $name"
     else
-        message="Installed $name, version $appversion"
+        message="Installed $name, version $appNewVersion"
     fi
 
     printlog "$message" REQ
@@ -1002,6 +1017,7 @@ hasDisplaySleepAssertion() {
     # No relevant display sleep assertion detected
     return 1
 }
+
 
 initNamedPipe() {
     # create or delete a named pipe
@@ -1113,3 +1129,4 @@ updateDialog() {
         fi
     fi
 }
+

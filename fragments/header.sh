@@ -34,6 +34,15 @@ NOTIFY=success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
 
+# time in seconds to wait for a prompt to be answered before exiting the script
+PROMPT_TIMEOUT=
+# Common times translated into seconds
+# 60    =  1 minute
+# 300   =  5 minutes
+# 600   = 10 minutes
+# 3600  =  1 hour
+# 86400 = 24 hours (default)
+
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
@@ -156,12 +165,6 @@ DIALOG_LIST_ITEM_NAME=""
 # When this variable is set, progress for downloads and installs will be sent to this
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
-
-# timeout for dialog box in seconds
-# prevents the script from blocking other processes while the user ignores the
-# dialogue box for a prolonged period of time.
-# TIMEOUT=300 # wait 5 minutes for user to confirm before giving up
-TIMEOUT=
 
 
 # NOTE: How labels work
