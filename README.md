@@ -11,18 +11,6 @@ _The one installer script to rule them all._
 
 We have put a lot of work into making it stable and safe, but we _cannot_ and will not make _any_ promises that it won't break in some not yet encountered edge case.
 
-## Authors
-
-Intallomator was originally inspired by the download scripts from William Smith and Sander Schram, and created by:
-- [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
-
-Later on a few more members came on the project:
-- Isaac Ordonez - @issacatmann
-- [Søren Theilgaard - @Theile](https://github.com/Theile)
-- [Adam Codega - @acodega](https://github.com/acodega)
-
- And with numerous contributions from many others.
-
 ## Support and Contributing
 
 __Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files in the `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is assembled from the fragment files for release, and will be overwritten. See the [README.md](utils/README.md) file in the `utils` directory for detailed instructions.__
@@ -41,6 +29,19 @@ There are a few interesting post on Installomator on Armin’s weblog:
 
 - [Introducing Installomator](https://scriptingosx.com/2020/05/introducing-installomator/)
 - [Using Installomator with Jamf Pro](https://scriptingosx.com/2020/06/using-installomator-with-jamf-pro/) by Mischa van der Bent
+
+## Authors and Contributors
+
+Intallomator was originally inspired by the download scripts from William Smith and Sander Schram, and created by:
+- [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
+
+Later on a few more members came on the project:
+- Isaac Ordonez - @issacatmann
+- [Søren Theilgaard - @Theile](https://github.com/Theile)
+- [Adam Codega - @acodega](https://github.com/acodega)
+
+ And with numerous contributions from many others. Thank you all, very much!
+
 
 ## Background
 
