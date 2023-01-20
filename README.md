@@ -1,6 +1,3 @@
-# Note: The main repo is a beta version
-
-Please locate “Releases” on the right, and download the latest 9.2 release (either pkg or zip) for a supported release. 
 
 # Installomator
 
@@ -8,11 +5,11 @@ _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/Installomator/Installomator)&nbsp;![](https://img.shields.io/github/downloads/Installomator/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/Installomator/Installomator)
 
-This script is in the “we find it useful, it is working for us” stage.
+**Note:** The main branch repo is a beta version of the next release. It may contain fixes, new labels and changes, that are not thoroughly tested yet. If you want the latest release version, you can either switch to the `release` branch from the branch menu above the file list (where is says 'main' by default) or download the Installomator latest, non-beta, zip from the 'Releases' area and extract Installomator.sh.
 
-Your production and deployment environment will be different, please test thoroughly before rolling it out to your production.
+*Every production and deployment environment is different: please test thoroughly before rolling it out to your production.*
 
-We have put a lot of work into making it stable and safe, but we cannot - of course - make _any_ promises that it won't break in some not yet encountered edge case.
+We have put a lot of work into making it stable and safe, but we _cannot_ and will not make _any_ promises that it won't break in some not yet encountered edge case.
 
 ## Authors
 
@@ -28,11 +25,9 @@ Later on a few more members came on the project:
 
 ## Support and Contributing
 
-__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files below `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is now a build of the fragments, and will be overwritten. See the [README.md](utils/README.md) file in the `utils` directory for detailed instructions.__
+__Please note, that if you are contributing to this project with new labels or other suggestions in PRs, please put your changes in the files in the `fragments`-folder. DO NOT edit the full `Installomator.sh` script. The full script is assembled from the fragment files for release, and will be overwritten. See the [README.md](utils/README.md) file in the `utils` directory for detailed instructions.__
 
-Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Go there for support questions.
-
-Do not create an issue just when you have a questions, but do file an issue or pull request (PR) for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
+Discussion, support and advice around Installomator happens in the `#installomator` channel in the [MacAdmins.org Slack](https://macadmins.org). Please go there for support questions. Do not create an issue just when you have a questions, but do file an issue or pull request (PR) for bugs or wrong behavior. When in doubt, ask in the above Slack channel.
 
 Please see [CONTRIBUTING.md](https://github.com/Installomator/Installomator/blob/dev/CONTRIBUTING.md) for how to contribute.
 
