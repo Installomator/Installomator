@@ -19,9 +19,7 @@ Discussion, support and advice around Installomator happens in the `#installomat
 
 Please see [CONTRIBUTING.md](https://github.com/Installomator/Installomator/blob/dev/CONTRIBUTING.md) for how to contribute.
 
-## More reading
-
-Our wiki:
+## Installomator Wiki
 
 - [Wiki](https://github.com/Installomator/Installomator/wiki)
 - [Motivation and Background](https://github.com/Installomator/Installomator/wiki/Motivation-and-Background)
