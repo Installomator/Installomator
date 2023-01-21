@@ -67,7 +67,7 @@ displaynotification() { # $1: message $2: title
     swiftdialog="/usr/local/bin/dialog"
 
     if [[ -x "$manageaction" ]]; then
-         "$manageaction" -message "$message" -title "$title"
+         "$manageaction" -message "$message" -title "$title" &
     elif [[ -x "$hubcli" ]]; then
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
     elif [[ -x "$swiftdialog" ]]; then
