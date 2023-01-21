@@ -166,6 +166,8 @@ DIALOG_LIST_ITEM_NAME=""
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
 
+NOTIFY_DIALOG=0
+# If this variable is set to 1, then we will check for installed Swift Dialog v. 2 or later, and use that for notification
 
 
 # NOTE: How labels work
