@@ -6,4 +6,3 @@ pgadmin4)
     downloadURL="https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v$appNewVersion/macos/pgadmin4-$appNewVersion.dmg"
     expectedTeamID="26QKX55P9K"
     ;;
-    
