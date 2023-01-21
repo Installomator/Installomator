@@ -352,7 +352,13 @@ checkRunningProcesses() {
                         appClosed=0
                         cleanupAndExit 25 "timed out waiting for user response" ERROR
                       else
-                        if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
+                        if [[ $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
+                          # try to quit, then set to kill
+                          printlog "telling app $x to quit"
+                          runAsUser osascript -e "tell app \"$x\" to quit"
+                          # give the user a bit of time to quit apps
+                          printlog "waiting 30 seconds for processes to quit"
+                          sleep 30
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
                         else
