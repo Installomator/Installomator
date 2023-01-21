@@ -5,7 +5,7 @@ _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/Installomator/Installomator)&nbsp;![](https://img.shields.io/github/downloads/Installomator/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/Installomator/Installomator)
 
-**Note:** The main branch repo is a beta version of the next release. It may contain fixes, new labels and changes, that are not thoroughly tested yet. If you want the latest release version, you can either switch to the `release` branch from the branch menu above the file list (where is says 'main' by default) or download the Installomator latest, non-beta, zip from the 'Releases' area and extract Installomator.sh.
+**Note:** The default (`main`) branch repo is a beta version of the next release. It may contain fixes, new labels and changes, that are not thoroughly tested yet. If you want the latest release version, you can either switch to the [`release` branch](https://github.com/Installomator/Installomator/tree/release) from the branch menu above the file list (where is says 'main' by default) or download the Installomator latest, non-beta, zip from the ['Releases'](https://github.com/Installomator/Installomator/releases) area and extract Installomator.sh.
 
 *Every production and deployment environment is different: please test thoroughly before rolling it out to your production.*
 
