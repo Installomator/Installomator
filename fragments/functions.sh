@@ -661,7 +661,7 @@ installFromPKG() {
         baseArchiveName=$(basename $archiveName)
         expandedPkg="$tmpDir/${baseArchiveName}_pkg"
         pkgutil --expand "$archiveName" "$expandedPkg"
-        appNewVersion=$(cat "$expandedPkg"/Distribution | xpath 'string(//installer-gui-script/pkg-ref[@id][@version]/@version)' 2>/dev/null )
+        appNewVersion=$(cat "$expandedPkg"/Distribution | xpath "string(//installer-gui-script/pkg-ref[@id='$packageID'][@version]/@version)" 2>/dev/null )
         rm -r "$expandedPkg"
         printlog "Downloaded package $packageID version $appNewVersion"
         if [[ $appversion == $appNewVersion ]]; then
