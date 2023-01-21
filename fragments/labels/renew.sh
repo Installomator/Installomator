@@ -8,4 +8,3 @@ renew)
     appCustomVersion() { grep -i "scriptVersion=" /usr/local/Renew.sh | cut -d '"' -f2 }
     expectedTeamID="7Q6XP5698G"
     ;;
-    
