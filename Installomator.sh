@@ -635,6 +635,12 @@ getAppVersion() {
     fi
 }
 
+quitApp() { # $1 = app name
+    printlog "telling app $ to quit"
+    runAsUser osascript -e "tell app \"$x\" to quit"
+    appClosed=1
+}
+
 checkRunningProcesses() {
     # don't check in DEBUG mode 1
     if [[ $DEBUG -eq 1 ]]; then
@@ -643,17 +649,16 @@ checkRunningProcesses() {
     fi
 
     # try at most 3 times
+    
     for i in {1..4}; do
         countedProcesses=0
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
-                appClosed=1
-
+                
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
-                        printlog "telling app $x to quit"
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        quitApp $x
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
@@ -667,6 +672,7 @@ checkRunningProcesses() {
                       printlog "killing process $x"
                       pkill $x
                       sleep 5
+                      appClosed=1
                       ;;
                     prompt_user|prompt_user_then_kill)
                       button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
@@ -677,8 +683,7 @@ checkRunningProcesses() {
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
                         else
-                          printlog "telling app $x to quit"
-                          runAsUser osascript -e "tell app \"$x\" to quit"
+                          quitApp $x
                           # give the user a bit of time to quit apps
                           printlog "waiting 30 seconds for processes to quit"
                           sleep 30
@@ -696,8 +701,7 @@ checkRunningProcesses() {
                           BLOCKING_PROCESS_ACTION=tell_user
                         fi
                       else
-                        printlog "telling app $x to quit"
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        quitApp $x
                         # give the user a bit of time to quit apps
                         printlog "waiting 30 seconds for processes to quit"
                         sleep 30
@@ -705,8 +709,7 @@ checkRunningProcesses() {
                       ;;
                     tell_user|tell_user_then_kill)
                       button=$(displaydialogContinue "Quit “$x” to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
-                      printlog "telling app $x to quit"
-                      runAsUser osascript -e "tell app \"$x\" to quit"
+                      quitApp $x
                       # give the user a bit of time to quit apps
                       printlog "waiting 30 seconds for processes to quit"
                       sleep 30
@@ -716,7 +719,8 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
-                      cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
+                      printlog "blocking process '$x' found, aborting" ERROR
+                      cleanupAndExit 12
                       ;;
                 esac
 
