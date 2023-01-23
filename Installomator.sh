@@ -636,8 +636,9 @@ getAppVersion() {
 }
 
 quitApp() { # $1 = app name
-    printlog "telling app $ to quit"
-    runAsUser osascript -e "tell app \"$x\" to quit"
+    name=$1
+    printlog "telling app $name to quit"
+    runAsUser osascript -e "tell app \"$name\" to quit"
     appClosed=1
 }
 
@@ -718,8 +719,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
-                      printlog "blocking process '$x' found, aborting" ERROR
-                      cleanupAndExit 12
+                      cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
                 esac
 
