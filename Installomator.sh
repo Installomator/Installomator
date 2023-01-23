@@ -655,7 +655,6 @@ checkRunningProcesses() {
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
-                
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
                         quitApp $x
