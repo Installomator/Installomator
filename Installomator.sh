@@ -649,12 +649,12 @@ checkRunningProcesses() {
     fi
 
     # try at most 3 times
-    
     for i in {1..4}; do
         countedProcesses=0
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
+                
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
                         quitApp $x
