@@ -14,6 +14,7 @@ adobecreativeclouddesktop
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
+aftermath
 aircall
 airserver
 airtame
@@ -99,6 +100,7 @@ clevershare2
 clickshare
 clipy
 closeio
+cloudflarewarp
 cloudya
 clue
 cluefull
@@ -135,6 +137,7 @@ dockutil
 drawio
 drift
 dropbox
+druvainsync
 duckduckgo
 duodevicehealth
 dynalist
@@ -162,6 +165,7 @@ findanyfile
 firefox
 firefox_da
 firefox_intl
+firefoxdeveloperedition
 firefoxesr
 firefoxesr_intl
 firefoxesrpkg
@@ -339,6 +343,7 @@ netiquette
 netnewswire
 netspot
 nextcloud
+nodejs
 nomad
 nomadlogin
 nordlayer
@@ -375,6 +380,7 @@ parsec
 pcoipclient
 pdfsam
 perimeter81
+pgadmin4
 pika
 pingplotter
 pitch
@@ -427,6 +433,7 @@ scaleft
 screamingfrogseospider
 screencloudplayer
 screenflick
+scrollreverser
 sdnotary
 secretive
 sequelpro
@@ -545,6 +552,7 @@ xink
 xmenu
 xquartz
 yed
+yubicoauthenticator
 yubikeymanagerqt
 zappy
 zeplin
