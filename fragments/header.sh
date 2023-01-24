@@ -27,6 +27,18 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
 DEBUG=1
 
+#JAMF Server Options to use a Proxy Server. If Script Parameters Option 7 (Server) & Option 8 (Port) is set. Alternatively you can set the values here if not using JAMF.
+# Parameter 7: Proxy Server
+proxyserv=${7:-""}
+
+# Parameter 8: Proxy Server Port
+proxyport=${8:-""}
+
+export HTTP_PROXY=$proxyserv:$proxyport
+export HTTPS_PROXY=$proxyserv:$proxyport
+export http_proxy=$proxyserv:$proxyport
+export https_proxy=$proxyserv:$proxyport
+
 # notify behavior
 NOTIFY=success
 # options:
