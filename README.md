@@ -33,11 +33,14 @@ Please see [CONTRIBUTING.md](https://github.com/Installomator/Installomator/blob
 
 ## Authors and Contributors
 
-Intallomator was originally inspired by the download scripts from William Smith and Sander Schram, and created by:
+Installomator was originally inspired by the download scripts from [William Smith - @talkingmoose](https://github.com/talkingmoose) and [Sander Schram - @macbofh](https://github.com/macbofh), and created by:
+
 - [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
 
-Later on a few more members came on the project:
-- Isaac Ordonez - @isaacatmann
+with help from [Erik Stam - @erikstam](https://github.com/erikstam)  
+
+The Installomator team now consists of:
+- [Isaac Ordonez - @isaacatmann](https://github.com/isaacatmann)
 - [Søren Theilgaard - @Theile](https://github.com/Theile)
 - [Adam Codega - @acodega](https://github.com/acodega)
 
