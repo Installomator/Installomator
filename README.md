@@ -39,10 +39,10 @@ Installomator was originally inspired by the download scripts from [William Smit
 
 with help from [Erik Stam - @erikstam](https://github.com/erikstam)  
 
-The Installomator team now consists of:
+The Installomator team:
+- [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
 - [Isaac Ordonez - @isaacatmann](https://github.com/isaacatmann)
 - [Søren Theilgaard - @Theile](https://github.com/Theile)
 - [Adam Codega - @acodega](https://github.com/acodega)
 
  And with numerous contributions from many others. Thank you all, very much!
-
