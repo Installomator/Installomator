@@ -13,8 +13,8 @@ adobeconnect
 adobecreativeclouddesktop
 adobereaderdc
 adobereaderdc-install
-adobereaderdc-install
 adobereaderdc-update
+aftermath
 aircall
 airserver
 airtame
@@ -23,6 +23,8 @@ alephone
 alfred
 alttab
 amazonchime
+amazoncorretto11jdk
+amazoncorretto17jdk
 amazoncorretto8jdk
 amazonworkspaces
 androidfiletransfer
@@ -37,6 +39,7 @@ applesfmono
 applesfpro
 applesfsymbols
 aquaskk
+archimate
 archiwareb2go
 archiwarepst
 arq7
@@ -59,12 +62,16 @@ balsamiqwireframes
 bartender
 basecamp3
 bbedit
+bbeditpkg
+betterdisplay
 bettertouchtool
+beyondcomparepro
 bitrix24
 bitwarden
 blender
 bluejeans
 bluejeanswithaudiodriver
+boop
 boxdrive
 boxsync
 boxtools
@@ -79,6 +86,8 @@ camtasia
 camtasia2019
 camtasia2020
 camtasia2021
+camtasia2022
+camunda
 canva
 carboncopycloner
 charles
@@ -91,6 +100,7 @@ clevershare2
 clickshare
 clipy
 closeio
+cloudflarewarp
 cloudya
 clue
 cluefull
@@ -99,6 +109,7 @@ coconutbattery
 code42
 coderunner
 colourcontrastanalyser
+connectfonts
 cormorant
 craftmanager
 craftmanagerforsketch
@@ -126,6 +137,7 @@ dockutil
 drawio
 drift
 dropbox
+druvainsync
 duckduckgo
 duodevicehealth
 dynalist
@@ -153,6 +165,7 @@ findanyfile
 firefox
 firefox_da
 firefox_intl
+firefoxdeveloperedition
 firefoxesr
 firefoxesr_intl
 firefoxesrpkg
@@ -169,6 +182,7 @@ fujifilmwebcam
 gfxcardstatus
 gimp
 githubdesktop
+gitkraken
 golang
 googleadseditor
 googlechrome
@@ -191,6 +205,7 @@ gyazogif
 hancock
 handbrake
 hazel
+hmavpn
 horos
 houdahspot
 hpeasyadmin
@@ -219,6 +234,7 @@ itsycal
 jabradirect
 jamfconnect
 jamfconnectconfiguration
+jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfreenroller
@@ -230,6 +246,7 @@ jetbrainsintellijideace
 jetbrainsphpstorm
 jetbrainspycharm
 jetbrainspycharmce
+jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
@@ -249,6 +266,7 @@ latexit
 launchbar
 lcadvancedvpnclient
 lexarrecoverytool
+lgcalibrationstudio
 libreoffice
 linear
 logioptions
@@ -257,6 +275,7 @@ logitechoptionsplus
 logseq
 loom
 lowprofile
+lsagent
 lucidlink
 lucifer
 lulu
@@ -272,6 +291,7 @@ marathon2
 marathoninfinity
 masv
 mattermost
+mendeleyreferencemanager
 menumeters
 merlinproject
 microsoftautoupdate
@@ -287,6 +307,8 @@ microsoftexcel
 microsoftlicenseremovaltool
 microsoftoffice365
 microsoftofficebusinesspro
+microsoftofficefactoryreset
+microsoftofficeremoval
 microsoftonedrive
 microsoftonenote
 microsoftoutlook
@@ -300,8 +322,11 @@ microsoftword
 mightymike
 mindmanager
 miro
+mist
+mist-cli
 mmhmm
 mobikinassistantforandroid
+mobiletolocal
 mochakeyboard
 mochatelnet
 mochatn3270
@@ -313,9 +338,12 @@ mowgliiitsycal
 musescore
 muzzle
 nanosaur
+nessusagent
+netiquette
 netnewswire
 netspot
 nextcloud
+nodejs
 nomad
 nomadlogin
 nordlayer
@@ -349,14 +377,18 @@ pandoc
 parallelsrasclient
 paretosecurity
 parsec
+pcoipclient
 pdfsam
 perimeter81
+pgadmin4
 pika
+pingplotter
 pitch
 plantronicshub
 platypus
 plisteditpro
 polylens
+popsql
 postman
 prism9
 pritunl
@@ -382,6 +414,8 @@ remotedesktopmanagerenterprise
 remotedesktopmanagerfree
 remotix
 remotixagent
+renew
+renew-noagent
 resiliosynchome
 retrobatch
 ricohpsprinters
@@ -399,6 +433,7 @@ scaleft
 screamingfrogseospider
 screencloudplayer
 screenflick
+scrollreverser
 sdnotary
 secretive
 sequelpro
@@ -469,9 +504,11 @@ things
 thunderbird
 thunderbird_intl
 tidal
+todoist
 toggltrack
 tom4aconverter
 torbrowser
+transfer
 trex
 tunnelbear
 tunnelblick
@@ -494,6 +531,7 @@ visualstudiocode
 vivaldi
 vlc
 vmwarehorizonclient
+vpntracker365
 vscodium
 vysor
 wacomdrivers
@@ -514,9 +552,11 @@ xink
 xmenu
 xquartz
 yed
+yubicoauthenticator
 yubikeymanagerqt
 zappy
 zeplin
+zerotier
 zohoworkdrive
 zohoworkdrivegenie
 zohoworkdrivetruesync
