@@ -15,19 +15,19 @@ icon=${6:-"/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"}
 # see Dan Snelson's advice on how to get a URL to an icon in Self Service
 # https://rumble.com/v119x6y-harvesting-self-service-icons.html
 
-# Optional Setting for Proxy to be configured, JAMF Paramter Options 7 = Proxy Server and Parameter Options 8 = Proxy Port
-# If Paramters not set then blank values are put in for HTTP and HTTPS Proxy
+# Optional Setting for Proxy to be configured, JAMF Parameter Options 7 = Proxy Server and Parameter Options 8 = Proxy Port
+# If Parameters not set then blank values are put in for HTTP and HTTPS Proxy
 
 # Parameter 7: Proxy Server
-proxyserv=${7:-""} #eg. 192.168.1.20
+PROXYSERV=${7:-""} #eg. 192.168.1.20
 #
 # Parameter 8: Proxy Server Port
-proxyport=${8:-""} #eg. 8080
+PROXYPORT=${8:-""} #eg. 8080
 #
-export HTTP_PROXY=$proxyserv:$proxyport
-export HTTPS_PROXY=$proxyserv:$proxyport
-export http_proxy=$proxyserv:$proxyport
-export https_proxy=$proxyserv:$proxyport
+export HTTP_PROXY=$PROXYSERV:$PROXYPORT
+export HTTPS_PROXY=$PROXYSERV:$PROXYPORT
+export http_proxy=$PROXYSERV:$PROXYPORT
+export https_proxy=$PROXYSERV:$PROXYPORT
 #
 
 
