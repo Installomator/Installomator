@@ -157,6 +157,12 @@ DIALOG_LIST_ITEM_NAME=""
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
 
+PROXYSERVER=""
+PROXYPORT=""
+#When this variable is set, proxy will be applied providing a ping success within 5 Seconds.
+#When variable unset, not proxy will be applied
+#If a proxy is applied but does not return a succesful ping, proxy will not be applied.
+#Setting these settings in MDM (JAMF) can be done via Paramter 6 PROXYSERVER=X.X.X.X & Parameter 7 PROXYPORT=8080
 
 
 # NOTE: How labels work
