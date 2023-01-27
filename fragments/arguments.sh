@@ -7,6 +7,16 @@ if ! is-at-least 10.14 $installedOSversion; then
     exit 98
 fi
 
+# Proxy Server Check if Set and Verify Contact
+if [[$PROXYSERVER -eq <> "" ]];then
+    printlog "Proxy value Set to $PROXYSERVER" INFO
+        export HTTP_PROXY=$PROXYSERVER
+        export HTTPS_PROXY=$PROXYSERVER
+        export http_proxy=$PROXYSERVER
+        export https_proxy=$PROXYSERVER
+fi
+
+#
 
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
