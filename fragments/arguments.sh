@@ -7,17 +7,6 @@ if ! is-at-least 10.14 $installedOSversion; then
     exit 98
 fi
 
-# Proxy Server Check if Set and Verify Contact
-if [[$PROXYSERVER -eq <> "" ]];then
-    printlog "Proxy value Set to $PROXYSERVER" INFO
-        export HTTP_PROXY=$PROXYSERVER
-        export HTTPS_PROXY=$PROXYSERVER
-        export http_proxy=$PROXYSERVER
-        export https_proxy=$PROXYSERVER
-fi
-
-#
-
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
     if [[ -z $label ]]; then # check if label is set inside script
@@ -44,6 +33,17 @@ while [[ -n $1 ]]; do
     # shift to next argument
     shift 1
 done
+
+# Proxy Server Check if Set and Verify Contact
+if [[ -z $PROXYSERVER ]];then
+	printlog "Proxy value not Set" INFO
+else
+    printlog "Proxy value Set to $PROXYSERVER" INFO
+        export HTTP_PROXY=$PROXYSERVER
+        export HTTPS_PROXY=$PROXYSERVER
+        export http_proxy=$PROXYSERVER
+        export https_proxy=$PROXYSERVER
+fi
 
 # lowercase the label
 label=${label:l}
