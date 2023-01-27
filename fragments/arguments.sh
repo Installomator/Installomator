@@ -110,6 +110,22 @@ if [[ ! -x $DIALOG_CMD ]]; then
     DIALOG_CMD_FILE=""
 fi
 
+# check for proxy and set
+if [[ -z $PROXYSERVER ]];then
+	printlog "Proxy IP Address not Set, Skipping Set Proxy" INFO
+else
+    printlog "Proxy value set to $PROXYSERVER:$PROXYPORT" INFO
+	if ping -q -c 1 -W 5 $PROXYSERVER; then 
+    	printlog "Proxy Reachable and will be set to $PROXYSERVER:$PROXYPORT" INFO
+    	export HTTP_PROXY=$PROXYSERVER:$PROXYPORT
+    	export HTTPS_PROXY=$PROXYSERVER:$PROXYPORT
+    	export http_proxy=$PROXYSERVER:$PROXYPORT
+    	export https_proxy=$PROXYSERVER:$PROXYPORT
+	else
+    	printlog "Proxy value is Set, But its not contactable, Skipping Set Proxy" INFO 
+	fi
+fi
+
 # MARK: labels in case statement
 case $label in
 longversion)
