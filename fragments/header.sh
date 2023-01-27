@@ -1,20 +1,10 @@
 #!/bin/zsh
 label="" # if no label is sent to the script, this will be used
 
-# Optional Setting for Proxy to be configured, JAMF Parameter Options 7 = Proxy Server and Parameter Options 8 = Proxy Port
-# If Parameters not set then blank values are put in for HTTP and HTTPS Proxy
+# Optional Setting for Proxy to be configured. Variable passes through script and runs a function to check if proxy
+# is reachable by ping. If it isthen will set HTTP and HTTPS Proxy
 
-# Parameter 7: Proxy Server
-PROXYSERV=${7:-""} #eg. 192.168.1.20
-#
-# Parameter 8: Proxy Server Port
-PROXYPORT=${8:-""} #eg. 8080
-#
-export HTTP_PROXY=$PROXYSERV:$PROXYPORT
-export HTTPS_PROXY=$PROXYSERV:$PROXYPORT
-export http_proxy=$PROXYSERV:$PROXYPORT
-export https_proxy=$PROXYSERV:$PROXYPORT
-#
+PROXYSERVER=""
 
 # Installomator
 #
