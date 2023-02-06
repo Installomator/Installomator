@@ -1,3 +1,81 @@
+## v10.2
+
+- first install script fixes (#818)
+- minor text fix (#832)
+- new labels:
+    - archimate (#814)
+    - betterdisplay (#813)
+    - beyondcomparepro (#820)
+    - camunda (#815)
+    - connectfonts (#824)
+    - gitkraken (#819)
+    - hmavpn (#604)
+    - lsagent (#793)
+    - nessusagent (#827)
+    - pcoipclient (#723)
+    - pingplotter (#597)
+    - popsql (#825)
+    - renew-noagent (#821)
+    - renew (#821)
+    - scrollreverser (#830)
+- updated labels:
+    - adobereaderdc-install (#807)
+    - anydesk (#715, #786, #800)
+    - audacity (#829)
+    - gimp (#798, #799, #802)
+    - jabradirect (#804)
+    - keybase (#831)
+    - microsoftteams (#803)
+    - openvpnconnectv3 (#784, #796, #801)
+    - rstudio (#822, #823)
+    - teamviewer (#805)
+    - vagrant (#817)
+    - xquartz (#828)
+
+## v10.1
+
+- updated Jamf/Dialog scripts icon handling (#778)
+- Readme Updates (#744)
+- new labels:
+    - amazoncorretto11jdk (#721)
+    - amazoncorretto17jdk (#721)
+    - bbeditpkg (#720)
+    - boop (#781)
+    - camtasia2021, camtasia2022 (#730)
+    - jamfcpr (#753)
+    - jetbrainsrider
+    - lgcalibrationstudio (#763)
+    - mendeleyreferencemanager (#713)
+    - microsoftofficefactoryreset (#751)
+    - microsoftofficeremoval (#755)
+    - mist-cli (#733)
+    - mist (#732)
+    - mobiletolocal (#752)
+    - netiquette (#770)
+    - todoist (#769)
+    - transfer (#773)
+    - vpntracker365 (#760)
+    - zerotier (#785)
+
+- updated labels:
+    - 1password8 (#759)
+    - amazoncorretto8jdk (#721)
+    - camtasia (#730)
+    - citrixworkspace (#731)
+    - code42 (#766)
+    - drawio (#725)
+    - duodevicehealth (#761)
+    - idrive (#726)
+    - idrivethin (#727)
+    - macfuse (#714)
+    - microsoftazuredatastudio (#788)
+    - nudge (#754)
+    - prism9 (#746)
+    - skype (#762)
+    - synologydriveclient (#789)
+    - ultimakercura (#740)
+
+
 ## v10
 
 - updates to MDM sample scripts (#738)
