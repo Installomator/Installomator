@@ -4,7 +4,7 @@ nudgesuite)
     type="pkg"
     downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
-    archiveName="Nudge-$appNewVersion.pkg"
+    archiveName="Nudge_Suite-$appNewVersion.pkg"
     expectedTeamID="T4SK8ZXCXG"
     blockingProcesses=( "Nudge" )
     ;;
