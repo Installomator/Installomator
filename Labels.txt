@@ -57,6 +57,7 @@ awscli2
 awsvpnclient
 axurerp10
 azuredatastudio
+backgroundmusic
 balenaetcher
 balsamiqwireframes
 bartender
@@ -92,6 +93,7 @@ canva
 carboncopycloner
 charles
 chatwork
+chromeremotedesktop
 chronoagent
 chronosync
 cisdem-documentreader
@@ -147,7 +149,6 @@ egnyte
 egnytecore
 egnytewebedit
 element
-eraseinstall
 eshareosx
 etrecheck
 evernote
@@ -228,6 +229,7 @@ installomator_theile
 intellijideace
 ipswupdater
 ipvisionconnect
+island
 istatmenus
 iterm2
 itsycal
@@ -238,7 +240,9 @@ jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jdk17
 jdk18
+jdk19
 jetbrainsclion
 jetbrainsdatagrip
 jetbrainsintellijidea
@@ -250,6 +254,7 @@ jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+jumpdesktop
 kap
 karabinerelements
 keepassxc
@@ -310,6 +315,7 @@ microsoftofficebusinesspro
 microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
+microsoftonedrive-rollingout
 microsoftonenote
 microsoftoutlook
 microsoftpowerpoint
@@ -337,6 +343,7 @@ montereyblocker
 mowgliiitsycal
 musescore
 muzzle
+mysqlworkbenchce
 nanosaur
 nessusagent
 netiquette
@@ -436,6 +443,7 @@ screenflick
 scrollreverser
 sdnotary
 secretive
+selfcontrol
 sequelpro
 sfsymbols
 shield
@@ -480,6 +488,7 @@ suspiciouspackage
 swiftdialog
 swiftruntimeforcommandlinetools
 sync
+synologyactivebackupforbusinessagent
 synologyassistant
 synologydriveclient
 tableaudesktop
@@ -531,6 +540,7 @@ visualstudiocode
 vivaldi
 vlc
 vmwarehorizonclient
+vonagebusiness
 vpntracker365
 vscodium
 vysor
