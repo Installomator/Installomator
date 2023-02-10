@@ -1,3 +1,31 @@
+## v11.0beta1
+
+- argument reordering (#834) (this changes behavior, see note below)
+- Swift Dialog:
+    - support for SwiftDialog notifications (#833, #835)
+    - adds version to progress text in Swift Dialog (#794)
+- User Interaction:
+    - adds `PROMPT_TIMEOUT` to `prompt_user` and `prompt_user_then_kill` (#771, #140)
+    - only prompts once on `prompt_user_then_kill` (#603)
+    - don't reopen app on `silent_fail` (#657, #860)
+    - no relaunch if user chooses 'Not Now' (#638)
+- Version Checking:
+    - better detection of new install versus an update (#756)
+    - display version of application in notification windows (#637)
+    - package version checking improved for pkgs with multiple components (#844)
+- adds new label property `folderName` (#783)
+- continues script when 'Management Action' stalls (#808)
+- new labels:
+    - chemdoodle (#783)
+
+**Important Note:** #834 changes the behavior of additional arguments:
+
+-  the application label now _has to be_ the first argument (or $4 with Jamf)
+- you can set or _override_ variables with arguments 2 and up, order remains irrelevant ($5 and up with Jamf)
+- parsing variable arguments now happen after evaluating the label
+
+This re-ordering of evaluation now allows you to override values set in the actual label with arguments. This can allow admins to temporarily override broken `downloadURL`s, `appNewVersion`s etc.
+
 ## v10.3
 
 - new labels:
