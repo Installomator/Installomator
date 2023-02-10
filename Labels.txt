@@ -56,6 +56,7 @@ awscli2
 awsvpnclient
 axurerp10
 azuredatastudio
+backgroundmusic
 balenaetcher
 balsamiqwireframes
 bartender
@@ -91,9 +92,7 @@ canva
 carboncopycloner
 charles
 chatwork
-chemdoodle
-chemdoodle2d
-chemdoodle3d
+chromeremotedesktop
 chronoagent
 chronosync
 cisdem-documentreader
@@ -102,6 +101,7 @@ clevershare2
 clickshare
 clipy
 closeio
+cloudflarewarp
 cloudya
 clue
 cluefull
@@ -138,6 +138,7 @@ dockutil
 drawio
 drift
 dropbox
+druvainsync
 duckduckgo
 duodevicehealth
 dynalist
@@ -147,7 +148,6 @@ egnyte
 egnytecore
 egnytewebedit
 element
-eraseinstall
 eshareosx
 etrecheck
 evernote
@@ -165,6 +165,7 @@ findanyfile
 firefox
 firefox_da
 firefox_intl
+firefoxdeveloperedition
 firefoxesr
 firefoxesr_intl
 firefoxesrpkg
@@ -227,6 +228,7 @@ installomator_theile
 intellijideace
 ipswupdater
 ipvisionconnect
+island
 istatmenus
 iterm2
 itsycal
@@ -237,7 +239,9 @@ jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jdk17
 jdk18
+jdk19
 jetbrainsclion
 jetbrainsdatagrip
 jetbrainsintellijidea
@@ -249,6 +253,7 @@ jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+jumpdesktop
 kap
 karabinerelements
 keepassxc
@@ -309,6 +314,7 @@ microsoftofficebusinesspro
 microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
+microsoftonedrive-rollingout
 microsoftonenote
 microsoftoutlook
 microsoftpowerpoint
@@ -336,12 +342,14 @@ montereyblocker
 mowgliiitsycal
 musescore
 muzzle
+mysqlworkbenchce
 nanosaur
 nessusagent
 netiquette
 netnewswire
 netspot
 nextcloud
+nodejs
 nomad
 nomadlogin
 nordlayer
@@ -378,6 +386,7 @@ parsec
 pcoipclient
 pdfsam
 perimeter81
+pgadmin4
 pika
 pingplotter
 pitch
@@ -431,7 +440,9 @@ screamingfrogseospider
 screencloudplayer
 screenflick
 scrollreverser
+sdnotary
 secretive
+selfcontrol
 sequelpro
 sfsymbols
 shield
@@ -476,6 +487,7 @@ suspiciouspackage
 swiftdialog
 swiftruntimeforcommandlinetools
 sync
+synologyactivebackupforbusinessagent
 synologyassistant
 synologydriveclient
 tableaudesktop
@@ -527,6 +539,7 @@ visualstudiocode
 vivaldi
 vlc
 vmwarehorizonclient
+vonagebusiness
 vpntracker365
 vscodium
 vysor
@@ -548,6 +561,7 @@ xink
 xmenu
 xquartz
 yed
+yubicoauthenticator
 yubikeymanagerqt
 zappy
 zeplin

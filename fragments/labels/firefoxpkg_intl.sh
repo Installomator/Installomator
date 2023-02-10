@@ -3,14 +3,17 @@ firefoxpkg_intl)
     # and install corrosponding version of Firefox ESR
     name="Firefox"
     type="pkg"
-    userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLocale)
+    userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLocale | tr '_' '-')
+    # userLanguage="sv-SE" #for tests without international language setup
     printlog "Found language $userLanguage to be used for Firefox." WARN
-    if ! curl -fs "https://ftp.mozilla.org/pub/firefox/releases/latest/README.txt" | grep -o "=$userLanguage"; then
-        userLanguage=$(echo $userLanguage | cut -c 1-2)
-        if ! curl -fs "https://ftp.mozilla.org/pub/firefox/releases/latest/README.txt" | grep "=$userLanguage"; then
-            userLanguage="en_US"
+    releaseURL="https://ftp.mozilla.org/pub/firefox/releases/latest/README.txt"
+    until curl -fs $releaseURL | grep -q "=$userLanguage"; do
+        if [ ${#userLanguage} -eq 2 ]; then
+            break
         fi
-    fi
+        printlog "No locale matching '$userLanguage', trying '${userLanguage:0:2}'"
+        userLanguage=${userLanguage:0:2}
+    done
     printlog "Using language $userLanguage for download." WARN
     downloadURL="https://download.mozilla.org/?product=firefox-pkg-latest-ssl&os=osx&lang=$userLanguage"
     # https://download.mozilla.org/?product=firefox-pkg-latest-ssl&os=osx&lang=en-US

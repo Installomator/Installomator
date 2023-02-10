@@ -1,5 +1,5 @@
 musescore)
-    name="MuseScore 3"
+    name="MuseScore 4"
     type="dmg"
     downloadURL=$(downloadURLFromGit musescore MuseScore)
     appNewVersion=$(versionFromGit musescore MuseScore)
