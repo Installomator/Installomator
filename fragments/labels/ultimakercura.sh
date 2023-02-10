@@ -1,5 +1,5 @@
 ultimakercura)
-    name="Ultimaker-Cura"
+    name="Ultimaker Cura"
     type="dmg"
     downloadURL="$(downloadURLFromGit Ultimaker Cura)"
     archiveName="Ultimaker_Cura-[0-9].*-mac.dmg"

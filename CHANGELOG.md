@@ -1,3 +1,46 @@
+## v10.3
+
+- new labels:
+    - aftermath (#816)
+    - backgroundmusic (#894)
+    - chromeremotedesktop (#840)
+    - cloudflarewarp (#839)
+    - druvainsync (#809, #868)
+    - firefoxdeveloperedition (#838)
+    - island (#891)
+    - jdk17 (#875)
+    - jdk19 (#880)
+    - jumpdesktop (#855)
+    - microsoftonedrive-rollingout (#826)
+    - mysqlworkbenchce (#856)
+    - nodejs (#848)
+    - pgadmin4 (#851)
+    - scrollreverser (#830)
+    - selfcontrol (#857)
+    - synologyactivebackupforbusinessagent (#837)
+    - vonagebusiness (#865)
+    - yubicoauthenticator (#842)
+- updated labels:
+    - 1password8 (#841)
+    - adobeacrobatprodc (#866, #867)
+    - alfred (#881)
+    - drawio (#889)
+    - firefoxpkg_intl (#893, #890)
+    - googleadseditor (#854)
+    - jdk18 (#859, #874)
+    - keybase (#861)
+    - loom (#847, #853)
+    - macports (#879, #882)
+    - microsoftoffice365
+    - musescore (#872)
+    - nudge, nudgesuite (#886, #887)
+    - openvpnconnectv3 (#845, #846, #852, #878)
+    - tencentmeeting (#849)
+    - ultimakercura (#884)
+- deleted labels:
+    - eraseinstall.sh
+
+
 ## v10.2
 
 - first install script fixes (#818)
