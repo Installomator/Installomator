@@ -14,6 +14,7 @@ adobecreativeclouddesktop
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
+aftermath
 aircall
 airserver
 airtame
@@ -92,6 +93,9 @@ canva
 carboncopycloner
 charles
 chatwork
+chemdoodle
+chemdoodle2d
+chemdoodle3d
 chromeremotedesktop
 chronoagent
 chronosync
