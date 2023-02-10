@@ -6,4 +6,3 @@ island)
     appCustomVersion() { echo "$(defaults read /Applications/Island.app/Contents/Info.plist CFBundleShortVersionString | sed 's/[^.]*.//' | sed -e 's/*\.//')" }
     expectedTeamID="38ZC4T8AWY"
     ;;
-    
