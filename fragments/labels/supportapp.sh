@@ -5,5 +5,6 @@ supportapp)
     downloadURL=$(downloadURLFromGit root3nl SupportApp)
     appNewVersion=$(versionFromGit root3nl SupportApp)
     expectedTeamID="98LJ4XBGYK"
-    blockingProcesses=( NONE )
+    uid=$(id -u "$currentUser")
+    launchctl bootout gui/${uid} "/Library/LaunchAgents/nl.root3.support.plist"
     ;;

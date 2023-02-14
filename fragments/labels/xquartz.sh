@@ -1,7 +1,7 @@
 xquartz)
     # credit: AP Orlebeke (@apizz)
     name="XQuartz"
-    type="pkg"
+    type="pkgInDmg"
     downloadURL=$(downloadURLFromGit XQuartz XQuartz)
     appNewVersion=$(versionFromGit XQuartz XQuartz)
     expectedTeamID="NA574AWV7E"

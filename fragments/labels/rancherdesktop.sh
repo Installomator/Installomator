@@ -1,13 +1,8 @@
 rancherdesktop)
-    name="Rancher Desktop"
+    name="Rancher.Desktop-1.0.0-mac"
     type="zip"
-    if [[ $(arch) == "arm64" ]]; then
-      archiveName="Rancher.Desktop-[0-9.]*-mac.aarch64.zip"
-      downloadURL="$(downloadURLFromGit rancher-sandbox rancher-desktop)"
-    elif [[ $(arch) == "i386" ]]; then
-      archiveName="Rancher.Desktop-[0-9.]*-mac.x86_64.zip"
-      downloadURL="$(downloadURLFromGit rancher-sandbox rancher-desktop)"
-    fi
+    archiveName="Rancher.Desktop-[0-9.]*-mac.zip"
+    downloadURL="$(downloadURLFromGit rancher-sandbox rancher-desktop)"
     appNewVersion="$(versionFromGit rancher-sandbox rancher-desktop)"
     expectedTeamID="2Q6FHJR3H3"
     appName="Rancher Desktop.app"

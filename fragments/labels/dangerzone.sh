@@ -1,7 +1,7 @@
 dangerzone)
     name="Dangerzone"
     type="dmg"
-    downloadURL="$(downloadURLFromGit freedomofpress dangerzone)"
-    appNewVersion="$(versionFromGit freedomofpress dangerzone)"
+    downloadURL="$(downloadURLFromGit firstlookmedia dangerzone)"
+    appNewVersion="$(versionFromGit firstlookmedia dangerzone)"
     expectedTeamID="N9B95FDWH4"
     ;;
