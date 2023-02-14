@@ -7,7 +7,7 @@ label="" # if no label is sent to the script, this will be used
 # 2020-2021 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
-# 
+#
 # Contributers:
 #    Armin Briegel - @scriptingosx
 #    Isaac Ordonez - @issacatmann
@@ -23,7 +23,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
-# debug mode 1 will download to the directory the script is run in, but will not check the version 
+# debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
 DEBUG=1
 
@@ -33,7 +33,6 @@ NOTIFY=success
 #   - success      notify the user on success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
-
 
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user
@@ -81,6 +80,7 @@ LOGO=appstore
 #   - mosylem       Mosyle Manager (Education)
 #   - addigy        Addigy
 #   - microsoft     Microsoft Endpoint Manager (Intune)
+#   - ws1           Workspace ONE (AirWatch)
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
@@ -139,6 +139,26 @@ IGNORE_DND_APPS=""
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
 
+# Swift Dialog integration
+
+# These variables will allow Installomator to communicate progress with Swift Dialog
+# https://github.com/bartreardon/swiftDialog
+
+# This requires Swift Dialog 2.11.2 or higher.
+
+DIALOG_CMD_FILE=""
+# When this variable is set, Installomator will write Swift Dialog commands to this path.
+# Installomator will not launch Swift Dialog. The process calling Installomator will have
+# launch and configure Swift Dialog to listen to this file.
+# See `MDM/swiftdialog_example.sh` for an example.
+
+DIALOG_LIST_ITEM_NAME=""
+# When this variable is set, progress for downloads and installs will be sent to this
+# listitem.
+# When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
+
+
+
 # NOTE: How labels work
 
 # Each workflow label needs to be listed in the case statement below.
@@ -184,7 +204,7 @@ IGNORE_DND_APPS=""
 #   How we get version number from app. Possible values:
 #     - CFBundleShortVersionString
 #     - CFBundleVersion
-#   Not all software titles uses fields the same. 
+#   Not all software titles uses fields the same.
 #   See Opera label.
 #
 # - appCustomVersion(){}: (optional function)
@@ -238,7 +258,7 @@ IGNORE_DND_APPS=""
 # - updateToolArguments:
 #   When Installomator detects an existing installation of the application,
 #   and the updateTool variable is set
-#      $updateTool $updateArguments
+#       $updateTool $updateArguments
 #   Will be run instead of of downloading and installing a complete new version.
 #   Use this when the updateTool does differential and optimized downloads.
 #   e.g. msupdate on various Microsoft labels
@@ -253,7 +273,7 @@ IGNORE_DND_APPS=""
 #   We need to define `name` for the installed app (to be version checked), as well as
 #   `installerTool` for the installer app (if named differently than `name`. Installomator
 #   will add the path to the folder/disk image with the binary, and it will be called like this:
-     `$CLIInstaller $CLIArguments`
+#       $CLIInstaller $CLIArguments
 #   For most installations `CLIInstaller` should contain the `installerTool` for the CLI call
 #   (if it’s the same).
 #   We can support a whole range of other software titles by implementing this.

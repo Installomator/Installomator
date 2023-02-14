@@ -1,17 +1,24 @@
 adobecreativeclouddesktop)
     name="Adobe Creative Cloud"
-    #appName="Install.app"
+    appName="Install.app"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
-        downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o "https*.*macarm64.*dmg" | cut -d '"' -f1 | head -1)
-    elif [[ $(arch) == "i386" ]]; then
-        downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o "https*.*osx10.*dmg" | cut -d '"' -f1 | head -1)
+    if pgrep -q "Adobe Installer"; then
+        printlog "Adobe Installer is running, not a good time to update." WARN
+        printlog "################## End $APPLICATION \n\n" INFO
+        exit 75
     fi
-    #downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o "https*.*dmg" | head -1)
-    appNewVersion=$(curl -fs "https://helpx.adobe.com/creative-cloud/release-note/cc-release-notes.html" | grep "mandatory" | head -1 | grep -o "Version *.* released" | cut -d " " -f2)
+    if [[ "$(arch)" == "arm64" ]]; then
+        downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o 'https.*macarm64.*dmg' | head -1 | cut -d '"' -f1)
+    else
+        downloadURL=$(curl -fs "https://helpx.adobe.com/download-install/kb/creative-cloud-desktop-app-download.html" | grep -o 'https.*osx10.*dmg' | head -1 | cut -d '"' -f1)
+    fi
+    #appNewVersion=$(curl -fs "https://helpx.adobe.com/creative-cloud/release-note/cc-release-notes.html" | grep "mandatory" | head -1 | grep -o "Version *.* released" | cut -d " " -f2)
+    appNewVersion=$(echo $downloadURL | grep -o '[^x]*$' | cut -d '.' -f 1 | sed 's/_/\./g')
+    targetDir="/Applications/Utilities/Adobe Creative Cloud/ACC/"
     installerTool="Install.app"
     CLIInstaller="Install.app/Contents/MacOS/Install"
     CLIArguments=(--mode=silent)
     expectedTeamID="JQ525L2MZD"
+    blockingProcesses=( "Creative Cloud" )
     Company="Adobe"
     ;;

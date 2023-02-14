@@ -1,6 +1,371 @@
+## v10.3
+
+- new labels:
+    - aftermath (#816)
+    - backgroundmusic (#894)
+    - chromeremotedesktop (#840)
+    - cloudflarewarp (#839)
+    - druvainsync (#809, #868)
+    - firefoxdeveloperedition (#838)
+    - island (#891)
+    - jdk17 (#875)
+    - jdk19 (#880)
+    - jumpdesktop (#855)
+    - microsoftonedrive-rollingout (#826)
+    - mysqlworkbenchce (#856)
+    - nodejs (#848)
+    - pgadmin4 (#851)
+    - scrollreverser (#830)
+    - selfcontrol (#857)
+    - synologyactivebackupforbusinessagent (#837)
+    - vonagebusiness (#865)
+    - yubicoauthenticator (#842)
+- updated labels:
+    - 1password8 (#841)
+    - adobeacrobatprodc (#866, #867)
+    - alfred (#881)
+    - drawio (#889)
+    - firefoxpkg_intl (#893, #890)
+    - googleadseditor (#854)
+    - jdk18 (#859, #874)
+    - keybase (#861)
+    - loom (#847, #853)
+    - macports (#879, #882)
+    - microsoftoffice365
+    - musescore (#872)
+    - nudge, nudgesuite (#886, #887)
+    - openvpnconnectv3 (#845, #846, #852, #878)
+    - tencentmeeting (#849)
+    - ultimakercura (#884)
+- deleted labels:
+    - eraseinstall.sh
+
+
+## v10.2
+
+- first install script fixes (#818)
+- minor text fix (#832)
+- new labels:
+    - archimate (#814)
+    - betterdisplay (#813)
+    - beyondcomparepro (#820)
+    - camunda (#815)
+    - connectfonts (#824)
+    - gitkraken (#819)
+    - hmavpn (#604)
+    - lsagent (#793)
+    - nessusagent (#827)
+    - pcoipclient (#723)
+    - pingplotter (#597)
+    - popsql (#825)
+    - renew-noagent (#821)
+    - renew (#821)
+    - scrollreverser (#830)
+- updated labels:
+    - adobereaderdc-install (#807)
+    - anydesk (#715, #786, #800)
+    - audacity (#829)
+    - gimp (#798, #799, #802)
+    - jabradirect (#804)
+    - keybase (#831)
+    - microsoftteams (#803)
+    - openvpnconnectv3 (#784, #796, #801)
+    - rstudio (#822, #823)
+    - teamviewer (#805)
+    - vagrant (#817)
+    - xquartz (#828)
+
+## v10.1
+
+- updated Jamf/Dialog scripts icon handling (#778)
+- Readme Updates (#744)
+- new labels:
+    - amazoncorretto11jdk (#721)
+    - amazoncorretto17jdk (#721)
+    - bbeditpkg (#720)
+    - boop (#781)
+    - camtasia2021, camtasia2022 (#730)
+    - jamfcpr (#753)
+    - jetbrainsrider
+    - lgcalibrationstudio (#763)
+    - mendeleyreferencemanager (#713)
+    - microsoftofficefactoryreset (#751)
+    - microsoftofficeremoval (#755)
+    - mist-cli (#733)
+    - mist (#732)
+    - mobiletolocal (#752)
+    - netiquette (#770)
+    - todoist (#769)
+    - transfer (#773)
+    - vpntracker365 (#760)
+    - zerotier (#785)
+
+- updated labels:
+    - 1password8 (#759)
+    - amazoncorretto8jdk (#721)
+    - camtasia (#730)
+    - citrixworkspace (#731)
+    - code42 (#766)
+    - drawio (#725)
+    - duodevicehealth (#761)
+    - idrive (#726)
+    - idrivethin (#727)
+    - macfuse (#714)
+    - microsoftazuredatastudio (#788)
+    - nudge (#754)
+    - prism9 (#746)
+    - skype (#762)
+    - synologydriveclient (#789)
+    - ultimakercura (#740)
+
+
+## v10
+
+- updates to MDM sample scripts (#738)
+- updates to Swift Dialog integration (#717)
+- documentation updates (#711)
+
+And everything from the betas ([beta1](https://github.com/Installomator/Installomator/releases/tag/v10beta1), [beta2](https://github.com/Installomator/Installomator/releases/tag/v10beta2), [beta3](https://github.com/Installomator/Installomator/releases/tag/v10beta3))
+
+- new labels:
+    - ibmnotifier (#716)
+    - ipvisionconnect (#749)
+    - logitechoptionsplus (#719)
+    - lucidlink (#722)
+    - mactex (#685)
+    - onscreencontrol (#581)
+    - projectplace (#688)
+    - subethaedit (#728)
+    - sublimemerge (#729)
+    - venturablocker (#712)
+    - vysor (#710)
+
+- updated labels:
+    - googleadseditor (#739)
+    - openvpnconnectv3 (#750)
+    - tunnelblick (#618)
+
+
+## v10beta3
+
+- option to add item to dock if dockutil is installed (#701 requires dockutil https://github.com/kcrawford/dockutil )
+- further improvements to GitHub downloads (#691)
+- updated user dialog when app is already on the latest version (#658)
+
+Plus everything from beta1 and beta2.
+
+- new labels:
+    - adobeacrobatprodc (#707)
+    - adobereaderdc-install (#707)
+    - archiwareb2go (#625, #707)
+    - archiwarepst (#624)
+    - bitrix24 (#661)
+    - charles (#670)
+    - chronoagent (#617)
+    - chronosync (#616)
+    - cytoscape (#689)
+    - egnytecore (#655)
+    - fellow (#599)
+    - filemakerpro (#609)
+    - fujifilmwebcam (#598)
+    - gfxcardstatus (#690)
+    - horos (#610)
+    - inetclearreportsdesigner (#601)
+    - jdk18 (#608)
+    - latexit (#684)
+    - nudgesuite (#633)
+    - origin (#662)
+    - parallelsrasclient (#607)
+    - polylens (#671)
+    - splashtopbusiness (#660)
+    - tailscale (#620)
+    - zoomoutlookplugin (#656)
+    - zotero (#634)
+    - zulujdk18 (#612)
+
+- updated labels:
+    - acroniscyberprotectconnectagent (#678)
+    - adobecreativeclouddesktop (#687)
+    - adobereaderdc-update (#707)
+    - audacity (#708)
+    - duckduckgo (#704)
+    - libreoffice (#605)
+    - nudge
+    - obs (#692)
+    - r (#702)
+    - rstudio (#702)
+    - screamingfrogseospider (#665)
+    - vlc (#705, #606)
+    - xcreds
+
+
+
+## v10beta2
+
+- fixed problem with GitHub labels (#659)
+- bz2 archive support (#659)
+- fixed WorkspaceOne support (#653)
+- updated how `aapNewVersion` is determined (#680)
+
+Plus everything from v10beta1
+
+- new labels:
+	- abetterfinderrename11 (#552)
+	- carboncopycloner (#553)
+	- cocoapods (#659)
+	- coconutbattery (#588)
+	- cricutdesignspace (#562)
+	- dynalist (#591)
+	- fellow (#591)
+	- flexoptixapp (#554)
+	- googleadseditor (#652, #541)
+	- kap (#568)
+	- keepingyouawake (#549)
+	- lcadvancedvpnclient (#584)
+	- masv (#569)
+	- merlinproject (#555)
+	- mongodbcompass (#654)
+	- netspot (#556)
+	- relatel (#619)
+	- sonicvisualiser (#575)
+	- strongdm (#559)
+	- synologyassistant (#557)
+	- synologydriveclient (#582)
+	- tencentmeeting (#570)
+	- typinator (#583)
+	- xcreds (#675)
+- updated labels:
+	- acroniscyberprotectconnect/remotix (#664)
+	- acroniscyberprotectconnectagent/remotixagent (#664)
+	- awsvpnclient (#586)
+	- boxtools (#589)
+	- clevershare2 (#664)
+	- coderunner (#664)
+	- colourcontrastanalyser (#664)
+	- cryptomator (#664)
+	- dangerzone (#664)
+	- drawio (#664)
+	- golang (#664)
+	- icons (#664)
+	- insomnia (#664)
+	- knockknock (#664)
+	- libreoffice (#672)
+	- macports
+	- opera (#664)
+	- supportapp (#664)
+	- vmwarehorizonclient (#645, #511)
+- deleted/deactivated labels:
+	- microsoftyammer (#664)
+	- wickrme (#664)
+	- wickrpro (#664)
+
+
+## v10beta1
+
+- [swiftDialog](https://github.com/bartreardon/swiftDialog) integration (#641, #632), many thanks to @bartreardon, [sample scripts](in the MDM folder)
+- added WorkspaceOne option for LOGO (#517)
+- added function for JSON parsing with JXA (#529)
+- updated assemble.sh script to update Labels.txt when script is rebuilt (#540)
+- added a no requisite install script (#493)
+- GitHub lookup now don't use API calls, this should avoid or at least reduce rate limiting (#543)
+- fixed redundant exit codes (#643, #561)
+
+NOTE: some exit codes have changed! see [Installomator Exit Codes](https://github.com/Installomator/Installomator/wiki/Installomator-Exit-Codes) for a list
+
+- new labels:
+	- bluejeanswithaudiodriver (#473)
+	- duodevicehealth (#548)
+	- googlechromeenterprise (#532)
+	- ipswupdater (#545)
+	- mmhmm (#571)
+	- nordlayer (#419)
+	- prune (#538)
+	- whatroute (#560)
+- updated labels:
+	- blender (#535, #622)
+	- camtasia2019 (#547)
+	- clickshare (#565)
+	- egnyte (#500)
+	- googledrive (#563)
+	- grammarly (#576)
+	- marathon, marathon2, marathoninfinity (#544)
+	- miro (#475, #539)
+	- notion (#566)
+	- ringcentralapp (#550)
+	- sublimetext (#593, #578, #567, #623, #626)
+	- talkdeskcallbar (#536)
+	- talkdeskcxcloud (#537)
+	- wireshark (#585)
+
+
+## v9.2
+
+**Note**: Both Google and Mozilla recommend using the pkg installers instead of the dmg downloads for managed deployments. So far, Installomator has provided labels for both. (`googlechrome` and `googlechromepkg` or `firefox` and `firefoxpkg`, respectively) Since there are problems with the dmg downloads, a future release of Installomator will _disable_ the `firefox` and `googlechrome` dmg labels. You should switch to using `googlechromepkg` and `firefoxpkg` labels instead.
+
+- bug fix (#434)
+- documentation updates (#485, #494)
+- new labels:
+    - 1password8 (#514)
+	- ultimakercura
+	- androidstudio (#547)
+	- atextlegacy (#464)
+	- camtasia2019, camtasia2020 (#499)
+	- clue, cluefull (#481)
+	- craftmanagerforsketch
+	- displaylinkmanager (#448)
+	- drawio (#480)
+	- duckduckgo
+	- egnytewebedit (#512)
+	- filezilla (#522)
+	- firefoxpkg_intl
+	- flycut (#501)
+	- fontexplorer (#523)
+	- hype (#524)
+	- idrive (#507), idrivethin (#509)
+	- imageoptim (#525)
+	- linear (#519)
+	- macoslaps (#502)
+	- mightymike
+	- mindmanager (#479)
+	- pika (#526)
+	- propresenter7 (#394)
+	- qgis-pr
+	- shottr (#516)
+	- slab (#487)
+	- snagit2019, snagit2020, snagit2021 (#498)
+	- sonobus (#490)
+	- talkdeskcxcloud (#452)
+	- thunderbird_intl (#497)
+	- unnaturalscrollwheels (#503)
+	- wechat (#510)
+	- xeroxworkcentre7800 (#527)
+	- zohoworkdrivegenie
+- updated labels
+	- adobereaderdc-update, adobereaderdc (#503)
+	- amazoncorretto8jdk (#461)
+	- camtasia (#499)
+	- citrixworkspace (#508)
+	- dbeaverce (#450)
+	- dropbox
+	- firefox, firefox_da, firefox_intl (#495), firefoxesr_intl (#496), firefoxpkg
+	- googlechrome, googlechromepkg (#484)
+	- gpgsuite (#465)
+	- grammarly (#515)
+	- logitechoptions (#478)
+	- onlyofficedesktop (#454)
+	- postman (#458)
+	- rancherdesktop (#463)
+	- remotedesktopmanagerenterprise
+	- remotedesktopmanagerfree
+	- ringcentralapp (#492)
+	- sketch
+	- snagit (#498)
+	- talkdeskcallbar (#453)
+
+
+
 ## v9.1
 
-**Note**: Both Google and Mozilla recommend using the pkg installers instead of the dmg downloads for managed deployments. So far, Installomator has provided labels for both. (`googlechrome` and `googlechromepkg` or `firefox` and `firefoxpkg`, respectively) Since there are problems with the dmg downloads, a future release of Installomator will _disable_ the `firefox` and `googlechrome` dmg labels. You should switch to using the respective pkg labels instead.
 
 - added option for Microsoft Endpoint Manager (Intune) to `LOGO` (#446)
 - minor fixes (#427, #434, #436)

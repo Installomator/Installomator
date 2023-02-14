@@ -14,15 +14,18 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
 
+
     # If we closed any processes, reopen the app again
     reopenClosedProcess
     if [[ -n $2 && $1 -ne 0 ]]; then
         printlog "ERROR: $2" $3
+        updateDialog "fail" "Error ($1; $2)"
     else
         printlog "$2" $3
+        updateDialog "success" ""
     fi
     printlog "################## End Installomator, exit code $1 \n" REQ
-    
+
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
         1=0 # If only label name should be returned we exit without any errors
@@ -61,9 +64,12 @@ displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
+    hubcli="/usr/local/bin/hubcli"
 
     if [[ -x "$manageaction" ]]; then
          "$manageaction" -message "$message" -title "$title"
+    elif [[ -x "$hubcli" ]]; then
+         "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
     else
         runAsUser osascript -e "display notification \"$message\" with title \"$title\""
     fi
@@ -156,14 +162,22 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     fi
 
     if [ -n "$archiveName" ]; then
-    downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+        if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName")" == "" ]]; then
+            printlog "GitHub API not returning URL, trying https://github.com/$gitusername/$gitreponame/releases/latest."
+            #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
+            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)"
+        fi
     else
-    downloadURL=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
-    | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
+            printlog "GitHub API not returning URL, trying https://github.com/$gitusername/$gitreponame/releases/latest."
+            #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
+            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
+        fi
     fi
     if [ -z "$downloadURL" ]; then
-        cleanupAndExit 9 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
+        cleanupAndExit 14 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
     else
         echo "$downloadURL"
         return 0
@@ -176,7 +190,8 @@ versionFromGit() {
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
-    appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
+    #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
+    appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
         appNewVersion=""
@@ -199,6 +214,16 @@ xpath() {
 	fi
 }
 
+# from @Pico: https://macadmins.slack.com/archives/CGXNNJXJ9/p1652222365989229?thread_ts=1651786411.413349&cid=CGXNNJXJ9
+getJSONValue() {
+	# $1: JSON string OR file path to parse (tested to work with up to 1GB string and 2GB file).
+	# $2: JSON key path to look up (using dot or bracket notation).
+	printf '%s' "$1" | /usr/bin/osascript -l 'JavaScript' \
+		-e "let json = $.NSString.alloc.initWithDataEncoding($.NSFileHandle.fileHandleWithStandardInput.readDataToEndOfFile$(/usr/bin/uname -r | /usr/bin/awk -F '.' '($1 > 18) { print "AndReturnError(ObjC.wrap())" }'), $.NSUTF8StringEncoding)" \
+		-e 'if ($.NSFileManager.defaultManager.fileExistsAtPath(json)) json = $.NSString.stringWithContentsOfFileEncodingError(json, $.NSUTF8StringEncoding, ObjC.wrap())' \
+		-e "const value = JSON.parse(json.js)$([ -n "${2%%[.[]*}" ] && echo '.')$2" \
+		-e 'if (typeof value === "object") { JSON.stringify(value, null, 4) } else { value }'
+}
 
 getAppVersion() {
     # modified by: Søren Theilgaard (@theilgaard) and Isaac Ordonez
@@ -242,8 +267,8 @@ getAppVersion() {
 #        printlog "App(s) found: ${applist}" DEBUG
 #        applist=$(mdfind "kind:application AND name:$appName" -0 )
     fi
-    if [[ -z applist ]]; then
-        printlog "No previous app found" INFO
+    if [[ -z $applist ]]; then
+        printlog "No previous app found" WARN
     else
         printlog "App(s) found: ${applist}" INFO
     fi
@@ -265,10 +290,14 @@ getAppVersion() {
             if [[ -d "$installedAppPath"/Contents/_MASReceipt ]];then
                 printlog "Installed $appName is from App Store, use “IGNORE_APP_STORE_APPS=yes” to replace."
                 if [[ $IGNORE_APP_STORE_APPS == "yes" ]]; then
-                    printlog "Replacing App Store apps, no matter the version"
+                    printlog "Replacing App Store apps, no matter the version" WARN
                     appversion=0
                 else
-                    cleanupAndExit 1 "App previously installed from App Store, and we respect that" ERROR
+                    if [[ $DIALOG_CMD_FILE != "" ]]; then
+                        updateDialog "wait" "Already installed from App Store. Not replaced."
+                        sleep 4
+                    fi
+                    cleanupAndExit 23 "App previously installed from App Store, and we respect that" ERROR
                 fi
             fi
         else
@@ -417,6 +446,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
     # verify with spctl
     printlog "Verifying: $appPath" INFO
+    updateDialog "wait" "Verifying..."
     printlog "App size: $(du -sh "$appPath")" DEBUG
     appVerify=$(spctl -a -vv "$appPath" 2>&1 )
     appVerifyStatus=$(echo $?)
@@ -444,6 +474,10 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "No update for $name!"
             fi
+            if [[ $DIALOG_CMD_FILE != "" ]]; then
+                updateDialog "wait" "Latest version already installed..."
+                sleep 2
+            fi
             cleanupAndExit 0 "No new version to install" REG
         else
             printlog "Using force to install anyway."
@@ -465,7 +499,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
                 printlog "notifying"
                 displaynotification "$message" "Error updating $name!"
             fi
-            cleanupAndExit 6 "Installed macOS is too old for this app." ERROR
+            cleanupAndExit 15 "Installed macOS is too old for this app." ERROR
         fi
     fi
 
@@ -524,7 +558,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
         deduplicatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
-            cleanupAndExit 3 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
+            cleanupAndExit 16 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
         else
             printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments" INFO
         fi
@@ -562,6 +596,7 @@ installFromDMG() {
 installFromPKG() {
     # verify with spctl
     printlog "Verifying: $archiveName"
+    updateDialog "wait" "Verifying..."
     printlog "File list: $(ls -lh "$archiveName")" DEBUG
     printlog "File type: $(file "$archiveName")" DEBUG
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
@@ -609,6 +644,10 @@ installFromPKG() {
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
                 fi
+                if [[ $DIALOG_CMD_FILE != "" ]]; then
+                    updateDialog "wait" "Latest version already installed..."
+                    sleep 2
+                fi
                 cleanupAndExit 0 "No new version to install" REQ
             else
                 printlog "Using force to install anyway."
@@ -629,8 +668,29 @@ installFromPKG() {
 
     # install pkg
     printlog "Installing $archiveName to $targetDir"
-    pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
-    pkgInstallStatus=$(echo $?)
+
+    if [[ $DIALOG_CMD_FILE != "" ]]; then
+        # pipe
+        pipe="$tmpDir/installpipe"
+        # initialise named pipe for installer output
+        initNamedPipe create $pipe
+
+        # run the pipe read in the background
+        readPKGInstallPipe $pipe "$DIALOG_CMD_FILE" & installPipePID=$!
+        printlog "listening to output of installer with pipe $pipe and command file $DIALOG_CMD_FILE on PID $installPipePID" DEBUG
+
+        pkgInstall=$(installer -verboseR -pkg "$archiveName" -tgt "$targetDir" 2>&1 | tee $pipe)
+        pkgInstallStatus=$pipestatus[1]
+            # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+        killProcess $installPipePID
+
+    else
+        pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
+        pkgInstallStatus=$(echo $?)
+    fi
+
+
+
     sleep 1
     pkgEndTime=$(date "+$LogDateFormat")
     pkgInstall+=$(echo "\nOutput of /var/log/install.log below this line.\n")
@@ -722,7 +782,7 @@ installPkgInZip() {
         printlog "Found pkg(s):\n$findfiles" DEBUG
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find pkg in zip $archiveName" ERROR
+            cleanupAndExit 21 "couldn't find pkg in zip $archiveName" ERROR
         fi
         # it is now safe to overwrite archiveName for installFromPKG
         archiveName="${filearray[1]}"
@@ -735,7 +795,7 @@ installPkgInZip() {
             findfiles=$(find "$tmpDir" -iname "$pkgName")
             filearray=( ${(f)findfiles} )
             if [[ ${#filearray} -eq 0 ]]; then
-                cleanupAndExit 20 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
+                cleanupAndExit 21 "couldn't find pkg “$pkgName” in zip $archiveName" ERROR
             fi
             # it is now safe to overwrite archiveName for installFromPKG
             archiveName="${filearray[1]}"
@@ -758,7 +818,7 @@ installAppInDmgInZip() {
         findfiles=$(find "$tmpDir" -iname "*.dmg" -maxdepth 2  )
         filearray=( ${(f)findfiles} )
         if [[ ${#filearray} -eq 0 ]]; then
-            cleanupAndExit 20 "couldn't find dmg in zip $archiveName" ERROR
+            cleanupAndExit 22 "couldn't find dmg in zip $archiveName" ERROR
         fi
         archiveName="$(basename ${filearray[1]})"
         # it is now safe to overwrite archiveName for installFromDMG
@@ -810,7 +870,8 @@ runUpdateTool() {
 
 finishing() {
     printlog "Finishing..."
-    sleep 10 # wait a moment to let spotlight catch up
+
+    sleep 3 # wait a moment to let spotlight catch up
     getAppVersion
 
     if [[ -z $appversion ]]; then
@@ -858,3 +919,113 @@ hasDisplaySleepAssertion() {
     return 1
 }
 
+initNamedPipe() {
+    # create or delete a named pipe
+    # commands are "create" or "delete"
+
+    local cmd=$1
+    local pipe=$2
+    case $cmd in
+        "create")
+            if [[ -e $pipe ]]; then
+                rm $pipe
+            fi
+            # make named pipe
+            mkfifo -m 644 $pipe
+            ;;
+        "delete")
+            # clean up
+            rm $pipe
+            ;;
+        *)
+            ;;
+    esac
+}
+
+readDownloadPipe() {
+    # reads from a previously created named pipe
+    # output from curl with --progress-bar. % downloaded is read in and then sent to the specified log file
+    local pipe=$1
+    local log=${2:-$DIALOG_CMD_FILE}
+    # set up read from pipe
+    while IFS= read -k 1 -u 0 char; do
+        if [[ $char =~ [0-9] ]]; then
+            keep=1
+        fi
+
+        if [[ $char == % ]]; then
+            updateDialog $progress "Downloading..."
+            progress=""
+            keep=0
+        fi
+
+        if [[ $keep == 1 ]]; then
+            progress="$progress$char"
+        fi
+    done < $pipe
+}
+
+readPKGInstallPipe() {
+    # reads from a previously created named pipe
+    # output from installer with -verboseR. % install status is read in and then sent to the specified log file
+    local pipe=$1
+    local log=${2:-$DIALOG_CMD_FILE}
+    local appname=${3:-$name}
+
+    while read -k 1 -u 0 char; do
+        if [[ $char == % ]]; then
+            keep=1
+        fi
+        if [[ $char =~ [0-9] && $keep == 1 ]]; then
+            progress="$progress$char"
+        fi
+        if [[ $char == . && $keep == 1 ]]; then
+            updateDialog $progress "Installing..."
+            progress=""
+            keep=0
+        fi
+    done < $pipe
+}
+
+killProcess() {
+    # will silently kill the specified PID
+    builtin kill $1 2>/dev/null
+}
+
+updateDialog() {
+    local state=$1
+    local message=$2
+    local listitem=${3:-$DIALOG_LIST_ITEM_NAME}
+    local cmd_file=${4:-$DIALOG_CMD_FILE}
+    local progress=""
+
+    if [[ $state =~ '^[0-9]' \
+       || $state == "reset" \
+       || $state == "increment" \
+       || $state == "complete" \
+       || $state == "indeterminate" ]]; then
+        progress=$state
+    fi
+
+    # when to cmdfile is set, do nothing
+    if [[ $cmd_file == "" ]]; then
+        return
+    fi
+
+    if [[ $listitem == "" ]]; then
+        # no listitem set, update main progress bar and progress text
+        if [[ $progress != "" ]]; then
+            echo "progress: $progress" >> $cmd_file
+        fi
+        if [[ $message != "" ]]; then
+            echo "progresstext: $message" >> $cmd_file
+        fi
+    else
+        # list item has a value, so we update the progress and text in the list
+        if [[ $progress != "" ]]; then
+            echo "listitem: title: $listitem, statustext: $message, progress: $progress" >> $cmd_file
+        else
+            echo "listitem: title: $listitem, statustext: $message, status: $state" >> $cmd_file
+        fi
+    fi
+}

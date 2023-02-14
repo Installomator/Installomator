@@ -120,6 +120,7 @@ chmod +x $destination_file
 # run script with remaining arguments
 if [[ $runScript -eq 1 ]]; then
     $destination_file "$@"
+    exit_code=$?
 fi
 
 # copy the script to root of repo when flag is set
@@ -127,6 +128,8 @@ if [[ $buildScript -eq 1 ]]; then
     echo "# copying script to $repo_dir/Installomator.sh"
     cp $destination_file $repo_dir/Installomator.sh
     chmod 755 $repo_dir/Installomator.sh
+    # also update Labels.txt
+    $repo_dir/Installomator.sh | tail -n +2 > $repo_dir/Labels.txt
 fi
 
 # build a pkg when flag is set
@@ -184,3 +187,5 @@ if [[ $notarizePkg -eq 1 ]]; then
     echo "# Stapling $productpath"
     xcrun stapler staple "$productpath"
 fi
+
+exit $exit_code
