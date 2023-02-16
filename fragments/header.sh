@@ -110,6 +110,9 @@ INSTALL=""
 #  -               When not set, the software will only be installed
 #                  if it is newer/different in version
 #  - force         Install even if it’s the same version
+#  - ignore-update-tool
+#                  If an internal updatetool is defined it will be ignored and the 
+#                  regular installer will be used.
 
 
 # Re-opening of closed app

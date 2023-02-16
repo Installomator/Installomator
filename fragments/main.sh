@@ -167,6 +167,12 @@ fi
 getAppVersion
 printlog "appversion: $appversion"
 
+# Mark: unset updateTool if ignore-update-tool is specified
+ if [[ $INSTALL == "ignore-update-tool" ]]; then
+     printlog "Ignoring updatetool, using full installer instead."
+     updateTool=""
+ fi
+
 # MARK: Exit if new version is the same as installed version (appNewVersion specified)
 if [[ "$type" != "updateronly" && ($INSTALL == "force" || $IGNORE_APP_STORE_APPS == "yes") ]]; then
     printlog "Label is not of type “updateronly”, and it’s set to use force to install or ignoring app store apps, so not using updateTool."
