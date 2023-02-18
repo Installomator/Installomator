@@ -5,7 +5,9 @@ _The one installer script to rule them all._
 
 ![](https://img.shields.io/github/v/release/Installomator/Installomator)&nbsp;![](https://img.shields.io/github/downloads/Installomator/Installomator/latest/total)&nbsp;![](https://img.shields.io/badge/macOS-10.14%2B-success)&nbsp;![](https://img.shields.io/github/license/Installomator/Installomator)
 
-**Note:** The default (`main`) branch repo is a beta version of the next release. It may contain fixes, new labels and changes, that are not thoroughly tested yet. If you want the latest release version, you can either switch to the [`release` branch](https://github.com/Installomator/Installomator/tree/release) from the branch menu above the file list (where is says 'main' by default) or download the Installomator latest, non-beta, zip from the ['Releases'](https://github.com/Installomator/Installomator/releases) area and extract Installomator.sh.
+**Important:** The default (`main`) branch is a beta version of the next release. It contains the latest fixes, new labels and changes to application labels, but they are also not thoroughly tested yet. Installomator is designed so that changes to application labels should not affect the behavior of the script outside of that label, so it should be mostly safe, but things may be in flux. If you want the latest release version, you can either switch to the [`release` branch](https://github.com/Installomator/Installomator/tree/release) from the branch menu above the file list (where is says 'main' by default) or download the Installomator latest, non-beta, zip from the ['Releases'](https://github.com/Installomator/Installomator/releases) area and extract Installomator.sh. [More detail on the wiki.](https://github.com/Installomator/Installomator/wiki/Branches-and-Betas)
+
+**Always test carefully and thoroughly in your environment before going to production!**
 
 *Every production and deployment environment is different: please test thoroughly before rolling it out to your production.*
 
@@ -33,13 +35,16 @@ Please see [CONTRIBUTING.md](https://github.com/Installomator/Installomator/blob
 
 ## Authors and Contributors
 
-Intallomator was originally inspired by the download scripts from William Smith and Sander Schram, and created by:
+Installomator was originally inspired by the download scripts from [William Smith - @talkingmoose](https://github.com/talkingmoose) and [Sander Schram - @macbofh](https://github.com/macbofh), and created by:
+
 - [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
 
-Later on a few more members came on the project:
-- Isaac Ordonez - @isaacatmann
+with help from [Erik Stam - @erikstam](https://github.com/erikstam)  
+
+The Installomator team:
+- [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
+- [Isaac Ordonez - @isaacatmann](https://github.com/isaacatmann)
 - [Søren Theilgaard - @Theile](https://github.com/Theile)
 - [Adam Codega - @acodega](https://github.com/acodega)
 
  And with numerous contributions from many others. Thank you all, very much!
-
