@@ -110,9 +110,6 @@ if [[ ! -x $DIALOG_CMD ]]; then
     DIALOG_CMD_FILE=""
 fi
 
-# initialize blockingProcessesAltName as an associative array
-declare -A blockingProcessesAltName
-
 # MARK: labels in case statement
 case $label in
 longversion)
