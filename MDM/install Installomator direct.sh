@@ -17,7 +17,7 @@
 #
 ######################################################################
 scriptVersion="9.8"
-# v.  9.8.  : 2023-02-17 : Simplified caffeinate, no need to track it and kill it, renamed caffexit to logexit. - @wakco
+# v.  9.8   : 2023-02-17 : Simplified caffeinate, no need to track it and kill it, renamed caffexit to logexit. - @wakco
 # v.  9.7   : 2022-12-19 : Only kill the caffeinate process we create
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
 # v.  9.5   : 2022-09-21 : change of GitHub download
