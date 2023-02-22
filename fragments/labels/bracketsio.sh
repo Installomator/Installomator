@@ -1,4 +1,4 @@
-brackets)
+bracketsio)
     name="Brackets"
     type="dmg"
     downloadURL=$(downloadURLFromGit brackets-cont brackets )
