@@ -1,4 +1,5 @@
 wrikeformac)
+#Il faut chercher une solution pour DL la version ARM
     name="Wrike for Mac"
     type="dmg"
     appNewVersion="4.0.6"
