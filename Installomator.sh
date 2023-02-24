@@ -818,7 +818,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
     teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
     deduplicatelogs "$appVerify"
 
-    if [[ $appVerifyStatus -ne 0 ]] ; then
+    if [[ $appVerifyStatus -ne 0 || !($appVerify =~ "source=Notarized Developer ID") ]] ; then
     #if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
         cleanupAndExit 4 "Error verifying $appPath error:\n$logoutput" ERROR
     fi
@@ -2851,7 +2851,7 @@ egnytewebedit)
     appName="Egnyte WebEdit.app"
     blockingProcesses=( NONE )
     ;;
-    
+
 element)
     name="Element"
     type="dmg"
@@ -3124,7 +3124,7 @@ flux)
     downloadURL="https://justgetflux.com/mac/Flux.zip"
     expectedTeamID="VZKSA7H9J9"
     ;;
-    
+
 flycut)
     name="Flycut"
     type="zip"
@@ -3272,7 +3272,7 @@ googledrivefilestream)
        packageID="com.google.drivefs.arm64"
     elif [[ $(arch) == "i386" ]]; then
        packageID="com.google.drivefs.x86_64"
-    fi    
+    fi
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg" # downloadURL="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
     blockingProcesses=( "Google Docs" "Google Drive" "Google Sheets" "Google Slides" )
     appName="Google Drive.app"
@@ -3909,7 +3909,7 @@ keybase)
         downloadURL=$(curl -s https://keybase.io/docs/the_app/install_macos | grep data-target | cut -d '"' -f2 | grep -v arm64 )
     fi
     expectedTeamID="99229SGT5K"
-    ;; 
+    ;;
 keyboardmaestro)
     # credit: Søren Theilgaard (@theilgaard)
     name="Keyboard Maestro"
@@ -4021,7 +4021,7 @@ linear)
     appName="Linear.app"
     blockingProcesses=( "Linear" )
     ;;
-    
+
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -4078,7 +4078,7 @@ lowprofile)
     ;;
 lsagent)
     name="LsAgent-osx"
-    #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version. 
+    #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version.
     #Download: https://www.lansweeper.com/download/lsagent/
     #Icon: https://www.lansweeper.com/wp-content/uploads/2018/08/LsAgent-Scanning-Agent.png
     # Not tested with "agentkey", but expecting server and port to be not needed if used.
@@ -4089,7 +4089,7 @@ lsagent)
 #                                              Default: none
 #                                              Allowed: none minimal minimalWithDialogs
 #  --optionfile <optionfile>                   Installation option file
-#                                              Default: 
+#                                              Default:
 #  --debuglevel <debuglevel>                   Debug information level of verbosity
 #                                              Default: 2
 #                                              Allowed: 0 1 2 3 4
@@ -4097,18 +4097,18 @@ lsagent)
 #                                              Default: osx
 #                                              Allowed: osx text unattended
 #  --debugtrace <debugtrace>                   Debug filename
-#                                              Default: 
+#                                              Default:
 #  --installer-language <installer-language>   Language selection
 #                                              Default: en
 #                                              Allowed: sq ar es_AR az eu pt_BR bg ca hr cs da nl en et fi fr de el he hu id it ja kk ko lv lt no fa pl pt ro ru sr zh_CN sk sl es sv th zh_TW tr tk uk va vi cy
 #  --prefix <prefix>                           Installation Directory
 #                                              Default: /Applications/LansweeperAgent
 #  --server <server>                           FQDN, NetBios or IP of the Scanning Server
-#                                              Default: 
+#                                              Default:
 #  --port <port>                               Listening Port on the Scanning Server
 #                                              Default: 9524
 #  --agentkey <agentkey>                       Cloud Relay Authentication Key (Optional)
-#                                              Default: 
+#                                              Default:
     type="dmg"
     downloadURL="https://content.lansweeper.com/lsagent-mac/"
     appNewVersion="$(curl -fsIL "$downloadURL" | grep -i "location" | cut -w -f2 | cut -d "/" -f5-6 | tr "/" ".")"
@@ -4562,7 +4562,7 @@ microsoftteams)
         "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" --list
     fi
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps TEAM01 ) # --wait 600 
+    updateToolArguments=( --install --apps TEAM01 ) # --wait 600
     ;;
 microsoftvisualstudiocode|\
 visualstudiocode)
@@ -5108,7 +5108,7 @@ parsec)
     expectedTeamID="Y9MY52XZDB"
     ;;
 pcoipclient)
-    # Note that the sed match removes 'pcoip-client_' and '.dmg' 
+    # Note that the sed match removes 'pcoip-client_' and '.dmg'
     name="PCoIPClient"
     type="dmg"
     downloadURL="https://dl.teradici.com/DeAdBCiUYInHcSTy/pcoip-client/raw/names/pcoip-client-dmg/versions/latest/pcoip-client_latest.dmg"
@@ -5546,7 +5546,7 @@ secretive)
     appNewVersion=$(versionFromGit maxgoedjen secretive)
     expectedTeamID="Z72PRUAWF6"
     ;;
-    
+
 selfcontrol)
     name="SelfControl"
     type="zip"
