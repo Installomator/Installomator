@@ -15,6 +15,7 @@
     - package version checking improved for pkgs with multiple components (#844)
 - adds new label property `folderName` (#783)
 - continues script when 'Management Action' stalls (#808)
+- improved notarization check for apps (#903)
 - new labels:
     - chemdoodle (#783)
 
