@@ -322,8 +322,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.3"
-VERSIONDATE="2023-02-10"
+VERSION="10.4beta"
+VERSIONDATE="2023-02-24"
 
 # MARK: Functions
 
@@ -1517,7 +1517,7 @@ valuesfromarguments)
     name="1Password CLI"
     type="pkg"
     #packageID="com.1password.op"
-    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI | grep -m 1 -i op_apple_universal | cut -d'"' -f 2)
+    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI2 | grep -m 1 -i op_apple_universal | cut -d'"' -f 2)
     appNewVersion=$(echo $downloadURL | sed -E 's/.*\/[a-zA-Z_]*([0-9.]*)\..*/\1/g')
     appCustomVersion(){ /usr/local/bin/op -v }
     expectedTeamID="2BUA8C4S2C"
@@ -2420,6 +2420,18 @@ clickshare)
     appNewVersion="$(eval "$( echo $downloadURL | sed -E 's/.*(MajorVersion.*BuildVersion=[0-9]*).*/\1/' | sed 's/&amp//g' )" ; ((MajorVersion++)) ; ((MajorVersion--)); ((MinorVersion++)) ; ((MinorVersion--)); ((PatchVersion++)) ; ((PatchVersion--)); ((BuildVersion++)) ; ((BuildVersion--)); echo "${MajorVersion}.${MinorVersion}.${PatchVersion}-b${BuildVersion}")"
     expectedTeamID="P6CDJZR997"
     ;;
+clickup)
+	name="ClickUp"
+	type="dmg"
+	if [[ $(arch) == "arm64" ]]; then
+		appNewVersion=$(curl -sD /dev/stdout https://desktop.clickup.com/mac/dmg/arm64 | grep filename | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+		downloadURL="https://desktop.clickup.com/mac/dmg/arm64"
+	elif [[ $(arch) == "i386" ]]; then
+        appNewVersion=$(curl -sD /dev/stdout https://desktop.clickup.com/mac | grep filename | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+        downloadURL="https://desktop.clickup.com/mac"
+	fi
+	expectedTeamID="5RJWFAUGXQ"
+	;;
 clipy)
 	name="Clipy"
 	type="dmg"
@@ -2887,18 +2899,6 @@ fellow)
     downloadURL="https://cdn.fellow.app/desktop/1.3.11/darwin/stable/universal/Fellow-1.3.11-universal.dmg"
     appNewVersion=""
     expectedTeamID="2NF46HY8D8"
-    ;;
-ferdi)
-    name="Ferdi"
-    type="zip"
-    if [[ $(arch) == "arm64" ]]; then
-        archiveName="arm64-mac.zip"
-    elif [[ $(arch) == "i386" ]]; then
-        archiveName="Ferdi-[0-9.]*-mac.zip"
-    fi
-    downloadURL="$(downloadURLFromGit getferdi ferdi)"
-    appNewVersion=$(versionFromGit getferdi ferdi )
-    expectedTeamID="B6J9X9DWFL"
     ;;
 figma)
     name="Figma"
@@ -4592,6 +4592,17 @@ mist)
     expectedTeamID="7K3HVCLV7Z"
     blockingProcesses=( NONE )
     ;;
+mkuser)
+    name="mkuser"
+    type="pkg"
+    packageID="org.freegeek.pkg.mkuser"
+    downloadURL="$(downloadURLFromGit freegeek-pdx mkuser)"
+    # appNewVersion="$(versionFromGit freegeek-pdx mkuser unfiltered)"
+    # mkuser does not adhere to numbers and dots only for version numbers.
+    # Pull request submitted to add an unfiltered option to versionFromGit
+    appNewVersion="$(curl -sLI "https://github.com/freegeek-pdx/mkuser/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)"
+    expectedTeamID="YRW6NUGA63"
+    ;;
 mmhmm)
     name="mmhmm"
     type="pkg"
@@ -4845,9 +4856,9 @@ nudgesuite)
     name="Nudge Suite"
     appName="Nudge.app"
     type="pkg"
-    downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
     archiveName="Nudge_Suite-$appNewVersion.pkg"
+    downloadURL=$(downloadURLFromGit macadmins Nudge )
     expectedTeamID="T4SK8ZXCXG"
     blockingProcesses=( "Nudge" )
     ;;
@@ -5273,13 +5284,6 @@ r)
     fi
     expectedTeamID="VZLD955F6P"
     ;;
-ramboxce)
-    name="Rambox"
-    type="dmg"
-    downloadURL=$(downloadURLFromGit ramboxapp community-edition )
-    appNewVersion=$(versionFromGit ramboxapp community-edition )
-    expectedTeamID="7F292FPD69"
-    ;;
 rancherdesktop)
     name="Rancher Desktop"
     type="zip"
@@ -5628,11 +5632,11 @@ smartgit)
     expectedTeamID="PHMY45PTNW"
     ;;
 snagit|\
-snagit2022)
-    name="Snagit 2022"
+snagit2023)
+    name="Snagit 2023"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2022" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
+    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2023" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
+    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2023" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
     expectedTeamID="7TQL462TU8"
     ;;
 snagit2019)
@@ -5654,6 +5658,13 @@ snagit2021)
     type="dmg"
     downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2021" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
     appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2021" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
+    expectedTeamID="7TQL462TU8"
+    ;;
+snagit2022)
+    name="Snagit 2022"
+    type="dmg"
+    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
+    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2022" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
     expectedTeamID="7TQL462TU8"
     ;;
 snapgeneviewer)
@@ -6211,9 +6222,13 @@ virtualbox)
     name="VirtualBox"
     type="pkgInDmg"
     pkgName="VirtualBox.pkg"
-    downloadURL=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" \
-        | awk -F '"' "/OSX.dmg/ { print \$4 }")
-    appNewVersion=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" | awk -F '"' "/OSX.dmg/ { print \$4 }" | sed -E 's/.*virtualbox\/([0-9.]*)\/.*/\1/')
+    if [[ $(arch) == i386 ]]; then
+        platform="OSX"
+    elif [[ $(arch) == arm64 ]]; then
+        platform="macOSArm64"
+    fi
+    downloadURL=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" | awk -F '"' "/$platform.dmg/ { print \$4 }")
+    appNewVersion=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" | awk -F '"' "/$platform.dmg/ { print \$4 }" | sed -E 's/.*virtualbox\/([0-9.]*)\/.*/\1/')
     expectedTeamID="VB5E2TV963"
     ;;
 viscosity)
@@ -6364,6 +6379,20 @@ wordservice)
     appNewVersion="$(echo $downloadURL | sed -E 's/.*\/([0-9.]*)\/.*/\1/g')"
     appNewVersion=""
     expectedTeamID="679S2QUWR8"
+    ;;
+wrikeformac)
+#Il faut chercher une solution pour DL la version ARM
+    name="Wrike for Mac"
+    type="dmg"
+    appNewVersion="4.0.6"
+    if [[ $(arch) == i386 ]]; then
+        #downloadURL="https://dl.wrike.com/download/WrikeDesktopApp.latest.dmg"      # valide pour arch i386
+        downloadURL="https://dl.wrike.com/download/WrikeDesktopApp.v${appNewVersion}.dmg"      # pour la coherence avec silicon, on hardcode le numéro de vesrion
+    elif [[ $(arch) == arm64 ]]; then
+        #downloadURL="https://dl.wrike.com/download/WrikeDesktopApp_ARM.latest.dmg"  # ne marche pas avec latest, il faut obligatoirement un numéro de version précis
+        downloadURL="https://dl.wrike.com/download/WrikeDesktopApp_ARM.v${appNewVersion}.dmg"
+    fi
+    expectedTeamID="BD3YL53XT4"
     ;;
 wwdc)
     # credit: Søren Theilgaard (@theilgaard)
