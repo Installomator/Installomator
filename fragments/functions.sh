@@ -51,13 +51,28 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    #runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e '
+on run argv
+    try
+        return (button returned of (display dialog (text item 1 of argv) with title (text item 2 of argv) buttons {"Not Now", "Quit and Update"} cancel button 1 default button 2 with icon (POSIX file (text item 3 of argv))))
+    on error
+        return "Not Now"
+    end try
+end run
+' -- "$message" "$title" "$LOGO" # Pass all variables to "osascript" as args so that they are not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variables to break execution of the entire the AppleScript command.
+    # NOTE: The "Not Now" button is set to the "cancel button" so that the escape key can be properly used to dismiss the alert. When an AppleScript alert is canceled, it throws an error which is caught in the "try" block and in the "on error" block the "Not Now" string is manually returned the same as if they had clicked the button.
 }
 
 displaydialogContinue() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    #runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e '
+on run argv
+    return (button returned of (display dialog (text item 1 of argv) with title (text item 2 of argv) buttons {"Quit and Update"} default button 1 with icon (POSIX file (text item 3 of argv))))
+end run
+' -- "$message" "$title" "$LOGO" # Pass all variables to "osascript" as args so that they are not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variables to break execution of the entire the AppleScript command.
 }
 
 displaynotification() { # $1: message $2: title
@@ -71,7 +86,16 @@ displaynotification() { # $1: message $2: title
     elif [[ -x "$hubcli" ]]; then
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
     else
-        runAsUser osascript -e "display notification \"$message\" with title \"$title\""
+        #runAsUser osascript -e "display notification \"$message\" with title \"$title\""
+        runAsUser osascript -e 'on run argv' -e 'display notification (text item 1 of argv) with title (text item 2 of argv)' -e 'end run' -- "$message" "$title"
+    # Pass all variables to "osascript" as args so that they are not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variables to break execution of the entire the AppleScript command.
+    fi
+}
+
+quitApp() { # $1: app name
+    if [[ -n "$1" ]]; then
+        runAsUser osascript -e 'on run argv' -e 'quit application (text item 1 of argv)' -e 'end run' -- "$1"
+        # Pass app name variables to "osascript" as arg so that it is not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variable to break execution of the entire the AppleScript command.
     fi
 }
 
@@ -326,7 +350,8 @@ checkRunningProcesses() {
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
                         printlog "telling app $x to quit"
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        #runAsUser osascript -e "tell app \"$x\" to quit"
+                        quitApp $x
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
@@ -351,7 +376,8 @@ checkRunningProcesses() {
                           BLOCKING_PROCESS_ACTION=kill
                         else
                           printlog "telling app $x to quit"
-                          runAsUser osascript -e "tell app \"$x\" to quit"
+                          #runAsUser osascript -e "tell app \"$x\" to quit"
+                          quitApp $x
                           # give the user a bit of time to quit apps
                           printlog "waiting 30 seconds for processes to quit"
                           sleep 30
@@ -370,7 +396,8 @@ checkRunningProcesses() {
                         fi
                       else
                         printlog "telling app $x to quit"
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        #runAsUser osascript -e "tell app \"$x\" to quit"
+                        quitApp $x
                         # give the user a bit of time to quit apps
                         printlog "waiting 30 seconds for processes to quit"
                         sleep 30
@@ -379,7 +406,8 @@ checkRunningProcesses() {
                     tell_user|tell_user_then_kill)
                       button=$(displaydialogContinue "Quit “$x” to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
                       printlog "telling app $x to quit"
-                      runAsUser osascript -e "tell app \"$x\" to quit"
+                      #runAsUser osascript -e "tell app \"$x\" to quit"
+                      quitApp $x
                       # give the user a bit of time to quit apps
                       printlog "waiting 30 seconds for processes to quit"
                       sleep 30
