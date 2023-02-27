@@ -156,7 +156,7 @@ valueFromJSON() { # Version 2023.2.26-1 - Copyright (c) 2023 Pico Mitchell - MIT
         -e 'parse(json); (i === 0 ? argv.shift() : (i === 1 && argv.pop())); break } catch (e) {} } if (out === undefined) throw "Failed to parse JSON."; argv.forEach(key => {' \
         -e 'out = (Array.isArray(out) ? (/^-?\d+$/.test(key) ? (key = +key, out[key < 0 ? (out.length + key) : key]) : (key === "=" ? out.length : undefined)) : (out instanceof' \
         -e 'Object ? out[key] : undefined)); if (out === undefined) throw "Failed to retrieve key/index: " + key }); return (out instanceof Object ? JSON.stringify(out, null, 2)' \
-        -e ': out) }' -- "$@" 2>&1 >&3)"; } 3>&1; [ "${1##* }" != '(-2700)' ] || { set -- "json_value ERROR${1#*Error}"; >&2 printf '%s\n' "${1% *}"; false; }
+        -e ': out) }' -- "$@" 2>&1 >&3)"; } 3>&1; [ "${1##* }" != '(-2700)' ] || { set -- "valueFromJSON ERROR${1#*Error}"; >&2 printf '%s\n' "${1% *}"; false; }
 }
 
 # will get the latest release download from a github repo
