@@ -643,8 +643,8 @@ installFromPKG() {
 
             printlog 'Extracting only "Distribution" XML file from package archive using "xar".' DEBUG
             mkdir -p $expandedPkg # Must create the temp folder manually since "xar -C" will not do that for us like "pkgutil --expand" does.
-            xar -x --exclude '[ABCEFGHIJKLMNOPQRSTUVWXYZacdefghjklmpqvwxyz]' -C $expandedPkg -f $archiveName
-            # The value passed to the "--exclude" option is interpreted as a POSIX regular expression, so pass a character class containing every letter OTHER than the letters contained in the word "Distribution" to exclude any and every other possible file other than "Distibution" file.
+            xar -x --exclude '[ABCEFGHIJKLMNOPQRSTUVWXYZacdefghjklmpqvwxyz0123456789_.-]' -C $expandedPkg -f $archiveName
+            # The value passed to the "--exclude" option is interpreted as a POSIX regular expression, so pass a character class containing every letter OTHER than the letters contained in the word "Distribution" as well as all digits and a few other common symbols in filenames to exclude every other possible file other than "Distibution" file.
             # While it could theoretically be possible that some filename may not be excluded using this character class, even if something other than just the "Distribution" XML file is extracted, this is still more efficient than extracting everything since at least the large "Payload" file will have been excluded.
         elif [[ -z $pkgContentNames ]]; then
             # BUT, in regards to using "xar", "man xar" states:
