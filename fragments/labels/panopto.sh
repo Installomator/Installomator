@@ -12,6 +12,7 @@ panopto)
         dscl . create /Users/panopto_upload dsAttrTypeNative:IsHidden 1
     fi
     downloadURL="http://$panoptoServer/$(curl -Ls http://$panoptoServer/ | grep cacheRoot | cut -d "'" -f 2 | awk -F '\\' '{ printf  $4 $5 $6 }' | awk -F 'x2f' '{ printf $2 "/" $3 "/" $4 }')/Software/Panopto%20Recorder.pkg?arch=None&useCustomBinary=True"
-    # While there is version information in the URL, it rarely directly matches the client that gets downloaded (major version only).
+    packageID="com.panopto.mac"
+    appNewVersion=$(curl -s "$downloadURL" | grep "Object moved to" | sed -e 's/.*Version\=\mac\%2f\(.*\)\&amp\;server.*/\1/')
     expectedTeamID="G7FR783UED"
     ;;
