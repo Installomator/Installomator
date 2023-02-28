@@ -100,6 +100,7 @@ cisdem-documentreader
 citrixworkspace
 clevershare2
 clickshare
+clickup
 clipy
 closeio
 cloudflarewarp
@@ -158,7 +159,6 @@ fantastical
 fastscripts
 favro
 fellow
-ferdi
 figma
 filemakerpro
 filezilla
@@ -330,6 +330,7 @@ mindmanager
 miro
 mist
 mist-cli
+mkuser
 mmhmm
 mobikinassistantforandroid
 mobiletolocal
@@ -412,7 +413,6 @@ pycharmce
 pymol
 qgis-pr
 r
-ramboxce
 rancherdesktop
 rectangle
 redeye
@@ -464,6 +464,7 @@ snagit2019
 snagit2020
 snagit2021
 snagit2022
+snagit2023
 snapgeneviewer
 sonicvisualiser
 sonobus
@@ -554,6 +555,7 @@ whatroute
 whatsapp
 wireshark
 wordservice
+wrikeformac
 wwdc
 xcreds
 xeroxphaser7800

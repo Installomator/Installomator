@@ -1,3 +1,20 @@
+## v10.4 beta
+
+- new labels:
+    - clickup (#896)
+    - mkuser (#909)
+    - snagit2023, snagit2022 (#911)
+    - wrikeformac (#901)
+- updated labels:
+    - 1passwordcli (#895)
+    - nudgesuite (#898, #900)
+    - snagit (#911)
+    - virtualbox (#904, #902)
+- deleted labels:
+    - ferdi (#580)
+    - ramboxce (#580)
+
+
 ## v10.3
 
 - new labels:
