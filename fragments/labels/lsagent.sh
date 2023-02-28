@@ -48,13 +48,14 @@ lsagent)
     if [[ -z $lsagentServer && -z $lsagentKey ]]; then
         cleanupAndExit 89 "This label requires more parameters: lsagentServer OR lsagentCloudKey, and maybe also lsagentPort, lsagentMode, and lsagentLanguage\nSee /Volumes/LsAgent/LsAgent-osx.app/Contents/MacOS/installbuilder.sh --help" ERROR
     fi
-    #CLIArguments=(--server $lsagentServer --port $lsagentPort --agentkey $lsagentKey --mode $lsagentMode --installer-language $lsagentLanguage)
-    if [[ -n $lsagentServer && -n $lsagentKey ]]; then
-        CLIArguments=(--server $lsagentServer --port $lsagentPort --agentkey $lsagentKey --mode $lsagentMode --installer-language $lsagentLanguage)
+    CLIArguments=( --mode $lsagentMode --installer-language $lsagentLanguage )
+
     if [[ -n $lsagentServer ]]; then
-        CLIArguments=(--server $lsagentServer --port $lsagentPort --mode $lsagentMode --installer-language $lsagentLanguage)
-    elif [[ -n $lsagentKey ]]; then
-        CLIArguments=(--agentkey $lsagentKey --mode $lsagentMode --installer-language $lsagentLanguage)
+        CLIArguments+=( --server $lsagentServer --port $lsagentPort )
+    fi
+
+    if [[ -n $lsagentKey ]]; then
+        CLIArguments+=( --agentkey $lsagentKey )
     fi
     expectedTeamID="65LX6K7CBA"
     ;;
