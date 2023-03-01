@@ -1,9 +1,7 @@
 panopto)
     name="Panopto"
     type="pkg"
-    if [ "$(who | grep console | cut -d ' ' -f 1)" = "_mbsetupuser" ] || [ -z "$(fdesetup list)" ]; then
-        cleanupAndExit 89 "This label cannot be installed when there are no user attached Secure Tokens, such as during a DEP/ASM/ABM enrolment into an MDM, as the package requires adding an account that could in-advertantly steal the first Token." ERROR
-    elif [ -z $panoptoServer ]; then
+    if [ -z $panoptoServer ]; then
         cleanupAndExit 89 "This label requires more parameters: panoptoServer=host.name.panopto.com, this will ensure the downloaded version is both current and supports your server." ERROR
     fi
     # The installer pkg will try to create this account and fail when it attempts to update the
@@ -19,6 +17,7 @@ panopto)
             fi
         done 
         dscl . -create $panoptoUser UniqueID $panoptoUID
+        dscl . -append $panoptoUser AuthenticationAuthority ';DisabledTags;SecureToken'
         dscl . -create $panoptoUser PrimaryGroupID 1
         dscl . -create $panoptoUser NFSHomeDirectory /private/var/panopto
         dscl . -create $panoptoUser UserShell /sbin/nologin
