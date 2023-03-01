@@ -20,10 +20,10 @@ panopto)
             fi
         done 
         dscl . -create $panoptoPath UniqueID $panoptoUID
-        dscl . -append /Users/$username PrimaryGroupID 1
-        dscl . -append /Users/$username NFSHomeDirectory /private/var/panopto
-        dscl . -append /Users/$username UserShell /sbin/nologin
-        dscl . -passwd /Users/$username this_password_is_disabled
+        dscl . -append $panoptoPath PrimaryGroupID 1
+        dscl . -append $panoptoPath NFSHomeDirectory /private/var/panopto
+        dscl . -append $panoptoPath UserShell /sbin/nologin
+        dscl . -passwd $panoptoPath this_password_is_disabled
         dscl . -append $panoptoPath dsAttrTypeNative:IsHidden 1
     # The package does do more, however the above covers what is skipped by mk_hidden_user.sh when
     #   the account already exists. Installomator may still require Full Disk Access, but should
