@@ -11,20 +11,19 @@ panopto)
     # However, the installer pkg will detect if the account has already been created, and use it,
     #   so manually creating it stops the installer from bothering the user or failing.
     # The following is based on what the package does, but should handle it better.
-    panoptoUser="panopto_upload"
-    panoptoPath="/Users/$panoptoUser"
-    if [ "$(dscl . read $panoptoPath 2>&1 | grep -c eDSRecordNotFound)" -gt 0 ]; then
+    panoptoUser="/Users/panopto_upload" # Including /Users/ path
+    if [ "$(dscl . read $panoptoUser 2>&1 | grep -c eDSRecordNotFound)" -gt 0 ]; then
         for ((panoptoUID = 401; panoptoUID < 500; panoptoUID++)); do
             if [ "$(dscl . -search /Users UniqueID $panoptoUID | wc -l)" -eq 0 ]; then
                 break  
             fi
         done 
-        dscl . -create $panoptoPath UniqueID $panoptoUID
-        dscl . -append $panoptoPath PrimaryGroupID 1
-        dscl . -append $panoptoPath NFSHomeDirectory /private/var/panopto
-        dscl . -append $panoptoPath UserShell /sbin/nologin
-        dscl . -passwd $panoptoPath this_password_is_disabled
-        dscl . -append $panoptoPath dsAttrTypeNative:IsHidden 1
+        dscl . -create $panoptoUser UniqueID $panoptoUID
+        dscl . -append $panoptoUser PrimaryGroupID 1
+        dscl . -append $panoptoUser NFSHomeDirectory /private/var/panopto
+        dscl . -append $panoptoUser UserShell /sbin/nologin
+        dscl . -passwd $panoptoUser this_password_is_disabled
+        dscl . -append $panoptoUser dsAttrTypeNative:IsHidden 1
     # The package does do more, however the above covers what is skipped by mk_hidden_user.sh when
     #   the account already exists. Installomator may still require Full Disk Access, but should
     #   inherit that permission from the calling process, which doesn't happen for mk_hidden_user.sh.
