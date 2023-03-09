@@ -53,9 +53,9 @@ displaydialog() { # $1: message $2: title
     title=${2:-"Installomator"}
     #runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
     runAsUser osascript -e '
-on run {dialogMessage, dialogTitle, dialogIconPath, dialogTimeoutSeconds as integer}
+on run {dialogMessage, dialogTitle, dialogIconFile as POSIX file, dialogTimeoutSeconds as integer}
     try
-        return (button returned of (display dialog dialogMessage with title dialogTitle buttons {"Not Now", "Quit and Update"} cancel button 1 default button 2 with icon (POSIX file dialogIconPath) giving up after dialogTimeoutSeconds))
+        return (button returned of (display dialog dialogMessage with title dialogTitle buttons {"Not Now", "Quit and Update"} cancel button 1 default button 2 with icon dialogIconFile giving up after dialogTimeoutSeconds))
     on error
         return "Not Now"
     end try
@@ -69,8 +69,8 @@ displaydialogContinue() { # $1: message $2: title
     title=${2:-"Installomator"}
     #runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
     runAsUser osascript -e '
-on run {dialogMessage, dialogTitle, dialogIconPath}
-    return (button returned of (display dialog dialogMessage with title dialogTitle buttons {"Quit and Update"} default button 1 with icon (POSIX file dialogIconPath)))
+on run {dialogMessage, dialogTitle, dialogIconFile as POSIX file}
+    return (button returned of (display dialog dialogMessage with title dialogTitle buttons {"Quit and Update"} default button 1 with icon dialogIconFile))
 end run
 ' -- "$message" "$title" "$LOGO" # Pass all variables to "osascript" as args so that they are not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variables to break execution of the entire the AppleScript command.
 }
