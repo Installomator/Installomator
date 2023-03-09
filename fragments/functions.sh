@@ -53,14 +53,14 @@ displaydialog() { # $1: message $2: title
     title=${2:-"Installomator"}
     #runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
     runAsUser osascript -e '
-on run argv
+on run {dialogMessage, dialogTitle, dialogIconPath, dialogTimeoutSeconds as integer}
     try
-        return (button returned of (display dialog (text item 1 of argv) with title (text item 2 of argv) buttons {"Not Now", "Quit and Update"} cancel button 1 default button 2 with icon (POSIX file (text item 3 of argv))))
+        return (button returned of (display dialog dialogMessage with title dialogTitle buttons {"Not Now", "Quit and Update"} cancel button 1 default button 2 with icon (POSIX file dialogIconPath) giving up after dialogTimeoutSeconds))
     on error
         return "Not Now"
     end try
 end run
-' -- "$message" "$title" "$LOGO" # Pass all variables to "osascript" as args so that they are not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variables to break execution of the entire the AppleScript command.
+' -- "$message" "$title" "$LOGO" "$PROMPT_TIMEOUT" # Pass all variables to "osascript" as args so that they are not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variables to break execution of the entire the AppleScript command.
     # NOTE: The "Not Now" button is set to the "cancel button" so that the escape key can be properly used to dismiss the alert. When an AppleScript alert is canceled, it throws an error which is caught in the "try" block and in the "on error" block the "Not Now" string is manually returned the same as if they had clicked the button.
 }
 
@@ -69,8 +69,8 @@ displaydialogContinue() { # $1: message $2: title
     title=${2:-"Installomator"}
     #runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
     runAsUser osascript -e '
-on run argv
-    return (button returned of (display dialog (text item 1 of argv) with title (text item 2 of argv) buttons {"Quit and Update"} default button 1 with icon (POSIX file (text item 3 of argv))))
+on run {dialogMessage, dialogTitle, dialogIconPath}
+    return (button returned of (display dialog dialogMessage with title dialogTitle buttons {"Quit and Update"} default button 1 with icon (POSIX file dialogIconPath)))
 end run
 ' -- "$message" "$title" "$LOGO" # Pass all variables to "osascript" as args so that they are not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variables to break execution of the entire the AppleScript command.
 }
@@ -87,14 +87,14 @@ displaynotification() { # $1: message $2: title
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
     else
         #runAsUser osascript -e "display notification \"$message\" with title \"$title\""
-        runAsUser osascript -e 'on run argv' -e 'display notification (text item 1 of argv) with title (text item 2 of argv)' -e 'end run' -- "$message" "$title"
+        runAsUser osascript -e 'on run {notificationMessage, notificationTitle}' -e 'display notification notificationMessage with title notificationTitle' -e 'end run' -- "$message" "$title"
     # Pass all variables to "osascript" as args so that they are not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variables to break execution of the entire the AppleScript command.
     fi
 }
 
 quitApp() { # $1: app name
     if [[ -n "$1" ]]; then
-        runAsUser osascript -e 'on run argv' -e 'quit application (text item 1 of argv)' -e 'end run' -- "$1"
+        runAsUser osascript -e 'on run {appName}' -e 'quit application appName' -e 'end run' -- "$1"
         # Pass app name variables to "osascript" as arg so that it is not expanded by the shell and interpreted as AppleScript code which could cause double quotes or other special characters within the variable to break execution of the entire the AppleScript command.
     fi
 }
