@@ -178,7 +178,11 @@ if [[ -z $blockingProcesses ]]; then
 fi
 
 # MARK: determine tmp dir
-if [ "$DEBUG" -eq 1 ]; then
+if [ -n $DOWNLOAD_DIRECTORY ];then 
+    # user defined a download directory
+    tmpDir="$DOWNLOAD_DIRECTORY"
+    createDownloadDirectory
+elif [ "$DEBUG" -eq 1 ]; then
     # for debugging use script dir as working directory
     tmpDir=$(dirname "$0")
 else

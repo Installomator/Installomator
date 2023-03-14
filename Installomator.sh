@@ -169,6 +169,7 @@ DIALOG_LIST_ITEM_NAME=""
 NOTIFY_DIALOG=0
 # If this variable is set to 1, then we will check for installed Swift Dialog v. 2 or later, and use that for notification
 
+DOWNLOAD_DIRECTORY=""
 
 # NOTE: How labels work
 
@@ -334,7 +335,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="11.0beta1"
-VERSIONDATE="2023-02-10"
+VERSIONDATE="2023-03-13"
 
 # MARK: Functions
 
@@ -650,13 +651,6 @@ getAppVersion() {
     fi
 }
 
-quitApp() { # $1 = app name
-    name=$1
-    printlog "telling app $name to quit"
-    runAsUser osascript -e "tell app \"$name\" to quit"
-    appClosed=1
-}
-
 checkRunningProcesses() {
     # don't check in DEBUG mode 1
     if [[ $DEBUG -eq 1 ]]; then
@@ -670,10 +664,12 @@ checkRunningProcesses() {
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
-                
+                appClosed=1
+
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
-                        quitApp $x
+                        printlog "telling app $x to quit"
+                        runAsUser osascript -e "tell app \"$x\" to quit"
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
@@ -687,7 +683,6 @@ checkRunningProcesses() {
                       printlog "killing process $x"
                       pkill $x
                       sleep 5
-                      appClosed=1
                       ;;
                     prompt_user|prompt_user_then_kill)
                       button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
@@ -708,7 +703,8 @@ checkRunningProcesses() {
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
                         else
-                          quitApp $x
+                          printlog "telling app $x to quit"
+                          runAsUser osascript -e "tell app \"$x\" to quit"
                           # give the user a bit of time to quit apps
                           printlog "waiting 30 seconds for processes to quit"
                           sleep 30
@@ -726,7 +722,8 @@ checkRunningProcesses() {
                           BLOCKING_PROCESS_ACTION=tell_user
                         fi
                       else
-                        quitApp $x
+                        printlog "telling app $x to quit"
+                        runAsUser osascript -e "tell app \"$x\" to quit"
                         # give the user a bit of time to quit apps
                         printlog "waiting 30 seconds for processes to quit"
                         sleep 30
@@ -734,7 +731,8 @@ checkRunningProcesses() {
                       ;;
                     tell_user|tell_user_then_kill)
                       button=$(displaydialogContinue "Quit “$x” to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
-                      quitApp $x
+                      printlog "telling app $x to quit"
+                      runAsUser osascript -e "tell app \"$x\" to quit"
                       # give the user a bit of time to quit apps
                       printlog "waiting 30 seconds for processes to quit"
                       sleep 30
@@ -818,7 +816,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
     teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
     deduplicatelogs "$appVerify"
 
-    if [[ $appVerifyStatus -ne 0 || !($appVerify =~ "source=Notarized Developer ID") ]] ; then
+    if [[ $appVerifyStatus -ne 0 ]] ; then
     #if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
         cleanupAndExit 4 "Error verifying $appPath error:\n$logoutput" ERROR
     fi
@@ -1400,6 +1398,14 @@ updateDialog() {
     fi
 }
 
+createDownloadDirectory() {
+    # user configured a working directory, so we verify existence and permissions
+    if [ ! -d "$tmpDir" ]; then
+        if ! mkdir -p "$tmpDir"; then
+            cleanupAndExit 26 "Cannot create directory $tmpDir" ERROR
+        fi
+    fi
+}
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
@@ -2851,7 +2857,7 @@ egnytewebedit)
     appName="Egnyte WebEdit.app"
     blockingProcesses=( NONE )
     ;;
-
+    
 element)
     name="Element"
     type="dmg"
@@ -3124,7 +3130,7 @@ flux)
     downloadURL="https://justgetflux.com/mac/Flux.zip"
     expectedTeamID="VZKSA7H9J9"
     ;;
-
+    
 flycut)
     name="Flycut"
     type="zip"
@@ -3272,7 +3278,7 @@ googledrivefilestream)
        packageID="com.google.drivefs.arm64"
     elif [[ $(arch) == "i386" ]]; then
        packageID="com.google.drivefs.x86_64"
-    fi
+    fi    
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg" # downloadURL="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
     blockingProcesses=( "Google Docs" "Google Drive" "Google Sheets" "Google Slides" )
     appName="Google Drive.app"
@@ -3909,7 +3915,7 @@ keybase)
         downloadURL=$(curl -s https://keybase.io/docs/the_app/install_macos | grep data-target | cut -d '"' -f2 | grep -v arm64 )
     fi
     expectedTeamID="99229SGT5K"
-    ;;
+    ;; 
 keyboardmaestro)
     # credit: Søren Theilgaard (@theilgaard)
     name="Keyboard Maestro"
@@ -4021,7 +4027,7 @@ linear)
     appName="Linear.app"
     blockingProcesses=( "Linear" )
     ;;
-
+    
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -4078,7 +4084,7 @@ lowprofile)
     ;;
 lsagent)
     name="LsAgent-osx"
-    #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version.
+    #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version. 
     #Download: https://www.lansweeper.com/download/lsagent/
     #Icon: https://www.lansweeper.com/wp-content/uploads/2018/08/LsAgent-Scanning-Agent.png
     # Not tested with "agentkey", but expecting server and port to be not needed if used.
@@ -4089,7 +4095,7 @@ lsagent)
 #                                              Default: none
 #                                              Allowed: none minimal minimalWithDialogs
 #  --optionfile <optionfile>                   Installation option file
-#                                              Default:
+#                                              Default: 
 #  --debuglevel <debuglevel>                   Debug information level of verbosity
 #                                              Default: 2
 #                                              Allowed: 0 1 2 3 4
@@ -4097,18 +4103,18 @@ lsagent)
 #                                              Default: osx
 #                                              Allowed: osx text unattended
 #  --debugtrace <debugtrace>                   Debug filename
-#                                              Default:
+#                                              Default: 
 #  --installer-language <installer-language>   Language selection
 #                                              Default: en
 #                                              Allowed: sq ar es_AR az eu pt_BR bg ca hr cs da nl en et fi fr de el he hu id it ja kk ko lv lt no fa pl pt ro ru sr zh_CN sk sl es sv th zh_TW tr tk uk va vi cy
 #  --prefix <prefix>                           Installation Directory
 #                                              Default: /Applications/LansweeperAgent
 #  --server <server>                           FQDN, NetBios or IP of the Scanning Server
-#                                              Default:
+#                                              Default: 
 #  --port <port>                               Listening Port on the Scanning Server
 #                                              Default: 9524
 #  --agentkey <agentkey>                       Cloud Relay Authentication Key (Optional)
-#                                              Default:
+#                                              Default: 
     type="dmg"
     downloadURL="https://content.lansweeper.com/lsagent-mac/"
     appNewVersion="$(curl -fsIL "$downloadURL" | grep -i "location" | cut -w -f2 | cut -d "/" -f5-6 | tr "/" ".")"
@@ -4562,7 +4568,7 @@ microsoftteams)
         "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" --list
     fi
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps TEAM01 ) # --wait 600
+    updateToolArguments=( --install --apps TEAM01 ) # --wait 600 
     ;;
 microsoftvisualstudiocode|\
 visualstudiocode)
@@ -5108,7 +5114,7 @@ parsec)
     expectedTeamID="Y9MY52XZDB"
     ;;
 pcoipclient)
-    # Note that the sed match removes 'pcoip-client_' and '.dmg'
+    # Note that the sed match removes 'pcoip-client_' and '.dmg' 
     name="PCoIPClient"
     type="dmg"
     downloadURL="https://dl.teradici.com/DeAdBCiUYInHcSTy/pcoip-client/raw/names/pcoip-client-dmg/versions/latest/pcoip-client_latest.dmg"
@@ -5546,7 +5552,7 @@ secretive)
     appNewVersion=$(versionFromGit maxgoedjen secretive)
     expectedTeamID="Z72PRUAWF6"
     ;;
-
+    
 selfcontrol)
     name="SelfControl"
     type="zip"
@@ -6854,7 +6860,11 @@ if [[ -z $blockingProcesses ]]; then
 fi
 
 # MARK: determine tmp dir
-if [ "$DEBUG" -eq 1 ]; then
+if [ -n $DOWNLOAD_DIRECTORY ];then 
+    # user defined a download directory
+    tmpDir="$DOWNLOAD_DIRECTORY"
+    createDownloadDirectory
+elif [ "$DEBUG" -eq 1 ]; then
     # for debugging use script dir as working directory
     tmpDir=$(dirname "$0")
 else

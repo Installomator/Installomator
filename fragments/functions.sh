@@ -1059,3 +1059,9 @@ updateDialog() {
     fi
 }
 
+createDownloadDirectory() {
+    # user configured a working directory, so we verify existence and permissions
+    if [ ! -d "$tmpDir" ] && if ! mkdir -p "$tmpDir"; then
+        cleanupAndExit 26 "Cannot create directory $tmpDir" ERROR
+    fi
+}

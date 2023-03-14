@@ -169,6 +169,8 @@ DIALOG_LIST_ITEM_NAME=""
 NOTIFY_DIALOG=0
 # If this variable is set to 1, then we will check for installed Swift Dialog v. 2 or later, and use that for notification
 
+DOWNLOAD_DIRECTORY=""
+# Installomator will use this directory for downloads
 
 # NOTE: How labels work
 
