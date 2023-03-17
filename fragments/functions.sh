@@ -63,10 +63,13 @@ displaydialogContinue() { # $1: message $2: title
 displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
+    swiftDialog="/usr/local/bin/dialog"
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
     hubcli="/usr/local/bin/hubcli"
 
-    if [[ -x "$manageaction" ]]; then
+    if [[ -x "$swiftDialog" ]]; then
+         runAsUser "$swiftDialog" --notification --title "$title" --message "$message"
+    elif [[ -x "$manageaction" ]]; then
          "$manageaction" -message "$message" -title "$title"
     elif [[ -x "$hubcli" ]]; then
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
