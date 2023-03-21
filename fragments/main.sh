@@ -178,10 +178,14 @@ if [[ -n $appNewVersion ]]; then
         if [[ $DEBUG -ne 1 ]]; then
             printlog "There is no newer version available."
             if [[ $INSTALL != "force" ]]; then
-                message="$name, version $appNewVersion, is  the latest version."
+                message="$name, version $appNewVersion, is the latest version."
                 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
                     printlog "notifying"
                     displaynotification "$message" "No update for $name!"
+                fi
+                if [[ $DIALOG_CMD_FILE != "" ]]; then
+                    updateDialog "complete" "Latest version already installed..."
+                    sleep 2
                 fi
                 cleanupAndExit 0 "No newer version." REQ
             fi

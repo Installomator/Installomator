@@ -1,8 +1,228 @@
+## v10.4 beta
+
+- new labels:
+    - clickup (#896)
+    - mkuser (#909)
+    - snagit2023, snagit2022 (#911)
+    - wrikeformac (#901)
+- updated labels:
+    - 1passwordcli (#895)
+    - nudgesuite (#898, #900)
+    - snagit (#911)
+    - virtualbox (#904, #902)
+- deleted labels:
+    - ferdi (#580)
+    - ramboxce (#580)
+
+
+## v10.3
+
+- new labels:
+    - aftermath (#816)
+    - backgroundmusic (#894)
+    - chromeremotedesktop (#840)
+    - cloudflarewarp (#839)
+    - druvainsync (#809, #868)
+    - firefoxdeveloperedition (#838)
+    - island (#891)
+    - jdk17 (#875)
+    - jdk19 (#880)
+    - jumpdesktop (#855)
+    - microsoftonedrive-rollingout (#826)
+    - mysqlworkbenchce (#856)
+    - nodejs (#848)
+    - pgadmin4 (#851)
+    - scrollreverser (#830)
+    - selfcontrol (#857)
+    - synologyactivebackupforbusinessagent (#837)
+    - vonagebusiness (#865)
+    - yubicoauthenticator (#842)
+- updated labels:
+    - 1password8 (#841)
+    - adobeacrobatprodc (#866, #867)
+    - alfred (#881)
+    - drawio (#889)
+    - firefoxpkg_intl (#893, #890)
+    - googleadseditor (#854)
+    - jdk18 (#859, #874)
+    - keybase (#861)
+    - loom (#847, #853)
+    - macports (#879, #882)
+    - microsoftoffice365
+    - musescore (#872)
+    - nudge, nudgesuite (#886, #887)
+    - openvpnconnectv3 (#845, #846, #852, #878)
+    - tencentmeeting (#849)
+    - ultimakercura (#884)
+- deleted labels:
+    - eraseinstall.sh
+
+
+## v10.2
+
+- first install script fixes (#818)
+- minor text fix (#832)
+- new labels:
+    - archimate (#814)
+    - betterdisplay (#813)
+    - beyondcomparepro (#820)
+    - camunda (#815)
+    - connectfonts (#824)
+    - gitkraken (#819)
+    - hmavpn (#604)
+    - lsagent (#793)
+    - nessusagent (#827)
+    - pcoipclient (#723)
+    - pingplotter (#597)
+    - popsql (#825)
+    - renew-noagent (#821)
+    - renew (#821)
+    - scrollreverser (#830)
+- updated labels:
+    - adobereaderdc-install (#807)
+    - anydesk (#715, #786, #800)
+    - audacity (#829)
+    - gimp (#798, #799, #802)
+    - jabradirect (#804)
+    - keybase (#831)
+    - microsoftteams (#803)
+    - openvpnconnectv3 (#784, #796, #801)
+    - rstudio (#822, #823)
+    - teamviewer (#805)
+    - vagrant (#817)
+    - xquartz (#828)
+
+## v10.1
+
+- updated Jamf/Dialog scripts icon handling (#778)
+- Readme Updates (#744)
+- new labels:
+    - amazoncorretto11jdk (#721)
+    - amazoncorretto17jdk (#721)
+    - bbeditpkg (#720)
+    - boop (#781)
+    - camtasia2021, camtasia2022 (#730)
+    - jamfcpr (#753)
+    - jetbrainsrider
+    - lgcalibrationstudio (#763)
+    - mendeleyreferencemanager (#713)
+    - microsoftofficefactoryreset (#751)
+    - microsoftofficeremoval (#755)
+    - mist-cli (#733)
+    - mist (#732)
+    - mobiletolocal (#752)
+    - netiquette (#770)
+    - todoist (#769)
+    - transfer (#773)
+    - vpntracker365 (#760)
+    - zerotier (#785)
+
+- updated labels:
+    - 1password8 (#759)
+    - amazoncorretto8jdk (#721)
+    - camtasia (#730)
+    - citrixworkspace (#731)
+    - code42 (#766)
+    - drawio (#725)
+    - duodevicehealth (#761)
+    - idrive (#726)
+    - idrivethin (#727)
+    - macfuse (#714)
+    - microsoftazuredatastudio (#788)
+    - nudge (#754)
+    - prism9 (#746)
+    - skype (#762)
+    - synologydriveclient (#789)
+    - ultimakercura (#740)
+
+
+## v10
+
+- updates to MDM sample scripts (#738)
+- updates to Swift Dialog integration (#717)
+- documentation updates (#711)
+
+And everything from the betas ([beta1](https://github.com/Installomator/Installomator/releases/tag/v10beta1), [beta2](https://github.com/Installomator/Installomator/releases/tag/v10beta2), [beta3](https://github.com/Installomator/Installomator/releases/tag/v10beta3))
+
+- new labels:
+    - ibmnotifier (#716)
+    - ipvisionconnect (#749)
+    - logitechoptionsplus (#719)
+    - lucidlink (#722)
+    - mactex (#685)
+    - onscreencontrol (#581)
+    - projectplace (#688)
+    - subethaedit (#728)
+    - sublimemerge (#729)
+    - venturablocker (#712)
+    - vysor (#710)
+
+- updated labels:
+    - googleadseditor (#739)
+    - openvpnconnectv3 (#750)
+    - tunnelblick (#618)
+
+
+## v10beta3
+
+- option to add item to dock if dockutil is installed (#701 requires dockutil https://github.com/kcrawford/dockutil )
+- further improvements to GitHub downloads (#691)
+- updated user dialog when app is already on the latest version (#658)
+
+Plus everything from beta1 and beta2.
+
+- new labels:
+    - adobeacrobatprodc (#707)
+    - adobereaderdc-install (#707)
+    - archiwareb2go (#625, #707)
+    - archiwarepst (#624)
+    - bitrix24 (#661)
+    - charles (#670)
+    - chronoagent (#617)
+    - chronosync (#616)
+    - cytoscape (#689)
+    - egnytecore (#655)
+    - fellow (#599)
+    - filemakerpro (#609)
+    - fujifilmwebcam (#598)
+    - gfxcardstatus (#690)
+    - horos (#610)
+    - inetclearreportsdesigner (#601)
+    - jdk18 (#608)
+    - latexit (#684)
+    - nudgesuite (#633)
+    - origin (#662)
+    - parallelsrasclient (#607)
+    - polylens (#671)
+    - splashtopbusiness (#660)
+    - tailscale (#620)
+    - zoomoutlookplugin (#656)
+    - zotero (#634)
+    - zulujdk18 (#612)
+
+- updated labels:
+    - acroniscyberprotectconnectagent (#678)
+    - adobecreativeclouddesktop (#687)
+    - adobereaderdc-update (#707)
+    - audacity (#708)
+    - duckduckgo (#704)
+    - libreoffice (#605)
+    - nudge
+    - obs (#692)
+    - r (#702)
+    - rstudio (#702)
+    - screamingfrogseospider (#665)
+    - vlc (#705, #606)
+    - xcreds
+
+
+
 ## v10beta2
 
 - fixed problem with GitHub labels (#659)
 - bz2 archive support (#659)
 - fixed WorkspaceOne support (#653)
+- updated how `aapNewVersion` is determined (#680)
 
 Plus everything from v10beta1
 
