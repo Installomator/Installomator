@@ -1,7 +1,8 @@
 crashplansmb)
-    name="Code42"
+    name="CrashPlan"
     type="pkgInDmg"
-    pkgName="Install Crashplan for Small Business.pkg"
+    pkgName="Install Crashplan.pkg"
     downloadURL="https://download.crashplan.com/installs/agent/latest-smb-mac.dmg"
-    expectedTeamID="9YV9435DHD"
+    expectedTeamID="UGHXR79U6M"
+    blockingProcesses=( NONE )
     ;;
