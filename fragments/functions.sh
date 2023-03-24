@@ -65,12 +65,22 @@ displaynotification() { # $1: message $2: title
     title=${2:-"Notification"}
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
     hubcli="/usr/local/bin/hubcli"
+    swiftdialog="/usr/local/bin/dialog"
 
-    if [[ -x "$manageaction" ]]; then
+    if [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 && "$NOTIFY_DIALOG" -eq 1 ]]; then
+        printlog "Swift Dialog notification override" INFO
+        "$swiftdialog" --notification --title "$title" --message "$message"
+    elif [[ -x "$manageaction" ]]; then
+        printlog "Jamf notification" INFO
          "$manageaction" -message "$message" -title "$title"
     elif [[ -x "$hubcli" ]]; then
+        printlog "AirWatch Workspace ONE notification" INFO
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
+    elif [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "Swift Dialog notification" INFO
+         "$swiftdialog" --notification --title "$title" --message "$message"
     else
+        printlog "AppleScript notification fallback" INFO
         runAsUser osascript -e "display notification \"$message\" with title \"$title\""
     fi
 }
