@@ -39,6 +39,7 @@ applesfmono
 applesfpro
 applesfsymbols
 aquaskk
+arcbrowser
 archimate
 archiwareb2go
 archiwarepst
