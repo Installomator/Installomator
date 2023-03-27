@@ -158,7 +158,7 @@ DIALOG_LIST_ITEM_NAME=""
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
 
 # Show Notifications with Swift Dialog
-NOTIFY_DIALOG=0
+DIALOG_NOTIFICATIONS=0
 # If this variable is set to 1, then we will check for installed Swift Dialog v. 2 or later, and use that for notification
 
 
