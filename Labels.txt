@@ -296,6 +296,7 @@ marathon2
 marathoninfinity
 masv
 mattermost
+meetingbar
 mendeleyreferencemanager
 menumeters
 merlinproject
