@@ -13,8 +13,8 @@ adobeconnect
 adobecreativeclouddesktop
 adobereaderdc
 adobereaderdc-install
-adobereaderdc-install
 adobereaderdc-update
+aftermath
 aircall
 airserver
 airtame
@@ -39,6 +39,7 @@ applesfmono
 applesfpro
 applesfsymbols
 aquaskk
+archimate
 archiwareb2go
 archiwarepst
 arq7
@@ -56,13 +57,16 @@ awscli2
 awsvpnclient
 axurerp10
 azuredatastudio
+backgroundmusic
 balenaetcher
 balsamiqwireframes
 bartender
 basecamp3
 bbedit
 bbeditpkg
+betterdisplay
 bettertouchtool
+beyondcomparepro
 bitrix24
 bitwarden
 blender
@@ -84,18 +88,22 @@ camtasia2019
 camtasia2020
 camtasia2021
 camtasia2022
+camunda
 canva
 carboncopycloner
 charles
 chatwork
+chromeremotedesktop
 chronoagent
 chronosync
 cisdem-documentreader
 citrixworkspace
 clevershare2
 clickshare
+clickup
 clipy
 closeio
+cloudflarewarp
 cloudya
 clue
 cluefull
@@ -104,6 +112,7 @@ coconutbattery
 code42
 coderunner
 colourcontrastanalyser
+connectfonts
 cormorant
 craftmanager
 craftmanagerforsketch
@@ -131,6 +140,7 @@ dockutil
 drawio
 drift
 dropbox
+druvainsync
 duckduckgo
 duodevicehealth
 dynalist
@@ -140,7 +150,6 @@ egnyte
 egnytecore
 egnytewebedit
 element
-eraseinstall
 eshareosx
 etrecheck
 evernote
@@ -150,7 +159,6 @@ fantastical
 fastscripts
 favro
 fellow
-ferdi
 figma
 filemakerpro
 filezilla
@@ -158,6 +166,7 @@ findanyfile
 firefox
 firefox_da
 firefox_intl
+firefoxdeveloperedition
 firefoxesr
 firefoxesr_intl
 firefoxesrpkg
@@ -174,6 +183,7 @@ fujifilmwebcam
 gfxcardstatus
 gimp
 githubdesktop
+gitkraken
 golang
 googleadseditor
 googlechrome
@@ -196,6 +206,7 @@ gyazogif
 hancock
 handbrake
 hazel
+hmavpn
 horos
 houdahspot
 hpeasyadmin
@@ -218,6 +229,7 @@ installomator_theile
 intellijideace
 ipswupdater
 ipvisionconnect
+island
 istatmenus
 iterm2
 itsycal
@@ -228,7 +240,9 @@ jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jdk17
 jdk18
+jdk19
 jetbrainsclion
 jetbrainsdatagrip
 jetbrainsintellijidea
@@ -240,6 +254,7 @@ jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+jumpdesktop
 kap
 karabinerelements
 keepassxc
@@ -265,6 +280,7 @@ logitechoptionsplus
 logseq
 loom
 lowprofile
+lsagent
 lucidlink
 lucifer
 lulu
@@ -299,6 +315,7 @@ microsoftofficebusinesspro
 microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
+microsoftonedrive-rollingout
 microsoftonenote
 microsoftoutlook
 microsoftpowerpoint
@@ -313,6 +330,7 @@ mindmanager
 miro
 mist
 mist-cli
+mkuser
 mmhmm
 mobikinassistantforandroid
 mobiletolocal
@@ -326,11 +344,14 @@ montereyblocker
 mowgliiitsycal
 musescore
 muzzle
+mysqlworkbenchce
 nanosaur
+nessusagent
 netiquette
 netnewswire
 netspot
 nextcloud
+nodejs
 nomad
 nomadlogin
 nordlayer
@@ -364,14 +385,18 @@ pandoc
 parallelsrasclient
 paretosecurity
 parsec
+pcoipclient
 pdfsam
 perimeter81
+pgadmin4
 pika
+pingplotter
 pitch
 plantronicshub
 platypus
 plisteditpro
 polylens
+popsql
 postman
 prism9
 pritunl
@@ -388,7 +413,6 @@ pycharmce
 pymol
 qgis-pr
 r
-ramboxce
 rancherdesktop
 rectangle
 redeye
@@ -397,6 +421,8 @@ remotedesktopmanagerenterprise
 remotedesktopmanagerfree
 remotix
 remotixagent
+renew
+renew-noagent
 resiliosynchome
 retrobatch
 ricohpsprinters
@@ -414,8 +440,10 @@ scaleft
 screamingfrogseospider
 screencloudplayer
 screenflick
+scrollreverser
 sdnotary
 secretive
+selfcontrol
 sequelpro
 sfsymbols
 shield
@@ -436,6 +464,7 @@ snagit2019
 snagit2020
 snagit2021
 snagit2022
+snagit2023
 snapgeneviewer
 sonicvisualiser
 sonobus
@@ -460,6 +489,7 @@ suspiciouspackage
 swiftdialog
 swiftruntimeforcommandlinetools
 sync
+synologyactivebackupforbusinessagent
 synologyassistant
 synologydriveclient
 tableaudesktop
@@ -511,6 +541,7 @@ visualstudiocode
 vivaldi
 vlc
 vmwarehorizonclient
+vonagebusiness
 vpntracker365
 vscodium
 vysor
@@ -524,6 +555,7 @@ whatroute
 whatsapp
 wireshark
 wordservice
+wrikeformac
 wwdc
 xcreds
 xeroxphaser7800
@@ -532,6 +564,7 @@ xink
 xmenu
 xquartz
 yed
+yubicoauthenticator
 yubikeymanagerqt
 zappy
 zeplin

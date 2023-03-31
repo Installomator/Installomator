@@ -1,3 +1,97 @@
+## v10.4 beta
+
+- new labels:
+    - clickup (#896)
+    - mkuser (#909)
+    - snagit2023, snagit2022 (#911)
+    - wrikeformac (#901)
+- updated labels:
+    - 1passwordcli (#895)
+    - nudgesuite (#898, #900)
+    - snagit (#911)
+    - virtualbox (#904, #902)
+- deleted labels:
+    - ferdi (#580)
+    - ramboxce (#580)
+
+
+## v10.3
+
+- new labels:
+    - aftermath (#816)
+    - backgroundmusic (#894)
+    - chromeremotedesktop (#840)
+    - cloudflarewarp (#839)
+    - druvainsync (#809, #868)
+    - firefoxdeveloperedition (#838)
+    - island (#891)
+    - jdk17 (#875)
+    - jdk19 (#880)
+    - jumpdesktop (#855)
+    - microsoftonedrive-rollingout (#826)
+    - mysqlworkbenchce (#856)
+    - nodejs (#848)
+    - pgadmin4 (#851)
+    - scrollreverser (#830)
+    - selfcontrol (#857)
+    - synologyactivebackupforbusinessagent (#837)
+    - vonagebusiness (#865)
+    - yubicoauthenticator (#842)
+- updated labels:
+    - 1password8 (#841)
+    - adobeacrobatprodc (#866, #867)
+    - alfred (#881)
+    - drawio (#889)
+    - firefoxpkg_intl (#893, #890)
+    - googleadseditor (#854)
+    - jdk18 (#859, #874)
+    - keybase (#861)
+    - loom (#847, #853)
+    - macports (#879, #882)
+    - microsoftoffice365
+    - musescore (#872)
+    - nudge, nudgesuite (#886, #887)
+    - openvpnconnectv3 (#845, #846, #852, #878)
+    - tencentmeeting (#849)
+    - ultimakercura (#884)
+- deleted labels:
+    - eraseinstall.sh
+
+
+## v10.2
+
+- first install script fixes (#818)
+- minor text fix (#832)
+- new labels:
+    - archimate (#814)
+    - betterdisplay (#813)
+    - beyondcomparepro (#820)
+    - camunda (#815)
+    - connectfonts (#824)
+    - gitkraken (#819)
+    - hmavpn (#604)
+    - lsagent (#793)
+    - nessusagent (#827)
+    - pcoipclient (#723)
+    - pingplotter (#597)
+    - popsql (#825)
+    - renew-noagent (#821)
+    - renew (#821)
+    - scrollreverser (#830)
+- updated labels:
+    - adobereaderdc-install (#807)
+    - anydesk (#715, #786, #800)
+    - audacity (#829)
+    - gimp (#798, #799, #802)
+    - jabradirect (#804)
+    - keybase (#831)
+    - microsoftteams (#803)
+    - openvpnconnectv3 (#784, #796, #801)
+    - rstudio (#822, #823)
+    - teamviewer (#805)
+    - vagrant (#817)
+    - xquartz (#828)
+
 ## v10.1
 
 - updated Jamf/Dialog scripts icon handling (#778)
