@@ -143,8 +143,8 @@ dropbox
 druvainsync
 duckduckgo
 duodevicehealth
-dynalist
 dymoconnectdesktop
+dynalist
 easeusdatarecoverywizard
 easyfind
 egnyte
@@ -341,7 +341,7 @@ mochatn3270
 mochatn3812
 mochatn5250
 mongodbcompass
-montereyblocker
+monitorcontrol
 mowgliiitsycal
 musescore
 muzzle

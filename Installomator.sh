@@ -323,7 +323,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.4beta"
-VERSIONDATE="2023-03-16"
+VERSIONDATE="2023-04-12"
 
 # MARK: Functions
 
@@ -2779,7 +2779,6 @@ duodevicehealth)
 dymoconnectdesktop)
     name="DYMO Connect"
     type="pkg"
-    packageID="com.dymo.dymo-connect"
     downloadURL=$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.dymo.com/compatibility-chart.html" | grep -oE 'https?://[^"]+\.pkg' | sort -rV | head -n 1| sort -rV | head -n 1)
     appNewVersion=$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.dymo.com/compatibility-chart.html" | grep -oE 'https?://[^"]+\.pkg' | awk -F/ '{print $NF}' | sed 's/DCDMac\([0-9\.]*\)\.pkg/\1.pkg/' | cut -d"." -f1-4 | sort -rV | head -n 1)
     expectedTeamID="N3S6676K3E"
@@ -3587,7 +3586,8 @@ jabradirect)
     # packageID="com.jabra.directonline"
     versionKey="CFBundleVersion"
     downloadURL="https://jabraxpressonlineprdstor.blob.core.windows.net/jdo/JabraDirectSetup.dmg"
-    appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -oe "Release version:.*[0-9.]*<" | head -1 | cut -d ">" -f2 | cut -d "<" -f1 | sed 's/ //g')
+    #appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -oe "Release version:.*[0-9.]*<" | head -1 | cut -d ">" -f2 | cut -d "<" -f1 | sed 's/ //g')
+    appNewVersion=$(curl -fs "https://jabraexpressonlinejdo.jabra.com/jdo/jdo.json" | grep -i MacVersion | cut -d '"' -f4)
     expectedTeamID="55LV32M29R"
     ;;
 jamfconnect)
@@ -4028,15 +4028,14 @@ logseq)
     expectedTeamID="3K44EUN829"
     ;;
 loom)
-    # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
     name="Loom"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /arm64/ && /dmg/ {print $3}')
+        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/url/ && /arm64/ && /dmg/ {print $3}')
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && ! /arm64/ && /dmg/ {print $3}')
+        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/url/ && ! /arm64/ && /dmg/ {print $3}')
     fi
-    appNewVersion=$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/version/ {print $2}' )
+    appNewVersion=$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/version/ {print $2}' )
     expectedTeamID="QGD2ZPXZZG"
     ;;
 lowprofile)
@@ -4723,7 +4722,13 @@ mongodbcompass)
     appNewVersion="$(versionFromGit mongodb-js compass)"
     expectedTeamID="4XWMY46275"
     ;;
-montereyblocker)
+monitorcontrol)
+    name="MonitorControl"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit MonitorControl MonitorControl)"
+    appNewVersion="$(versionFromGit MonitorControl MonitorControl)"
+    expectedTeamID="CYC8C8R4K9"
+    ;;montereyblocker)
     name="montereyblocker"
     type="pkg"
     packageID="dk.envo-it.montereyblocker"
@@ -6373,11 +6378,11 @@ whatsapp)
 wireshark)
     name="Wireshark"
     type="dmg"
-    appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep -i "href.*_stable" | sed -E 's/.*\(([0-9.]*)\).*/\1/g')
+    appNewVersion=$(curl -fs "https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/x86-64/en-US/stable.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:version)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     if [[ $(arch) == i386 ]]; then
-      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20$appNewVersion%20Intel%2064.dmg"
+      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Intel%2064.dmg"
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20$appNewVersion%20Arm%2064.dmg"
+      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Arm%2064.dmg"
     fi
     expectedTeamID="7Z6EMTD2C6"
     ;;
@@ -6762,6 +6767,11 @@ case $LOGO in
         # Workspace ONE (AirWatch)
         LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="Device Manager"; fi
+        ;;
+    kandji)
+        # Kandji
+        LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
