@@ -116,6 +116,7 @@ connectfonts
 cormorant
 craftmanager
 craftmanagerforsketch
+crashplan
 cricutdesignspace
 cryptomator
 cyberduck
@@ -342,6 +343,7 @@ mochatn3812
 mochatn5250
 mongodbcompass
 monitorcontrol
+montereyblocker
 mowgliiitsycal
 musescore
 muzzle
