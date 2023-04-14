@@ -7,6 +7,6 @@ jdk20)
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://download.oracle.com/java/20/latest/jdk-20_macos-x64_bin.dmg"
     fi
-    appCustomVersion(){ java --version | grep java | awk '{print $NF}' }
+    appCustomVersion(){ java --version | grep java | awk '{print $2}' }
     expectedTeamID="VB5E2TV963"
     ;;
