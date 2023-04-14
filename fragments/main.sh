@@ -88,6 +88,11 @@ case $LOGO in
         LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="Device Manager"; fi
         ;;
+    kandji)
+        # Kandji
+        LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
+        ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
     if [[ $(sw_vers -buildVersion) > "19" ]]; then
