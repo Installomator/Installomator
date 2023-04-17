@@ -255,6 +255,18 @@ else
         curlDownloadStatus=$(echo $?)
     fi
 
+    archiveSHA=$(shasum "$archiveName" | cut -d ' ' -f 1)
+    archiveSize=$(du -k "$archiveName" | cut -d ' ' -f 1)
+    printlog "Downloaded $archiveName - SHA is $archiveSHA - Size is $archiveSize kB" INFO
+
+    if [[ $(file $archiveName) == *ASCII* ]]; then
+        firstLines=$(head -c 51170 $archiveName)
+        deduplicatelogs $firstLines
+        cleanupAndExit 97 "File Downloaded is ASCII.  First 5k of file is $logoutput" ERROR
+    else
+        printlog "Filetype is file $archiveName" DEBUG
+    fi
+
     deduplicatelogs "$curlDownload"
     if [[ $curlDownloadStatus -ne 0 ]]; then
     #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
