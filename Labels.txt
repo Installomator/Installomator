@@ -116,6 +116,7 @@ connectfonts
 cormorant
 craftmanager
 craftmanagerforsketch
+crashplan
 cricutdesignspace
 cryptomator
 cyberduck
@@ -143,6 +144,7 @@ dropbox
 druvainsync
 duckduckgo
 duodevicehealth
+dymoconnectdesktop
 dynalist
 easeusdatarecoverywizard
 easyfind
@@ -341,6 +343,7 @@ mochatn3270
 mochatn3812
 mochatn5250
 mongodbcompass
+monitorcontrol
 montereyblocker
 mowgliiitsycal
 musescore

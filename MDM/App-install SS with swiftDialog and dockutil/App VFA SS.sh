@@ -3,7 +3,7 @@
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
 # Installation of software using `valuesfromarguments` to install a custom software using Installomator
 
-LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
 
 # Have the label been submittet in a PR for Installomator?
 # What version of Installomator is it expected to be included in?
@@ -217,6 +217,10 @@ else
                 ws1)
                     # Workspace ONE (AirWatch)
                     LOGO_PATH="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                kandji)
+                    # Kandji
+                    LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
                     ;;
             esac
             if [[ ! -a "${LOGO_PATH}" ]]; then

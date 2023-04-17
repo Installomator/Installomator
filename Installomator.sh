@@ -323,7 +323,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.4beta"
-VERSIONDATE="2023-02-24"
+VERSIONDATE="2023-04-12"
 
 # MARK: Functions
 
@@ -2549,6 +2549,15 @@ craftmanagerforsketch)
     appNewVersion=$(curl -fs https://craft-assets.invisionapp.com/CraftManager/production/appcast.xml | xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f2)
     expectedTeamID="VRXQSNCL5W"
     ;;
+crashplan)
+    name="CrashPlan"
+    type="pkgInDmg"
+    pkgName="Install CrashPlan.pkg"
+    downloadURL="https://download.crashplan.com/installs/agent/latest-mac.dmg"
+    appNewVersion=$( curl https://download.crashplan.com/installs/agent/latest-mac.dmg  -s -L -I -o /dev/null -w '%{url_effective}' | cut -d "/" -f7 )
+    expectedTeamID="UGHXR79U6M"
+    blockingProcesses=( NONE )
+    ;;
 cricutdesignspace)
     name="Cricut Design Space"
     type="dmg"
@@ -2775,6 +2784,14 @@ duodevicehealth)
     appNewVersion=$(curl -fsLIXGET "https://dl.duosecurity.com/DuoDeviceHealth-latest.pkg" | grep -i "^content-disposition" | sed -e 's/.*filename\=\"DuoDeviceHealth\-\(.*\)\.pkg\".*/\1/')
     appName="Duo Device Health.app"
     expectedTeamID="FNN8Z5JMFP"
+    ;;
+dymoconnectdesktop)
+    name="DYMO Connect"
+    type="pkg"
+    downloadURL=$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.dymo.com/compatibility-chart.html" | grep -oE 'https?://[^"]+\.pkg' | sort -rV | head -n 1| sort -rV | head -n 1)
+    appNewVersion=$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.dymo.com/compatibility-chart.html" | grep -oE 'https?://[^"]+\.pkg' | awk -F/ '{print $NF}' | sed 's/DCDMac\([0-9\.]*\)\.pkg/\1.pkg/' | cut -d"." -f1-4 | sort -rV | head -n 1)
+    expectedTeamID="N3S6676K3E"
+    blockingProcesses="DYMO Connect"
     ;;
 dynalist)
     name="Dynalist"
@@ -3160,16 +3177,15 @@ githubdesktop)
     ;;
 gitkraken)
     name="gitkraken"
-    type="zip"
-    darwinversion=$(/usr/bin/uname -r)
+    type="dmg"
+    appNewVersion=$( curl -sfL https://www.gitkraken.com/download | grep -o 'Latest release: [0-9.]*' | grep -o '[0-9.]*' )
     if [[ $(arch) == "arm64" ]]; then
-        appNewVersion=$( curl -sfL 'https://release.axocdn.com/darwin-arm64/RELEASES?v=0.0.0&darwin=${darwinversion}' | cut -d, -f1 | cut -d\" -f4 )
-        downloadURL=$( curl -sfL 'https://release.axocdn.com/darwin-arm64/RELEASES?v=0.0.0&darwin=${darwinversion}' | cut -d, -f2 | cut -d\" -f4 )
+        downloadURL="https://release.gitkraken.com/darwin-arm64/installGitKraken.dmg"
     elif [[ $(arch) == "i386" ]]; then
-        appNewVersion=$( curl -sfL 'https://release.axocdn.com/darwin/RELEASES?v=0.0.0&darwin=${darwinversion}' | cut -d, -f1 | cut -d\" -f4 )
-        downloadURL=$( curl -sfL 'https://release.axocdn.com/darwin/RELEASES?v=0.0.0&darwin=${darwinversion}' | cut -d, -f2 | cut -d\" -f4 )
+        downloadURL="https://release.gitkraken.com/darwin/installGitKraken.dmg"
     fi
     expectedTeamID="T7QVVUTZQ8"
+    blockingProcesses=( "GitKraken" )
     ;;
 golang)
     name="GoLang"
@@ -3578,7 +3594,8 @@ jabradirect)
     # packageID="com.jabra.directonline"
     versionKey="CFBundleVersion"
     downloadURL="https://jabraxpressonlineprdstor.blob.core.windows.net/jdo/JabraDirectSetup.dmg"
-    appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -oe "Release version:.*[0-9.]*<" | head -1 | cut -d ">" -f2 | cut -d "<" -f1 | sed 's/ //g')
+    #appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -oe "Release version:.*[0-9.]*<" | head -1 | cut -d ">" -f2 | cut -d "<" -f1 | sed 's/ //g')
+    appNewVersion=$(curl -fs "https://jabraexpressonlinejdo.jabra.com/jdo/jdo.json" | grep -i MacVersion | cut -d '"' -f4)
     expectedTeamID="55LV32M29R"
     ;;
 jamfconnect)
@@ -4019,15 +4036,14 @@ logseq)
     expectedTeamID="3K44EUN829"
     ;;
 loom)
-    # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
     name="Loom"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /arm64/ && /dmg/ {print $3}')
+        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/url/ && /arm64/ && /dmg/ {print $3}')
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && ! /arm64/ && /dmg/ {print $3}')
+        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/url/ && ! /arm64/ && /dmg/ {print $3}')
     fi
-    appNewVersion=$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/version/ {print $2}' )
+    appNewVersion=$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/version/ {print $2}' )
     expectedTeamID="QGD2ZPXZZG"
     ;;
 lowprofile)
@@ -4714,6 +4730,13 @@ mongodbcompass)
     appNewVersion="$(versionFromGit mongodb-js compass)"
     expectedTeamID="4XWMY46275"
     ;;
+monitorcontrol)
+    name="MonitorControl"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit MonitorControl MonitorControl)"
+    appNewVersion="$(versionFromGit MonitorControl MonitorControl)"
+    expectedTeamID="CYC8C8R4K9"
+    ;;
 montereyblocker)
     name="montereyblocker"
     type="pkg"
@@ -4761,9 +4784,9 @@ nanosaur)
 nessusagent)
     name="Nessus Agent"
     type="pkgInDmg"
-    downloadURL="https://www.tenable.com/downloads/api/v1/public/pages/nessus-agents/downloads/18063/download?i_agree_to_tenable_license_agreement=true"
+    downloadURL="https://www.tenable.com/downloads/api/v2/pages/nessus-agents/files/NessusAgent-latest.dmg"
     appCustomVersion() { /Library/NessusAgent/run/bin/nasl -v | grep Agent | cut -d' ' -f3 }
-    appNewVersion=$(curl -I  'https://www.tenable.com/downloads/api/v1/public/pages/nessus-agents/downloads/18063/download?i_agree_to_tenable_license_agreement=true' | grep 'filename=' | cut -d- -f3 | cut -f 1-3 -d '.')
+    appNewVersion=$(curl -I -s  'https://www.tenable.com/downloads/api/v2/pages/nessus-agents/files/NessusAgent-latest.dmg' | grep 'filename=' | cut -d- -f3 | cut -f 1-3 -d '.')
     expectedTeamID="4B8J598M7U"
     ;;
 netiquette)
@@ -6364,11 +6387,11 @@ whatsapp)
 wireshark)
     name="Wireshark"
     type="dmg"
-    appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep -i "href.*_stable" | sed -E 's/.*\(([0-9.]*)\).*/\1/g')
+    appNewVersion=$(curl -fs "https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/x86-64/en-US/stable.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:version)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     if [[ $(arch) == i386 ]]; then
-      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20$appNewVersion%20Intel%2064.dmg"
+      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Intel%2064.dmg"
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20$appNewVersion%20Arm%2064.dmg"
+      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Arm%2064.dmg"
     fi
     expectedTeamID="7Z6EMTD2C6"
     ;;
@@ -6753,6 +6776,11 @@ case $LOGO in
         # Workspace ONE (AirWatch)
         LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="Device Manager"; fi
+        ;;
+    kandji)
+        # Kandji
+        LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
+        if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then

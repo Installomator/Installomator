@@ -2,7 +2,7 @@
 
 # Installation using Installomator
 
-LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
 
 item="" # enter the software to install
 # Examples: applenyfonts, applesfarabic, applesfcompact, applesfmono, applesfpro, applesfsymbols, desktoppr, dialog, dockutil, knockknock, lulu, nomad, nudge, shield, supportapp, wordservice, xcreds, xink
@@ -201,6 +201,10 @@ else
                 ws1)
                     # Workspace ONE (AirWatch)
                     LOGO_PATH="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                kandji)
+                    # Kandji
+                    LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
                     ;;
             esac
             if [[ ! -a "${LOGO_PATH}" ]]; then
