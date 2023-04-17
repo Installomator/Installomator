@@ -278,8 +278,9 @@ else
             deduplicatelogs $firstLines
             cleanupAndExit 2 "File Downloaded is ASCII, we’re probably being blocked by a proxy or filter.  First 5k of file is:\n$logoutput" ERROR
         else
-        deduplicatelogs "$curlDownload"
-        cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
+            deduplicatelogs "$curlDownload"
+            cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
+        fi
     fi
 fi
 
