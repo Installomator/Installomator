@@ -263,7 +263,6 @@ else
 
     # Trying to detect download errors, including proxy or web filter blocking on downloaded file
     if [[ $curlDownloadStatus -ne 0 || $archiveType == *ASCII* ]]; then
-    #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
         printlog "error downloading $downloadURL" ERROR
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
