@@ -4,7 +4,7 @@ These example scripts are meant for use with MDM to run __Installomator__ and pr
 
 There are basically two ways to use Installomator with MDM. The _“Jamf way”_ is where, through the MDM admin interface, your upload the Installomator script to a policy, and you provide additional parameters in the policy configuration like which app to install. The _“other way”_ to use Installomator is by having the MDM install Installomator locally on the computer, just once, and then on subsequent runs the MDM runs a script which calls Installomator and provides the parameters.
 
-MDM solutions which needs a local installed __Installomator__ script are Addigy, Mosyle Manager/Mosyle Business, Kandji, and Microsoft Endpoint Manager (Intune).
+MDM solutions which needs a local installed __Installomator__ script are Addigy, Mosyle Manager/Mosyle Business, Kandji, Microsoft Endpoint Manager (Intune), and Workspace ONE (AirWatch). At least of the solutions we have tested __Installomator__ with.
 
 The scripts utilizing __swiftDialog__  require version 10 of __Installomator__. If Installomator version 9 is installed, it will set `NOTIFY=all` and use the traditional __Installomator__ notifications for showing progress, where as on version 10 it will be `NOTIFY=silent` as __swiftDialog__ is used instead.
 

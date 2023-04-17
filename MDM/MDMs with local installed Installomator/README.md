@@ -2,11 +2,13 @@
 
 Some MDM solutions cannot handle the full __Installlomator__ script and run that using the various paramaters, as Jamf pro can do.
 
-In these solutions we need to have __Installomator__ to be installed local on the Mac itself, and then call it from there.
+In these solutions we need to have __Installomator__ to be installed locally on the Mac itself, and then call it from there.
 
-MDM solutions which needs a local installed __Installomator__ script are Addigy, Mosyle Manager/Mosyle Business, Kandji, and Microsoft Endpoint Manager (Intune).
+MDM solutions which needs a local installed __Installomator__ script are Addigy, Mosyle Manager/Mosyle Business, Kandji, Microsoft Endpoint Manager (Intune), and Workspace ONE (AirWatch). At least of the solutions we have tested __Installomator__ with.
 
 The scripts utilizing __swiftDialog__  require version 10 of __Installomator__. If Installomator version 9 is installed, it will set `NOTIFY=all` and use the traditional __Installomator__ notifications for showing progress, where as on version 10 it will be `NOTIFY=silent` as __swiftDialog__ is used instead.
+
+It is __highly recommended__ to setup a scheduled run of the installation of the newest _Installomator_ as well as the latest __SwiftDialog__. See “Scripts to install prerequisites” below.
 
 ## Abbreviations used in script names
 
