@@ -51,20 +51,39 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
+    swiftdialog="/usr/local/bin/dialog" # dialog
+
+    if [[ "$NOTIFIER_APP" = "dialog" ]]; then
+        printlog "Swift Dialog dialog override" INFO
+        "$swiftdialog" --title "$title" --message "$message" --ontop --button2text "Not Now" --button1text "Quit and Update" --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
+        if [[ $? -eq 2 ]]; then
+            echo "Not Now" # Clicked button
+        fi
+    else
+        printlog "AppleScript dialog fallback" INFO
     runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    fi
 }
 
 displaydialogContinue() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
+    swiftdialog="/usr/local/bin/dialog" # dialog
+
+    if [[ "$NOTIFIER_APP" = "dialog" ]]; then
+        printlog "Swift Dialog dialog override" INFO
+        "$swiftdialog" --title "$title" --message "$message" --ontop --button1text "Quit and Update" --button2disabled --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
+    else
+        printlog "AppleScript dialog fallback" INFO
     runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    fi
 }
 
 displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
     # For notifications, built in MDM tools have priority over 3. party tools, and AppleScript is the fallback option.
-    # Unless the 3. party tool is specified in variable DIALOG_NOTIFICATIONS
+    # Unless the 3. party tool is specified in variable NOTIFIER_APP
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
     hubcli="/usr/local/bin/hubcli"
     swiftdialog="/usr/local/bin/dialog" # dialog
@@ -368,6 +387,7 @@ checkRunningProcesses() {
                       ;;
                     prompt_user|prompt_user_then_kill)
                       button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
+                      echo $button
                       if [[ $button = "Not Now" ]]; then
                         cleanupAndExit 10 "user aborted update" ERROR
                       else
