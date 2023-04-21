@@ -179,6 +179,7 @@ flowjo
 flux
 flycut
 fontexplorer
+fork
 front
 fsmonitor
 fujifilmwebcam
