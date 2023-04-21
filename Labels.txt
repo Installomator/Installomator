@@ -292,6 +292,7 @@ macfuse
 macoslaps
 macports
 mactex
+mailmate
 malwarebytes
 marathon
 marathon2
