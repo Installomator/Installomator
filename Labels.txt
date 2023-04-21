@@ -565,6 +565,7 @@ xeroxphaser7800
 xeroxworkcentre7800
 xink
 xmenu
+xmind
 xquartz
 yed
 yubicoauthenticator
