@@ -563,6 +563,7 @@ wwdc
 xcreds
 xeroxphaser7800
 xeroxworkcentre7800
+xbar
 xink
 xmenu
 xquartz
