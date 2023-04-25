@@ -445,6 +445,7 @@ sdnotary
 secretive
 selfcontrol
 sequelpro
+seospidertool
 sfsymbols
 shield
 shottr
