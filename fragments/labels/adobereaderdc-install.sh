@@ -5,7 +5,7 @@ adobereaderdc-install)
     printlog "Changing IFS for Adobe Reader" INFO
     SAVEIFS=$IFS
     IFS=$'\n'
-    versions=( $( curl -s https://www.adobe.com/devnet-docs/acrobatetk/tools/ReleaseNotesDC/index.html | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+"| head -n 30) )
+    versions=( $( curl -sL https://armmf.adobe.com/arm-manifests/mac/AcrobatDC/reader/current_version.txt | rev | cut -c1- | rev | sed -e 's/\.//g') )
     local version
     for version in $versions; do
         version="${version//.}"
