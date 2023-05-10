@@ -33,11 +33,11 @@ items=(
 scriptDir=$(dirname ${0:A})
 repoDir=$(dirname $scriptDir)
 
-# if [[ $DEBUG -eq 1 ]]; then
+if [[ $DEBUG -eq 1 ]]; then
     installomator="$repoDir/utils/assemble.sh"
-# else
-#     installomator="/usr/local/Installomator/Installomator.sh"
-# fi
+else
+    installomator="/usr/local/Installomator/Installomator.sh"
+fi
 
 dialog="/usr/local/bin/dialog"
 

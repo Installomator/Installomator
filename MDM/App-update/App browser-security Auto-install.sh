@@ -2,7 +2,7 @@
 
 # Update with Installomator if app exist
 
-LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
 
 item="microsoftedge" # enter the software to install
 # Examples: brave, duckduckgo, firefoxpkg, googlechromepkg, microsoftedge, opera

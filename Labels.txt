@@ -57,6 +57,7 @@ awscli2
 awsvpnclient
 axurerp10
 azuredatastudio
+backgroundmusic
 balenaetcher
 balsamiqwireframes
 bartender
@@ -92,12 +93,14 @@ canva
 carboncopycloner
 charles
 chatwork
+chromeremotedesktop
 chronoagent
 chronosync
 cisdem-documentreader
 citrixworkspace
 clevershare2
 clickshare
+clickup
 clipy
 closeio
 cloudflarewarp
@@ -113,6 +116,7 @@ connectfonts
 cormorant
 craftmanager
 craftmanagerforsketch
+crashplan
 cricutdesignspace
 cryptomator
 cyberduck
@@ -140,6 +144,7 @@ dropbox
 druvainsync
 duckduckgo
 duodevicehealth
+dymoconnectdesktop
 dynalist
 easeusdatarecoverywizard
 easyfind
@@ -147,7 +152,6 @@ egnyte
 egnytecore
 egnytewebedit
 element
-eraseinstall
 eshareosx
 etrecheck
 evernote
@@ -157,7 +161,6 @@ fantastical
 fastscripts
 favro
 fellow
-ferdi
 figma
 filemakerpro
 filezilla
@@ -228,6 +231,7 @@ installomator_theile
 intellijideace
 ipswupdater
 ipvisionconnect
+island
 istatmenus
 iterm2
 itsycal
@@ -238,7 +242,9 @@ jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jdk17
 jdk18
+jdk19
 jetbrainsclion
 jetbrainsdatagrip
 jetbrainsintellijidea
@@ -250,6 +256,7 @@ jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+jumpdesktop
 kap
 karabinerelements
 keepassxc
@@ -310,6 +317,7 @@ microsoftofficebusinesspro
 microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
+microsoftonedrive-rollingout
 microsoftonenote
 microsoftoutlook
 microsoftpowerpoint
@@ -324,6 +332,7 @@ mindmanager
 miro
 mist
 mist-cli
+mkuser
 mmhmm
 mobikinassistantforandroid
 mobiletolocal
@@ -333,10 +342,12 @@ mochatn3270
 mochatn3812
 mochatn5250
 mongodbcompass
+monitorcontrol
 montereyblocker
 mowgliiitsycal
 musescore
 muzzle
+mysqlworkbenchce
 nanosaur
 nessusagent
 netiquette
@@ -405,7 +416,6 @@ pycharmce
 pymol
 qgis-pr
 r
-ramboxce
 rancherdesktop
 rectangle
 redeye
@@ -436,6 +446,7 @@ screenflick
 scrollreverser
 sdnotary
 secretive
+selfcontrol
 sequelpro
 sfsymbols
 shield
@@ -456,6 +467,7 @@ snagit2019
 snagit2020
 snagit2021
 snagit2022
+snagit2023
 snapgeneviewer
 sonicvisualiser
 sonobus
@@ -480,6 +492,7 @@ suspiciouspackage
 swiftdialog
 swiftruntimeforcommandlinetools
 sync
+synologyactivebackupforbusinessagent
 synologyassistant
 synologydriveclient
 tableaudesktop
@@ -531,6 +544,7 @@ visualstudiocode
 vivaldi
 vlc
 vmwarehorizonclient
+vonagebusiness
 vpntracker365
 vscodium
 vysor
@@ -544,6 +558,7 @@ whatroute
 whatsapp
 wireshark
 wordservice
+wrikeformac
 wwdc
 xcreds
 xeroxphaser7800
