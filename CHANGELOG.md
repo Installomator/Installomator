@@ -2,7 +2,7 @@
 
 - argument reordering (#834) (this changes behavior, see note below)
 - Swift Dialog:
-    - support for SwiftDialog notifications (#833, #835)
+    - support for SwiftDialog and IBM Notifier notifications using new variable `NOTIFIER_APP` (#542, #833, #835, #1046)
     - adds version to progress text in Swift Dialog (#794)
 - User Interaction:
     - adds `PROMPT_TIMEOUT` to `prompt_user` and `prompt_user_then_kill` (#771, #140)
