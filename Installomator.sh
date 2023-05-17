@@ -34,6 +34,15 @@ NOTIFY=success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
 
+# time in seconds to wait for a prompt to be answered before exiting the script
+PROMPT_TIMEOUT=86400
+# Common times translated into seconds
+# 60    =  1 minute
+# 300   =  5 minutes
+# 600   = 10 minutes
+# 3600  =  1 hour
+# 86400 = 24 hours (default)
+
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
@@ -157,6 +166,8 @@ DIALOG_LIST_ITEM_NAME=""
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
 
+NOTIFY_DIALOG=0
+# If this variable is set to 1, then we will check for installed Swift Dialog v. 2 or later, and use that for notification
 
 
 # NOTE: How labels work
@@ -322,8 +333,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.4beta"
-VERSIONDATE="2023-04-12"
+VERSION="11.0beta1"
+VERSIONDATE="2023-02-10"
 
 # MARK: Functions
 
@@ -340,7 +351,6 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
         deleteTmpOut=$(rm -Rfv "$tmpDir")
         printlog "Debugging enabled, Deleting tmpDir output was:\n$deleteTmpOut" DEBUG
     fi
-
 
     # If we closed any processes, reopen the app again
     reopenClosedProcess
@@ -378,7 +388,7 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+    runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\" giving up after $PROMPT_TIMEOUT)"
 }
 
 displaydialogContinue() { # $1: message $2: title
@@ -392,11 +402,16 @@ displaynotification() { # $1: message $2: title
     title=${2:-"Notification"}
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
     hubcli="/usr/local/bin/hubcli"
+    swiftdialog="/usr/local/bin/dialog"
 
-    if [[ -x "$manageaction" ]]; then
-         "$manageaction" -message "$message" -title "$title"
+    if [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 && "$NOTIFY_DIALOG" -eq 1 ]]; then
+        "$swiftdialog" --notification --title "$title" --message "$message"
+    elif [[ -x "$manageaction" ]]; then
+         "$manageaction" -message "$message" -title "$title" &
     elif [[ -x "$hubcli" ]]; then
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
+    elif [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 ]]; then
+         "$swiftdialog" --notification --title "$title" --message "$message"
     else
         runAsUser osascript -e "display notification \"$message\" with title \"$title\""
     fi
@@ -635,6 +650,13 @@ getAppVersion() {
     fi
 }
 
+quitApp() { # $1 = app name
+    name=$1
+    printlog "telling app $name to quit"
+    runAsUser osascript -e "tell app \"$name\" to quit"
+    appClosed=1
+}
+
 checkRunningProcesses() {
     # don't check in DEBUG mode 1
     if [[ $DEBUG -eq 1 ]]; then
@@ -648,12 +670,10 @@ checkRunningProcesses() {
         for x in ${blockingProcesses}; do
             if pgrep -xq "$x"; then
                 printlog "found blocking process $x"
-                appClosed=1
-
+                
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
-                        printlog "telling app $x to quit"
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        quitApp $x
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
@@ -667,18 +687,28 @@ checkRunningProcesses() {
                       printlog "killing process $x"
                       pkill $x
                       sleep 5
+                      appClosed=1
                       ;;
                     prompt_user|prompt_user_then_kill)
-                      button=$(displaydialog "Quit “$x” to continue updating? (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
+                        appClosed=0
                         cleanupAndExit 10 "user aborted update" ERROR
+                      elif [[ $button = "" ]]; then
+                        appClosed=0
+                        cleanupAndExit 25 "timed out waiting for user response" ERROR
                       else
-                        if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
+                        if [[ $BLOCKING_PROCESS_ACTION = "prompt_user_then_kill" ]]; then
+                          # try to quit, then set to kill
+                          printlog "telling app $x to quit"
+                          runAsUser osascript -e "tell app \"$x\" to quit"
+                          # give the user a bit of time to quit apps
+                          printlog "waiting 30 seconds for processes to quit"
+                          sleep 30
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
                         else
-                          printlog "telling app $x to quit"
-                          runAsUser osascript -e "tell app \"$x\" to quit"
+                          quitApp $x
                           # give the user a bit of time to quit apps
                           printlog "waiting 30 seconds for processes to quit"
                           sleep 30
@@ -686,7 +716,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     prompt_user_loop)
-                      button=$(displaydialog "Quit “$x” to continue updating? (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         if [[ $i < 2 ]]; then
                           printlog "user wants to wait an hour"
@@ -696,8 +726,7 @@ checkRunningProcesses() {
                           BLOCKING_PROCESS_ACTION=tell_user
                         fi
                       else
-                        printlog "telling app $x to quit"
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        quitApp $x
                         # give the user a bit of time to quit apps
                         printlog "waiting 30 seconds for processes to quit"
                         sleep 30
@@ -705,8 +734,7 @@ checkRunningProcesses() {
                       ;;
                     tell_user|tell_user_then_kill)
                       button=$(displaydialogContinue "Quit “$x” to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
-                      printlog "telling app $x to quit"
-                      runAsUser osascript -e "tell app \"$x\" to quit"
+                      quitApp $x
                       # give the user a bit of time to quit apps
                       printlog "waiting 30 seconds for processes to quit"
                       sleep 30
@@ -716,6 +744,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
+                      appClosed=0
                       cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
                 esac
@@ -762,13 +791,22 @@ reopenClosedProcess() {
     fi
 }
 
-installAppWithPath() { # $1: path to app to install in $targetDir
+installAppWithPath() { # $1: path to app to install in $targetDir $2: path to folder (with app inside) to copy to $targetDir
     # modified by: Søren Theilgaard (@theilgaard)
     appPath=${1?:"no path to app"}
+    # If $2 ends in "/" then a folderName has not been specified so don't set it.
+    if [[ ! "${2}" == */ ]]; then
+        folderPath="${2}"
+    fi
 
     # check if app exists
     if [ ! -e "$appPath" ]; then
         cleanupAndExit 8 "could not find: $appPath" ERROR
+    fi
+
+    # check if folder path exists if it is set
+    if [[ -n "$folderPath" ]] && [[ ! -e "$folderPath" ]]; then
+        cleanupAndExit 8 "could not find folder: $folderPath" ERROR
     fi
 
     # verify with spctl
@@ -780,7 +818,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir
     teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
     deduplicatelogs "$appVerify"
 
-    if [[ $appVerifyStatus -ne 0 ]] ; then
+    if [[ $appVerifyStatus -ne 0 || !($appVerify =~ "source=Notarized Developer ID") ]] ; then
     #if ! teamID=$(spctl -a -vv "$appPath" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()' ); then
         cleanupAndExit 4 "Error verifying $appPath error:\n$logoutput" ERROR
     fi
@@ -858,7 +896,11 @@ installAppWithPath() { # $1: path to app to install in $targetDir
 
         # copy app to /Applications
         printlog "Copy $appPath to $targetDir"
-        copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
+        if [[ -n $folderPath ]]; then
+            copyAppOut=$(ditto -v "$folderPath" "$targetDir/$folderName" 2>&1)
+        else
+            copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
+        fi
         copyAppStatus=$(echo $?)
         deduplicatelogs "$copyAppOut"
         printlog "Debugging enabled, App copy output was:\n$logoutput" DEBUG
@@ -917,7 +959,7 @@ mountDMG() {
 
 installFromDMG() {
     mountDMG
-    installAppWithPath "$dmgmount/$appName"
+    installAppWithPath "$dmgmount/$appName" "$dmgmount/$folderName"
 }
 
 installFromPKG() {
@@ -960,7 +1002,7 @@ installFromPKG() {
         baseArchiveName=$(basename $archiveName)
         expandedPkg="$tmpDir/${baseArchiveName}_pkg"
         pkgutil --expand "$archiveName" "$expandedPkg"
-        appNewVersion=$(cat "$expandedPkg"/Distribution | xpath 'string(//installer-gui-script/pkg-ref[@id][@version]/@version)' 2>/dev/null )
+        appNewVersion=$(cat "$expandedPkg"/Distribution | xpath "string(//installer-gui-script/pkg-ref[@id='$packageID'][@version]/@version)" 2>/dev/null )
         rm -r "$expandedPkg"
         printlog "Downloaded package $packageID version $appNewVersion"
         if [[ $appversion == $appNewVersion ]]; then
@@ -1201,10 +1243,10 @@ finishing() {
     sleep 3 # wait a moment to let spotlight catch up
     getAppVersion
 
-    if [[ -z $appversion ]]; then
+    if [[ -z $appNewVersion ]]; then
         message="Installed $name"
     else
-        message="Installed $name, version $appversion"
+        message="Installed $name, version $appNewVersion"
     fi
 
     printlog "$message" REQ
@@ -1245,6 +1287,7 @@ hasDisplaySleepAssertion() {
     # No relevant display sleep assertion detected
     return 1
 }
+
 
 initNamedPipe() {
     # create or delete a named pipe
@@ -1356,6 +1399,7 @@ updateDialog() {
         fi
     fi
 }
+
 # MARK: check minimal macOS requirement
 autoload is-at-least
 
@@ -1380,18 +1424,8 @@ elif [[ $1 == "/" ]]; then
     shift 3
 fi
 
-while [[ -n $1 ]]; do
-    if [[ $1 =~ ".*\=.*" ]]; then
-        # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" INFO
-        eval $1
-    else
-        # assume it's a label
-        label=$1
-    fi
-    # shift to next argument
-    shift 1
-done
+# first argument is the label
+label=$1
 
 # lowercase the label
 label=${label:l}
@@ -1458,7 +1492,6 @@ if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     cleanupAndExit 6 "not running as root, exiting" ERROR
 fi
 
-
 # check Swift Dialog presence and version
 DIALOG_CMD="/usr/local/bin/dialog"
 
@@ -1476,22 +1509,7 @@ longversion)
     exit 0
     ;;
 valuesfromarguments)
-    if [[ -z $name ]]; then
-        printlog "need to provide 'name'" ERROR
-        exit 1
-    fi
-    if [[ -z $type ]]; then
-        printlog "need to provide 'type'" ERROR
-        exit 1
-    fi
-    if [[ -z $downloadURL ]]; then
-        printlog "need to provide 'downloadURL'" ERROR
-        exit 1
-    fi
-    if [[ -z $expectedTeamID ]]; then
-        printlog "need to provide 'expectedTeamID'" ERROR
-        exit 1
-    fi
+    # no action necessary, all values should be provided in arguments
     ;;
 
 # label descriptions start here
@@ -1517,7 +1535,7 @@ valuesfromarguments)
     name="1Password CLI"
     type="pkg"
     #packageID="com.1password.op"
-    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI2 | grep -m 1 -i op_apple_universal | cut -d'"' -f 2)
+    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI | grep -m 1 -i op_apple_universal | cut -d'"' -f 2)
     appNewVersion=$(echo $downloadURL | sed -E 's/.*\/[a-zA-Z_]*([0-9.]*)\..*/\1/g')
     appCustomVersion(){ /usr/local/bin/op -v }
     expectedTeamID="2BUA8C4S2C"
@@ -2353,6 +2371,27 @@ chatwork)
      downloadURL="https://desktop-app.chatwork.com/installer/Chatwork.dmg"
      expectedTeamID="H34A3H2Y54"
      ;;
+chemdoodle|\
+chemdoodle2d)
+     name="ChemDoodle"
+     type="dmg"
+     downloadURL="https://www.ichemlabs.com$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle-macos" | sed -r 's/.*href="([^"]+).*/\1/g')"
+     expectedTeamID="9XP397UW95"
+     folderName="ChemDoodle"
+     appName="${folderName}/ChemDoodle.app"
+     appNewVersion=$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle-macos" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
+     versionKey="CFBundleVersion"
+     ;;
+chemdoodle3d)
+     name="ChemDoodle3D"
+     type="dmg"
+     downloadURL="https://www.ichemlabs.com$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle3D-macos" | sed -r 's/.*href="([^"]+).*/\1/g')"
+     expectedTeamID="9XP397UW95"
+     folderName="ChemDoodle3D"
+     appName="${folderName}/ChemDoodle3D.app"
+     appNewVersion=$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle3D-macos" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
+     versionKey="CFBundleVersion"
+     ;;
 chromeremotedesktop)
     name="chromeremotedesktop"
     type="pkgInDmg"
@@ -2420,18 +2459,6 @@ clickshare)
     appNewVersion="$(eval "$( echo $downloadURL | sed -E 's/.*(MajorVersion.*BuildVersion=[0-9]*).*/\1/' | sed 's/&amp//g' )" ; ((MajorVersion++)) ; ((MajorVersion--)); ((MinorVersion++)) ; ((MinorVersion--)); ((PatchVersion++)) ; ((PatchVersion--)); ((BuildVersion++)) ; ((BuildVersion--)); echo "${MajorVersion}.${MinorVersion}.${PatchVersion}-b${BuildVersion}")"
     expectedTeamID="P6CDJZR997"
     ;;
-clickup)
-	name="ClickUp"
-	type="dmg"
-	if [[ $(arch) == "arm64" ]]; then
-		appNewVersion=$(curl -sD /dev/stdout https://desktop.clickup.com/mac/dmg/arm64 | grep filename | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
-		downloadURL="https://desktop.clickup.com/mac/dmg/arm64"
-	elif [[ $(arch) == "i386" ]]; then
-        appNewVersion=$(curl -sD /dev/stdout https://desktop.clickup.com/mac | grep filename | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
-        downloadURL="https://desktop.clickup.com/mac"
-	fi
-	expectedTeamID="5RJWFAUGXQ"
-	;;
 clipy)
 	name="Clipy"
 	type="dmg"
@@ -2548,15 +2575,6 @@ craftmanagerforsketch)
     downloadURL="https://craft-assets.invisionapp.com/CraftManager/production/CraftManager.zip"
     appNewVersion=$(curl -fs https://craft-assets.invisionapp.com/CraftManager/production/appcast.xml | xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f2)
     expectedTeamID="VRXQSNCL5W"
-    ;;
-crashplan)
-    name="CrashPlan"
-    type="pkgInDmg"
-    pkgName="Install CrashPlan.pkg"
-    downloadURL="https://download.crashplan.com/installs/agent/latest-mac.dmg"
-    appNewVersion=$( curl https://download.crashplan.com/installs/agent/latest-mac.dmg  -s -L -I -o /dev/null -w '%{url_effective}' | cut -d "/" -f7 )
-    expectedTeamID="UGHXR79U6M"
-    blockingProcesses=( NONE )
     ;;
 cricutdesignspace)
     name="Cricut Design Space"
@@ -2785,14 +2803,6 @@ duodevicehealth)
     appName="Duo Device Health.app"
     expectedTeamID="FNN8Z5JMFP"
     ;;
-dymoconnectdesktop)
-    name="DYMO Connect"
-    type="pkg"
-    downloadURL=$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.dymo.com/compatibility-chart.html" | grep -oE 'https?://[^"]+\.pkg' | sort -rV | head -n 1| sort -rV | head -n 1)
-    appNewVersion=$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" "https://www.dymo.com/compatibility-chart.html" | grep -oE 'https?://[^"]+\.pkg' | awk -F/ '{print $NF}' | sed 's/DCDMac\([0-9\.]*\)\.pkg/\1.pkg/' | cut -d"." -f1-4 | sort -rV | head -n 1)
-    expectedTeamID="N3S6676K3E"
-    blockingProcesses="DYMO Connect"
-    ;;
 dynalist)
     name="Dynalist"
     type="dmg"
@@ -2841,7 +2851,7 @@ egnytewebedit)
     appName="Egnyte WebEdit.app"
     blockingProcesses=( NONE )
     ;;
-    
+
 element)
     name="Element"
     type="dmg"
@@ -2916,6 +2926,18 @@ fellow)
     downloadURL="https://cdn.fellow.app/desktop/1.3.11/darwin/stable/universal/Fellow-1.3.11-universal.dmg"
     appNewVersion=""
     expectedTeamID="2NF46HY8D8"
+    ;;
+ferdi)
+    name="Ferdi"
+    type="zip"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="arm64-mac.zip"
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="Ferdi-[0-9.]*-mac.zip"
+    fi
+    downloadURL="$(downloadURLFromGit getferdi ferdi)"
+    appNewVersion=$(versionFromGit getferdi ferdi )
+    expectedTeamID="B6J9X9DWFL"
     ;;
 figma)
     name="Figma"
@@ -3102,7 +3124,7 @@ flux)
     downloadURL="https://justgetflux.com/mac/Flux.zip"
     expectedTeamID="VZKSA7H9J9"
     ;;
-    
+
 flycut)
     name="Flycut"
     type="zip"
@@ -3177,15 +3199,16 @@ githubdesktop)
     ;;
 gitkraken)
     name="gitkraken"
-    type="dmg"
-    appNewVersion=$( curl -sfL https://www.gitkraken.com/download | grep -o 'Latest release: [0-9.]*' | grep -o '[0-9.]*' )
+    type="zip"
+    darwinversion=$(/usr/bin/uname -r)
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://release.gitkraken.com/darwin-arm64/installGitKraken.dmg"
+        appNewVersion=$( curl -sfL 'https://release.axocdn.com/darwin-arm64/RELEASES?v=0.0.0&darwin=${darwinversion}' | cut -d, -f1 | cut -d\" -f4 )
+        downloadURL=$( curl -sfL 'https://release.axocdn.com/darwin-arm64/RELEASES?v=0.0.0&darwin=${darwinversion}' | cut -d, -f2 | cut -d\" -f4 )
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://release.gitkraken.com/darwin/installGitKraken.dmg"
+        appNewVersion=$( curl -sfL 'https://release.axocdn.com/darwin/RELEASES?v=0.0.0&darwin=${darwinversion}' | cut -d, -f1 | cut -d\" -f4 )
+        downloadURL=$( curl -sfL 'https://release.axocdn.com/darwin/RELEASES?v=0.0.0&darwin=${darwinversion}' | cut -d, -f2 | cut -d\" -f4 )
     fi
     expectedTeamID="T7QVVUTZQ8"
-    blockingProcesses=( "GitKraken" )
     ;;
 golang)
     name="GoLang"
@@ -3249,7 +3272,7 @@ googledrivefilestream)
        packageID="com.google.drivefs.arm64"
     elif [[ $(arch) == "i386" ]]; then
        packageID="com.google.drivefs.x86_64"
-    fi    
+    fi
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg" # downloadURL="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
     blockingProcesses=( "Google Docs" "Google Drive" "Google Sheets" "Google Slides" )
     appName="Google Drive.app"
@@ -3594,8 +3617,7 @@ jabradirect)
     # packageID="com.jabra.directonline"
     versionKey="CFBundleVersion"
     downloadURL="https://jabraxpressonlineprdstor.blob.core.windows.net/jdo/JabraDirectSetup.dmg"
-    #appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -oe "Release version:.*[0-9.]*<" | head -1 | cut -d ">" -f2 | cut -d "<" -f1 | sed 's/ //g')
-    appNewVersion=$(curl -fs "https://jabraexpressonlinejdo.jabra.com/jdo/jdo.json" | grep -i MacVersion | cut -d '"' -f4)
+    appNewVersion=$(curl -fs https://www.jabra.com/Support/release-notes/release-note-jabra-direct | grep -oe "Release version:.*[0-9.]*<" | head -1 | cut -d ">" -f2 | cut -d "<" -f1 | sed 's/ //g')
     expectedTeamID="55LV32M29R"
     ;;
 jamfconnect)
@@ -3887,7 +3909,7 @@ keybase)
         downloadURL=$(curl -s https://keybase.io/docs/the_app/install_macos | grep data-target | cut -d '"' -f2 | grep -v arm64 )
     fi
     expectedTeamID="99229SGT5K"
-    ;; 
+    ;;
 keyboardmaestro)
     # credit: Søren Theilgaard (@theilgaard)
     name="Keyboard Maestro"
@@ -3999,7 +4021,7 @@ linear)
     appName="Linear.app"
     blockingProcesses=( "Linear" )
     ;;
-    
+
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -4036,14 +4058,15 @@ logseq)
     expectedTeamID="3K44EUN829"
     ;;
 loom)
+    # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
     name="Loom"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/url/ && /arm64/ && /dmg/ {print $3}')
+        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && /arm64/ && /dmg/ {print $3}')
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/url/ && ! /arm64/ && /dmg/ {print $3}')
+        downloadURL=https://cdn.loom.com/desktop-packages/$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/url/ && ! /arm64/ && /dmg/ {print $3}')
     fi
-    appNewVersion=$(curl -fs https://packages.loom.com/desktop-packages/latest-mac.yml | awk '/version/ {print $2}' )
+    appNewVersion=$(curl -fs https://s3-us-west-2.amazonaws.com/loom.desktop.packages/loom-inc-production/desktop-packages/latest-mac.yml | awk '/version/ {print $2}' )
     expectedTeamID="QGD2ZPXZZG"
     ;;
 lowprofile)
@@ -4055,7 +4078,7 @@ lowprofile)
     ;;
 lsagent)
     name="LsAgent-osx"
-    #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version. 
+    #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version.
     #Download: https://www.lansweeper.com/download/lsagent/
     #Icon: https://www.lansweeper.com/wp-content/uploads/2018/08/LsAgent-Scanning-Agent.png
     # Not tested with "agentkey", but expecting server and port to be not needed if used.
@@ -4066,7 +4089,7 @@ lsagent)
 #                                              Default: none
 #                                              Allowed: none minimal minimalWithDialogs
 #  --optionfile <optionfile>                   Installation option file
-#                                              Default: 
+#                                              Default:
 #  --debuglevel <debuglevel>                   Debug information level of verbosity
 #                                              Default: 2
 #                                              Allowed: 0 1 2 3 4
@@ -4074,18 +4097,18 @@ lsagent)
 #                                              Default: osx
 #                                              Allowed: osx text unattended
 #  --debugtrace <debugtrace>                   Debug filename
-#                                              Default: 
+#                                              Default:
 #  --installer-language <installer-language>   Language selection
 #                                              Default: en
 #                                              Allowed: sq ar es_AR az eu pt_BR bg ca hr cs da nl en et fi fr de el he hu id it ja kk ko lv lt no fa pl pt ro ru sr zh_CN sk sl es sv th zh_TW tr tk uk va vi cy
 #  --prefix <prefix>                           Installation Directory
 #                                              Default: /Applications/LansweeperAgent
 #  --server <server>                           FQDN, NetBios or IP of the Scanning Server
-#                                              Default: 
+#                                              Default:
 #  --port <port>                               Listening Port on the Scanning Server
 #                                              Default: 9524
 #  --agentkey <agentkey>                       Cloud Relay Authentication Key (Optional)
-#                                              Default: 
+#                                              Default:
     type="dmg"
     downloadURL="https://content.lansweeper.com/lsagent-mac/"
     appNewVersion="$(curl -fsIL "$downloadURL" | grep -i "location" | cut -w -f2 | cut -d "/" -f5-6 | tr "/" ".")"
@@ -4539,7 +4562,7 @@ microsoftteams)
         "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" --list
     fi
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps TEAM01 ) # --wait 600 
+    updateToolArguments=( --install --apps TEAM01 ) # --wait 600
     ;;
 microsoftvisualstudiocode|\
 visualstudiocode)
@@ -4607,17 +4630,6 @@ mist)
     appNewVersion=$(versionFromGit "ninxsoft" "mist")
     expectedTeamID="7K3HVCLV7Z"
     blockingProcesses=( NONE )
-    ;;
-mkuser)
-    name="mkuser"
-    type="pkg"
-    packageID="org.freegeek.pkg.mkuser"
-    downloadURL="$(downloadURLFromGit freegeek-pdx mkuser)"
-    # appNewVersion="$(versionFromGit freegeek-pdx mkuser unfiltered)"
-    # mkuser does not adhere to numbers and dots only for version numbers.
-    # Pull request submitted to add an unfiltered option to versionFromGit
-    appNewVersion="$(curl -sLI "https://github.com/freegeek-pdx/mkuser/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)"
-    expectedTeamID="YRW6NUGA63"
     ;;
 mmhmm)
     name="mmhmm"
@@ -4730,13 +4742,6 @@ mongodbcompass)
     appNewVersion="$(versionFromGit mongodb-js compass)"
     expectedTeamID="4XWMY46275"
     ;;
-monitorcontrol)
-    name="MonitorControl"
-    type="dmg"
-    downloadURL="$(downloadURLFromGit MonitorControl MonitorControl)"
-    appNewVersion="$(versionFromGit MonitorControl MonitorControl)"
-    expectedTeamID="CYC8C8R4K9"
-    ;;
 montereyblocker)
     name="montereyblocker"
     type="pkg"
@@ -4784,9 +4789,9 @@ nanosaur)
 nessusagent)
     name="Nessus Agent"
     type="pkgInDmg"
-    downloadURL="https://www.tenable.com/downloads/api/v2/pages/nessus-agents/files/NessusAgent-latest.dmg"
+    downloadURL="https://www.tenable.com/downloads/api/v1/public/pages/nessus-agents/downloads/18063/download?i_agree_to_tenable_license_agreement=true"
     appCustomVersion() { /Library/NessusAgent/run/bin/nasl -v | grep Agent | cut -d' ' -f3 }
-    appNewVersion=$(curl -I -s  'https://www.tenable.com/downloads/api/v2/pages/nessus-agents/files/NessusAgent-latest.dmg' | grep 'filename=' | cut -d- -f3 | cut -f 1-3 -d '.')
+    appNewVersion=$(curl -I  'https://www.tenable.com/downloads/api/v1/public/pages/nessus-agents/downloads/18063/download?i_agree_to_tenable_license_agreement=true' | grep 'filename=' | cut -d- -f3 | cut -f 1-3 -d '.')
     expectedTeamID="4B8J598M7U"
     ;;
 netiquette)
@@ -4879,9 +4884,9 @@ nudgesuite)
     name="Nudge Suite"
     appName="Nudge.app"
     type="pkg"
+    downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
     archiveName="Nudge_Suite-$appNewVersion.pkg"
-    downloadURL=$(downloadURLFromGit macadmins Nudge )
     expectedTeamID="T4SK8ZXCXG"
     blockingProcesses=( "Nudge" )
     ;;
@@ -5103,7 +5108,7 @@ parsec)
     expectedTeamID="Y9MY52XZDB"
     ;;
 pcoipclient)
-    # Note that the sed match removes 'pcoip-client_' and '.dmg' 
+    # Note that the sed match removes 'pcoip-client_' and '.dmg'
     name="PCoIPClient"
     type="dmg"
     downloadURL="https://dl.teradici.com/DeAdBCiUYInHcSTy/pcoip-client/raw/names/pcoip-client-dmg/versions/latest/pcoip-client_latest.dmg"
@@ -5306,6 +5311,13 @@ r)
         appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
     fi
     expectedTeamID="VZLD955F6P"
+    ;;
+ramboxce)
+    name="Rambox"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit ramboxapp community-edition )
+    appNewVersion=$(versionFromGit ramboxapp community-edition )
+    expectedTeamID="7F292FPD69"
     ;;
 rancherdesktop)
     name="Rancher Desktop"
@@ -5534,7 +5546,7 @@ secretive)
     appNewVersion=$(versionFromGit maxgoedjen secretive)
     expectedTeamID="Z72PRUAWF6"
     ;;
-    
+
 selfcontrol)
     name="SelfControl"
     type="zip"
@@ -5655,11 +5667,11 @@ smartgit)
     expectedTeamID="PHMY45PTNW"
     ;;
 snagit|\
-snagit2023)
-    name="Snagit 2023"
+snagit2022)
+    name="Snagit 2022"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2023" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2023" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
+    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
+    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2022" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
     expectedTeamID="7TQL462TU8"
     ;;
 snagit2019)
@@ -5681,13 +5693,6 @@ snagit2021)
     type="dmg"
     downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2021" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
     appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2021" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
-    expectedTeamID="7TQL462TU8"
-    ;;
-snagit2022)
-    name="Snagit 2022"
-    type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2022" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
     expectedTeamID="7TQL462TU8"
     ;;
 snapgeneviewer)
@@ -6245,13 +6250,9 @@ virtualbox)
     name="VirtualBox"
     type="pkgInDmg"
     pkgName="VirtualBox.pkg"
-    if [[ $(arch) == i386 ]]; then
-        platform="OSX"
-    elif [[ $(arch) == arm64 ]]; then
-        platform="macOSArm64"
-    fi
-    downloadURL=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" | awk -F '"' "/$platform.dmg/ { print \$4 }")
-    appNewVersion=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" | awk -F '"' "/$platform.dmg/ { print \$4 }" | sed -E 's/.*virtualbox\/([0-9.]*)\/.*/\1/')
+    downloadURL=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" \
+        | awk -F '"' "/OSX.dmg/ { print \$4 }")
+    appNewVersion=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" | awk -F '"' "/OSX.dmg/ { print \$4 }" | sed -E 's/.*virtualbox\/([0-9.]*)\/.*/\1/')
     expectedTeamID="VB5E2TV963"
     ;;
 viscosity)
@@ -6387,11 +6388,11 @@ whatsapp)
 wireshark)
     name="Wireshark"
     type="dmg"
-    appNewVersion=$(curl -fs "https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/x86-64/en-US/stable.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:version)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs https://www.wireshark.org/download.html | grep -i "href.*_stable" | sed -E 's/.*\(([0-9.]*)\).*/\1/g')
     if [[ $(arch) == i386 ]]; then
-      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Intel%2064.dmg"
+      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20$appNewVersion%20Intel%2064.dmg"
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20Latest%20Arm%2064.dmg"
+      downloadURL="https://1.as.dl.wireshark.org/osx/Wireshark%20$appNewVersion%20Arm%2064.dmg"
     fi
     expectedTeamID="7Z6EMTD2C6"
     ;;
@@ -6402,20 +6403,6 @@ wordservice)
     appNewVersion="$(echo $downloadURL | sed -E 's/.*\/([0-9.]*)\/.*/\1/g')"
     appNewVersion=""
     expectedTeamID="679S2QUWR8"
-    ;;
-wrikeformac)
-#Il faut chercher une solution pour DL la version ARM
-    name="Wrike for Mac"
-    type="dmg"
-    appNewVersion="4.0.6"
-    if [[ $(arch) == i386 ]]; then
-        #downloadURL="https://dl.wrike.com/download/WrikeDesktopApp.latest.dmg"      # valide pour arch i386
-        downloadURL="https://dl.wrike.com/download/WrikeDesktopApp.v${appNewVersion}.dmg"      # pour la coherence avec silicon, on hardcode le numéro de vesrion
-    elif [[ $(arch) == arm64 ]]; then
-        #downloadURL="https://dl.wrike.com/download/WrikeDesktopApp_ARM.latest.dmg"  # ne marche pas avec latest, il faut obligatoirement un numéro de version précis
-        downloadURL="https://dl.wrike.com/download/WrikeDesktopApp_ARM.v${appNewVersion}.dmg"
-    fi
-    expectedTeamID="BD3YL53XT4"
     ;;
 wwdc)
     # credit: Søren Theilgaard (@theilgaard)
@@ -6694,6 +6681,35 @@ zulujdk8)
     ;;
 esac
 
+# finish reading the arguments:
+while [[ -n $1 ]]; do
+    if [[ $1 =~ ".*\=.*" ]]; then
+        # if an argument contains an = character, send it to eval
+        printlog "setting variable from argument $1" INFO
+        eval $1
+    fi
+    # shift to next argument
+    shift 1
+done
+
+# verify we have everything we need
+if [[ -z $name ]]; then
+    printlog "need to provide 'name'" ERROR
+    exit 1
+fi
+if [[ -z $type ]]; then
+    printlog "need to provide 'type'" ERROR
+    exit 1
+fi
+if [[ -z $downloadURL ]]; then
+    printlog "need to provide 'downloadURL'" ERROR
+    exit 1
+fi
+if [[ -z $expectedTeamID ]]; then
+    printlog "need to provide 'expectedTeamID'" ERROR
+    exit 1
+fi
+
 # Are we only asked to return label name
 if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
     printlog "Only returning label name." REQ
@@ -6776,11 +6792,6 @@ case $LOGO in
         # Workspace ONE (AirWatch)
         LOGO="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="Device Manager"; fi
-        ;;
-    kandji)
-        # Kandji
-        LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
-        if [[ -z $MDMProfileName ]]; then; MDMProfileName="MDM Profile"; fi
         ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
