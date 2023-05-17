@@ -100,6 +100,12 @@ if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     cleanupAndExit 6 "not running as root, exiting" ERROR
 fi
 
+# NOTE: MDM Notification and/or dialog binaries
+manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action" # Jamf Pro
+hubcli="/usr/local/bin/hubcli" # AirWatch Workspace ONE
+macmanage="/Library/Addigy/macmanage/MacManage.app/Contents/MacOS/MacManage" # Addigy, currently no notifications
+#swiftdialog="/usr/local/bin/dialog" # dialog
+ibmnotifier="/Applications/IBM Notifier.app/Contents/MacOS/IBM Notifier" #ibmnotifier
 
 # check Swift Dialog presence and version
 DIALOG_CMD="/usr/local/bin/dialog"

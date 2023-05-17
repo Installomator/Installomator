@@ -51,32 +51,30 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    swiftdialog="/usr/local/bin/dialog" # dialog
 
-    if [[ "$NOTIFIER_APP" = "dialog" ]]; then
-        printlog "Swift Dialog dialog override" INFO
-        "$swiftdialog" --title "$title" --message "$message" --ontop --button2text "Not Now" --button1text "Quit and Update" --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
-        if [[ $? -eq 2 ]]; then
-            echo "Not Now" # Clicked button
-        fi
-    else
-        printlog "AppleScript dialog fallback" INFO
+#     if [[ "$NOTIFIER_APP" = "dialog" ]]; then
+#         printlog "Swift Dialog dialog override" INFO
+#         "$DIALOG_CMD" --title "$title" --message "$message" --ontop --button2text "Not Now" --button1text "Quit and Update" --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
+#         if [[ $? -eq 2 ]]; then
+#             echo "Not Now" # Clicked button
+#         fi
+#     else
+#         printlog "AppleScript dialog fallback" INFO
     runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
-    fi
+#     fi
 }
 
 displaydialogContinue() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-    swiftdialog="/usr/local/bin/dialog" # dialog
 
-    if [[ "$NOTIFIER_APP" = "dialog" ]]; then
-        printlog "Swift Dialog dialog override" INFO
-        "$swiftdialog" --title "$title" --message "$message" --ontop --button1text "Quit and Update" --button2disabled --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
-    else
-        printlog "AppleScript dialog fallback" INFO
+#     if [[ "$NOTIFIER_APP" = "dialog" ]]; then
+#         printlog "Swift Dialog dialog override" INFO
+#         "$DIALOG_CMD" --title "$title" --message "$message" --ontop --button1text "Quit and Update" --button2disabled --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
+#     else
+#         printlog "AppleScript dialog fallback" INFO
     runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
-    fi
+#     fi
 }
 
 displaynotification() { # $1: message $2: title
@@ -84,31 +82,27 @@ displaynotification() { # $1: message $2: title
     title=${2:-"Notification"}
     # For notifications, built in MDM tools have priority over 3. party tools, and AppleScript is the fallback option.
     # Unless the 3. party tool is specified in variable NOTIFIER_APP
-    manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
-    hubcli="/usr/local/bin/hubcli"
-    swiftdialog="/usr/local/bin/dialog" # dialog
-    ibmnotifier="/Applications/IBM Notifier.app/Contents/MacOS/IBM Notifier" #ibmnotifier
 
-    if [[ "$NOTIFIER_APP" = "dialog" && "$($swiftdialog --version | cut -d "." -f1)" -ge 2 ]]; then
+    if [[ "$NOTIFIER_APP" = "dialog" && "$($DIALOG_CMD --version | cut -d "." -f1)" -ge 2 ]]; then
         printlog "Swift Dialog notification override" INFO
-        printlog "${swiftdialog}: $($swiftdialog --version)" DEBUG
-        "$swiftdialog" --notification --title "$title" --message "$message"
+        printlog "${DIALOG_CMD}: $($DIALOG_CMD --version)" DEBUG
+        "$DIALOG_CMD" --notification --title "$title" --message "$message"
     elif [[ "$NOTIFIER_APP" = "ibmnotifier" && "$($ibmnotifier --version | cut -d ":" -f2 | grep -oe "[0-9.]*" | head -1 | cut -d "." -f1)" -ge 2 ]]; then
         printlog "IBM Notifier notification override" INFO
         printlog "${ibmnotifier}: $($ibmnotifier --version)" DEBUG
         "$ibmnotifier" -type banner -title "$title" -subtitle "$message" -timeout
     elif [[ -x "$manageaction" ]]; then
         printlog "Jamf notification" INFO
-        printlog "${manageaction}: $($swiftdialog --version)" DEBUG
+        printlog "${manageaction}: $($DIALOG_CMD --version)" DEBUG
         "$manageaction" -message "$message" -title "$title"
     elif [[ -x "$hubcli" ]]; then
         printlog "AirWatch Workspace ONE notification" INFO
-        printlog "${hubcli}: $($swiftdialog --version)" DEBUG
+        printlog "${hubcli}: $($DIALOG_CMD --version)" DEBUG
         "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
-    elif [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 ]]; then
+    elif [[ "$($DIALOG_CMD --version | cut -d "." -f1)" -ge 2 ]]; then
         printlog "Swift Dialog notification" INFO
-        printlog "${swiftdialog}: $($swiftdialog --version)" DEBUG
-        "$swiftdialog" --notification --title "$title" --message "$message"
+        printlog "${DIALOG_CMD}: $($DIALOG_CMD --version)" DEBUG
+        "$DIALOG_CMD" --notification --title "$title" --message "$message"
     elif [[ "$($ibmnotifier --version | cut -d ":" -f2 | grep -oe "[0-9.]*" | head -1 | cut -d "." -f1)" -ge 2 ]]; then
         printlog "IBM Notifier notification" INFO
         printlog "${ibmnotifier}: $($ibmnotifier --version)" DEBUG
