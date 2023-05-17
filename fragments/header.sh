@@ -41,6 +41,15 @@ NOTIFIER_APP=""
 #   - ibmnotifier  IBM Notifier (version greater than 2.0 required)
 # If not defined, Installomator will look for MDM native notification app (Jamf Pro and AirWatch), and if not found will use Swift Dialog (if found), or IBM Notifier (if found) or else it will use AppleScript (osascript)
 
+# time in seconds to wait for a prompt to be answered before exiting the script
+PROMPT_TIMEOUT=86400
+# Common times translated into seconds
+# 60    =  1 minute
+# 300   =  5 minutes
+# 600   = 10 minutes
+# 3600  =  1 hour
+# 86400 = 24 hours (default)
+
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
@@ -164,6 +173,8 @@ DIALOG_LIST_ITEM_NAME=""
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
 
+NOTIFY_DIALOG=0
+# If this variable is set to 1, then we will check for installed Swift Dialog v. 2 or later, and use that for notification
 
 # NOTE: How labels work
 
