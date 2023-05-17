@@ -1,11 +1,7 @@
 #!/bin/zsh
 ################################################################################
-# @Author: Alexander Duffner <duf0002a>
-# @Date:   2023-05-17T14:49:12+02:00
-# @Email:  Alexander.Duffner@prosiebensat1.com
+# @Author: Alexander Duffner
 # @Filename: cinema4d.sh
-# @Last modified by:   duf0002a
-# @Last modified time: 2023-05-17T14:49:24+02:00
 ################################################################################
 
 cinema4d)
@@ -24,6 +20,5 @@ cinema4d)
     downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/maxon/cinema4d/releases/${appNewVersion}/Cinema4D_${appNewVersion:0:4}_${appNewVersion}_Mac.dmg"
     installerTool="Maxon Cinema 4D Installer.app"
     CLIInstaller="Maxon Cinema 4D Installer.app/Contents/MacOS/installbuilder.sh"
-    CLIArguments=()
     expectedTeamID="4ZY22YGXQG"
     ;;
