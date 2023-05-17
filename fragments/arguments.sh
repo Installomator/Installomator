@@ -104,13 +104,11 @@ fi
 manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action" # Jamf Pro
 hubcli="/usr/local/bin/hubcli" # AirWatch Workspace ONE
 macmanage="/Library/Addigy/macmanage/MacManage.app/Contents/MacOS/MacManage" # Addigy, currently no notifications
-#swiftdialog="/usr/local/bin/dialog" # dialog
+swiftdialog="/usr/local/bin/dialog" # dialog
 ibmnotifier="/Applications/IBM Notifier.app/Contents/MacOS/IBM Notifier" #ibmnotifier
 
 # check Swift Dialog presence and version
-DIALOG_CMD="/usr/local/bin/dialog"
-
-if [[ ! -x $DIALOG_CMD ]]; then
+if [[ ! -x $swiftdialog ]]; then
     # Swift Dialog is not installed, clear cmd file variable to ignore
     printlog "SwiftDialog is not installed, clear cmd file var"
     DIALOG_CMD_FILE=""
