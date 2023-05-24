@@ -323,7 +323,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.3"
-VERSIONDATE="2023-02-10"
+VERSIONDATE="2023-05-24"
 
 # MARK: Functions
 
@@ -4836,18 +4836,18 @@ notion)
 nudge)
     name="Nudge"
     type="pkg"
+    archiveName="Nudge-$appNewVersion.pkg"
     downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
-    archiveName="Nudge-$appNewVersion.pkg"
     expectedTeamID="T4SK8ZXCXG"
     ;;
 nudgesuite)
     name="Nudge Suite"
     appName="Nudge.app"
     type="pkg"
+    archiveName="Nudge_Suite-$appNewVersion.pkg"
     downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
-    archiveName="Nudge_Suite-$appNewVersion.pkg"
     expectedTeamID="T4SK8ZXCXG"
     blockingProcesses=( "Nudge" )
     ;;
