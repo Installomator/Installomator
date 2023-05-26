@@ -39,6 +39,7 @@ applesfmono
 applesfpro
 applesfsymbols
 aquaskk
+arcbrowser
 archimate
 archiwareb2go
 archiwarepst
@@ -93,6 +94,9 @@ canva
 carboncopycloner
 charles
 chatwork
+chemdoodle
+chemdoodle2d
+chemdoodle3d
 chromeremotedesktop
 chronoagent
 chronosync
