@@ -372,6 +372,7 @@ mongodbcompass
 monitorcontrol
 montereyblocker
 mowgliiitsycal
+munki
 musescore
 muzzle
 mysqlworkbenchce
@@ -409,6 +410,7 @@ openvpnconnectv3
 opera
 origin
 ottomatic
+outset
 overflow
 pacifist
 packages
@@ -426,6 +428,7 @@ pitch
 plantronicshub
 platypus
 plisteditpro
+podmandesktop
 polylens
 popsql
 postman

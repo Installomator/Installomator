@@ -430,9 +430,17 @@ printlog(){
     fi
     previous_log_message=$log_message
 
+    # Extra spaces for log_priority alignment
+    space_char=""
+    if [[ ${#log_priority} -eq 3 ]]; then
+        space_char="  "
+    elif [[ ${#log_priority} -eq 4 ]]; then
+        space_char=" "
+    fi
+
     # Once we finally stop getting duplicate logs output the number of times we got a duplicate.
     if [[ $logrepeat -gt 1 ]];then
-        echo "$timestamp" : "${log_priority} : $label : Last Log repeated ${logrepeat} times" | tee -a $log_location
+        echo "$timestamp" : "${log_priority}${space_char} : $label : Last Log repeated ${logrepeat} times" | tee -a $log_location
 
         if [[ ! -z $datadogAPI ]]; then
             curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSION : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
@@ -448,13 +456,6 @@ printlog(){
         done <<< "$log_message"
     fi
 
-    # Extra spaces
-    space_char=""
-    if [[ ${#log_priority} -eq 3 ]]; then
-        space_char="  "
-    elif [[ ${#log_priority} -eq 4 ]]; then
-        space_char=" "
-    fi
     # If our logging level is greaterthan or equal to our set level then output locally.
     if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
         while IFS= read -r logmessage; do
@@ -2508,9 +2509,10 @@ citrixworkspace)
     newVersionString() {
         urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html'
         htmlDocument=$(curl -fs $urlToParse)
-        xmllint --html --xpath 'string(//p[contains(., "Version:")])' 2> /dev/null <(print $htmlDocument)
+        xmllint --html --xpath 'string(//p[contains(., "Version")])' 2> /dev/null <(print $htmlDocument)
     }
-    appNewVersion=$(newVersionString | cut -f 2- -d ' ')
+    appNewVersion=$(newVersionString | cut -d ' ' -f2 )
+    versionKey="CitrixVersionString"
     expectedTeamID="S272Y5R93J"
     ;;
 clevershare2)
@@ -3453,6 +3455,7 @@ grandperspective)
     name="GrandPerspective"
     type="dmg"
     downloadURL="https://sourceforge.net/projects/grandperspectiv/files/latest/download"
+    appNewVersion=$(curl -s https://sourceforge.net/projects/grandperspectiv/files/grandperspective/ | grep -A1 'Click to enter' | head -1 | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
     expectedTeamID="3Z75QZGN66"
     ;;
 grasshopper)
@@ -3659,9 +3662,13 @@ inkscape)
     # credit: Søren Theilgaard (@theilgaard)
     name="Inkscape"
     type="dmg"
-    downloadURL="https://inkscape.org$(curl -fs https://inkscape.org$(curl -fsJL https://inkscape.org/release/  | grep "/release/" | grep en | head -n 1 | cut -d '"' -f 6)mac-os-x/dmg/dl/ | grep "click here" | cut -d '"' -f 2)"
     appCustomVersion() { /Applications/Inkscape.app/Contents/MacOS/inkscape --version | cut -d " " -f2 }
     appNewVersion=$(curl -fsJL https://inkscape.org/release/  | grep "<title>" | grep -o -e "[0-9.]*")
+    if [[ $(arch) == arm64 ]]; then
+        downloadURL=https://media.inkscape.org/dl/resources/file/Inkscape-"$appNewVersion"_arm64.dmg
+    elif [[ $(arch) == i386 ]]; then
+        downloadURL=https://media.inkscape.org/dl/resources/file/Inkscape-"$appNewVersion"_x86_64.dmg
+    fi
     expectedTeamID="SW3D6BB6A6"
     ;;
 insomnia)
@@ -4445,7 +4452,6 @@ mattermost)
     downloadURL=$(downloadURLFromGit mattermost desktop)
     appNewVersion=$(versionFromGit mattermost desktop)
     expectedTeamID="UQ8HT4Q2XM"
-    blockingProcesses=( "Mattermost Helper.app" "Mattermost Helper (Renderer).app" "Mattermost Helper (GPU).app" "Mattermost Helper (Plugin).app" )
     ;;
 meetingbar)
     name="Meetingbar"
@@ -5019,6 +5025,15 @@ mowgliiitsycal)
     expectedTeamID="HFT3T55WND"
     ;;
 
+munki)
+    name="Munki"
+    type="pkg"
+    packageID="com.googlecode.munki.core"
+    downloadURL=$(downloadURLFromGit "macadmins" "munki-builds")
+    appNewVersion=$(versionFromGit "macadmins" "munki-builds")
+    expectedTeamID="T4SK8ZXCXG"
+    blockingProcesses=( NONE )
+    ;;
 musescore)
     name="MuseScore 4"
     type="dmg"
@@ -5323,6 +5338,15 @@ ottomatic)
     appNewVersion=$(versionFromGit jorio OttoMatic)
     expectedTeamID="RVNL7XC27G"
     ;;
+outset)
+    name="Outset"
+    type="pkg"
+    packageID="io.macadmins.Outset"
+    downloadURL=$(downloadURLFromGit "macadmins" "outset")
+    appNewVersion=$(versionFromGit "macadmins" "outset")
+    expectedTeamID="T4SK8ZXCXG"
+    blockingProcesses=( NONE )
+    ;;
 overflow)
     name="Overflow"
     type="dmg"
@@ -5447,6 +5471,14 @@ plisteditpro)
     type="zip"
     downloadURL="https://www.fatcatsoftware.com/plisteditpro/PlistEditPro.zip"
     expectedTeamID="8NQ43ND65V"
+    ;;
+podmandesktop)
+    name="Podman Desktop"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit containers podman-desktop)
+    appNewVersion=$(versionFromGit containers podman-desktop)
+    archiveName=" podman-desktop-$appNewVersion-universal.dmg"
+    expectedTeamID="HYSCB8KRL2"
     ;;
 polylens)
     name="Poly Lens"
