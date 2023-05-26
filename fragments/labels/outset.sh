@@ -1,9 +1,9 @@
 outset)
     name="Outset"
     type="pkg"
-    packageID="com.googlecode.munki.core"
-    downloadURL=$(downloadURLFromGit "macadmins" "munki-builds")
-    appNewVersion=$(versionFromGit "macadmins" "munki-builds")
+    packageID="io.macadmins.Outset"
+    downloadURL=$(downloadURLFromGit "macadmins" "outset")
+    appNewVersion=$(versionFromGit "macadmins" "outset")
     expectedTeamID="T4SK8ZXCXG"
     blockingProcesses=( NONE )
     ;;
