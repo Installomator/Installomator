@@ -1695,6 +1695,27 @@ adobereaderdc-update)
     blockingProcesses=( "Acrobat Pro DC" "AdobeAcrobat" "AdobeReader" "Distiller" )
     Company="Adobe"
     ;;
+affinitydesigner2)
+    name="Affinity Designer 2"
+    type="dmg"
+    downloadURL=$(curl -fs "https://store.serif.com/en-gb/update/macos/designer/2/" | grep -i -o -E "https.*\.dmg.*\"" | sort | tail -n1 | sed 's/.$//' | sed 's/&amp;/\&/g')
+    appNewVersion=$(curl -fs "https://store.serif.com/en-gb/update/macos/designer/2/" | grep -i -o -E "https.*\.dmg" | sort | tail -n1 | tr "-" "\n" | grep dmg | sed -E 's/([0-9.]*)\.dmg/\1/g')
+    expectedTeamID="6LVTQB9699"
+    ;;
+affinityphoto2)
+    name="Affinity Photo 2"
+    type="dmg"
+    downloadURL=$(curl -fs "https://store.serif.com/en-gb/update/macos/photo/2/" | grep -i -o -E "https.*\.dmg.*\"" | sort | tail -n1 | sed 's/.$//' | sed 's/&amp;/\&/g')
+    appNewVersion=$(curl -fs "https://store.serif.com/en-gb/update/macos/photo/2/" | grep -i -o -E "https.*\.dmg" | sort | tail -n1 | tr "-" "\n" | grep dmg | sed -E 's/([0-9.]*)\.dmg/\1/g')
+    expectedTeamID="6LVTQB9699"
+    ;;
+affinitypublisher2)
+    name="Affinity Publisher 2"
+    type="dmg"
+    downloadURL=$(curl -fs "https://store.serif.com/en-gb/update/macos/publisher/2/" | grep -i -o -E "https.*\.dmg.*\"" | sort | tail -n1 | sed 's/.$//' | sed 's/&amp;/\&/g')
+    appNewVersion=$(curl -fs "https://store.serif.com/en-gb/update/macos/publisher/2/" | grep -i -o -E "https.*\.dmg" | sort | tail -n1 | tr "-" "\n" | grep dmg | sed -E 's/([0-9.]*)\.dmg/\1/g')
+    expectedTeamID="6LVTQB9699"
+    ;;
 aftermath)
     name="Aftermath"
     type="pkg"
@@ -1755,10 +1776,10 @@ alfred)
     expectedTeamID="XZZXE9SED4"
     ;;
 alttab)
-    # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="AltTab"
     type="zip"
     downloadURL=$(downloadURLFromGit lwouis alt-tab-macos)
+    appNewVersion=$(versionFromGit lwouis alt-tab-macos)
     expectedTeamID="QXD7GW8FHY"
     ;;
 amazonchime)
@@ -2120,6 +2141,14 @@ backgroundmusic)
     appNewVersion="$(versionFromGit kyleneideck BackgroundMusic)"
     expectedTeamID="PR7PXC66S5"
     ;;
+backgrounds)
+    name="Backgrounds"
+    type="zip"
+    downloadURL="$(downloadURLFromGit SAP backgrounds)"
+    appNewVersion="$(versionFromGit SAP backgrounds)"
+    expectedTeamID="7R5ZEU67FQ"
+    ;;
+
 balenaetcher)
     name="balenaEtcher"
     type="dmg"
@@ -2652,10 +2681,13 @@ crashplansmb)
 cricutdesignspace)
     name="Cricut Design Space"
     type="dmg"
-    appNewVersion=$(getJSONValue "$(curl -fsL https://s3-us-west-2.amazonaws.com/staticcontent.cricut.com/a/software/osx-native/latest.json)" "rolloutVersion")
+    cricutVersionURL=$(getJSONValue $(curl -fsL "https://apis.cricut.com/desktopdownload/UpdateJson?operatingSystem=osxnative&shard=a") "result")
+    cricutVersionJSON=$(curl -fs "$cricutVersionURL")
+    appNewVersion=$(getJSONValue "$cricutVersionJSON" "rolloutVersion")
     downloadURL=$(getJSONValue $(curl  -fsL "https://apis.cricut.com/desktopdownload/InstallerFile?shard=a&operatingSystem=osxnative&fileName=CricutDesignSpace-Install-v${appNewVersion}.dmg") "result")
     expectedTeamID="25627ZFVT7"
     ;;
+
 cryptomator)
     name="Cryptomator"
     type="dmg"
@@ -3520,6 +3552,13 @@ hubstaff)
     downloadURL="https://app.hubstaff.com/download/osx"
     appNewVersion=""
     expectedTeamID="24BCJT3JW2"
+    ;;
+huddly)
+    name="Huddly"
+    type="dmg"
+    downloadURL="https://app.huddly.com/download/latest/osx"
+    appNewVersion="$(curl -fsIL "${downloadURL}" | grep -i '^content-disposition' | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/g')"
+    expectedTeamID="J659R47HZT"
     ;;
 hype)
     name="Hype4"
@@ -4583,6 +4622,24 @@ microsoftofficeremoval)
     expectedTeamID="QGS93ZLCU7"
     ;;
 microsoftonedrive-rollingout)
+    # This version should match the Enterprise (Deferred) version setting of OneDrive update channel. So only use this label if that is the channel you use for OneDrive. For default update settings use label “microsoftonedrive”.
+    # https://support.microsoft.com/en-us/office/onedrive-release-notes-845dcf18-f921-435e-bf28-4e24b95e5fc0#OSVersion=Mac
+    name="OneDrive"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=861009"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.onedrive.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | cut -d "/" -f 6 | cut -d "." -f 1-3)
+    expectedTeamID="UBF8T346G9"
+    if [[ -x "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" && $INSTALL != "force" && $DEBUG -eq 0 ]]; then
+        printlog "Running msupdate --list"
+        "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" --list
+    fi
+    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    updateToolArguments=( --install --apps ONDR18 )
+    ;;
+microsoftonedrive-rollingout)
+    # This version is the Rolling out version of OneDrive. Not sure what channel in OneDrive update it matches, maybe Insiders.
+    # https://support.microsoft.com/en-us/office/onedrive-release-notes-845dcf18-f921-435e-bf28-4e24b95e5fc0#OSVersion=Mac
     name="OneDrive"
     type="pkg"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=861011"
@@ -4596,7 +4653,25 @@ microsoftonedrive-rollingout)
     #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     #updateToolArguments=( --install --apps ONDR18 )
     ;;
+microsoftonedrive-rollingoutdeferred)
+    # This version is the Rolling out Deferred version of OneDrive. Not sure what channel in OneDrive update it matches.
+    # https://support.microsoft.com/en-us/office/onedrive-release-notes-845dcf18-f921-435e-bf28-4e24b95e5fc0#OSVersion=Mac
+    name="OneDrive"
+    type="pkg"
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=861010"
+    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.onedrive.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | cut -d "/" -f 6 | cut -d "." -f 1-3)
+    expectedTeamID="UBF8T346G9"
+    #if [[ -x "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" && $INSTALL != "force" && $DEBUG -eq 0 ]]; then
+    #    printlog "Running msupdate --list"
+    #    "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" --list
+    #fi
+    #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+    #updateToolArguments=( --install --apps ONDR18 )
+    ;;
 microsoftonedrive)
+    # This version match the Last Released Production version setting of OneDrive update channel. It’s default if no update channel setting for OneDrive updates has been specified. Enterprise (Deferred) is also supported with label “microsoftonedrive-deferred”.
+    # https://support.microsoft.com/en-us/office/onedrive-release-notes-845dcf18-f921-435e-bf28-4e24b95e5fc0#OSVersion=Mac
     name="OneDrive"
     type="pkg"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=823060"
@@ -5057,6 +5132,13 @@ notion)
         appNewVersion=$( curl -fsIL "https://www.notion.so/desktop/mac/download" | grep -i "^location" | awk '{print $2}' | sed -e 's/.*Notion\-\(.*\).dmg.*/\1/' )
     fi
     expectedTeamID="LBQJ96FQ8D"
+    ;;
+nova)
+    name="Nova"
+    type="zip"
+    downloadURL="https://download.panic.com/nova/Nova-Latest.zip"
+    appNewVersion="$(curl -fsIL https://download.panic.com/nova/Nova-Latest.zip | grep -i ^location | tail -1 | sed -E 's/^.*http.*\%20([0-9.]*)\.zip/\1/g')"
+    expectedTeamID="VE8FC488U5"
     ;;
 nudge)
     name="Nudge"
@@ -5535,6 +5617,15 @@ rectangle)
     downloadURL=$(downloadURLFromGit rxhanson Rectangle)
     appNewVersion=$(versionFromGit rxhanson Rectangle)
     expectedTeamID="XSYZ3E4B7D"
+    ;;
+redcanarymacmonitor)
+    name="Red Canary Mac Monitor"
+    # Red Canary Mac Monitor is an advanced, stand-alone system monitoring tool tailor-made for macOS security research, malware triage, and system troubleshooting
+    type="pkg"
+    packageID="com.redcanary.agent"
+    downloadURL="$(downloadURLFromGit redcanaryco mac-monitor)"
+    appNewVersion="$(versionFromGit redcanaryco mac-monitor)"
+    expectedTeamID="UA6JCQGF3F"
     ;;
 redeye)
     # credit: Drew Diver (@grumpydrew on MacAdmins Slack)
@@ -6300,6 +6391,14 @@ thunderbird_intl)
     appNewVersion=$(curl -fsIL $downloadURL | awk -F releases/ '/Location:/ {split($2,a,"/"); print a[1]}')
     expectedTeamID="43AQ936H96"
     blockingProcesses=( thunderbird )
+    ;;
+ticktick)
+    # TickTick is a x-platform ToDo-app for groups/teams, see https://ticktick.com
+    name="TickTick"
+    type="dmg"
+    downloadURL="https://ticktick.com/down/getApp/download?type=mac"
+    appNewVersion="$(curl -fsIL "$downloadURL" | grep -Ei "^location" | cut -d "_" -f2)"
+    expectedTeamID="75TY9UT8AY"
     ;;
 tidal)
     name="TIDAL"

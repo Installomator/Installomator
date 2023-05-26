@@ -14,6 +14,9 @@ adobecreativeclouddesktop
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
+affinitydesigner2
+affinityphoto2
+affinitypublisher2
 aftermath
 aircall
 airserver
@@ -62,6 +65,7 @@ awsvpnclient
 axurerp10
 azuredatastudio
 backgroundmusic
+backgrounds
 balenaetcher
 balsamiqwireframes
 bartender
@@ -225,6 +229,7 @@ houdahspot
 hpeasyadmin
 hpeasystart
 hubstaff
+huddly
 hype
 hyper
 ibarcoder
@@ -335,6 +340,8 @@ microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
 microsoftonedrive-rollingout
+microsoftonedrive-rollingout
+microsoftonedrive-rollingoutdeferred
 microsoftonedrivereset
 microsoftonenote
 microsoftoutlook
@@ -379,6 +386,7 @@ nomad
 nomadlogin
 nordlayer
 notion
+nova
 nudge
 nudgesuite
 nvivo
@@ -439,6 +447,7 @@ qgis-pr
 r
 rancherdesktop
 rectangle
+redcanarymacmonitor
 redeye
 relatel
 remotedesktopmanagerenterprise
@@ -539,6 +548,7 @@ theunarchiver
 things
 thunderbird
 thunderbird_intl
+ticktick
 tidal
 todoist
 toggltrack
