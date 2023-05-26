@@ -15,7 +15,7 @@ anaconda)
         if [ -e "/Users/$currentUser/opt/anaconda3/bin/conda" ]; then
             "/Users/$currentUser/opt/anaconda3/bin/conda" list -f ^anaconda$ | awk '/anaconda /{print $2}'
         fi
-    } 
+    }
     updateTool="/Users/$currentUser/opt/anaconda3/bin/conda"
     updateToolArguments=( install -y anaconda=$appNewVersion )
     updateToolRunAsCurrentUser=1

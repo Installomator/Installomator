@@ -10,8 +10,8 @@ python)
     blockingProcesses=( "IDLE" "Python Launcher" )
     versionKey="CFBundleVersion"
     appCustomVersion() {
-        if [ -d "/Library/Frameworks/Python.framework/Versions/$shortVersion/Resources/Python.app/" ]; then 
+        if [ -d "/Library/Frameworks/Python.framework/Versions/$shortVersion/Resources/Python.app/" ]; then
             /usr/bin/defaults read "/Library/Frameworks/Python.framework/Versions/$shortVersion/Resources/Python.app/Contents/Info" CFBundleVersion
         fi
-    } 
+    }
     ;;
