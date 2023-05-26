@@ -17,6 +17,7 @@ adobereaderdc-update
 aftermath
 aircall
 airserver
+airtable
 airtame
 aldente
 alephone
@@ -27,6 +28,7 @@ amazoncorretto11jdk
 amazoncorretto17jdk
 amazoncorretto8jdk
 amazonworkspaces
+anaconda
 androidfiletransfer
 androidstudio
 anydesk
@@ -47,6 +49,7 @@ arq7
 asana
 atext
 atextlegacy
+atlassiancompanion
 atom
 audacity
 authydesktop
@@ -77,7 +80,9 @@ boop
 boxdrive
 boxsync
 boxtools
+bracketsio
 brave
+brosix
 bugdom
 caffeine
 cakebrew
@@ -121,6 +126,7 @@ cormorant
 craftmanager
 craftmanagerforsketch
 crashplan
+crashplansmb
 cricutdesignspace
 cryptomator
 cyberduck
@@ -128,6 +134,7 @@ cytoscape
 daisydisk
 dangerzone
 darktable
+daylite
 dbeaverce
 debookee
 defaultfolderx
@@ -217,6 +224,7 @@ horos
 houdahspot
 hpeasyadmin
 hpeasystart
+hubstaff
 hype
 hyper
 ibarcoder
@@ -246,11 +254,14 @@ jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfreenroller
+jamovi
+jasp
 jdk17
 jdk18
 jdk19
 jetbrainsclion
 jetbrainsdatagrip
+jetbrainsgateway
 jetbrainsintellijidea
 jetbrainsintellijideace
 jetbrainsphpstorm
@@ -261,6 +272,7 @@ jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
 jumpdesktop
+jupyterlab
 kap
 karabinerelements
 keepassxc
@@ -323,8 +335,10 @@ microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
 microsoftonedrive-rollingout
+microsoftonedrivereset
 microsoftonenote
 microsoftoutlook
+microsoftoutlookreset
 microsoftpowerpoint
 microsoftremotedesktop
 microsoftsharepointplugin
@@ -334,6 +348,7 @@ microsoftvisualstudiocode
 microsoftword
 mightymike
 mindmanager
+miniconda
 miro
 mist
 mist-cli
@@ -419,6 +434,7 @@ proxyman
 prune
 pycharmce
 pymol
+python
 qgis-pr
 r
 rancherdesktop
@@ -467,6 +483,7 @@ skype
 slab
 slack
 smartgit
+smartsheet
 snagit
 snagit2019
 snagit2020
@@ -474,6 +491,7 @@ snagit2021
 snagit2022
 snagit2023
 snapgeneviewer
+sococo
 sonicvisualiser
 sonobus
 sonos
@@ -526,6 +544,7 @@ todoist
 toggltrack
 tom4aconverter
 torbrowser
+tower
 transfer
 trex
 tunnelbear
@@ -577,6 +596,7 @@ yubikeymanagerqt
 zappy
 zeplin
 zerotier
+zipwhip
 zohoworkdrive
 zohoworkdrivegenie
 zohoworkdrivetruesync
