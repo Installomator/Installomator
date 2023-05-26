@@ -109,6 +109,7 @@ chemdoodle3d
 chromeremotedesktop
 chronoagent
 chronosync
+cinema4d
 cisdem-documentreader
 citrixworkspace
 clevershare2
@@ -265,6 +266,7 @@ jasp
 jdk17
 jdk18
 jdk19
+jdk20
 jetbrainsclion
 jetbrainsdatagrip
 jetbrainsgateway
@@ -321,6 +323,7 @@ marathon2
 marathoninfinity
 masv
 mattermost
+maxonapp
 meetingbar
 mendeleyreferencemanager
 menumeters
@@ -370,6 +373,7 @@ mochatelnet
 mochatn3270
 mochatn3812
 mochatn5250
+moderncsv
 mongodbcompass
 monitorcontrol
 montereyblocker
@@ -451,6 +455,7 @@ python
 qgis-pr
 r
 rancherdesktop
+rapidapi
 rectangle
 redcanarymacmonitor
 redeye
@@ -561,6 +566,7 @@ tom4aconverter
 torbrowser
 tower
 transfer
+trapcode
 trex
 tunnelbear
 tunnelblick
@@ -570,6 +576,7 @@ ultimakercura
 umbrellaroamingclient
 uniconverter
 universaltypeclient
+universe
 unnaturalscrollwheels
 utm
 vagrant
@@ -599,10 +606,10 @@ wireshark
 wordservice
 wrikeformac
 wwdc
+xbar
 xcreds
 xeroxphaser7800
 xeroxworkcentre7800
-xbar
 xink
 xmenu
 xmind
