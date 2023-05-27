@@ -1,3 +1,26 @@
+## v11.0beta1
+
+- argument reordering (#834) (this changes behavior, see note below)
+- Swift Dialog:
+    - support for SwiftDialog and IBM Notifier notifications using new variable `NOTIFIER_APP` (#542, #833, #835, #1046)
+    - adds version to progress text in Swift Dialog (#794)
+- User Interaction:
+    - adds `PROMPT_TIMEOUT` to `prompt_user` and `prompt_user_then_kill` (#771, #140)
+    - only prompts once on `prompt_user_then_kill` (#603)
+    - don't reopen app on `silent_fail` (#657, #860)
+    - no relaunch if user chooses 'Not Now' (#638)
+- Version Checking:
+    - better detection of new install versus an update (#756)
+    - display version of application in notification windows (#637)
+    - package version checking improved for pkgs with multiple components (#844)
+- adds new label property `folderName` (#783)
+- continues script when 'Management Action' stalls (#808)
+- improved notarization check for apps (#903)
+- new labels:
+    - chemdoodle (#783)
+
+**Important Note:** #834 changes the behavior of additional arguments:
+
 ## v10.4 beta
 
 - functions to get download url and version from git no longer print to stdout (#978, #1031)
