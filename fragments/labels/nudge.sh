@@ -1,8 +1,8 @@
 nudge)
     name="Nudge"
     type="pkg"
+    archiveName="Nudge-[0-9.]*.pkg"
     downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
-    archiveName="Nudge-$appNewVersion.pkg"
     expectedTeamID="T4SK8ZXCXG"
     ;;
