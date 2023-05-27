@@ -50,31 +50,63 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
+#     if [[ "$NOTIFIER_APP" = "dialog" ]]; then
+#         printlog "Swift Dialog dialog override" INFO
+#         "$DIALOG_CMD" --title "$title" --message "$message" --ontop --button2text "Not Now" --button1text "Quit and Update" --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
+#         if [[ $? -eq 2 ]]; then
+#             echo "Not Now" # Clicked button
+#         fi
+#     else
+#         printlog "AppleScript dialog fallback" INFO
     runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\" giving up after $PROMPT_TIMEOUT)"
+#     fi
 }
 
 displaydialogContinue() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
+#     if [[ "$NOTIFIER_APP" = "dialog" ]]; then
+#         printlog "Swift Dialog dialog override" INFO
+#         "$DIALOG_CMD" --title "$title" --message "$message" --ontop --button1text "Quit and Update" --button2disabled --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
+#     else
+#         printlog "AppleScript dialog fallback" INFO
     runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
+#     fi
 }
 
 displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
-    manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
-    hubcli="/usr/local/bin/hubcli"
-    swiftdialog="/usr/local/bin/dialog"
 
-    if [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 && "$NOTIFY_DIALOG" -eq 1 ]]; then
-        "$swiftdialog" --notification --title "$title" --message "$message"
+    # For notifications, built in MDM tools have priority over 3. party tools, and AppleScript is the fallback option.
+    # Unless the 3. party tool is specified in variable NOTIFIER_APP
+
+    if [[ "$NOTIFIER_APP" = "dialog" && "$($DIALOG_CMD --version | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "Swift Dialog notification override" INFO
+        printlog "${DIALOG_CMD}: $($DIALOG_CMD --version)" DEBUG
+        "$DIALOG_CMD" --notification --title "$title" --message "$message"
+    elif [[ "$NOTIFIER_APP" = "ibmnotifier" && "$($ibmnotifier --version | cut -d ":" -f2 | grep -oe "[0-9.]*" | head -1 | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "IBM Notifier notification override" INFO
+        printlog "${ibmnotifier}: $($ibmnotifier --version)" DEBUG
+        "$ibmnotifier" -type banner -title "$title" -subtitle "$message" -timeout
     elif [[ -x "$manageaction" ]]; then
+        printlog "Jamf notification" INFO
+        printlog "${manageaction}: $($DIALOG_CMD --version)" DEBUG
          "$manageaction" -message "$message" -title "$title" &
     elif [[ -x "$hubcli" ]]; then
+        printlog "AirWatch Workspace ONE notification" INFO
+        printlog "${hubcli}: $($DIALOG_CMD --version)" DEBUG
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
-    elif [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 ]]; then
-         "$swiftdialog" --notification --title "$title" --message "$message"
+    elif [[ "$($DIALOG_CMD --version | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "Swift Dialog notification" INFO
+        printlog "${DIALOG_CMD}: $($DIALOG_CMD --version)" DEBUG
+        "$DIALOG_CMD" --notification --title "$title" --message "$message"
+    elif [[ "$($ibmnotifier --version | cut -d ":" -f2 | grep -oe "[0-9.]*" | head -1 | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "IBM Notifier notification" INFO
+        printlog "${ibmnotifier}: $($ibmnotifier --version)" DEBUG
+        "$ibmnotifier" -type banner -title "$title" -subtitle "$message" -timeout
     else
+        printlog "AppleScript notification fallback" INFO
         runAsUser osascript -e "display notification \"$message\" with title \"$title\""
     fi
 }
@@ -92,9 +124,17 @@ printlog(){
     fi
     previous_log_message=$log_message
 
+    # Extra spaces for log_priority alignment
+    space_char=""
+    if [[ ${#log_priority} -eq 3 ]]; then
+        space_char="  "
+    elif [[ ${#log_priority} -eq 4 ]]; then
+        space_char=" "
+    fi
+
     # Once we finally stop getting duplicate logs output the number of times we got a duplicate.
     if [[ $logrepeat -gt 1 ]];then
-        echo "$timestamp" : "${log_priority} : $label : Last Log repeated ${logrepeat} times" | tee -a $log_location
+        echo "$timestamp" : "${log_priority}${space_char} : $label : Last Log repeated ${logrepeat} times" | tee -a $log_location
 
         if [[ ! -z $datadogAPI ]]; then
             curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSION : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
@@ -110,13 +150,6 @@ printlog(){
         done <<< "$log_message"
     fi
 
-    # Extra spaces
-    space_char=""
-    if [[ ${#log_priority} -eq 3 ]]; then
-        space_char="  "
-    elif [[ ${#log_priority} -eq 4 ]]; then
-        space_char=" "
-    fi
     # If our logging level is greaterthan or equal to our set level then output locally.
     if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
         while IFS= read -r logmessage; do
@@ -168,14 +201,12 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     if [ -n "$archiveName" ]; then
         downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
         if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName")" == "" ]]; then
-            printlog "GitHub API not returning URL, trying https://github.com/$gitusername/$gitreponame/releases/latest."
             #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
             downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)"
         fi
     else
         downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
         if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
-            printlog "GitHub API not returning URL, trying https://github.com/$gitusername/$gitreponame/releases/latest."
             #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
             downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
         fi

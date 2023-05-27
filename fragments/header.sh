@@ -34,6 +34,13 @@ NOTIFY=success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
 
+# app to show notifications
+NOTIFIER_APP=""
+# options:
+#   - dialog           Swift Dialog (version greater than 2.0 required)
+#   - ibmnotifier      IBM Notifier (version greater than 2.0 required)
+# If not defined, Installomator will look for MDM native notification app (Jamf Pro and AirWatch), and if not found will use Swift Dialog (if found), or IBM Notifier (if found) or else it will use AppleScript (osascript)
+
 # time in seconds to wait for a prompt to be answered before exiting the script
 PROMPT_TIMEOUT=86400
 # Common times translated into seconds
