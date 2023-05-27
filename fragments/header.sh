@@ -34,6 +34,22 @@ NOTIFY=success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
 
+# app to show notifications
+NOTIFIER_APP=""
+# options:
+#   - dialog           Swift Dialog (version greater than 2.0 required)
+#   - ibmnotifier      IBM Notifier (version greater than 2.0 required)
+# If not defined, Installomator will look for MDM native notification app (Jamf Pro and AirWatch), and if not found will use Swift Dialog (if found), or IBM Notifier (if found) or else it will use AppleScript (osascript)
+
+# time in seconds to wait for a prompt to be answered before exiting the script
+PROMPT_TIMEOUT=86400
+# Common times translated into seconds
+# 60    =  1 minute
+# 300   =  5 minutes
+# 600   = 10 minutes
+# 3600  =  1 hour
+# 86400 = 24 hours (default)
+
 # behavior when blocking processes are found
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
@@ -156,7 +172,6 @@ DIALOG_LIST_ITEM_NAME=""
 # When this variable is set, progress for downloads and installs will be sent to this
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
-
 
 
 # NOTE: How labels work
