@@ -1,4 +1,6 @@
 microsoftonedrive-rollingout)
+    # This version is the Rolling out version of OneDrive. Not sure what channel in OneDrive update it matches, maybe Insiders.
+    # https://support.microsoft.com/en-us/office/onedrive-release-notes-845dcf18-f921-435e-bf28-4e24b95e5fc0#OSVersion=Mac
     name="OneDrive"
     type="pkg"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=861011"
