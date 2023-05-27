@@ -333,7 +333,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.4beta"
+VERSION="10.4"
 VERSIONDATE="2023-05-27"
 
 # MARK: Functions
@@ -2226,8 +2226,8 @@ bitrix24)
 bitwarden)
     name="Bitwarden"
     type="dmg"
-    downloadURL=$(downloadURLFromGit bitwarden desktop )
-    appNewVersion=$(versionFromGit bitwarden desktop )
+    appNewVersion=$(curl -s "https://github.com/bitwarden/clients/releases?q\=desktop" | xmllint --html --xpath 'substring-after(string(//h2[starts-with(text(),"Desktop v")]), " v")' - 2>/dev/null)
+    downloadURL="https://github.com/bitwarden/clients/releases/download/desktop-v${appNewVersion}/Bitwarden-${appNewVersion}-universal.dmg"
     expectedTeamID="LTZ2PFU5D6"
     ;;
 blender)
@@ -2440,27 +2440,6 @@ chatwork)
      type="dmg"
      downloadURL="https://desktop-app.chatwork.com/installer/Chatwork.dmg"
      expectedTeamID="H34A3H2Y54"
-     ;;
-chemdoodle|\
-chemdoodle2d)
-     name="ChemDoodle"
-     type="dmg"
-     downloadURL="https://www.ichemlabs.com$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle-macos" | sed -r 's/.*href="([^"]+).*/\1/g')"
-     expectedTeamID="9XP397UW95"
-     folderName="ChemDoodle"
-     appName="${folderName}/ChemDoodle.app"
-     appNewVersion=$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle-macos" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
-     versionKey="CFBundleVersion"
-     ;;
-chemdoodle3d)
-     name="ChemDoodle3D"
-     type="dmg"
-     downloadURL="https://www.ichemlabs.com$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle3D-macos" | sed -r 's/.*href="([^"]+).*/\1/g')"
-     expectedTeamID="9XP397UW95"
-     folderName="ChemDoodle3D"
-     appName="${folderName}/ChemDoodle3D.app"
-     appNewVersion=$(curl -s -L https://www.ichemlabs.com/download | xmllint --html --format - 2>&1 | grep -e "ChemDoodle3D-macos" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
-     versionKey="CFBundleVersion"
      ;;
 chromeremotedesktop)
     name="chromeremotedesktop"
@@ -4458,6 +4437,19 @@ mactex)
     downloadURL="https://mirror.ctan.org/systems/mac/mactex/MacTeX.pkg"
     expectedTeamID="RBGCY5RJWM"
     ;;
+magicbullet)
+    name="Magic Bullet Suite"
+    type="zip"
+    appCustomVersion(){
+    	ls "/Users/Shared/Red Giant/uninstall" | grep bullet | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru
+    }
+    appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/4406405444242-Magic-Bullet-Suite" | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | sort -gru | head -n 1)"
+    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/magicbullet/releases/$appNewVersion/MagicBulletSuite-${appNewVersion}_Mac.zip"
+    installerTool="Magic Bullet Suite Installer.app"
+    CLIInstaller="Magic Bullet Suite Installer.app/Contents/Scripts/install.sh"
+    CLIArguments=()
+    expectedTeamID="4ZY22YGXQG"
+    ;;
 mailmate)
     # info: It is now recommended for new users to use the latest beta release of MailMate instead of the public release, see https://freron.com/download/
     name="MailMate"
@@ -5911,7 +5903,7 @@ scaleft)
     type="pkg"
     downloadURL="https://dist.scaleft.com/client-tools/mac/latest/ScaleFT.pkg"
     appNewVersion=$(curl -sf "https://dist.scaleft.com/client-tools/mac/" | awk '/dir/{i++}i==2' | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
-    expectedTeamID="HV2G9Z3RP5"
+    expectedTeamID="B7F62B65BN"
     blockingProcesses=( ScaleFT )
     ;;
 screamingfrogseospider)

@@ -103,9 +103,6 @@ canva
 carboncopycloner
 charles
 chatwork
-chemdoodle
-chemdoodle2d
-chemdoodle3d
 chromeremotedesktop
 chronoagent
 chronosync
@@ -318,6 +315,7 @@ macfuse
 macoslaps
 macports
 mactex
+magicbullet
 mailmate
 malwarebytes
 marathon
