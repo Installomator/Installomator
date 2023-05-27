@@ -334,7 +334,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.4beta"
-VERSIONDATE="2023-05-26"
+VERSIONDATE="2023-05-27"
 
 # MARK: Functions
 
@@ -2836,7 +2836,11 @@ dialpad)
     # credit: @ehosaka
     name="Dialpad"
     type="dmg"
-    downloadURL="https://storage.googleapis.com/dialpad_native/osx/Dialpad.dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://storage.googleapis.com/dialpad_native/osx/arm64/Dialpad.dmg"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://storage.googleapis.com/dialpad_native/osx/x64/Dialpad.dmg"
+    fi
     expectedTeamID="9V29MQSZ9M"
     ;;
 discord)
@@ -2859,6 +2863,14 @@ displaylinkmanager)
     #packageID="com.displaylink.displaylinkmanagerapp"
     downloadURL=https://www.synaptics.com$(redirect=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep 'class="download-link">Download' | head -n 1 | sed 's/.*href="//' | sed 's/".*//') && curl -sfL "https://www.synaptics.com$redirect" | grep Accept | head -n 1 | sed 's/.*href="//' | sed 's/".*//')
     appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep "Release:" | head -n 1 | cut -d ' ' -f2)
+    expectedTeamID="73YQY62QM3"
+    ;;
+displaylinkmanagergraphicsconnectivity)
+    name="DisplayLink Manager Graphics Connectivity"
+    type="pkg"
+    packageID="com.displaylink.displaylinkmanagerapp"
+    downloadURL=https://www.synaptics.com$(curl -fLs "https://www.synaptics.com$(curl -fLs https://www.synaptics.com/products/displaylink-graphics/downloads/macos | xmllint --html --format - 2>/dev/null | grep -oE '"/node/.+?"' | head -n1 | tr -d '"')" | xmllint --html --format - 2>/dev/null | grep -oE "/.+\.pkg")
+    appNewVersion=$(echo "${downloadURL}" | grep -Eo '[0-9]\.[0-9]+(\.[0-9])?')
     expectedTeamID="73YQY62QM3"
     ;;
 docker)
@@ -3018,6 +3030,13 @@ evernote)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g' )
     expectedTeamID="Q79WDW8YH9"
     appName="Evernote.app"
+    ;;
+everweb)
+    name="EverWeb"
+    type="dmg"
+    downloadURL="https://www.ragesw.com/downloads/everweb/everweb.dmg"
+    appNewVersion=$("curl -s https://www.everwebapp.com/change-log/index.html | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -n 1")
+    expectedTeamID="A95T4TFRZ2"
     ;;
 exelbanstats)
     # credit: Søren Theilgaard (@theilgaard)
@@ -3235,12 +3254,11 @@ flexoptixapp)
     expectedTeamID="C5JETSFPHL"
     ;;
 flowjo)
-    name="FlowJo-OSX64-10.8.0"
+    name="FlowJo"
     type="dmg"
     downloadURL="$(curl -fs "https://www.flowjo.com/solutions/flowjo/downloads" | grep -i -o -E "https.*\.dmg")"
     appNewVersion=$(echo "${downloadURL}" | tr "-" "\n" | grep dmg | sed -E 's/([0-9.]*)\.dmg/\1/g')
     expectedTeamID="C79HU5AD9V"
-    appName="FlowJo.app"
     ;;
 flux)
     name="Flux"
@@ -3668,6 +3686,7 @@ imazingprofileeditor)
     name="iMazing Profile Editor"
     type="dmg"
     downloadURL="https://downloads.imazing.com/mac/iMazing-Profile-Editor/iMazingProfileEditorMac.dmg"
+    appNewVersion=$(curl -s https://imazing.com/profile-editor/download | grep -2 'Version' | head -4 | sed -nE 's/.*<b>([0-9\.]+)<\/b>.*/\1/p' )
     expectedTeamID="J5PR93692Y"
     ;;
 inetclearreportsdesigner)
@@ -3753,11 +3772,12 @@ iterm2)
     expectedTeamID="H7V7XYVQ7D"
     blockingProcesses=( iTerm2 )
     ;;
-itsycal)
+itsycal|\
+mowgliiitsycal)
     name="Itsycal"
     type="zip"
-    downloadURL=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal-apple-silicon.xml | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
-    appNewVersion=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal-apple-silicon.xml | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    downloadURL=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal.xml | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal.xml | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     expectedTeamID="HFT3T55WND"
     ;;
 jabradirect)
@@ -5077,14 +5097,6 @@ montereyblocker)
     appNewVersion=$(versionFromGit Theile montereyblocker )
     expectedTeamID="FXW6QXBFW5"
     ;;
-mowgliiitsycal)
-    name="Itsycal"
-    type="zip"
-    downloadURL=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal.xml | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
-    appNewVersion=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal.xml | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
-    expectedTeamID="HFT3T55WND"
-    ;;
-
 munki)
     name="Munki"
     type="pkg"
@@ -5218,17 +5230,17 @@ nova)
 nudge)
     name="Nudge"
     type="pkg"
+    archiveName="Nudge-[0-9.]*.pkg"
     downloadURL=$(downloadURLFromGit macadmins Nudge )
     appNewVersion=$(versionFromGit macadmins Nudge )
-    archiveName="Nudge-$appNewVersion.pkg"
     expectedTeamID="T4SK8ZXCXG"
     ;;
 nudgesuite)
     name="Nudge Suite"
     appName="Nudge.app"
     type="pkg"
+    archiveName="Nudge_Suite-[0-9.]*.pkg"
     appNewVersion=$(versionFromGit macadmins Nudge )
-    archiveName="Nudge_Suite-$appNewVersion.pkg"
     downloadURL=$(downloadURLFromGit macadmins Nudge )
     expectedTeamID="T4SK8ZXCXG"
     blockingProcesses=( "Nudge" )
@@ -5458,6 +5470,14 @@ parsec)
     type="pkg"
     downloadURL="https://builds.parsecgaming.com/package/parsec-macos.pkg"
     expectedTeamID="Y9MY52XZDB"
+    ;;
+patchomator)
+    name="patchomator"
+    type="pkg"
+    packageID="com.option8.patchomator"
+    downloadURL="$(downloadURLFromGit Mac-Nerd patchomator)"
+    appNewVersion="$(versionFromGit Mac-Nerd patchomator)"
+    expectedTeamID="4VAAB6AM7X"
     ;;
 pcoipclient)
     # Note that the sed match removes 'pcoip-client_' and '.dmg' 
@@ -5869,6 +5889,14 @@ rstudio)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.-]*)\..*/\1/g' | sed 's/-/+/' )
     expectedTeamID="FYF2F5GFX4"
     ;;
+rustdesk)
+    name="RustDesk"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit rustdesk rustdesk)
+    appNewVersion=$(versionFromGit rustdesk rustdesk)
+    archiveName="rustesk-$appNewVersion.dmg"
+    expectedTeamID="HZF9JMC8YN"
+    ;;
 santa)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="Santa"
@@ -5959,8 +5987,8 @@ shield)
 shottr)
     name="Shottr"
     type="dmg"
-    downloadURL="https://shottr.cc/dl/Shottr-1.5.3.dmg"
-    appNewVersion=$( echo ${downloadURL} | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    appNewVersion=$(curl -s https://shottr.cc/newversion.html | grep "Shottr v" | head -1 | sed 's/.*v\([0-9.]*\).*/\1/')
+    downloadURL="https://shottr.cc/dl/Shottr-${appNewVersion}.dmg"
     expectedTeamID="2Y683PRQWN"
     ;;
 sidekick)
@@ -6684,6 +6712,19 @@ veracrypt)
     downloadURL=$(curl -fs "https://www.veracrypt.fr/en/Downloads.html" | grep "https.*\.dmg" | grep -vi "legacy" | tr '"' '\n' | grep "^https.*" | grep -vi ".sig" | sed "s/&#43;/+/g")
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*.*)\.dmg/\1/g' )
     expectedTeamID="Z933746L2S"
+    ;;
+vfx)
+    name="VFX Suite"
+    type="zip"
+    appCustomVersion(){
+      ls "/Users/Shared/Red Giant/uninstall" | grep vfx | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru
+    }
+    appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/4406405445394-VFX-Suite" | grep "#icon-star" -B3 | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru)"
+    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/vfx/releases/${appNewVersion}/VfxSuite-${appNewVersion}_Mac.zip"
+    installerTool="VFX Suite Installer.app"
+    CLIInstaller="VFX Suite Installer.app/Contents/Scripts/install.sh"
+    CLIArguments=()
+    expectedTeamID="4ZY22YGXQG"
     ;;
 vimac)
     name="Vimac"

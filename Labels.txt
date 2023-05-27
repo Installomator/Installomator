@@ -152,6 +152,7 @@ dialpad
 discord
 diskspace
 displaylinkmanager
+displaylinkmanagergraphicsconnectivity
 docker
 dockutil
 drawio
@@ -171,6 +172,7 @@ element
 eshareosx
 etrecheck
 evernote
+everweb
 exelbanstats
 exifrenamer
 fantastical
@@ -424,6 +426,7 @@ pandoc
 parallelsrasclient
 paretosecurity
 parsec
+patchomator
 pcoipclient
 pdfsam
 perimeter81
@@ -478,6 +481,7 @@ rocketchat
 rodeconnect
 royaltsx
 rstudio
+rustdesk
 santa
 scaleft
 screamingfrogseospider
@@ -583,6 +587,7 @@ vagrant
 vanilla
 venturablocker
 veracrypt
+vfx
 vimac
 virtualbox
 viscosity
