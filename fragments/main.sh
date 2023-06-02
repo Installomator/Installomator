@@ -5,6 +5,35 @@
     ;;
 esac
 
+# finish reading the arguments:
+while [[ -n $1 ]]; do
+    if [[ $1 =~ ".*\=.*" ]]; then
+        # if an argument contains an = character, send it to eval
+        printlog "setting variable from argument $1" INFO
+        eval $1
+    fi
+    # shift to next argument
+    shift 1
+done
+
+# verify we have everything we need
+if [[ -z $name ]]; then
+    printlog "need to provide 'name'" ERROR
+    exit 1
+fi
+if [[ -z $type ]]; then
+    printlog "need to provide 'type'" ERROR
+    exit 1
+fi
+if [[ -z $downloadURL ]]; then
+    printlog "need to provide 'downloadURL'" ERROR
+    exit 1
+fi
+if [[ -z $expectedTeamID ]]; then
+    printlog "need to provide 'expectedTeamID'" ERROR
+    exit 1
+fi
+
 # Are we only asked to return label name
 if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
     printlog "Only returning label name." REQ
