@@ -59,6 +59,7 @@ authydesktop
 autodeskfusion360admininstall
 autodmg
 autopkgr
+avertouch
 aviatrix
 awscli2
 awsvpnclient
@@ -98,19 +99,19 @@ camtasia2019
 camtasia2020
 camtasia2021
 camtasia2022
+camtasia2023
 camunda
 canva
 carboncopycloner
 charles
 chatwork
-chemdoodle
-chemdoodle2d
-chemdoodle3d
 chromeremotedesktop
 chronoagent
 chronosync
+cinema4d
 cisdem-documentreader
 citrixworkspace
+cleartouchcollage
 clevershare2
 clickshare
 clickup
@@ -151,6 +152,7 @@ dialpad
 discord
 diskspace
 displaylinkmanager
+displaylinkmanagergraphicsconnectivity
 docker
 dockutil
 drawio
@@ -168,8 +170,10 @@ egnytecore
 egnytewebedit
 element
 eshareosx
+espanso
 etrecheck
 evernote
+everweb
 exelbanstats
 exifrenamer
 fantastical
@@ -198,6 +202,7 @@ fork
 front
 fsmonitor
 fujifilmwebcam
+gdevelop
 gfxcardstatus
 gimp
 githubdesktop
@@ -265,6 +270,7 @@ jasp
 jdk17
 jdk18
 jdk19
+jdk20
 jetbrainsclion
 jetbrainsdatagrip
 jetbrainsgateway
@@ -282,6 +288,7 @@ jupyterlab
 kap
 karabinerelements
 keepassxc
+keeperpasswordmanager
 keepingyouawake
 keka
 keybase
@@ -314,6 +321,7 @@ macfuse
 macoslaps
 macports
 mactex
+magicbullet
 mailmate
 malwarebytes
 marathon
@@ -321,6 +329,7 @@ marathon2
 marathoninfinity
 masv
 mattermost
+maxonapp
 meetingbar
 mendeleyreferencemanager
 menumeters
@@ -370,6 +379,7 @@ mochatelnet
 mochatn3270
 mochatn3812
 mochatn5250
+moderncsv
 mongodbcompass
 monitorcontrol
 montereyblocker
@@ -420,6 +430,7 @@ pandoc
 parallelsrasclient
 paretosecurity
 parsec
+patchomator
 pcoipclient
 pdfsam
 perimeter81
@@ -451,6 +462,7 @@ python
 qgis-pr
 r
 rancherdesktop
+rapidapi
 rectangle
 redcanarymacmonitor
 redeye
@@ -473,6 +485,7 @@ rocketchat
 rodeconnect
 royaltsx
 rstudio
+rustdesk
 santa
 scaleft
 screamingfrogseospider
@@ -543,6 +556,7 @@ taskpaper
 teamviewer
 teamviewerhost
 teamviewerqs
+teamviewerqscustom
 techsmithcapture
 telegram
 tembo
@@ -561,6 +575,7 @@ tom4aconverter
 torbrowser
 tower
 transfer
+trapcode
 trex
 tunnelbear
 tunnelblick
@@ -570,12 +585,14 @@ ultimakercura
 umbrellaroamingclient
 uniconverter
 universaltypeclient
+universe
 unnaturalscrollwheels
 utm
 vagrant
 vanilla
 venturablocker
 veracrypt
+vfx
 vimac
 virtualbox
 viscosity
@@ -599,10 +616,10 @@ wireshark
 wordservice
 wrikeformac
 wwdc
+xbar
 xcreds
 xeroxphaser7800
 xeroxworkcentre7800
-xbar
 xink
 xmenu
 xmind
