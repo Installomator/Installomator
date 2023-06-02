@@ -1,4 +1,4 @@
-## v10.4 beta
+## v10.4
 
 - functions to get download url and version from git no longer print to stdout (#978, #1031)
 - fixes in swiftdialog scripts (#972)
