@@ -334,7 +334,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.4"
-VERSIONDATE="2023-05-27"
+VERSIONDATE="2023-06-02"
 
 # MARK: Functions
 
@@ -2097,6 +2097,14 @@ autopkgr)
     appNewVersion=$(versionFromGit lindegroup autopkgr)
     expectedTeamID="JVY2ZR6SEF"
     ;;
+avertouch)
+    name="AverTouch"
+    type="zip"
+    appNewVersion="$(curl -s "https://www.averusa.com/education/support/avertouch" | xmllint --html --xpath 'substring-after(string(//a[@class="dl-avertouch-mac"]/@href), "AVerTouch_mac_v")' - 2> /dev/null | sed 's/\.zip$//')"
+    downloadURL="https://www.averusa.com/education/downloads/AVerTouch_mac_v${appNewVersion}.zip"
+    expectedTeamID="B6T3WCD59Q"
+    versionKey="CFBundleVersion"
+    ;;
 aviatrix)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Aviatrix VPN Client"
@@ -2373,14 +2381,6 @@ camostudio)
     # Camo Studio will ask for admin permissions to install som plug-ins. that has not been handled.
     expectedTeamID="Q248YREB53"
     ;;
-camtasia|\
-camtasia2022)
-    name="Camtasia 2022"
-    type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2022" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
-    expectedTeamID="7TQL462TU8"
-    ;;
 camtasia2019)
     name="Camtasia 2019"
     type="dmg"
@@ -2400,6 +2400,21 @@ camtasia2021)
     type="dmg"
     downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2021" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
     appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2021" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
+    expectedTeamID="7TQL462TU8"
+    ;;
+camtasia2022)
+    name="Camtasia 2022"
+    type="dmg"
+    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
+    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2022" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
+    expectedTeamID="7TQL462TU8"
+    ;;
+camtasia|\
+camtasia2023)
+    name="Camtasia 2023"
+    type="dmg"
+    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2023" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
+    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2023" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
     expectedTeamID="7TQL462TU8"
     ;;
 camunda)
@@ -2506,6 +2521,13 @@ citrixworkspace)
     appNewVersion=$(newVersionString | cut -d ' ' -f2 )
     versionKey="CitrixVersionString"
     expectedTeamID="S272Y5R93J"
+    ;;
+cleartouchcollage)
+    name="Collage"
+    type="pkgInZip"
+    packageID="com.cvte.cleartouch.mac"
+    downloadURL=$(curl -fs https://www.getcleartouch.com/download/collage-for-mac/ | xmllint --html --xpath 'string(//*[@id="wpdm-filelist-412"]/tbody/tr[1]/td[2]/a/@href)' - 2> /dev/null | sed 's/ /%20/g')
+    expectedTeamID="P76M9BE8DQ"
     ;;
 clevershare2)
     name="Clevershare"
@@ -2706,6 +2728,12 @@ cytoscape)
     name="Cytoscape"
     #appName="Cytoscape Installer.app"
     type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="Cytoscape_[0-9._]*_macos_aarch64.dmg"
+
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="Cytoscape_[0-9._]*_macos_x64.dmg"
+    fi
     downloadURL="$(downloadURLFromGit cytoscape cytoscape)"
     appNewVersion="$(versionFromGit cytoscape cytoscape)"
     installerTool="Cytoscape Installer.app"
@@ -2994,6 +3022,19 @@ eshareosx)
     versionKey="CFBundleVersion"
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z\-]*_([0-9.]*)\.pkg/\1/g' )
     expectedTeamID="X9MBQS7DDC"
+    ;;
+espanso)
+    name="Espanso"
+    type="zip"
+    if [[ "$(arch)" == "arm64" ]]; then
+        archiveName="Espanso-Mac-M1.zip"
+    else
+        archiveName="Espanso-Mac-Intel.zip"
+    fi
+    downloadURL="$(downloadURLFromGit espanso espanso)"
+    appNewVersion="$(versionFromGit espanso espanso)"
+    blockingProcesses=( "Espanso" "espanso" )
+    expectedTeamID="K839T4T5BY"
     ;;
 etrecheck)
     # credit: @dvsjr macadmins slack
@@ -3296,6 +3337,18 @@ fujifilmwebcam)
      appNewVersion=$( echo “${downloadURL}” | sed -E 's/.*XWebcamIns([0-9]*).*/\1/g' | sed -E 's/([0-9])([0-9]).*/\1\.\2/g')
      expectedTeamID="34LRP8AV2M"
      ;;
+gdevelop)
+    name="GDevelop 5"
+    type="dmg"
+    if [[ $(arch) == arm64 ]]; then
+        archiveName="GDevelop-5-[0-9.]*-arm64.dmg"
+    elif [[ $(arch) == i386 ]]; then
+        archiveName="GDevelop-5-[0-9.]*.dmg" 
+    fi
+    appNewVersion="$(versionFromGit 4ian GDevelop)"
+    downloadURL="$(downloadURLFromGit 4ian GDevelop)"
+    expectedTeamID="5CG65LEVUK"
+    ;;
 gfxcardstatus)
     name="gfxCardStatus"
     type="zip"
@@ -4098,6 +4151,14 @@ keepassxc)
     downloadURL=$(downloadURLFromGit keepassxreboot keepassxc)
     appNewVersion=$(versionFromGit keepassxreboot keepassxc)
     expectedTeamID="G2S7P7J672"
+    ;;
+keeperpasswordmanager)
+    name="Keeper Password Manager"
+    type="dmg"
+    downloadURL="https://www.keepersecurity.com/desktop_electron/Darwin/KeeperSetup.dmg"
+    appNewVersion=""
+    expectedTeamID="234QNB7GCA"
+    blockingProcess=( "Keeper Password Manager" )
     ;;
 keepingyouawake)
     name="KeepingYouAwake"
@@ -6394,15 +6455,16 @@ teamviewer)
     versionKey="CFBundleShortVersionString"
     pkgName="Install TeamViewer.app/Contents/Resources/Install TeamViewer.pkg"
     downloadURL="https://download.teamviewer.com/download/TeamViewer.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/mac-os/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
     expectedTeamID="H7UGFBUGV6"
     ;;
 teamviewerhost)
     name="TeamViewerHost"
     type="pkgInDmg"
     packageID="com.teamviewer.teamviewerhost"
-    pkgName="Install TeamViewerHost.app/Contents/Resources/Install TeamViewerHost.pkg"    downloadURL="https://download.teamviewer.com/download/TeamViewerHost.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/mac-os/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
+    pkgName="Install TeamViewerHost.app/Contents/Resources/Install TeamViewerHost.pkg"
+    downloadURL="https://download.teamviewer.com/download/TeamViewerHost.dmg"
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
     expectedTeamID="H7UGFBUGV6"
     #blockingProcessesMaxCPU="5" # Future feature
     ;;
@@ -6411,7 +6473,18 @@ teamviewerqs)
     name="TeamViewerQS"
     type="dmg"
     downloadURL="https://download.teamviewer.com/download/TeamViewerQS.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/mac-os/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
+    appName="TeamViewerQS.app"
+    expectedTeamID="H7UGFBUGV6"
+    ;;
+teamviewerqscustom)
+    name="TeamViewerQS"
+    type="zip"
+    teamviewerCustomDownloadURL="" # https://get.teamviewer.com/your_custom_name_here
+    teamviewerConfigID=$(curl -fs ${teamviewerCustomDownloadURL} -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' | grep -o 'var configId = ".*"' | awk -F'"' '{ print $2 }')
+    teamviewerVersion=$(curl -fs ${teamviewerCustomDownloadURL} -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' | grep -o 'var version = ".*"' | awk -F'"' '{ print $2 }')
+    downloadURL=$(curl -fs -X POST --url "https://get.teamviewer.com/api/CustomDesign" --header 'Content-Type: application/json; charset=utf-8' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' --data '{ "ConfigId": "'"$teamviewerConfigID"'", "Version": "'"$teamviewerVersion"'", "IsCustomModule": true, "Subdomain": "1", "ConnectionId": "" }' | tr -d '"')
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
     appName="TeamViewerQS.app"
     expectedTeamID="H7UGFBUGV6"
     ;;

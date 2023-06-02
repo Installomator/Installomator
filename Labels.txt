@@ -59,6 +59,7 @@ authydesktop
 autodeskfusion360admininstall
 autodmg
 autopkgr
+avertouch
 aviatrix
 awscli2
 awsvpnclient
@@ -98,6 +99,7 @@ camtasia2019
 camtasia2020
 camtasia2021
 camtasia2022
+camtasia2023
 camunda
 canva
 carboncopycloner
@@ -109,6 +111,7 @@ chronosync
 cinema4d
 cisdem-documentreader
 citrixworkspace
+cleartouchcollage
 clevershare2
 clickshare
 clickup
@@ -167,6 +170,7 @@ egnytecore
 egnytewebedit
 element
 eshareosx
+espanso
 etrecheck
 evernote
 everweb
@@ -198,6 +202,7 @@ fork
 front
 fsmonitor
 fujifilmwebcam
+gdevelop
 gfxcardstatus
 gimp
 githubdesktop
@@ -283,6 +288,7 @@ jupyterlab
 kap
 karabinerelements
 keepassxc
+keeperpasswordmanager
 keepingyouawake
 keka
 keybase
@@ -550,6 +556,7 @@ taskpaper
 teamviewer
 teamviewerhost
 teamviewerqs
+teamviewerqscustom
 techsmithcapture
 telegram
 tembo
