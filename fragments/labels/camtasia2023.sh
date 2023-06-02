@@ -1,3 +1,4 @@
+camtasia|\
 camtasia2023)
     name="Camtasia 2023"
     type="dmg"
