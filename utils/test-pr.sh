@@ -26,7 +26,7 @@ else
 
     if [[ $query == 'y' ]]; then
         git checkout main
-        git merge "pr/$pr_num" -m "new label: $label"
+        git merge "pr/$pr_num" -m "label: $label, see #$pr_num"
         git branch -d "pr/$pr_num"
         gh pr comment $pr_num --body 'Thank you!'
     fi

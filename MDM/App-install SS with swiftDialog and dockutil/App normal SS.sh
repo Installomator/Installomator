@@ -2,7 +2,7 @@
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
 
-LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
 
 item="" # enter the software to install
 # Examples: adobecreativeclouddesktop, canva, cyberduck, handbrake, inkscape, textmate, vlc
@@ -198,6 +198,10 @@ else
                 ws1)
                     # Workspace ONE (AirWatch)
                     LOGO_PATH="/Applications/Workspace ONE Intelligent Hub.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                kandji)
+                    # Kandji
+                    LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
                     ;;
             esac
             if [[ ! -a "${LOGO_PATH}" ]]; then
