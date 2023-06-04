@@ -334,7 +334,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.4"
-VERSIONDATE="2023-06-02"
+VERSIONDATE="2023-06-04"
 
 # MARK: Functions
 
@@ -5688,6 +5688,40 @@ promiseutilityr)
     packageID="com.promise.utilinstaller"
     downloadURL="https://www.promise.com/DownloadFile.aspx?DownloadFileUID=6533"
     expectedTeamID="268CCUR4WN"
+    ;;
+proofpointautoupdater)
+    name="Proofpoint Auto Updater"
+    type="pkgInZip"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-autoupdater-OSX-.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
+    ;;
+proofpointcloudagent-latest-stable-bundle)
+    name="Proofpoint Cloud Agent Latest Stable - Bundle"
+    type="pkgInZip"
+    pkgName="observeit-cloudagent-OSX-bundle-2."*".pkg"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-cloudagent-OSX-bundle-2.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
+    ;;
+proofpointcloudagent-latest-stable)
+    name="Proofpoint Cloud Agent Latest Stable"
+    type="pkgInZip"
+    pkgName="observeit-cloudagent-OSX-2."*".pkg"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-cloudagent-OSX-bundle-2.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
+    ;;
+proofpointcloudagent-lts-bundle)
+    name="Proofpoint Cloud Agent Bundle (LTS)"
+    type="pkgInZip"
+    pkgName="observeit-cloudagent-OSX-bundle-1."*".pkg"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-cloudagent-OSX-bundle-1.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
+    ;;
+proofpointcloudagent-lts)
+    name="Proofpoint Cloud Agent (LTS)"
+    type="pkgInZip"
+    pkgName="observeit-cloudagent-OSX-1."*".pkg"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-cloudagent-OSX-bundle-1.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
     ;;
 propresenter7)
     name="ProPresenter 7"
