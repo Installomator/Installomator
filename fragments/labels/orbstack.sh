@@ -1,7 +1,6 @@
 orbstack)
     name="OrbStack"
     type="dmg"
-    fi
     if [[ "$(arch)" == "arm64" ]]; then
         downloadURL=$(curl -fs "https://orbstack.dev/download/beta/latest/amd64" | grep -i -o -E 'https.*\.dmg' | head -1 | cut -d '"' -f1)
     else
