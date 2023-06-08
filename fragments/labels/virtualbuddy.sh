@@ -1,4 +1,4 @@
-mist)
+virtualbuddy)
     name="VirtualBuddy"
     type="dmg"
     downloadURL=$(downloadURLFromGit "insidegui" "VirtualBuddy")
