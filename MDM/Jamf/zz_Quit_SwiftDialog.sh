@@ -6,7 +6,7 @@
 dialog_command_file=${4:-"/var/tmp/dialog.log"}
 
 # MARK: Constants
-dialogApp="/Library/Application Support/Dialog/Dialog.app"
+dialogBinary="/usr/local/bin/dialog"
 
 dialogUpdate() {
     # $1: dialog command
@@ -31,8 +31,8 @@ if [[ $DEBUG -eq 0 && $(id -u) -ne 0 ]]; then
 fi
 
 # check for Swift Dialog
-if [[ ! -d $dialogApp ]]; then
-    echo "Cannot find dialog at $dialogApp"
+if [[ ! -x $dialogBinary ]]; then
+    echo "Cannot find dialog at $dialogBinary"
     exit 95
 fi
 
