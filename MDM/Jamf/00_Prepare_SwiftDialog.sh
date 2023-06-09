@@ -54,8 +54,10 @@ fi
 
 # MARK: Configure and display swiftDialog
 
-# Use Self Service's icon for the overlayicon
-overlayicon=$( defaults read /Library/Preferences/com.jamfsoftware.jamf.plist self_service_app_path )
+# Create `overlayicon` from Jamf Self Service's custom icon (thanks, @meschwartz!)
+if xxd -p -s 260 "$(defaults read /Library/Preferences/com.jamfsoftware.jamf self_service_app_path)"/Icon$'\r'/..namedfork/rsrc | xxd -r -p > /var/tmp/overlayicon.icns ; then
+    overlayicon="/var/tmp/overlayicon.icns"
+fi
 
 # display first screen
 dialogCMD="$dialogBinary \
@@ -69,7 +71,7 @@ dialogCMD="$dialogBinary \
            --moveable \
            --commandfile \"$dialog_command_file\" "
 
-echo "$dialogCMD"
+echo "dialogCMD: $(echo $dialogCMD | tr -s '[:blank:]')"
 
 eval "${dialogCMD}"
 
