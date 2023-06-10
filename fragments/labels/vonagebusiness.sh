@@ -3,8 +3,8 @@ vonagebusiness)
     name="Vonage Business"
     type="dmg"
     downloadURL="https://vbc-downloads.vonage.com/mac/VonageBusinessSetup.dmg"
-    expectedTeamID=E37FZSUGQP
-    archiveName=VonageBusinessSetup.dmg
+    expectedTeamID="E37FZSUGQP"
+    archiveName="VonageBusinessSetup.dmg"
     appName="Vonage Business.app"
     blockingProcesses=( "Vonage Business" )
     curlOptions=( -L -O --compressed )
