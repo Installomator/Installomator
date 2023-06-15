@@ -8,4 +8,5 @@ mdmwatchdog)
     #appCustomVersion(){ /usr/local/bin/mdm-watchdog -version }
     appNewVersion="$(curl -fsIL "$downloadURL" | grep -i ^location | cut -w -f2 | cut -d "/" -f6)"
     expectedTeamID="R5LEJ8Y242"
+    blockingProcesses=( NONE )
     ;;
