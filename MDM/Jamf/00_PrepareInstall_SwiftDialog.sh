@@ -17,7 +17,7 @@ icon=${6:-"/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"}
 
 # MARK: Constants
 
-dialogApp="/Library/Application Support/Dialog/Dialog.app"
+dialogBinary="/usr/local/bin/dialog"
 
 # MARK: Functions
 
@@ -137,28 +137,34 @@ else
 fi
 
 # check for Swift Dialog
-if [[ ! -d $dialogApp ]]; then
-    echo "Cannot find dialog at $dialogApp"
+if [[ ! -d $dialogBinary ]]; then
+    echo "Cannot find dialog at $dialogBinary"
     exit 95
 fi
 
 
 # MARK: Configure and display swiftDialog
 
-# Use Self Service's icon for the overlayicon
-overlayicon=$( defaults read /Library/Preferences/com.jamfsoftware.jamf.plist self_service_app_path )
+# Create `overlayicon` from Jamf Self Service's custom icon (thanks, @meschwartz!)
+if xxd -p -s 260 "$(defaults read /Library/Preferences/com.jamfsoftware.jamf self_service_app_path)"/Icon$'\r'/..namedfork/rsrc | xxd -r -p > /var/tmp/overlayicon.icns ; then
+    overlayicon="/var/tmp/overlayicon.icns"
+fi
 
 # display first screen
-open -a "$dialogApp" --args \
-        --title none \
-        --icon "$icon" \
-        --overlayicon "$overlayicon" \
-        --message "$message" \
-        --mini \
-        --progress 100 \
-        --position bottomright \
-        --movable \
-        --commandfile "$dialog_command_file"
+dialogCMD="$dialogBinary \
+           --title none \
+           --icon \"$icon\" \
+           --overlayicon \"$overlayicon\" \
+           --message \"$message\" \
+           --mini \
+           --progress 100 \
+           --position bottomright \
+           --moveable \
+           --commandfile \"$dialog_command_file\" "
+
+echo "dialogCMD: $(echo $dialogCMD | tr -s '[:blank:]')"
+
+eval "${dialogCMD}"
 
 # give everything a moment to catch up
 sleep 0.1
