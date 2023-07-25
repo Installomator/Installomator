@@ -8,4 +8,8 @@ keyaccess)
     blockingProcesses=( NONE )
     # Application is not installed in /Applications
     targetDir="/Library/KeyAccess"
+    # Allowing for setting host as it is the only setting required for a fresh install.
+    if [[ -n $keyaccessHost ]]; then
+        defaults write /Library/Preferences/com.sassafras.KeyAccess host -string "${keyaccessHost}"
+    fi
     ;;
