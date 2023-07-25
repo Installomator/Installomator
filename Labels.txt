@@ -600,6 +600,7 @@ visualstudiocode
 vivaldi
 vlc
 vmwarehorizonclient
+vmwarefusion
 vonagebusiness
 vpntracker365
 vscodium
