@@ -89,6 +89,7 @@ bracketsio
 brave
 brosix
 bugdom
+burpsuiteprofessional
 caffeine
 cakebrew
 calcservice
