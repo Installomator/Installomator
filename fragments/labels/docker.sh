@@ -9,4 +9,5 @@ docker)
      appNewVersion=$( curl -fs "https://desktop.docker.com/mac/main/amd64/appcast.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[last()]' 2>/dev/null | cut -d '"' -f2 )
     fi
     expectedTeamID="9BNSXJN65R"
+    blockingProcesses=( "Docker Desktop" "Docker" )
     ;;
