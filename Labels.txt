@@ -498,6 +498,7 @@ selfcontrol
 sequelpro
 sfsymbols
 shield
+shotcut
 shottr
 sidekick
 signal
