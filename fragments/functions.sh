@@ -370,7 +370,7 @@ checkRunningProcesses() {
                       sleep 5
                       ;;
                     prompt_user|prompt_user_then_kill)
-                      button=$(displaydialog "Quit “$processQuitName” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$processAltName” needs to be updated.")
+                      button=$(displaydialog "Quit “$processQuitName” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$processQuitName” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         appClosed=0
                         cleanupAndExit 10 "user aborted update" ERROR
@@ -415,7 +415,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     tell_user|tell_user_then_kill)
-                      button=$(displaydialogContinue "Quit “$processQuitName to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$processAltName” needs to be updated.")
+                      button=$(displaydialogContinue "Quit “$processQuitName to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$processQuitName” needs to be updated.")
                       printlog "telling app $processQuitName to quit"
                       runAsUser osascript -e "tell app \"$processQuitName\" to quit"
                       # give the user a bit of time to quit apps
