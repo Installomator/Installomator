@@ -36,7 +36,7 @@ Parameter 6: `NOTIFY=silent` (disable Installomator notifications, optional)
 
 You can add more configurations to the Installomator script when needed.
 
-### zz_Quit_SwiftDialog
+### zz_Quit_SwiftDialog.sh
 
 Parameter 4: `/var/tmp/dialog.log` (the swiftDialog command file, this has to be the same value as parameter 4 in the first script)
 
