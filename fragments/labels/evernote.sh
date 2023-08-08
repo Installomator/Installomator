@@ -1,7 +1,7 @@
 evernote)
     name="Evernote"
     type="dmg"
-    downloadURL=$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15)" "https://evernote.com/download" | grep -i ".dmg" | grep -ioe "href.*" | cut -d '"' -f2)
+    downloadURL=$(curl -fs "https://evernote.com/download" | grep -E -o 'https?://[^[:space:]]+\.dmg' )
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g' )
     expectedTeamID="Q79WDW8YH9"
     appName="Evernote.app"
