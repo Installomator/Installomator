@@ -6,7 +6,7 @@ python)
     downloadURL="https://www.python.org/ftp/python/$appNewVersion/$archiveName"
     shortVersion=$( cut -d '.' -f1,2 <<< $appNewVersion )
     packageID="org.python.Python.PythonFramework-$shortVersion"
-    expectedTeamID="DJ3H93M7VJ"
+    expectedTeamID="BMM5U3QVKW"
     blockingProcesses=( "IDLE" "Python Launcher" )
     versionKey="CFBundleVersion"
     appCustomVersion() {
