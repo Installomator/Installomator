@@ -6,6 +6,6 @@ figma)
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://desktop.figma.com/mac/Figma.zip"
     fi
-    appNewVersion="$(curl -fsL https://desktop.figma.com/mac/RELEASE.json | awk -F '"' '{ print $8 }')"
+    appNewVersion="$(curl -fsL https://desktop.figma.com/mac/RELEASE.json | grep -m 1 -oE "\d+\.\d+\.*\d*" | head -)"
     expectedTeamID="T8RA8NE3B7"
     ;;
