@@ -155,6 +155,11 @@ IGNORE_DND_APPS=""
 
 # This requires Swift Dialog 2.11.2 or higher.
 
+# Set a git tag value
+GIT_TAG=""
+# Setting this to some value will inform downloadURLFromGit to get that tagged release
+# not "latest". Useful for setting automated installs but limit to a specified version
+
 DIALOG_CMD_FILE=""
 # When this variable is set, Installomator will write Swift Dialog commands to this path.
 # Installomator will not launch Swift Dialog. The process calling Installomator will have
