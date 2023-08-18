@@ -235,8 +235,9 @@ validateGithubTag() {
     allTags=($(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/git/refs/tags" | grep -i "\"ref\":" | sed 's/.*": "\(.*\)".*/\1/' | tr -d "refs/tags/" | sort))
 
     # Get the latest tag
-    latestReleaseTag=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep -i "tag_name" | sed 's/.*": "\(.*\)".*/\1/')
-    
+    #latestReleaseTag=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep -i "tag_name" | sed 's/.*": "\(.*\)".*/\1/')
+    latestReleaseTag=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)
+
     # $3 git tag to validate (default to latest)
     selectedReleaseTag=${3:-$latestReleaseTag}
 
