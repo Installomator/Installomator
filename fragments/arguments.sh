@@ -23,7 +23,11 @@ elif [[ $1 == "/" ]]; then
 fi
 
 # first argument is the label
-label=$1
+# check for git tag syntax and extract
+label_string=$1
+parts=("${(@s[#])label_string}") # split label_string on the # character
+label="${parts[1]}"              # first element will always be the label
+GIT_TAG="${parts[2]}"            # second element will either be a value or nil
 
 # lowercase the label
 label=${label:l}
