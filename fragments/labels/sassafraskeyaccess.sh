@@ -5,7 +5,7 @@ keyaccess)
     downloadURL="$(echo "$downloadStore" | grep "https.*ksp-client.*pkg" | cut -d '"' -f 2)"
     appNewVersion="$(echo "$downloadStore" | grep "KeyAccess.*for Mac" | cut -d ' ' -f 2)"
     expectedTeamID="7Z2KSDFMVY"
-    blockingProcesses=( NONE )
+    BLOCKING_PROCESS_ACTION=ignore
     # Application is not installed in /Applications
     targetDir="/Library/KeyAccess"
     # Allowing for setting host as it is the only setting required for a fresh install.
