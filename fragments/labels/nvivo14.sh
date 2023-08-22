@@ -1,3 +1,4 @@
+nvivo|\
 nvivo14)
     name="NVivo"
     type="dmg"
