@@ -1,4 +1,4 @@
-nvivo)
+nvivo13)
     name="NVivo"
     type="dmg"
     downloadURL="https://download.qsrinternational.com/Software/NVivoforMac/NVivo.dmg"
