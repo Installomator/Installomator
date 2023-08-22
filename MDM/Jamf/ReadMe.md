@@ -18,7 +18,7 @@ Add these three scripts to your Jamf Pro and create a policy with these three sc
 
 The different scripts require a set of parameters. We will use the `googlechromepkg` label as an example.
 
-`00_Prepare_SwiftDialog.sh`
+### 00_Prepare_SwiftDialog.sh
 
 Parameter 4: `/var/tmp/dialog.log` (Path to the swiftDialog command file)
 
@@ -26,7 +26,7 @@ Parameter 5: `Installing Google Chrome...` (text shown in the swiftDialog window
 
 Parameter 6: Path to or URL for an icon in swiftDialog. This can be a path on the client or a URL. See Dan Snelson's advice on how to get icon URLs for Self Service icons: https://rumble.com/v119x6y-harvesting-self-service-icons.html
 
-`Installomator.sh`
+### Installomator.sh
 
 Parameter 4: `googlechromepkg` (the label to install)
 
@@ -36,7 +36,7 @@ Parameter 6: `NOTIFY=silent` (disable Installomator notifications, optional)
 
 You can add more configurations to the Installomator script when needed.
 
-`zz_Quit_SwiftDialog`
+### zz_Quit_SwiftDialog.sh
 
 Parameter 4: `/var/tmp/dialog.log` (the swiftDialog command file, this has to be the same value as parameter 4 in the first script)
 
