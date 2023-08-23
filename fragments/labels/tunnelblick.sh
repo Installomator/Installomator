@@ -2,6 +2,6 @@ tunnelblick)
     name="Tunnelblick"
     type="dmg"
     downloadURL=$(downloadURLFromGit TunnelBlick Tunnelblick )
-    appNewVersion=$(curl -sf https://github.com/Tunnelblick/Tunnelblick/releases | grep -m 1 "/Tunnelblick/Tunnelblick/releases/tag/" | sed -r 's/.*Tunnelblick ([^<]+).*/\1/')
+    appNewVersion=$(curl -fsL "https://github.com/Tunnelblick/Tunnelblick/releases/latest" | xmllint --html --xpath 'substring-after(string(//h1[@class="d-inline mr-3"]), "Tunnelblick ")'  - 2> /dev/null)
     expectedTeamID="Z2SG5H3HC8"
     ;;
