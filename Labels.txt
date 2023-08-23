@@ -87,6 +87,7 @@ boxsync
 boxtools
 bracketsio
 brave
+bravepkg
 brosix
 bugdom
 caffeine
@@ -103,6 +104,7 @@ camtasia2023
 camunda
 canva
 carboncopycloner
+catoclient
 charles
 chatwork
 chromeremotedesktop
@@ -124,6 +126,7 @@ cluefull
 cocoapods
 coconutbattery
 code42
+codemeter
 coderunner
 colourcontrastanalyser
 connectfonts
@@ -169,6 +172,7 @@ egnyte
 egnytecore
 egnytewebedit
 element
+escrowbuddy
 eshareosx
 espanso
 etrecheck
@@ -330,6 +334,7 @@ marathoninfinity
 masv
 mattermost
 maxonapp
+mdmwatchdog
 meetingbar
 mendeleyreferencemanager
 menumeters
@@ -403,7 +408,10 @@ nova
 nudge
 nudgesuite
 nvivo
+nvivo13
+nvivo14
 obs
+obsbotwebcam
 obsidian
 odrive
 omnidisksweeper
@@ -421,6 +429,7 @@ openvpnconnect
 openvpnconnectv3
 opera
 origin
+orion
 ottomatic
 outset
 overflow
@@ -538,6 +547,7 @@ sublimemerge
 sublimetext
 superhuman
 supportapp
+surfdrive
 suspiciouspackage
 swiftdialog
 swiftruntimeforcommandlinetools
