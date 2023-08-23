@@ -287,6 +287,7 @@ jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+jre8
 jumpdesktop
 jupyterlab
 kap
@@ -297,6 +298,7 @@ keepingyouawake
 keka
 keybase
 keyboardmaestro
+kimplusclientmodul
 klokki
 knockknock
 krisp
@@ -388,6 +390,7 @@ moderncsv
 mongodbcompass
 monitorcontrol
 montereyblocker
+morisawadesktopmanager
 mowgliiitsycal
 munki
 musescore
@@ -539,6 +542,9 @@ splashtopsos
 spotify
 sqlpropostgres
 sqlprostudio
+starface72x
+starface73x
+starfaceuccclient
 steelseriesengine
 strongdm
 strongsync
@@ -609,8 +615,8 @@ viscosity
 visualstudiocode
 vivaldi
 vlc
-vmwarehorizonclient
 vmwarefusion
+vmwarehorizonclient
 vonagebusiness
 vpntracker365
 vscodium

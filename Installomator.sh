@@ -4144,6 +4144,18 @@ jetbrainswebstorm)
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
     ;;
+jre8)
+    name="Java Runtime Environment 8"
+    type="pkgInDmg"
+    versionKey="CFBundleVersion"
+    versionURL=$(curl -fs "https://javadl-esd-secure.oracle.com/update/mac/map-mac-1.8.0.xml" | xpath '( //java-update-map/mapping/url)[last()]' 2>/dev/null | cut -d\> -f2 | cut -d\< -f1)
+    appNewVersion=$(curl -fs "${versionURL}" | xpath '(//rss/channel/item/enclosure/@sparkle:version)' 2>/dev/null | cut -d '"' -f 2)
+    appBuildVersion=$(echo $appNewVersion | cut -d. -f3)
+    downloadURL="$(curl -fs "${versionURL}" | xpath '(//rss/channel/item/enclosure/@url)[last()]' 2>/dev/null | cut -d '"' -f 2)"
+    pkgName="Java 8 Update ${appBuildVersion}.app/Contents/Resources/JavaAppletPlugin.pkg"
+    appCustomVersion(){ defaults read "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Info.plist" "${versionKey}" 2>/dev/null }
+    expectedTeamID="VB5E2TV963"
+    ;;
 jumpdesktop)
     name="Jump Desktop"
     type="zip"
@@ -4241,6 +4253,19 @@ keyboardmaestro)
     appNewVersion=$( curl -fs "https://www.stairways.com/press/rss.xml" | xpath '//rss/channel/item/title[contains(text(), "releases Keyboard Maestro")]' 2>/dev/null | head -1 | sed -E 's/.*releases Keyboard Maestro ([0-9.]*)<.*/\1/g' ) # uses XML, so might be a little more precise/future proof
     expectedTeamID="QMHRBA4LGH"
     blockingProcesses=( "Keyboard Maestro Engine" "Keyboard Maestro" )
+    ;;
+kimplusclientmodul)
+    name="KIMplus Clientmodul"
+    # appName="KIMplus Clientmodul.app"
+    type="dmg"
+    downloadName=$(curl -fs "https://cm.kimplus.de/download/current/updates.xml" | grep -i 'targetMediaFileId="mac"' | sed "s|.*fileName=\(.*\)newVersion.*|\\1|" | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs "https://cm.kimplus.de/download/current/updates.xml" | grep -i 'targetMediaFileId="mac"' | sed "s|.*newVersion=\(.*\)newMedia.*|\\1|" | cut -d '"' -f 2)
+    downloadURL=https://cm.kimplus.de/download/current/$downloadName
+    installerTool="KIMplus Clientmodul Installationsprogramm.app"
+    CLIInstaller="KIMplus Clientmodul Installationsprogramm.app/Contents/MacOS/JavaApplicationStub"
+    CLIArguments=(-q -overwrite)
+    expectedTeamID="7QZS8E98SZ"
+    blockingProcesses=( "JavaApplicationStub" )
     ;;
 klokki)
     # credit: Søren Theilgaard (@theilgaard)
@@ -5205,6 +5230,15 @@ montereyblocker)
     downloadURL=$(downloadURLFromGit Theile montereyblocker )
     appNewVersion=$(versionFromGit Theile montereyblocker )
     expectedTeamID="FXW6QXBFW5"
+    ;;
+morisawadesktopmanager)
+    name="Morisawa Desktop Manager"
+    type="pkgInDmg"
+    packageID="jp.co.morisawa.MorisawaDesktopManager.Installer"
+    morisawadesktopmanagerVersions=$(curl -fsL https://morisawafonts.com/resources/dm/mf_updates.mac.json)
+    downloadURL=$(getJSONValue "${morisawadesktopmanagerVersions}" "latest_url")
+    appNewVersion=$(getJSONValue "${morisawadesktopmanagerVersions}" "latest_version")
+    expectedTeamID="662PVPVA3N"
     ;;
 munki)
     name="Munki"
@@ -6346,6 +6380,33 @@ sqlprostudio)
     expectedTeamID="LKJB72232C"
     blockingProcesses=( "SQLPro Studio" )
     ;;
+starface72x)
+    name="STARFACE"
+    # Downloads the latest 7.2.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="zip"
+    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.2" | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.2" | cut -d '"' -f 2 | cut -d '-' -f 4 | sed 's/\(.*\).zip/\1/')
+    expectedTeamID="Q965D3UXEW"
+    versionKey="CFBundleVersion"
+    ;;
+starface73x)
+    name="STARFACE"
+    # Downloads the latest 7.3.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="dmg"
+    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.3" | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.3" | cut -d '"' -f 2 | cut -d '-' -f 4 | sed 's/\(.*\).dmg/\1/')
+    expectedTeamID="Q965D3UXEW"
+    versionKey="CFBundleVersion"
+    ;;
+starfaceuccclient)
+    name="STARFACE UCC Client"
+    # Downloads the latest 6.7.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="zip"
+    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "STARFACE_UCC_Client_6.7" | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "STARFACE_UCC_Client_6.7" | cut -d '"' -f 2 | sed -e 's/.*-\(.*\).zip*/\1/')
+    expectedTeamID="Q965D3UXEW"
+    versionKey="CFBundleVersion"
+    ;;
 steelseriesengine)
     name="SteelSeries GG"
     type="pkg"
@@ -6927,6 +6988,14 @@ vlc)
     fi
     appNewVersion=$(echo ${downloadURL} | sed -E 's/.*\/vlc-([0-9.]*).*\.dmg/\1/' )
     expectedTeamID="75GAHG3SZQ"
+    ;;
+vmwarefusion)
+    name="VMware Fusion"
+    type="dmg"
+    downloadURL="https://www.vmware.com/go/getfusion"
+    curlOptions=(-H "Accept: */*" -H "Accept-Encoding: gzip, deflate" -H "Connection: keep-alive" -H "Host: www.vmware.com" -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15")
+    appNewVersion=$(curl -fsIL ${curlOptions} "https://www.vmware.com/go/getfusion" | grep -i "^location" | awk '{print $2}' | sed 's/.*-\(.*\)-.*/\1/')
+    expectedTeamID="EG7KH642X6"
     ;;
 vmwarehorizonclient)
     name="VMware Horizon Client"
