@@ -1,9 +1,13 @@
 libreofficelanguagepack_intl)
     name="LibreOffice Language Pack"
     # appName="LibreOffice.app"
+    # Installs the Language Pack for the latest LibreOffice STABLE Version
+    # Use in combination and after installing Libre Office (STABLE Version)
+    # This label requires user interaction to complete the installation
+    #
     type="dmg"
     packageID="org.libreoffice.script.langpack"
-    userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLanguages | tr -dc "[:alnum:]\-")
+    userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLanguages | head -2 | tail -1 | tr -dc "[:alnum:]\-")
     appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
     releaseURL="https://download.documentfoundation.org/libreoffice/stable/"$appNewVersion"/mac/aarch64/"
     until curl -fs $releaseURL | grep -q "_$userLanguage.dmg"; do
