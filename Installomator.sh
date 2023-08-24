@@ -334,7 +334,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.5beta"
-VERSIONDATE="2023-08-23"
+VERSIONDATE="2023-08-24"
 
 # MARK: Functions
 
@@ -1632,6 +1632,13 @@ adobecreativeclouddesktop)
     blockingProcesses=( "Creative Cloud" )
     Company="Adobe"
     ;;
+adobedigitaleditions)
+    name="Adobe Digital Editions"
+    type="pkgInDmg"
+    downloadURL=$(curl -fs https://www.adobe.com/solutions/ebook/digital-editions/download.html | grep dmg | sed -n 's/.*href="\([^"]*\)".*/\1/p')
+    appNewVersion=$(curl -fs https://www.adobe.com/solutions/ebook/digital-editions/download.html | grep -o 'Adobe Digital Editions.*Installers' | awk -F' ' '{ print $4 }')
+    expectedTeamID="JQ525L2MZD"
+    ;;
 adobereaderdc|\
 adobereaderdc-install|\
 adobereaderdc-update)
@@ -2347,6 +2354,28 @@ bugdom)
     downloadURL=$(downloadURLFromGit jorio Bugdom)
     appNewVersion=$(versionFromGit jorio Bugdom)
     expectedTeamID="RVNL7XC27G"
+    ;;
+burpsuitecommunityedition)
+    name="Burp Suite Community Edition"
+    type="dmg"
+    appNewVersion=$(curl -s https://portswigger.net/burp/releases | grep 'releases/professional-community' | head -n 1 | sed 's/.*href="//' | sed 's/".*//' | cut -d '/' -f4 | cut -d '-' -f3-6 | sed -r 's/-/./g')
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://portswigger.net/burp/releases/startdownload/?product=community&version&="$appNewVersion"&type=macosarm64"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://portswigger.net/burp/releases/startdownload/?product=community&version&="$appNewVersion"&type=macosx"
+    fi
+    expectedTeamID="N82YM748DZ"
+    ;;
+burpsuiteprofessional)
+    name="Burp Suite Professional"
+    type="dmg"
+    appNewVersion=$(curl -s https://portswigger.net/burp/releases | grep 'releases/professional-community' | head -n 1 | sed 's/.*href="//' | sed 's/".*//' | cut -d '/' -f4 | cut -d '-' -f3-6 | sed -r 's/-/./g')
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://portswigger.net/burp/releases/startdownload/?product=pro&version&="$appNewVersion"&type=macosarm64"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://portswigger.net/burp/releases/startdownload/?product=pro&version&="$appNewVersion"&type=macosx"
+    fi
+    expectedTeamID="N82YM748DZ"
     ;;
 caffeine)
     name="Caffeine"
@@ -3778,15 +3807,14 @@ inetclearreportsdesigner)
     #forcefulQuit=YES
     ;;
 inkscape)
-    # credit: Søren Theilgaard (@theilgaard)
     name="Inkscape"
     type="dmg"
     appCustomVersion() { /Applications/Inkscape.app/Contents/MacOS/inkscape --version | cut -d " " -f2 }
-    appNewVersion=$(curl -fsJL https://inkscape.org/release/  | grep "<title>" | grep -o -e "[0-9.]*")
+    appNewVersion=$(curl -fsL https://inkscape.org/release/  | grep "<title>" | grep -o -e "[0-9.]*")
     if [[ $(arch) == arm64 ]]; then
-        downloadURL=https://media.inkscape.org/dl/resources/file/Inkscape-"$appNewVersion"_arm64.dmg
+        downloadURL="https://media.inkscape.org/dl/resources/file/$(curl -fsL https://inkscape.org/release/inkscape-{$appNewVersion}/mac-os-x/dmg-arm64/dl/ | grep -o -m1 "Inkscape-.*.dmg")"
     elif [[ $(arch) == i386 ]]; then
-        downloadURL=https://media.inkscape.org/dl/resources/file/Inkscape-"$appNewVersion"_x86_64.dmg
+        downloadURL="https://media.inkscape.org/dl/resources/file/$(curl -fsL https://inkscape.org/release/inkscape-{$appNewVersion}/mac-os-x/dmg/dl/ | grep -o -m1 "Inkscape-.*.dmg")"
     fi
     expectedTeamID="SW3D6BB6A6"
     ;;
@@ -4254,6 +4282,13 @@ keyboardmaestro)
     expectedTeamID="QMHRBA4LGH"
     blockingProcesses=( "Keyboard Maestro Engine" "Keyboard Maestro" )
     ;;
+keystoreexplorer)
+    name="KeyStore Explorer"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit kaikramer keystore-explorer)"
+    appNewVersion="$(versionFromGit kaikramer keystore-explorer)"
+    expectedTeamID="BKXPBP395L"
+    ;;
 kimplusclientmodul)
     name="KIMplus Clientmodul"
     # appName="KIMplus Clientmodul.app"
@@ -4342,15 +4377,13 @@ lgcalibrationstudio)
 libreoffice)
     name="LibreOffice"
     type="dmg"
+    appMajorVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
     if [[ $(arch) == "arm64" ]]; then
-    	releaseURL="https://downloadarchive.documentfoundation.org/libreoffice/old/latest/mac/aarch64/"
-    	appNewVersion=$(curl -sf $releaseURL | grep -m 1 "_MacOS_aarch64.dmg" | sed "s|.*LibreOffice_\(.*\)_MacOS.*|\\1|")
-        downloadURL="https://downloadarchive.documentfoundation.org/libreoffice/old/latest/mac/aarch64/LibreOffice_"$appNewVersion"_MacOS_aarch64.dmg"
+    	downloadURL="https://download.documentfoundation.org/libreoffice/stable/"$appMajorVersion"/mac/aarch64/LibreOffice_"$appMajorVersion"_MacOS_aarch64.dmg"
     elif [[ $(arch) == "i386" ]]; then
-    	releaseURL="https://downloadarchive.documentfoundation.org/libreoffice/old/latest/mac/x86_64/"
-    	appNewVersion=$(curl -sf $releaseURL | grep -m 1 "_MacOS_x86-64.dmg" | sed "s|.*LibreOffice_\(.*\)_MacOS.*|\\1|")
-        downloadURL="https://downloadarchive.documentfoundation.org/libreoffice/old/latest/mac/x86_64/LibreOffice_"$appNewVersion"_MacOS_x86-64.dmg"
+    	downloadURL="https://download.documentfoundation.org/libreoffice/stable/"$appMajorVersion"/mac/x86_64/LibreOffice_"$appMajorVersion"_MacOS_x86-64.dmg"
     fi
+    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep -m 1 ".tar.xz" | sed "s|.*libreoffice-\(.*\).tar.xz?.*|\\1|")"
     expectedTeamID="7P5S3ZLCN7"
     blockingProcesses=( soffice )
     ;;
@@ -5311,8 +5344,8 @@ nextcloud)
     name="nextcloud"
     type="pkg"
     #packageID="com.nextcloud.desktopclient"
-    downloadURL=$(downloadURLFromGit nextcloud desktop)
-    appNewVersion=$(versionFromGit nextcloud desktop)
+    downloadURL=$(downloadURLFromGit nextcloud-releases desktop)
+    appNewVersion=$(versionFromGit nextcloud-releases desktop)
     # The version of the app is not equal to the version listed on GitHub.
     # App version something like "3.1.3git (build 4850)" but web page lists as "3.1.3"
     # Also it does not math packageID version "3.1.34850"
@@ -5753,6 +5786,13 @@ postman)
 	fi
     expectedTeamID="H7H8Q7M5CK"
     ;;
+prism10)
+    name="Prism 10"
+    type="dmg"
+    downloadURL="https://cdn.graphpad.com/downloads/prism/10/InstallPrism10.dmg"
+    appNewVersion=$(curl -fs "https://www.graphpad.com/updates" | grep -Eio 'The latest Prism version is.*' | cut -d "(" -f 1 | awk -F '<!-- --> <!-- -->' '{print $2}' | cut -d "<" -f 1)
+    expectedTeamID="YQ2D36NS9M"
+    ;;
 prism9)
     name="Prism 9"
     type="dmg"
@@ -5801,6 +5841,12 @@ promiseutilityr)
     packageID="com.promise.utilinstaller"
     downloadURL="https://www.promise.com/DownloadFile.aspx?DownloadFileUID=6533"
     expectedTeamID="268CCUR4WN"
+    ;;
+proofpointautoupdater)
+    name="Proofpoint Auto Updater"
+    type="pkgInZip"
+    downloadURL=$(curl -fs https://app.us-east-1-op1.op.analyze.proofpoint.com/downloads/default/ | grep -o -i "href.*\".*\"*observeit-autoupdater-OSX-.*.tar.gz" | sed -n '1p' | cut -c 9-)
+    expectedTeamID="DJR63QYCGL"
     ;;
 propresenter7)
     name="ProPresenter 7"
@@ -5862,6 +5908,13 @@ qgis-pr)
     downloadURL="https://download.qgis.org/downloads/macos/qgis-macos-pr.dmg"
     appNewVersion="$(curl -fs "https://www.qgis.org/da/_static/documentation_options.js" | grep -i version | cut -d "'" -f2)"
     expectedTeamID="4F7N4UDA22"
+    ;;
+qlab)
+    name="QLab"
+    type="dmg"
+    downloadURL="https://qlab.app/downloads/QLab.dmg"
+    appNewVersion=""
+    expectedTeamID="7672N4CCJM"
     ;;
 r)
     name="R"
@@ -6072,6 +6125,22 @@ santa)
     appNewVersion=$(versionFromGit google santa)
     expectedTeamID="EQHXZ8M8AV"
     ;;
+keyaccess)
+    name="KeyAccess"
+    type="pkg"
+    downloadStore="$(curl -s "http://www.sassafras.com/client-download/" | tr '>' '\n')"
+    downloadURL="$(echo "$downloadStore" | grep "https.*ksp-client.*pkg" | cut -d '"' -f 2)"
+    appNewVersion="$(echo "$downloadStore" | grep "KeyAccess.*for Mac" | cut -d ' ' -f 2)"
+    expectedTeamID="7Z2KSDFMVY"
+    BLOCKING_PROCESS_ACTION=ignore
+    blockingProcesses=( NONE )
+    # Application is not installed in /Applications
+    appName="Library/KeyAccess/KeyAccess.app"
+    # Allowing for setting host as it is the only setting required for a fresh install.
+    if [[ -n $keyaccessHost ]]; then
+        defaults write /Library/Preferences/com.sassafras.KeyAccess host -string "${keyaccessHost}"
+    fi
+    ;;
 scaleft)
     name="ScaleFT"
     type="pkg"
@@ -6232,7 +6301,11 @@ slab)
 slack)
     name="Slack"
     type="dmg"
-    downloadURL="https://slack.com/ssb/download-osx-universal" # Universal
+    if [[ $(arch) == i386 ]]; then
+       downloadURL="https://slack.com/ssb/download-osx"
+    elif [[ $(arch) == arm64 ]]; then
+       downloadURL="https://slack.com/ssb/download-osx-silicon"
+    fi
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | cut -d "/" -f6 )
     expectedTeamID="BQR82RBBHL"
     ;;
@@ -6604,7 +6677,7 @@ teamviewer)
     versionKey="CFBundleShortVersionString"
     pkgName="Install TeamViewer.app/Contents/Resources/Install TeamViewer.pkg"
     downloadURL="https://download.teamviewer.com/download/TeamViewer.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
     expectedTeamID="H7UGFBUGV6"
     ;;
 teamviewerhost)
@@ -6613,16 +6686,27 @@ teamviewerhost)
     packageID="com.teamviewer.teamviewerhost"
     pkgName="Install TeamViewerHost.app/Contents/Resources/Install TeamViewerHost.pkg"
     downloadURL="https://download.teamviewer.com/download/TeamViewerHost.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
     expectedTeamID="H7UGFBUGV6"
     #blockingProcessesMaxCPU="5" # Future feature
+    ;;
+teamviewerhostcustom)
+    name="TeamViewerHost"
+    type="pkgInDmg"
+    teamviewerCustomDownloadURL="" # https://get.teamviewer.com/your_custom_name_here
+    teamviewerConfigID=$(curl -fs ${teamviewerCustomDownloadURL} -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' | grep -o 'var configId = ".*"' | awk -F'"' '{ print $2 }')
+    teamviewerVersion=$(curl -fs ${teamviewerCustomDownloadURL} -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' | grep -o 'var version = ".*"' | awk -F'"' '{ print $2 }')
+    downloadURL=$(curl -fs -X POST --url "https://get.teamviewer.com/api/CustomDesign" --header 'Content-Type: application/json; charset=utf-8' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' --data '{ "ConfigId": "'"$teamviewerConfigID"'", "Version": "'"$teamviewerVersion"'", "IsCustomModule": true, "Subdomain": "1", "ConnectionId": "" }' | tr -d '"')
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
+    appName="TeamViewer.app"
+    expectedTeamID="H7UGFBUGV6"
     ;;
 teamviewerqs)
     # credit: Søren Theilgaard (@theilgaard)
     name="TeamViewerQS"
     type="dmg"
     downloadURL="https://download.teamviewer.com/download/TeamViewerQS.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
     appName="TeamViewerQS.app"
     expectedTeamID="H7UGFBUGV6"
     ;;
@@ -6633,7 +6717,7 @@ teamviewerqscustom)
     teamviewerConfigID=$(curl -fs ${teamviewerCustomDownloadURL} -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' | grep -o 'var configId = ".*"' | awk -F'"' '{ print $2 }')
     teamviewerVersion=$(curl -fs ${teamviewerCustomDownloadURL} -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' | grep -o 'var version = ".*"' | awk -F'"' '{ print $2 }')
     downloadURL=$(curl -fs -X POST --url "https://get.teamviewer.com/api/CustomDesign" --header 'Content-Type: application/json; charset=utf-8' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' --data '{ "ConfigId": "'"$teamviewerConfigID"'", "Version": "'"$teamviewerVersion"'", "IsCustomModule": true, "Subdomain": "1", "ConnectionId": "" }' | tr -d '"')
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | cut -d " " -f3 | cut -d "<" -f1)
+    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
     appName="TeamViewerQS.app"
     expectedTeamID="H7UGFBUGV6"
     ;;
@@ -6976,6 +7060,15 @@ vivaldi)
     appNewVersion=$(curl -is "https://update.vivaldi.com/update/1.0/public/mac/appcast.xml" | grep sparkle:version | tr ',' '\n' | grep sparkle:version | cut -d '"' -f 4)
     expectedTeamID="4XF3XNRN6Y"
     ;;
+vivi)
+    name="Vivi"
+    type="pkg"
+    packageID="au.com.viviaustralia.mac"
+    appNewVersion=$(curl -fsIL https://api.vivi.io/mac | grep -i "^location" | awk "{print $2}" | sed -E "s/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g")
+    downloadURL=$(curl -sf https://api.vivi.io/mac | grep -o '<a .*href=.*>' | sed -e 's/<a /\n<a /g' | sed -e 's/<a .*href=['"'"'"]//' -e 's/["'"'"'].*$//' -e '/^$/ d')
+    pkgName=$(echo Vivi-"$appNewVersion".pkg)
+    expectedTeamID="3NRCUJ8TJC"
+    ;;
 vlc)
     name="VLC"
     type="dmg"
@@ -7086,6 +7179,14 @@ wechat)
     type="dmg"
     downloadURL="https://dldir1.qq.com/weixin/mac/WeChatMac.dmg"
     expectedTeamID="5A4RE8SF68"
+    ;;
+weprint)
+    name="Print"
+    type="appInDmgInZip"
+    downloadURL="https://it-assets.s3.amazonaws.com/print-by-we/Print-By-We-Mac-Installer.zip"
+    appNewVersion=""
+    expectedTeamID="2D42ACMA8R"
+    versionKey="CFBundleVersion"
     ;;
 whatroute)
     name="WhatRoute"

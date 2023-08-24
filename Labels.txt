@@ -11,6 +11,7 @@ adobeacrobatprodc
 adobebrackets
 adobeconnect
 adobecreativeclouddesktop
+adobedigitaleditions
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
@@ -90,8 +91,8 @@ brave
 bravepkg
 brosix
 bugdom
-burpsuiteprofessional
 burpsuitecommunityedition
+burpsuiteprofessional
 caffeine
 cakebrew
 calcservice
@@ -298,8 +299,10 @@ keepassxc
 keeperpasswordmanager
 keepingyouawake
 keka
+keyaccess
 keybase
 keyboardmaestro
+keystoreexplorer
 kimplusclientmodul
 klokki
 knockknock
@@ -459,6 +462,7 @@ podmandesktop
 polylens
 popsql
 postman
+prism10
 prism9
 pritunl
 privileges
@@ -466,6 +470,7 @@ proctortrack
 projectplace
 promiseutility
 promiseutilityr
+proofpointautoupdater
 propresenter7
 protonvpn
 proxyman
@@ -474,6 +479,7 @@ pycharmce
 pymol
 python
 qgis-pr
+qlab
 r
 rancherdesktop
 rapidapi
@@ -573,6 +579,7 @@ talkdeskcxcloud
 taskpaper
 teamviewer
 teamviewerhost
+teamviewerhostcustom
 teamviewerqs
 teamviewerqscustom
 techsmithcapture
@@ -616,6 +623,7 @@ virtualbox
 viscosity
 visualstudiocode
 vivaldi
+vivi
 vlc
 vmwarefusion
 vmwarehorizonclient
@@ -629,6 +637,7 @@ webex
 webexmeetings
 webexteams
 wechat
+weprint
 whatroute
 whatsapp
 wireshark
