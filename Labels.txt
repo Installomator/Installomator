@@ -90,6 +90,8 @@ brave
 bravepkg
 brosix
 bugdom
+burpsuiteprofessional
+burpsuitecommunityedition
 caffeine
 cakebrew
 calcservice
