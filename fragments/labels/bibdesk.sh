@@ -1,7 +1,8 @@
 bibdesk)
     name="BibDesk"
-    type="zip"
-    downloadURL="https://sourceforge.net/projects/bibdesk/files/latest/download"
-    appNewVersion="$(curl -sL https://sourceforge.net/projects/bibdesk/files/BibDesk/ | grep -i "latest/download" | sed -n 's:.*BibDesk-\(.*\).zip.*:\1:p')"
+    type="dmg"
+    html_page_source=$(curl -sL https://bibdesk.sourceforge.io)
+    downloadURL="$(echo $html_page_source | grep -i "current version" | grep -o 'href="[^"]*' | head -1 | awk -F '="' '{print $NF}')"
+    appNewVersion="$(echo $html_page_source | grep -i "current version" | sed -n 's:.*BibDesk-\(.*\).dmg.*:\1:p')"
     expectedTeamID="J33JTA7SY9"
     ;;
