@@ -1,7 +1,6 @@
 suitestudio)
-    name="Suite Studio"
+    name="Suite"
     type="pkg"
-    packageID="io.suite.suitefs"
     if [[ $(arch) == arm64 ]]; then
         downloadURL="https://saturn-installer-prd-124359286071-bucket.s3.amazonaws.com/suite-installer-osx-arm64.pkg"
     elif [[ $(arch) == i386 ]]; then
