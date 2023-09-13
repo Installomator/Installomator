@@ -1,5 +1,4 @@
 vectorworks2021sp5)
-    # Credit: Benjamin Kollmer @Apfelwerk GmbH & Co. KG
     name="Vectorworks 2021 SP5"
     appName="Vectorworks 2021 installieren.app"
     type="dmg"
