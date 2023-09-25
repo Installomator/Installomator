@@ -212,7 +212,7 @@ function appCheck(){
         sleep 2
     done
     dialog_command "progresstext: Install of “$(echo "$app" | cut -d ',' -f1)” complete"
-    dialog_command "listitem: $(echo "$app" | cut -d ',' -f1): ✅"
+    dialog_command "listitem: $(echo "$app" | cut -d ',' -f1): success"
     progress_index=$(defaults read $counterFile step)
     progress_index=$(( progress_index + 1 ))
     defaults write $counterFile step -int $progress_index
