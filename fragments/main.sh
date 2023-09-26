@@ -55,6 +55,7 @@ printlog "appNewVersion=${appNewVersion}" DEBUG
 printlog "appCustomVersion function: $(if type 'appCustomVersion' 2>/dev/null | grep -q 'function'; then echo "Defined. ${appCustomVersion}"; else; echo "Not defined"; fi)" DEBUG
 printlog "versionKey=${versionKey}" DEBUG
 printlog "packageID=${packageID}" DEBUG
+printlog "dmgName=${dmgName}" DEBUG
 printlog "pkgName=${pkgName}" DEBUG
 printlog "choiceChangesXML=${choiceChangesXML}" DEBUG
 printlog "expectedTeamID=${expectedTeamID}" DEBUG
@@ -356,6 +357,9 @@ case $type in
         ;;
     pkgInZip)
         installPkgInZip
+        ;;
+    pkgInDmgInZip)
+        installPkgInDmgInZip
         ;;
     appInDmgInZip)
         installAppInDmgInZip
