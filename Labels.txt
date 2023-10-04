@@ -538,6 +538,7 @@ snagit2020
 snagit2021
 snagit2022
 snagit2023
+snagit2024
 snapgeneviewer
 sococo
 sonicvisualiser
