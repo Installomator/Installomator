@@ -5,7 +5,7 @@
 # MARK: Variables
 instance="" # Name of used instance
 
-LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
 if [[ $(arch) == "arm64" ]]; then
     items=(dialog dockutil microsoftautoupdate theunarchiver microsoftoffice365 microsoftedge microsoftteams microsoftonedrive microsoftdefender microsoftcompanyportal displaylinkmanager)
@@ -68,7 +68,8 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
-scriptVersion="9.10"
+scriptVersion="9.11"
+# v.  9.11  : 2023-10/06 : Support for FileWave
 # v.  9.10  : 2023-09-18 : If LOGO variable is empty, we exit
 # v.  9.9   : 2023-08-25 : items varied by architecture
 # v.  9.8   : 2023-03-02 : Support for Kandji, but that MDM already have LiftOff that is probably better.
@@ -175,6 +176,10 @@ case $LOGO in
     kandji)
         # Kandji
         LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
+        ;;
+    filewave)
+        # FileWave
+        LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
         ;;
     *)
     	# Not supported

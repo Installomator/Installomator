@@ -2,7 +2,7 @@
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
 
-LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
 item="microsoftoffice365" # enter the software to install
 # Examples: microsoftofficebusinesspro, microsoftoffice365
@@ -45,6 +45,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 # Fill the variable "item" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
+# v. 10.0.5 : Support for FileWave, and previously Kandji
 # v. 10.0.4 : Fix for LOGO_PATH for ws1, and only kill the caffeinate process we create
 # v. 10.0.3 : A bit more logging on succes, and change in ending Dialog part.
 # v. 10.0.2 : Improved icon checks and failovers
@@ -138,7 +139,7 @@ else
         message="Installing ${item}…"
     fi
     echo "$item $itemName"
-    
+
     #Check icon (expecting beginning with “http” to be web-link and “/” to be disk file)
     #echo "icon before check: $icon"
     if [[ "$(echo ${icon} | grep -iE "^(http|ftp).*")" != ""  ]]; then
@@ -205,6 +206,10 @@ else
                 kandji)
                     # Kandji
                     LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
+                    ;;
+                filewave)
+                    # FileWave
+                    LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
                     ;;
             esac
             if [[ ! -a "${LOGO_PATH}" ]]; then

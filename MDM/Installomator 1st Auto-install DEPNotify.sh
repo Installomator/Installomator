@@ -5,7 +5,7 @@
 # MARK: Variables
 instance="" # Name of used instance
 
-LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
 if [[ $(arch) == "arm64" ]]; then
     items=(dialog dockutil microsoftautoupdate theunarchiver microsoftoffice365 microsoftedge microsoftteams microsoftonedrive microsoftdefender microsoftcompanyportal displaylinkmanager)
@@ -38,8 +38,7 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 # NOTE about MDM solutions:
 # This script might not be usefull for the following solutions as they
 # have their own solution for deployment progress:
-# - mosyleb,mosylem  Mosyle has Embark (often “Progress 1st” is
-#                    a better option if not using Embark)
+# - mosyleb,mosylem  Mosyle has Embark
 # - kandji           Kandji has LiftOff
 ######################################################################
 # Other installomatorOptions:
@@ -69,7 +68,8 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
-scriptVersion="9.10"
+scriptVersion="9.11"
+# v.  9.11  : 2023-10/06 : Support for FileWave
 # v.  9.10  : 2023-09-18 : If LOGO variable is empty, we exit.
 # v.  9.9   : 2023-08-25 : items varied by architecture
 # v.  9.8   : 2023-03-02 : Support for Kandji, but that MDM already have LiftOff that is probably better.
