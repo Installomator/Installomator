@@ -16,7 +16,8 @@
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
-scriptVersion="9.7"
+scriptVersion="9.8"
+# v.  9.8   : 2022-12-19 : Update gitusername for repo
 # v.  9.7   : 2022-12-19 : Only kill the caffeinate process we create
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
 # v.  9.5   : 2022-09-21 : change of GitHub download
@@ -62,7 +63,7 @@ name="Dialog"
 printlog "$name check for installation"
 # download URL, version and Expected Team ID
 # Method for GitHub pkg w. app version check
-gitusername="bartreardon"
+gitusername="swiftDialog"
 gitreponame="swiftDialog"
 #printlog "$gitusername $gitreponame"
 filetype="pkg"
