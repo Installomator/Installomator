@@ -44,6 +44,7 @@ PROMPT_TIMEOUT=86400
 # 86400 = 24 hours (default)
 
 # behavior when blocking processes are found
+# BLOCKING_PROCESS_ACTION is ignored if app label uses updateTool
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
 #   - ignore       continue even when blocking processes are found
