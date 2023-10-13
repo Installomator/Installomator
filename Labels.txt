@@ -347,6 +347,7 @@ mendeleyreferencemanager
 menumeters
 merlinproject
 microsoftautoupdate
+microsoftautoupdatereset
 microsoftazuredatastudio
 microsoftazurestorageexplorer
 microsoftcompanyportal
@@ -356,7 +357,9 @@ microsoftedge
 microsoftedgeconsumerstable
 microsoftedgeenterprisestable
 microsoftexcel
+microsoftexcelreset
 microsoftlicenseremovaltool
+microsoftlicensereset
 microsoftoffice365
 microsoftofficebusinesspro
 microsoftofficefactoryreset
@@ -367,15 +370,21 @@ microsoftonedrive-rollingout
 microsoftonedrive-rollingoutdeferred
 microsoftonedrivereset
 microsoftonenote
+microsoftonenotereset
 microsoftoutlook
+microsoftoutlookdataremoval
 microsoftoutlookreset
 microsoftpowerpoint
+microsoftpowerpointreset
 microsoftremotedesktop
 microsoftsharepointplugin
 microsoftskypeforbusiness
+microsoftskypeforbusinessremoval
 microsoftteams
+microsoftteamsreset
 microsoftvisualstudiocode
 microsoftword
+microsoftwordreset
 mightymike
 mindmanager
 miniconda
@@ -637,6 +646,7 @@ wallyezflash
 webex
 webexmeetings
 webexteams
+webextoolsremoval
 wechat
 weprint
 whatroute
@@ -667,6 +677,7 @@ zoom
 zoomclient
 zoomgov
 zoomoutlookplugin
+zoomoutlookpluginremoval
 zoomrooms
 zotero
 zulujdk11

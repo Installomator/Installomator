@@ -4734,6 +4734,13 @@ microsoftautoupdate)
     #updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     #updateToolArguments=( --install --apps MSau04 )
     ;;
+microsoftautoupdatereset)
+    name="Microsoft AutoUpdate Reset"
+    type="pkg"
+    packageID="com.microsoft.reset.AutoUpdate"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*AutoUpdate_Reset.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
+    ;;
 microsoftazuredatastudio|\
 azuredatastudio)
     name="Azure Data Studio"
@@ -4811,6 +4818,13 @@ microsoftexcel)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps XCEL2019 )
     ;;
+microsoftexcelreset)
+    name="Microsoft Excel Reset"
+    type="pkg"
+    packageID="com.microsoft.reset.Excel"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Excel_Reset.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
+    ;;
 microsoftlicenseremovaltool)
     # credit: Isaac Ordonez (@isaac) macadmins slack
     name="Microsoft License Removal Tool"
@@ -4819,6 +4833,13 @@ microsoftlicenseremovaltool)
     expectedTeamID="QGS93ZLCU7"
     appNewVersion=$(curl -is "$downloadURL" | grep ocation: | grep -o "Microsoft_.*pkg" | cut -d "_" -f 5 | cut -d "." -f1-2)
     Company="Microsoft"
+    ;;
+microsoftlicensereset)
+    name="Microsoft License Reset"
+    type="pkg"
+    packageID="com.microsoft.reset.Credentials"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*License_Reset.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
     ;;
 microsoftoffice365)
     name="MicrosoftOffice365"
@@ -4932,10 +4953,10 @@ microsoftonedrive)
     updateToolArguments=( --install --apps ONDR18 )
     ;;
 microsoftonedrivereset)
-    name="Microsoft Outlook Reset"
+    name="Microsoft OneDrive Reset"
     type="pkg"
-    packageID="com.microsoft.reset.Outlook"
-    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Outlook_Reset.*.pkg" | cut -d '"' -f2)
+    packageID="com.microsoft.reset.OneDrive"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*OneDrive_Reset.*.pkg" | cut -d '"' -f2)
     expectedTeamID="QGS93ZLCU7"
     ;;
 microsoftonenote)
@@ -4952,6 +4973,13 @@ microsoftonenote)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps ONMC2019 )
     ;;
+microsoftonenotereset)
+    name="Microsoft OneNote Reset"
+    type="pkg"
+    packageID="com.microsoft.reset.OneNote"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*OneNote_Reset.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
+    ;;
 microsoftoutlook)
     name="Microsoft Outlook"
     type="pkg"
@@ -4965,6 +4993,13 @@ microsoftoutlook)
     fi
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps OPIM2019 )
+    ;;
+microsoftoutlookdataremoval)
+    name="Microsoft Outlook Data Removal"
+    type="pkg"
+    packageID="com.microsoft.remove.Outlook.Data"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Outlook_Data_Removal.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
     ;;
 microsoftoutlookreset)
     name="Microsoft Outlook Reset"
@@ -4986,6 +5021,13 @@ microsoftpowerpoint)
     fi
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps PPT32019 )
+    ;;
+microsoftpowerpointreset)
+    name="Microsoft PowerPoint Reset"
+    type="pkg"
+    packageID="com.microsoft.reset.PowerPoint"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*PowerPoint_Reset.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
     ;;
 microsoftremotedesktop)
     name="Microsoft Remote Desktop"
@@ -5024,6 +5066,13 @@ microsoftskypeforbusiness)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps MSFB16 )
     ;;
+microsoftskypeforbusinessremoval)
+    name="Microsoft Skype for Business Removal"
+    type="pkg"
+    packageID="com.microsoft.remove.SkypeForBusiness"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*SkypeForBusiness_Removal.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
+    ;;
 microsoftteams)
     name="Microsoft Teams"
     type="pkg"
@@ -5040,6 +5089,13 @@ microsoftteams)
     fi
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps TEAM01 ) # --wait 600 
+    ;;
+microsoftteamsreset)
+    name="Microsoft Teams Reset"
+    type="pkg"
+    packageID="com.microsoft.reset.Teams"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Teams_Reset.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
     ;;
 microsoftvisualstudiocode|\
 visualstudiocode)
@@ -5064,6 +5120,13 @@ microsoftword)
     fi
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps MSWD2019 )
+    ;;
+microsoftwordreset)
+    name="Microsoft Teams Reset"
+    type="pkg"
+    packageID="com.microsoft.reset.Word"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Word_Reset.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
     ;;
 mightymike)
     name="Mighty Mike"
@@ -7174,6 +7237,13 @@ webexmeetings)
     #blockingProcessesMaxCPU="5"
     blockingProcesses=( Webex )
     ;;
+webextoolsremoval)
+    name="WebEx Tools Removal"
+    type="pkg"
+    packageID="com.microsoft.remove.WebExPT"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*WebExPT_Removal.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
+    ;;
 wechat)
     name="WeChat"
     type="dmg"
@@ -7430,6 +7500,13 @@ zoomoutlookplugin)
     appNewVersion="$(curl -fsIL ${downloadURL} | grep -i ^location | cut -d "/" -f5 | cut -d "." -f1-3)"
     expectedTeamID="BJ4HAAB9B3"
     blockingProcesses=( "PluginLauncher" )
+    ;;
+zoomoutlookpluginremoval)
+    name="Zoom Outlook Plugin Removal"
+    type="pkg"
+    packageID="com.microsoft.remove.ZoomPlugin"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*ZoomPlugin_Removal.*.pkg" | cut -d '"' -f2)
+    expectedTeamID="QGS93ZLCU7"
     ;;
 zoomrooms)
     name="ZoomRooms"
