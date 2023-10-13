@@ -126,7 +126,7 @@ case $LOGO in
         # FileWave
         LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="FileWave MDM Configuration"; fi
-        ;;    
+        ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
     if [[ $(sw_vers -buildVersion) > "19" ]]; then
@@ -238,7 +238,7 @@ fi
 
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
-    printlog "appversion & updateTool"
+    printlog "App needs to be updated and uses $updateTool. Ignoring BLOCKING_PROCESS_ACTION and running updateTool now."
     updateDialog "wait" "Updating..."
 
     if [[ $DEBUG -ne 1 ]]; then
