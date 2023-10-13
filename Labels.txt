@@ -5,8 +5,10 @@
 8x8
 abetterfinderrename11
 abstract
+acorn
 acroniscyberprotectconnect
 acroniscyberprotectconnectagent
+adium
 adobeacrobatprodc
 adobebrackets
 adobeconnect
@@ -51,6 +53,7 @@ archiwareb2go
 archiwarepst
 arq7
 asana
+asperaconnect
 atext
 atextlegacy
 atlassiancompanion
@@ -77,6 +80,7 @@ bbeditpkg
 betterdisplay
 bettertouchtool
 beyondcomparepro
+bibdesk
 bitrix24
 bitwarden
 blender
@@ -110,6 +114,9 @@ carboncopycloner
 catoclient
 charles
 chatwork
+chemdoodle
+chemdoodle2d
+chemdoodle3d
 chromeremotedesktop
 chronoagent
 chronosync
@@ -155,6 +162,7 @@ detectxswift
 devonthink
 dialog
 dialpad
+digiexam
 discord
 diskspace
 displaylinkmanager
@@ -175,6 +183,8 @@ egnyte
 egnytecore
 egnytewebedit
 element
+elgatocamerahub
+elgatostreamdeck
 escrowbuddy
 eshareosx
 espanso
@@ -206,6 +216,7 @@ flux
 flycut
 fontexplorer
 fork
+franz
 front
 fsmonitor
 fujifilmwebcam
@@ -280,7 +291,9 @@ jdk19
 jdk20
 jetbrainsclion
 jetbrainsdatagrip
+jetbrainsdataspell
 jetbrainsgateway
+jetbrainsgoland
 jetbrainsintellijidea
 jetbrainsintellijideace
 jetbrainsphpstorm
@@ -332,6 +345,7 @@ macfuse
 macoslaps
 macports
 mactex
+mactracker
 magicbullet
 mailmate
 malwarebytes
@@ -368,12 +382,15 @@ microsoftonedrive-rollingoutdeferred
 microsoftonedrivereset
 microsoftonenote
 microsoftoutlook
+microsoftoutlook-monthly
 microsoftoutlookreset
 microsoftpowerpoint
 microsoftremotedesktop
 microsoftsharepointplugin
 microsoftskypeforbusiness
 microsoftteams
+microsoftteamsclassic
+microsoftteamsnew
 microsoftvisualstudiocode
 microsoftword
 mightymike
@@ -483,6 +500,8 @@ qlab
 r
 rancherdesktop
 rapidapi
+realvncserver
+realvncviewer
 rectangle
 redcanarymacmonitor
 redeye
@@ -506,6 +525,7 @@ rodeconnect
 royaltsx
 rstudio
 rustdesk
+salesforcecli
 santa
 scaleft
 screamingfrogseospider
@@ -515,6 +535,7 @@ scrollreverser
 sdnotary
 secretive
 selfcontrol
+sequelace
 sequelpro
 sfsymbols
 shield
@@ -560,6 +581,7 @@ strongsync
 subethaedit
 sublimemerge
 sublimetext
+suitestudio
 superhuman
 supportapp
 surfdrive
@@ -587,6 +609,7 @@ techsmithcapture
 telegram
 tembo
 tencentmeeting
+texshop
 textexpander
 textmate
 theunarchiver
@@ -621,6 +644,7 @@ veracrypt
 vfx
 vimac
 virtualbox
+virtualbuddy
 viscosity
 visualstudiocode
 vivaldi
@@ -628,6 +652,7 @@ vivi
 vlc
 vmwarefusion
 vmwarehorizonclient
+vncconnect
 vonagebusiness
 vpntracker365
 vscodium
@@ -669,6 +694,7 @@ zoomgov
 zoomoutlookplugin
 zoomrooms
 zotero
+zulip
 zulujdk11
 zulujdk13
 zulujdk15
