@@ -277,6 +277,7 @@ istatmenus
 iterm2
 itsycal
 jabradirect
+jamfcheck
 jamfconnect
 jamfconnectconfiguration
 jamfcpr
@@ -327,6 +328,9 @@ launchbar
 lcadvancedvpnclient
 lexarrecoverytool
 lgcalibrationstudio
+libericajdk11ltsfull
+libericajdk17ltsfull
+libericajdk8ltsfull
 libreoffice
 linear
 logioptions
@@ -401,6 +405,8 @@ mist
 mist-cli
 mkuser
 mmhmm
+mmhmm-desktop
+mmhmm-studio
 mobikinassistantforandroid
 mobiletolocal
 mochakeyboard

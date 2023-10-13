@@ -3986,6 +3986,13 @@ jabradirect)
     appNewVersion=$(curl -fs "https://jabraexpressonlinejdo.jabra.com/jdo/jdo.json" | grep -i MacVersion | cut -d '"' -f4)
     expectedTeamID="55LV32M29R"
     ;;
+jamfcheck)
+    name="jamfcheck"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit txhaflaire JamfCheck)"
+    appNewVersion="$(versionFromGit txhaflaire JamfCheck)"
+    expectedTeamID="CLQKFNPCCP"
+    ;;
 jamfconnect)
     name="Jamf Connect"
     type="pkgInDmg"
@@ -4470,7 +4477,7 @@ launchbar)
 lcadvancedvpnclient)
     name="LANCOM Advanced VPN Client"
     type="pkgInDmg"
-    appNewVersion=$(curl -fs https://www.ncp-e.com/de/service/download-vpn-client/ | grep -m 1 "NCP Secure Entry macOS Client" -A 1 | grep -i Version | sed  "s|.*Version \(.*\) Rev.*|\\1|")
+    appNewVersion=$(curl -fs https://www.ncp-e.com/de/service/download-vpn-client | grep -m 1 "NCP Secure Entry macOS Client" -A 6 | grep -i Version | sed  "s|.*Version \(.*\) Rev.*|\\1|")
     downloadURL=$(appShortVersion=`sed 's/[^0-9]//g' <<< $appNewVersion` && echo https://ftp.lancom.de/LANCOM-Releases/LC-VPN-Client/LC-Advanced-VPN-Client-macOS-"${appShortVersion}"-Rel-x86-64.dmg)
     expectedTeamID="LL3KBL2M3A"
     ;;
@@ -4488,6 +4495,60 @@ lgcalibrationstudio)
     appNewVersion=$(curl -sf $releaseURL | grep -m 1 "Mac_LCS_" | sed -E 's/.*LCS_([0-9.]*).zip.*/\1/g')
     downloadURL=$(curl -sf $releaseURL | grep -m 1 "Mac_LCS_" | sed "s|.*href=\"\(.*\)\" title.*|\\1|")
     expectedTeamID="5SKT5H4CPQ"
+    ;;
+libericajdk11ltsfull)
+    name="Liberica JDK 11 LTS Full"
+    type="pkg"
+    case $(arch) in
+        "arm64")
+            cpu_arch="arm"
+        ;;
+        "i386")
+            cpu_arch="x86"
+        ;;
+    esac
+    appNewVersion="$(curl "https://api.bell-sw.com/v1/liberica/releases?version-modifier=latest&version-feature=11&bitness=64&release-type=lts&os=macos&arch=${cpu_arch}&package-type=pkg&bundle-type=jdk-full" | sed 's/.*"version":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/')"
+    downloadURL=$(curl "https://api.bell-sw.com/v1/liberica/releases?version=${appNewVersion}&bitness=64&os=macos&arch=${cpu_arch}&package-type=pkg&bundle-type=jdk-full&output=text&fields=downloadUrl")
+    appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/liberica-jdk-11-full.jdk/Contents/Info.plist" ] ; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/liberica-jdk-8-full.jdk/Contents/Info.plist" "CFBundleVersion" ; fi }
+    expectedTeamID="8LBATW8FZA"
+    ;;
+libericajdk17ltsfull)
+    name="Liberica JDK 17 Full LTS"
+    type="pkg"
+    case $(arch) in
+        "arm64")
+            cpu_arch="arm"
+        ;;
+        "i386")
+            cpu_arch="x86"
+        ;;
+    esac
+    appNewVersion="$(curl "https://api.bell-sw.com/v1/liberica/releases?version-modifier=latest&version-feature=17&bitness=64&release-type=lts&os=macos&arch=${cpu_arch}&package-type=pkg&bundle-type=jdk-full" | sed 's/.*"version":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/')"
+    downloadURL=$(curl "https://api.bell-sw.com/v1/liberica/releases?version=${appNewVersion}&bitness=64&os=macos&arch=${cpu_arch}&package-type=pkg&bundle-type=jdk-full&output=text&fields=downloadUrl")
+    appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/liberica-jdk-17-full.jdk/Contents/Info.plist" ] ; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/liberica-jdk-8-full.jdk/Contents/Info.plist" "CFBundleVersion" ; fi }
+    expectedTeamID="8LBATW8FZA"
+    ;;
+libericajdk8ltsfull)
+    name="Liberica JDK 8 Full LTS"
+    type="pkg"
+    case $(arch) in
+        "arm64")
+            cpu_arch="arm"
+        ;;
+        "i386")
+            cpu_arch="x86"
+        ;;
+    esac
+    # Liberica lumps all versions in one GitHub repo but provide an API to query latest version details that we can parse
+    latestVersionJSON=$(curl "https://api.bell-sw.com/v1/liberica/releases?version-modifier=latest&version-feature=8&bitness=64&release-type=lts&os=macos&arch=${cpu_arch}&package-type=pkg&bundle-type=jdk-full")
+	# The release version of their JDK8 package (which are used in the download URLs) are formatted differently from the CFBundleVersion 1.8.0_382-b06 and 8u382+6 in pkg name
+    pkgNewVersion="$(echo ${latestVersionJSON} | sed 's/.*"version":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/')"
+    # We take the CFBundleIdentifier from the installed version (if found) and snag what they call the "Update Version"
+    appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/liberica-jdk-8-full.jdk/Contents/Info.plist" ] ; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/liberica-jdk-8-full.jdk/Contents/Info.plist" "CFBundleVersion" | sed -n 's:.*_\(.*\)\-.*:\1:p' ; fi }
+    appNewVersion="$(echo ${latestVersionJSON} | sed 's/.*"updateVersion":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/')"
+    # As long as we have the latest PKG version, we can get a direct download URL without further JSON parsing
+    downloadURL=$(curl "https://api.bell-sw.com/v1/liberica/releases?version=${pkgNewVersion}&bitness=64&os=macos&arch=${cpu_arch}&package-type=pkg&bundle-type=jdk-full&output=text&fields=downloadUrl")
+	expectedTeamID="8LBATW8FZA"
     ;;
 libreoffice)
     name="LibreOffice"
@@ -4732,7 +4793,7 @@ magicbullet)
     	ls "/Users/Shared/Red Giant/uninstall" | grep bullet | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru
     }
     appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/4406405444242-Magic-Bullet-Suite" | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | sort -gru | head -n 1)"
-    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/magicbullet/releases/$appNewVersion/MagicBulletSuite-${appNewVersion}_Mac.zip"
+    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/magicbullet/releases/$appNewVersion/MagicBulletSuite-${appNewVersion}_mac.zip"
     installerTool="Magic Bullet Suite Installer.app"
     CLIInstaller="Magic Bullet Suite Installer.app/Contents/Scripts/install.sh"
     CLIArguments=()
@@ -5292,12 +5353,24 @@ mkuser)
     appNewVersion="$(curl -sLI "https://github.com/freegeek-pdx/mkuser/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)"
     expectedTeamID="YRW6NUGA63"
     ;;
-mmhmm)
-    name="mmhmm"
+mmhmm-desktop)
+    name="mmhmm desktop"
+    appName="mmhmm desktop.app"
     type="pkg"
-    downloadURL="https://updates.mmhmm.app/mac/mmhmm.pkg"
+    downloadURL="https://updates.mmhmm.app/mac/hybrid/beta/mmhmm.pkg"
+    curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Safari/605.1.15" )
+    appNewVersion=""
+    expectedTeamID="M3KUT44L48"
+    blockingProcesses=( "mmhmm" )
+    ;;
+mmhmm|\
+mmhmm-studio)
+    name="mmhmm Studio"
+    appName="mmhmm Studio.app"
+    type="pkg"
+    downloadURL="https://updates.mmhmm.app/mac/mmhmmStudio.pkg"
     curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15" )
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://help.mmhmm.app/hc/en-us/articles/4420969712151-mmhmm-for-Mac" | grep 'The latest version of mmhmm for Mac is <strong>*' | sed -e 's/.*\<strong\>\(.*\)\.\<\/strong\>.*/\1/')
+    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://help.mmhmm.app/hc/en-us/articles/4420969712151-mmhmm-Studio-Mac-only-" | grep 'The latest version of mmhmm Studio is <strong>*' | sed -e 's/.*\<strong\>\(.*\)\.\<\/strong\>.*/\1/')
     expectedTeamID="M3KUT44L48"
     ;;
 mobikinassistantforandroid)
@@ -7120,7 +7193,7 @@ trapcode)
       ls "/Users/Shared/Red Giant/uninstall" | grep trapcode | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru
     }
     appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/articles/8642154839580" | grep "current_record_title" | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru)"
-    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/trapcode/releases/${appNewVersion}/TrapcodeSuite-${appNewVersion}_Mac.zip"
+    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/trapcode/releases/${appNewVersion}/TrapcodeSuite-${appNewVersion}_mac.zip"
     installerTool="Trapcode Suite Installer.app"
     CLIInstaller="Trapcode Suite Installer.app/Contents/MacOS/Trapcode Suite Installer"
     expectedTeamID="4ZY22YGXQG"
