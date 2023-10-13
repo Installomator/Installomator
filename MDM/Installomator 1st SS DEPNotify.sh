@@ -1,12 +1,20 @@
 #!/bin/sh
 
 # Installomator 1st installation with DEPNotify window (for self Service deployment)
+# WARNING: Do not use this version for auto-installation
+
+# MARK: Variables
 instance="" # Name of used instance
 
-LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
-items=(dialog dockutil microsoftautoupdate supportapp applenyfonts applesfpro applesfmono applesfcompact xink zohoworkdrivetruesync textmate 1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
-# Remember: dialog dockutil
+if [[ $(arch) == "arm64" ]]; then
+    items=(dialog dockutil microsoftautoupdate theunarchiver microsoftoffice365 microsoftedge microsoftteams microsoftonedrive microsoftdefender microsoftcompanyportal displaylinkmanager)
+    # displaylinkmanager
+else
+    items=(dialog dockutil microsoftautoupdate theunarchiver microsoftoffice365 microsoftedge microsoftteams microsoftonedrive microsoftdefender microsoftcompanyportal)
+fi
+# Remember: dialog dockutil desktoppr
 
 installomatorOptions="NOTIFY=all BLOCKING_PROCESS_ACTION=prompt_user"
 
@@ -16,6 +24,7 @@ message="Please wait while we download and install the needed software."
 endMessage="Installation complete! Please reboot to activate FileVault."
 errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 
+# MARK: Instructions
 ######################################################################
 # Installomator 1st DEPNotify
 #
@@ -54,8 +63,12 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
-scriptVersion="9.7"
-# v.  9.7   : 2022-12-19 : Only kill the caffeinate process we create
+scriptVersion="9.11"
+# v.  9.11  : 2023-10/06 : Support for FileWave
+# v.  9.10  : 2023-09-18 : If LOGO variable is empty, we exit
+# v.  9.9   : 2023-08-25 : items varied by architecture
+# v.  9.8   : 2023-03-02 : Support for Kandji
+# v.  9.7   : 2022-12-19 : Fix for LOGO_PATH for ws1, and only kill the caffeinate process we create
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
 # v.  9.5   : 2022-09-21 : change of GitHub download
 # v.  9.4   : 2022-09-14 : downloadURL can fall back on GitHub API
@@ -71,21 +84,26 @@ scriptVersion="9.7"
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # Check before running
-case $LOGO in
-    addigy|microsoft)
-        conditionFile="/var/db/.Installomator1stDone"
-        # Addigy and Microsoft Endpoint Manager (Intune) need a check for a touched file
-        if [ -e "$conditionFile" ]; then
-            echo "$LOGO setup detected"
-            echo "$conditionFile exists, so we exit."
-            exit 0
-        else
-            echo "$conditionFile not found, so we continue…"
-        fi
-        ;;
-esac
+echo "LOGO: $LOGO"
+if [[ -z $LOGO ]]; then
+	echo "ERROR: LOGO variable empty. Fatal problem. Exiting."
+	exit 1
+fi
+# Commented out as this is Self Service version
+# case $LOGO in
+#     addigy|microsoft)
+#         conditionFile="/var/db/.Installomator1stDone"
+#         # Addigy and Microsoft Endpoint Manager (Intune) need a check for a touched file
+#         if [ -e "$conditionFile" ]; then
+#             echo "$conditionFile exists, so we exit."
+#             exit 0
+#         else
+#             echo "$conditionFile not found, so we continue…"
+#         fi
+#         ;;
+# esac
 
-# Mark: Constants, logging and caffeinate
+# MARK: Constants, logging and caffeinate
 log_message="$instance: Installomator 1st with DEPNotify, v$scriptVersion"
 label="1st-v$scriptVersion"
 
@@ -161,6 +179,14 @@ case $LOGO in
         # Kandji
         LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
         ;;
+    filewave)
+        # FileWave
+        LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
+        ;;
+    *)
+    	# Not supported
+    	printlog "ERROR: LOGO variable not supported ($LOGO). Fatal problem. Exiting."
+    	exit 2
 esac
 if [[ ! -a "${LOGO_PATH}" ]]; then
     printlog "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
@@ -172,7 +198,7 @@ if [[ ! -a "${LOGO_PATH}" ]]; then
 fi
 printlog "LOGO: $LOGO - LOGO_PATH: $LOGO_PATH"
 
-# Mark: Functions
+# MARK: Functions
 printlog "depnotify_command function"
 echo "" > $DEPNOTIFY_LOG || true
 function depnotify_command(){
@@ -203,7 +229,9 @@ function displayDialog(){
     fi
 }
 
-# Mark: Code
+# MARK: Script
+
+# MARK: Install Installomator
 name="Installomator"
 printlog "$name check for installation"
 # download URL, version and Expected Team ID
@@ -293,11 +321,12 @@ else
     printlog "$name version $appNewVersion already found. Perfect!"
 fi
 
-# Installing DEPNotify
+# MARK: Installing DEPNotify
 cmdOutput="$( ${destFile} depnotify LOGO=$LOGO NOTIFY=silent BLOCKING_PROCESS_ACTION=ignore LOGGING=WARN || true )"
 exitStatus="$( echo "${cmdOutput}" | grep --binary-files=text -i "exit" | tail -1 | sed -E 's/.*exit code ([0-9]).*/\1/g' || true )"
 printlog "DEPNotify install result: $exitStatus"
 
+# MARK: Installations with DEPNotify
 itemName=""
 errorLabels=""
 ((countLabels++))
@@ -337,7 +366,7 @@ for item in "${items[@]}"; do
     itemName=""
 done
 
-# Mark: Finishing
+# MARK: Finishing
 # Prevent re-run of script if conditionFile is set
 if [[ ! -z "$conditionFile" ]]; then
     printlog "Touching condition file so script will not run again"
