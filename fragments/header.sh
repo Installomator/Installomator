@@ -153,7 +153,7 @@ IGNORE_DND_APPS=""
 # Swift Dialog integration
 
 # These variables will allow Installomator to communicate progress with Swift Dialog
-# https://github.com/bartreardon/swiftDialog
+# https://github.com/swiftDialog/swiftDialog
 
 # This requires Swift Dialog 2.11.2 or higher.
 

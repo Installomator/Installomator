@@ -58,7 +58,7 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 # Applies to Mosyle App Catalog installs, VPP app installs, Installomator installs etc.
 # The script watches the existence of files in the file system, so that is used to show progress.
 #
-# Requires Dialog v2 or later (will be installed) https://github.com/bartreardon/swiftDialog
+# Requires Dialog v2 or later (will be installed) https://github.com/swiftDialog/swiftDialog
 #
 # NOTE about MDM solutions:
 # This script might not be usefull for the following solutions as they
@@ -240,7 +240,7 @@ name="Dialog"
 printlog "$name check for installation"
 # download URL, version and Expected Team ID
 # Method for GitHub pkg w. app version check
-gitusername="bartreardon"
+gitusername="swiftDialog"
 gitreponame="swiftDialog"
 #printlog "$gitusername $gitreponame"
 filetype="pkg"

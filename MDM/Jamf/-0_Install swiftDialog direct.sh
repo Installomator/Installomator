@@ -109,7 +109,7 @@ name="Dialog"
 echo "$name check for installation"
 # download URL, version and Expected Team ID
 # Method for GitHub pkg w. app version check
-gitusername="bartreardon"
+gitusername="swiftDialog"
 gitreponame="swiftDialog"
 #echo "$gitusername $gitreponame"
 filetype="pkg"
