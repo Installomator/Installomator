@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.5beta"
-VERSIONDATE="2023-10-13"
+VERSIONDATE="2023-10-14"
 
 # MARK: Functions
 
@@ -1398,7 +1398,7 @@ updateDialog() {
     fi
 }
 
-# MARK: check minimal macOS requirement
+# NOTE: check minimal macOS requirement
 autoload is-at-least
 
 installedOSversion=$(sw_vers -productVersion)
@@ -1465,7 +1465,7 @@ fi
 # Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
 SESSION=$RANDOM
 
-# Mark: START
+# MARK: START
 printlog "################## Start Installomator v. $VERSION, date $VERSIONDATE" REQ
 printlog "################## Version: $VERSION" INFO
 printlog "################## Date: $VERSIONDATE" INFO
@@ -1484,7 +1484,7 @@ fi
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
-# MARK: check for root
+# NOTE: check for root
 if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR
@@ -2232,6 +2232,13 @@ bbeditpkg)
     appNewVersion=$(curl -s https://versioncheck.barebones.com/BBEdit.xml | grep dmg | sort  | tail -n1 | sed -E 's/.*BBEdit_([0-9 .]*)\.dmg.*/\1/')
     expectedTeamID="W52GZAXT98"
     ;;
+beamstudio)
+    name="Beam Studio"
+    type="dmg"
+    expectedTeamID="4Y92JWKV94"
+    downloadURL="$( curl -s "https://id.flux3dp.com/api/check-update?key=beamstudio-stable" | tr '"' '\n' | grep -m1 dmg )"
+    appNewVersion="$( echo "$downloadURL" | cut -d '+' -f 3 | cut -d '.' -f 1-3 )"
+    ;;
 betterdisplay)
     name="BetterDisplay"
     type="dmg"
@@ -2366,7 +2373,7 @@ brave)
 bravepkg)
     name="Brave Browser"
     type="pkg"
-    downloadURL="https://referrals.brave.com/latest/Brave-Browser.pkg" # Universal
+    downloadURL="https://referrals.brave.com/latest/Brave-Browser.pkg" # Universal 
         # https://referrals.brave.com/latest/Brave-Browser-arm64.pkg - ARM64
     appNewVersion="$(curl -fsL "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath -e '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null  | cut -d '"' -f 2)"
     versionKey="CFBundleVersion"
@@ -2652,6 +2659,13 @@ clickup)
 	fi
 	expectedTeamID="5RJWFAUGXQ"
 	;;
+clipgrab)
+    name="ClipGrab"
+    type="dmg"
+    expectedTeamID="E8BJ3ZV5W8"
+    downloadURL="$( curl -s 'https://clipgrab.org' | tr '"' '\n' | grep dmg )"
+    appNewVersion="$( echo "$downloadURL" | cut -d '-' -f 2 )"
+    ;;
 clipy)
 	name="Clipy"
 	type="dmg"
@@ -3016,6 +3030,15 @@ dockutil)
     expectedTeamID="Z5J8CJBUWC"
     blockingProcesses=( NONE )
     ;;
+dragonframe5)
+    name="DragonFrame 5"
+    type="pkg"
+    packageID="com.dzed.Dragonframe5"
+    expectedTeamID="PG7SM8SD8M"
+    curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" )
+    downloadURL="$( curl -s "https://www.dragonframe.com/downloads/" $curlOptions | tr '"' '\n' | grep -m1 "_5.*pkg" )"
+    appNewVersion="$( echo "$downloadURL" | cut -d '_' -f 2 | cut -d '.' -f 1-3 )"
+    ;;
 drawio)
     name="draw.io"
     type="dmg"
@@ -3127,7 +3150,7 @@ egnytewebedit)
     appName="Egnyte WebEdit.app"
     blockingProcesses=( NONE )
     ;;
-
+    
 element)
     name="Element"
     type="dmg"
@@ -3434,7 +3457,7 @@ flux)
     downloadURL="https://justgetflux.com/mac/Flux.zip"
     expectedTeamID="VZKSA7H9J9"
     ;;
-
+    
 flycut)
     name="Flycut"
     type="zip"
@@ -3463,9 +3486,9 @@ franz)
     name="Franz"
     type="dmg"
     if [[ $(arch) = "arm64" ]]; then
-        archiveName="Franz-[0-9.]*-arm64.dmg"
-    else
-        archiveName="Franz-[0-9.]*.dmg"
+        archiveName="Franz-[0-9.]*-arm64.dmg" 
+    else 
+        archiveName="Franz-[0-9.]*.dmg" 
     fi
     downloadURL="$(downloadURLFromGit meetfranz franz)"
     appNewVersion="$(versionFromGit meetfranz franz)"
@@ -3504,7 +3527,7 @@ gdevelop)
     if [[ $(arch) == arm64 ]]; then
         archiveName="GDevelop-5-[0-9.]*-arm64.dmg"
     elif [[ $(arch) == i386 ]]; then
-        archiveName="GDevelop-5-[0-9.]*.dmg"
+        archiveName="GDevelop-5-[0-9.]*.dmg" 
     fi
     appNewVersion="$(versionFromGit 4ian GDevelop)"
     downloadURL="$(downloadURLFromGit 4ian GDevelop)"
@@ -3747,6 +3770,15 @@ downloadURL="https://s-mac-sl.avcdn.net/macosx/privax/HMA-VPN.dmg"
 appNewVersion=""
 expectedTeamID="96HLSU34RN"
 ;;
+homebrew)
+    name="Homebrew"
+    type="pkg"
+    packageID="sh.brew.homebrew"
+    downloadURL="$(downloadURLFromGit Homebrew brew)"
+    appNewVersion="$(versionFromGit Homebrew brew)"
+    expectedTeamID="6248TWFRH6"
+    archiveName="Homebrew.pkg"
+    ;;
 horos)
     name="Horos"
     type="dmg"
@@ -3939,6 +3971,18 @@ ipvisionconnect)
     downloadURL="${downloadStore}$(curl -fs "https://my.ipvision.dk/connect/" | grep osx | sort | tail -1 | cut -d '"' -f2)"
     appNewVersion="$(curl -fs "${downloadStore}" | grep osx | sort | tail -1 | sed -E 's/.*ipvision_connect_([0-9_]*)_osx.*/\1/' | tr "_" ".")"
     expectedTeamID="5RLWBLKGL2"
+    ;;
+isadora)
+    name="Isadora"
+    type="pkgInDmg"
+    packageID="com.troikatronix.isadora-fat-std-installer"
+    expectedTeamID="Q5V96MD6S6"
+    siteURL="https://troikatronix.com"
+    downloadURL="$siteURL/$(curl -s "$siteURL/get-it/" | tr '"' '\n' | grep -m1 dmg)"
+    # This will have issues if they go past 9 in any part of the version, but hopefully
+    #   by then they might have provided a better way to collect the current version.
+    URLversion="$( echo "$downloadURL" | cut -d '-' -f 2 | cut -d 'f' -f 1 )"
+    appNewVersion="${URLversion[1]}.${URLversion[2]}.${URLversion[3]}"
     ;;
 island)
     name="Island"
@@ -4390,7 +4434,7 @@ keybase)
         downloadURL=$(curl -s https://keybase.io/docs/the_app/install_macos | grep data-target | cut -d '"' -f2 | grep -v arm64 )
     fi
     expectedTeamID="99229SGT5K"
-    ;;
+    ;; 
 keyboardmaestro)
     # credit: Søren Theilgaard (@theilgaard)
     name="Keyboard Maestro"
@@ -4400,6 +4444,14 @@ keyboardmaestro)
     appNewVersion=$( curl -fs "https://www.stairways.com/press/rss.xml" | xpath '//rss/channel/item/title[contains(text(), "releases Keyboard Maestro")]' 2>/dev/null | head -1 | sed -E 's/.*releases Keyboard Maestro ([0-9.]*)<.*/\1/g' ) # uses XML, so might be a little more precise/future proof
     expectedTeamID="QMHRBA4LGH"
     blockingProcesses=( "Keyboard Maestro Engine" "Keyboard Maestro" )
+    ;;
+keyshot12)
+    name="KeyShot12"
+    type="pkg"
+    packageID="com.luxion.pkg.keyshot12.app"
+    expectedTeamID="W7B24M74T3"
+    downloadURL="https://www.keyshot.com/download/357619/"
+    appNewVersion="$( curl -v "$downloadURL" 2>&1 | grep location | cut -d '_' -f 4 | cut -d '.' -f 1-2 )"
     ;;
 keystoreexplorer)
     name="KeyStore Explorer"
@@ -4412,8 +4464,8 @@ kimplusclientmodul)
     name="KIMplus Clientmodul"
     # appName="KIMplus Clientmodul.app"
     type="dmg"
-    downloadName=$(curl -fs "https://cm.kimplus.de/download/current/updates.xml" | grep -i 'targetMediaFileId="mac"' | sed "s|.*fileName=\(.*\)newVersion.*|\\1|" | cut -d '"' -f 2)
-    appNewVersion=$(curl -fs "https://cm.kimplus.de/download/current/updates.xml" | grep -i 'targetMediaFileId="mac"' | sed "s|.*newVersion=\(.*\)newMedia.*|\\1|" | cut -d '"' -f 2)
+    downloadName=$(curl -fs "https://cm.kimplus.de/download/current/" | grep "macos" | sed "s|.*href=\"\(.*\)\">kimplus-clientmodul.*|\\1|")
+    appNewVersion=$(curl -fs "https://cm.kimplus.de/download/current/" | grep "macos" | sed "s|.*kimplus-clientmodul_\(.*\)_macos.dmg.*|\\1|" | sed s/_/./g)
     downloadURL=https://cm.kimplus.de/download/current/$downloadName
     installerTool="KIMplus Clientmodul Installationsprogramm.app"
     CLIInstaller="KIMplus Clientmodul Installationsprogramm.app/Contents/MacOS/JavaApplicationStub"
@@ -4560,6 +4612,47 @@ libreoffice)
     expectedTeamID="7P5S3ZLCN7"
     blockingProcesses=( soffice )
     ;;
+libreofficelanguagepack_intl)
+    name="LibreOffice Language Pack"
+    # appName="LibreOffice.app"
+    #
+    # Reads the primary language of the system and installs the appropriate language pack for the latest LibreOffice STABLE version
+    # There is no language pack for the US English language and no installation is required other than the LibreOffice software itself.
+    # Use in combination and after installing Libre Office (STABLE Version)
+    # This label requires user interaction to complete the installation
+    #
+    type="dmg"
+    packageID="org.libreoffice.script.langpack"
+    userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLanguages | head -2 | tail -1 | tr -dc "[:alnum:]\-")
+    if [[ "$userLanguage" == "en-US" ]]; then
+        cleanupAndExit 0 "No installation of a language pack is necessary for the US-English language."
+    fi
+    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
+    releaseURL="https://download.documentfoundation.org/libreoffice/stable/"$appNewVersion"/mac/aarch64/"
+    until curl -fs $releaseURL | grep -q "_$userLanguage.dmg"; do
+        if [ ${#userLanguage} -eq 2 ]; then
+            break
+        fi
+        printlog "No locale matching '$userLanguage', trying '${userLanguage:0:2}'"
+        userLanguage=${userLanguage:0:2}
+    done
+    printlog "Using language '$userLanguage' for download."
+    # downloadURL="https://downloadarchive.documentfoundation.org/libreoffice/old/latest/mac/aarch64/"
+    # if ! curl -sfL --output /dev/null -r 0-0 $downloadURL; then
+    #     printlog "Download not found for '$userLanguage', exiting."
+    #     exit
+    # fi
+    # appNewVersion=$(curl -sf $releaseURL | grep -m 1 "_langpack_$userLanguage.dmg" | sed "s|.*LibreOffice_\(.*\)_MacOS.*|\\1|")
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://download.documentfoundation.org/libreoffice/stable/"$appNewVersion"/mac/aarch64/LibreOffice_"$appNewVersion"_MacOS_aarch64_langpack_"$userLanguage".dmg"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://download.documentfoundation.org/libreoffice/stable/"$appNewVersion"/mac/x86_64/LibreOffice_"$appNewVersion"_MacOS_x86-64_langpack_"$userLanguage".dmg"
+    fi
+    installerTool="LibreOffice Language Pack.app"
+    CLIInstaller="LibreOffice Language Pack.app/Contents/LibreOffice Language Pack"
+    expectedTeamID="7P5S3ZLCN7"
+    # blockingProcesses=( soffice )
+    ;;
 linear)
     name="Linear"
     type="dmg"
@@ -4574,7 +4667,7 @@ linear)
     appName="Linear.app"
     blockingProcesses=( "Linear" )
     ;;
-
+    
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -4630,7 +4723,7 @@ lowprofile)
     ;;
 lsagent)
     name="LsAgent-osx"
-    #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version.
+    #Description: Lansweeper is an IT Asset Management solution. This label installs the latest version. 
     #Download: https://www.lansweeper.com/download/lsagent/
     #Icon: https://www.lansweeper.com/wp-content/uploads/2018/08/LsAgent-Scanning-Agent.png
     #Usage:
@@ -4640,7 +4733,7 @@ lsagent)
     #                                              Default: none
     #                                              Allowed: none minimal minimalWithDialogs
     #  --optionfile <optionfile>                   Installation option file
-    #                                              Default:
+    #                                              Default: 
     #  --debuglevel <debuglevel>                   Debug information level of verbosity
     #                                              Default: 2
     #                                              Allowed: 0 1 2 3 4
@@ -4648,18 +4741,18 @@ lsagent)
     #                                              Default: osx
     #                                              Allowed: osx text unattended
     #  --debugtrace <debugtrace>                   Debug filename
-    #                                              Default:
+    #                                              Default: 
     #  --installer-language <installer-language>   Language selection
     #                                              Default: en
     #                                              Allowed: sq ar es_AR az eu pt_BR bg ca hr cs da nl en et fi fr de el he hu id it ja kk ko lv lt no fa pl pt ro ru sr zh_CN sk sl es sv th zh_TW tr tk uk va vi cy
     #  --prefix <prefix>                           Installation Directory
     #                                              Default: /Applications/LansweeperAgent
     #  --server <server>                           FQDN, NetBios or IP of the Scanning Server
-    #                                              Default:
+    #                                              Default: 
     #  --port <port>                               Listening Port on the Scanning Server
     #                                              Default: 9524
     #  --agentkey <agentkey>                       Cloud Relay Authentication Key (Optional)
-    #                                              Default:
+    #                                              Default: 
     type="dmg"
     downloadURL="https://content.lansweeper.com/lsagent-mac/"
     appNewVersion="$(curl -fsIL "$downloadURL" | grep -i "location" | cut -w -f2 | cut -d "/" -f5-6 | tr "/" ".")"
@@ -4931,7 +5024,7 @@ microsoftazurestorageexplorer)
     if [[ $(arch) == arm64 ]]; then
         archiveName="StorageExplorer-darwin-arm64.zip"
     elif [[ $(arch) == i386 ]]; then
-        archiveName="StorageExplorer-darwin-x64.zip"
+        archiveName="StorageExplorer-darwin-x64.zip" 
     fi
     downloadURL=$(downloadURLFromGit microsoft AzureStorageExplorer )
     appNewVersion=$(versionFromGit microsoft AzureStorageExplorer )
@@ -5978,7 +6071,7 @@ patchomator)
     expectedTeamID="4VAAB6AM7X"
     ;;
 pcoipclient)
-    # Note that the sed match removes 'pcoip-client_' and '.dmg'
+    # Note that the sed match removes 'pcoip-client_' and '.dmg' 
     name="PCoIPClient"
     type="dmg"
     downloadURL="https://dl.teradici.com/DeAdBCiUYInHcSTy/pcoip-client/raw/names/pcoip-client-dmg/versions/latest/pcoip-client_latest.dmg"
@@ -6128,6 +6221,26 @@ privileges)
     appNewVersion=$(versionFromGit sap macOS-enterprise-privileges )
     expectedTeamID="7R5ZEU67FQ"
     ;;
+processing3)
+    name="Processing"
+    type="zip"
+    downloadURL=$(downloadURLFromGit processing processing)
+    appNewVersion=$(versionFromGit processing processing)
+    expectedTeamID="8SBRM6J77J"
+    # Github returned version number resulves in build and version numbers being combined, so this provides the best match.
+    # if you are manually replicating the label with valuesfromarguements use 'appNewVersion="3.$(versionFromGit processing processing | cut -d "." -f 2-)"' instead.
+    appCustomVersion(){ echo "$(defaults read /Applications/Processing.app/Contents/Info.plist CFBundleVersion )$( defaults read /Applications/Processing.app/Contents/Info.plist CFBundleShortVersionString )" }
+    ;;
+processing4)
+    name="Processing"
+    type="zip"
+    downloadURL=$(downloadURLFromGit processing processing4)
+    appNewVersion=$(versionFromGit processing processing4)
+    expectedTeamID="8SBRM6J77J"
+    # Github returned version number resulves in build and version numbers being combined, so this provides the best match.
+    # if you are manually replicating the label with valuesfromarguements use 'appNewVersion="4.$(versionFromGit processing processing | cut -d "." -f 2-)"' instead.
+    appCustomVersion(){ echo "$(defaults read /Applications/Processing.app/Contents/Info.plist CFBundleVersion )$( defaults read /Applications/Processing.app/Contents/Info.plist CFBundleShortVersionString )" }
+    ;;
 proctortrack)
     #credit: Jeff F. (@jefff on MacAdmins Slack)
     name="Proctortrack"
@@ -6186,6 +6299,14 @@ prune)
     appNewVersion=$(versionFromGit BIG-RAT Prune)
     expectedTeamID="PS2F6S478M"
 ;;
+prusaslicer)
+    name="PrusaSlicer"
+    type="dmg"
+    archiveName="PrusaSlicer-[0-9.]*+MacOS-universal-[0-9.]*.dmg"
+    downloadURL="$(downloadURLFromGit prusa3d PrusaSlicer)"
+    appNewVersion="$(versionFromGit prusa3d PrusaSlicer)"
+    expectedTeamID="DKPB65N43Z"
+    ;;
 pymol)
     name="PyMOL"
     type="dmg"
@@ -6543,7 +6664,7 @@ secretive)
     appNewVersion=$(versionFromGit maxgoedjen secretive)
     expectedTeamID="Z72PRUAWF6"
     ;;
-
+    
 selfcontrol)
     name="SelfControl"
     type="zip"
@@ -6689,7 +6810,7 @@ smartsheet)
 	downloadURL="https://smartsheet-desktop-app-builds.s3.amazonaws.com/public/darwin/Smartsheet-setup.dmg"
 	expectedTeamID="J89ET3PY68"
 	;;
-
+    
 snagit|\
 snagit2024)
     name="Snagit 2024"
@@ -7961,7 +8082,7 @@ zulujdk8)
     ;;
 esac
 
-# finish reading the arguments:
+# MARK: finish reading the arguments:
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
@@ -8023,6 +8144,7 @@ printlog "updateToolArguments=${updateToolArguments}" DEBUG
 printlog "updateToolRunAsCurrentUser=${updateToolRunAsCurrentUser}" DEBUG
 #printlog "Company=${Company}" DEBUG # Not used
 
+# NOTE: Do not disturb active display sleep assertion
 if [[ ${INTERRUPT_DND} = "no" ]]; then
     # Check if a fullscreen app is active
     if hasDisplaySleepAssertion; then
@@ -8034,7 +8156,7 @@ printlog "BLOCKING_PROCESS_ACTION=${BLOCKING_PROCESS_ACTION}"
 printlog "NOTIFY=${NOTIFY}"
 printlog "LOGGING=${LOGGING}"
 
-# Finding LOGO to use in dialogs
+# NOTE: Finding LOGO to use in dialogs
 case $LOGO in
     appstore)
         # Apple App Store on Mac
@@ -8095,7 +8217,7 @@ printlog "LOGO=${LOGO}" INFO
 
 printlog "Label type: $type" INFO
 
-# MARK: extract info from data
+# NOTE: extract info from data
 if [ -z "$archiveName" ]; then
     case $type in
         dmg|pkg|zip|tbz|bz2)
@@ -8152,7 +8274,7 @@ else
     tmpDir=$(mktemp -d )
 fi
 
-# MARK: change directory to temporary working directory
+# NOTE: change directory to temporary working directory
 printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
     cleanupAndExit 13 "error changing directory $tmpDir" ERROR
@@ -8162,7 +8284,7 @@ fi
 getAppVersion
 printlog "appversion: $appversion"
 
-# MARK: Exit if new version is the same as installed version (appNewVersion specified)
+# NOTE: Exit if new version is the same as installed version (appNewVersion specified)
 if [[ "$type" != "updateronly" && ($INSTALL == "force" || $IGNORE_APP_STORE_APPS == "yes") ]]; then
     printlog "Label is not of type “updateronly”, and it’s set to use force to install or ignoring app store apps, so not using updateTool."
     updateTool=""

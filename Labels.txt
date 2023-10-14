@@ -77,6 +77,7 @@ bartender
 basecamp3
 bbedit
 bbeditpkg
+beamstudio
 betterdisplay
 bettertouchtool
 beyondcomparepro
@@ -127,6 +128,7 @@ cleartouchcollage
 clevershare2
 clickshare
 clickup
+clipgrab
 clipy
 closeio
 cloudflarewarp
@@ -169,6 +171,7 @@ displaylinkmanager
 displaylinkmanagergraphicsconnectivity
 docker
 dockutil
+dragonframe5
 drawio
 drift
 dropbox
@@ -248,6 +251,7 @@ hancock
 handbrake
 hazel
 hmavpn
+homebrew
 horos
 houdahspot
 hpeasyadmin
@@ -272,6 +276,7 @@ installomator_theile
 intellijideace
 ipswupdater
 ipvisionconnect
+isadora
 island
 istatmenus
 iterm2
@@ -316,6 +321,7 @@ keka
 keyaccess
 keybase
 keyboardmaestro
+keyshot12
 keystoreexplorer
 kimplusclientmodul
 klokki
@@ -332,6 +338,7 @@ libericajdk11ltsfull
 libericajdk17ltsfull
 libericajdk8ltsfull
 libreoffice
+libreofficelanguagepack_intl
 linear
 logioptions
 logitechoptions
@@ -498,6 +505,8 @@ prism10
 prism9
 pritunl
 privileges
+processing3
+processing4
 proctortrack
 projectplace
 promiseutility
@@ -507,6 +516,7 @@ propresenter7
 protonvpn
 proxyman
 prune
+prusaslicer
 pycharmce
 pymol
 python
