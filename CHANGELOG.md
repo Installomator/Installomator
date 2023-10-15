@@ -1,5 +1,4 @@
 ## v11.0beta1
-## v11.0beta1
 
 - argument reordering (#834) (this changes behavior, see note below)
 - Swift Dialog:
