@@ -1,4 +1,4 @@
-# MARK: check minimal macOS requirement
+# NOTE: check minimal macOS requirement
 autoload is-at-least
 
 installedOSversion=$(sw_vers -productVersion)
@@ -65,7 +65,7 @@ fi
 # Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
 SESSION=$RANDOM
 
-# Mark: START
+# MARK: START
 printlog "################## Start Installomator v. $VERSION, date $VERSIONDATE" REQ
 printlog "################## Version: $VERSION" INFO
 printlog "################## Date: $VERSIONDATE" INFO
@@ -84,7 +84,7 @@ fi
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
-# MARK: check for root
+# NOTE: check for root
 if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR

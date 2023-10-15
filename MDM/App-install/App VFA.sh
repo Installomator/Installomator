@@ -3,7 +3,7 @@
 # Installation using Installomator
 # Installation of software using valuesfromarguments to install a custom software using Installomator
 
-LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
 # Have the label been submittet in a PR for Installomator?
 # What version of Installomator is it expected to be included in?

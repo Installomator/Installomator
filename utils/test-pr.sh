@@ -9,6 +9,11 @@
 pr_num=${1:?"arg 1 is the PR number"}
 label=${2:?"arg 2 is label"}
 
+# clean build folder
+if [[ -d build ]]; then
+    rm -rf build/*
+fi
+
 if ! gh pr checkout $pr_num -b "pr/$pr_num"; then
     exit $?
 fi
