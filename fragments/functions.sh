@@ -445,7 +445,7 @@ reopenClosedProcess() {
         processuser=$(ps aux | grep -i "${appName}" | grep -vi "grep" | awk '{print $1}')
         printlog "Reopened ${appName} as $processuser"
     else
-        printlog "App not closed, so no reopen." INFO
+        printlog "Installomator did not close any apps, so no need to reopen any apps." INFO
     fi
 }
 

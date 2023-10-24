@@ -2,7 +2,7 @@
 
 # Update with Installomator if app exist
 
-LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
 item="" # enter the software to install
 # Examples: cyberduck, handbrake, textmate, vlc

@@ -2,11 +2,10 @@
 
 # Installation using Installomator
 
-LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
 item="" # enter the software to install
 # Examples: adobecreativeclouddesktop, canva, cyberduck, handbrake, inkscape, textmate, vlc
-
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user NOTIFY=all" # Separated by space
 

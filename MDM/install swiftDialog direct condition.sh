@@ -3,7 +3,7 @@
 # Mark: Addigy Condition
 # Install on success
 
-gitusername="bartreardon"
+gitusername="swiftDialog"
 gitreponame="swiftDialog"
 appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
 

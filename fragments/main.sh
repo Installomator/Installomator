@@ -5,7 +5,7 @@
     ;;
 esac
 
-# finish reading the arguments:
+# MARK: finish reading the arguments:
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
@@ -67,6 +67,7 @@ printlog "updateToolArguments=${updateToolArguments}" DEBUG
 printlog "updateToolRunAsCurrentUser=${updateToolRunAsCurrentUser}" DEBUG
 #printlog "Company=${Company}" DEBUG # Not used
 
+# NOTE: Do not disturb active display sleep assertion
 if [[ ${INTERRUPT_DND} = "no" ]]; then
     # Check if a fullscreen app is active
     if hasDisplaySleepAssertion; then
@@ -78,7 +79,7 @@ printlog "BLOCKING_PROCESS_ACTION=${BLOCKING_PROCESS_ACTION}"
 printlog "NOTIFY=${NOTIFY}"
 printlog "LOGGING=${LOGGING}"
 
-# Finding LOGO to use in dialogs
+# NOTE: Finding LOGO to use in dialogs
 case $LOGO in
     appstore)
         # Apple App Store on Mac
@@ -126,7 +127,7 @@ case $LOGO in
         # FileWave
         LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="FileWave MDM Configuration"; fi
-        ;;    
+        ;;
 esac
 if [[ ! -a "${LOGO}" ]]; then
     if [[ $(sw_vers -buildVersion) > "19" ]]; then
@@ -139,7 +140,7 @@ printlog "LOGO=${LOGO}" INFO
 
 printlog "Label type: $type" INFO
 
-# MARK: extract info from data
+# NOTE: extract info from data
 if [ -z "$archiveName" ]; then
     case $type in
         dmg|pkg|zip|tbz|bz2)
@@ -196,7 +197,7 @@ else
     tmpDir=$(mktemp -d )
 fi
 
-# MARK: change directory to temporary working directory
+# NOTE: change directory to temporary working directory
 printlog "Changing directory to $tmpDir" DEBUG
 if ! cd "$tmpDir"; then
     cleanupAndExit 13 "error changing directory $tmpDir" ERROR
@@ -206,7 +207,7 @@ fi
 getAppVersion
 printlog "appversion: $appversion"
 
-# MARK: Exit if new version is the same as installed version (appNewVersion specified)
+# NOTE: Exit if new version is the same as installed version (appNewVersion specified)
 if [[ "$type" != "updateronly" && ($INSTALL == "force" || $IGNORE_APP_STORE_APPS == "yes") ]]; then
     printlog "Label is not of type “updateronly”, and it’s set to use force to install or ignoring app store apps, so not using updateTool."
     updateTool=""
@@ -238,7 +239,7 @@ fi
 
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
-    printlog "appversion & updateTool"
+    printlog "App needs to be updated and uses $updateTool. Ignoring BLOCKING_PROCESS_ACTION and running updateTool now."
     updateDialog "wait" "Updating..."
 
     if [[ $DEBUG -ne 1 ]]; then
