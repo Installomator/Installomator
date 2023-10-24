@@ -1,4 +1,5 @@
 fontexplorer)
+    # Product converted to https://www.monotypefonts.com/
     name="FontExplorer X Pro"
     type="dmg"
     packageID="com.linotype.FontExplorerX"
