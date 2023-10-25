@@ -1,0 +1,9 @@
+questarstudent)
+    name="QuestarStudent-MO"
+    type="pkg"
+    packageID="com.questar.securebrowser"
+    downloadURL="https://mo.nextera.questarai.com/services/admin/api/v1/downloads/operating-systems/mac/secure-browser"
+    appCustomVersion="5.0.0"
+    appNewVersion=""
+    expectedTeamID="PXK5H529EX"
+    ;;
