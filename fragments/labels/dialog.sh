@@ -3,7 +3,7 @@ swiftdialog)
     name="Dialog"
     type="pkg"
     packageID="au.csiro.dialogcli"
-    downloadURL="$(downloadURLFromGit bartreardon swiftDialog)"
-    appNewVersion="$(versionFromGit bartreardon swiftDialog)"
+    downloadURL="$(downloadURLFromGit swiftDialog swiftDialog)"
+    appNewVersion="$(versionFromGit swiftDialog swiftDialog)"
     expectedTeamID="PWA5E9TQ59"
     ;;

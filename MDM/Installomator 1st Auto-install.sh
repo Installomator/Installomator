@@ -1,12 +1,20 @@
 #!/bin/sh
 
 # Installomator 1st installation (auto installation at enrollment)
+
+# MARK: Variables
 instance="" # Name of used instance
 
-LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
-items=(dialog dockutil microsoftautoupdate supportapp xink zohoworkdrivetruesync textmate applenyfonts applesfpro applesfmono applesfcompact 1password7 wwdc theunarchiver keka microsoftedge microsoftteams microsoftonedrive microsoftoffice365)
-# Remember: dialog dockutil
+if [[ $(arch) == "arm64" ]]; then
+    items=(dialog dockutil microsoftautoupdate theunarchiver microsoftoffice365 microsoftedge microsoftteams microsoftonedrive microsoftdefender microsoftcompanyportal displaylinkmanager)
+    # displaylinkmanager
+else
+    items=(dialog dockutil microsoftautoupdate theunarchiver microsoftoffice365 microsoftedge microsoftteams microsoftonedrive microsoftdefender microsoftcompanyportal)
+fi
+# Remember: dialog dockutil desktoppr
+# dialog not needed if Progress 1st is used
 
 installomatorOptions="NOTIFY=silent BLOCKING_PROCESS_ACTION=ignore INSTALL=force IGNORE_APP_STORE_APPS=yes LOGGING=REQ"
 
@@ -14,6 +22,7 @@ installomatorOptions="NOTIFY=silent BLOCKING_PROCESS_ACTION=ignore INSTALL=force
 showError="1" # Show error message if 1 (0 if it should not be shown)
 errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 
+# MARK: Instructions
 ######################################################################
 # Installomator 1st
 #
@@ -24,6 +33,13 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 # This script can be used to install software using Installomator.
 # Script will display a dialog if any errors happens.
 # User is not notified about installations.
+#
+# NOTE about MDM solutions:
+# This script might not be usefull for the following solutions as they
+# have their own solution for deployment progress:
+# - mosyleb,mosylem  Mosyle has Embark (often “Progress 1st” is
+#                    a better option if not using Embark)
+# - kandji           Kandji has LiftOff
 ######################################################################
 # Other installomatorOptions:
 #   LOGGING=REQ
@@ -52,8 +68,12 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
-scriptVersion="9.7"
-# v.  9.7   : 2022-12-19 : Only kill the caffeinate process we create
+scriptVersion="9.11"
+# v.  9.11  : 2023-10/06 : Support for FileWave
+# v.  9.10  : 2023-09-18 : If LOGO variable is empty, we exit
+# v.  9.9   : 2023-08-25 : items varied by architecture
+# v.  9.8   : 2023-03-02 : Support for Kandji, but that MDM already have LiftOff that is probably better.
+# v.  9.7   : 2022-12-19 : Fix for LOGO_PATH for ws1, and only kill the caffeinate process we create
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
 # v.  9.5   : 2022-09-21 : change of GitHub download
 # v.  9.4   : 2022-09-14 : Making error message optional. downloadURL can fall back on GitHub API.
@@ -66,12 +86,16 @@ scriptVersion="9.7"
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # Check before running
+echo "LOGO: $LOGO"
+if [[ -z $LOGO ]]; then
+	echo "ERROR: LOGO variable empty. Fatal problem. Exiting."
+	exit 1
+fi
 case $LOGO in
     addigy|microsoft)
         conditionFile="/var/db/.Installomator1stDone"
         # Addigy and Microsoft Endpoint Manager (Intune) need a check for a touched file
         if [ -e "$conditionFile" ]; then
-            echo "$LOGO setup detected"
             echo "$conditionFile exists, so we exit."
             exit 0
         else
@@ -80,7 +104,7 @@ case $LOGO in
         ;;
 esac
 
-# Mark: Constants, logging and caffeinate
+# MARK: Constants, logging and caffeinate
 log_message="$instance: Installomator 1st, v$scriptVersion"
 label="1st-v$scriptVersion"
 
@@ -106,7 +130,6 @@ fi
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid" || true
-    pkill caffeinate || true
     printlog "[LOG-END] Status $1"
     exit $1
 }
@@ -154,6 +177,14 @@ case $LOGO in
         # Kandji
         LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
         ;;
+    filewave)
+        # FileWave
+        LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
+        ;;
+    *)
+    	# Not supported
+    	printlog "ERROR: LOGO variable not supported ($LOGO). Fatal problem. Exiting."
+    	exit 2
 esac
 if [[ ! -a "${LOGO_PATH}" ]]; then
     printlog "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
@@ -165,7 +196,7 @@ if [[ ! -a "${LOGO_PATH}" ]]; then
 fi
 printlog "LOGO: $LOGO – LOGO_PATH: $LOGO_PATH"
 
-# Mark: Functions
+# MARK: Functions
 # Notify the user using AppleScript
 function displayDialog(){
     currentUser="$(stat -f "%Su" /dev/console)"
@@ -175,7 +206,9 @@ function displayDialog(){
     fi
 }
 
-# Mark: Code
+# MARK: Script
+
+# MARK: Install Installomator
 name="Installomator"
 printlog "$name check for installation"
 # download URL, version and Expected Team ID
@@ -265,6 +298,7 @@ else
     printlog "$name version $appNewVersion already found. Perfect!"
 fi
 
+# MARK: Installations
 errorLabels=""
 ((countLabels++))
 ((countLabels--))
@@ -290,7 +324,7 @@ for item in "${items[@]}"; do
     itemName=""
 done
 
-# Mark: Finishing
+# MARK: Finishing
 # Prevent re-run of script if conditionFile is set
 if [[ ! -z "$conditionFile" ]]; then
     printlog "Touching condition file so script will not run again"
