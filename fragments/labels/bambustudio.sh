@@ -4,5 +4,4 @@ bambustudio)
     downloadURL=$(downloadURLFromGit "bambulab" "BambuStudio")
     appNewVersion=$(versionFromGit "bambulab" "BambuStudio")
     expectedTeamID="F4SKHPXDD9"
-    blockingProcesses=( "Bambu Studio" )
     ;;
