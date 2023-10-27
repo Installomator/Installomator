@@ -343,6 +343,7 @@ linear
 logioptions
 logitechoptions
 logitechoptionsplus
+logitune
 logseq
 loom
 lowprofile
