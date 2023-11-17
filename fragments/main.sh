@@ -44,6 +44,8 @@ fi
 
 # MARK: application download and installation starts here
 
+appNewVersion=$(echo $appNewVersion | tr -d '[:cntrl:]') # Remove any possible control chars (such as "\r") that may have unintentionally gotten included in "appNewVersion" from some "curl" output.
+
 # Debug output of all variables in a label
 printlog "name=${name}" DEBUG
 printlog "appName=${appName}" DEBUG
