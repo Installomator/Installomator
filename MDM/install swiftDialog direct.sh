@@ -156,11 +156,10 @@ versionKey="CFBundleShortVersionString"
 bundleVersionKey="CFBundleVersion"
 
 # Get App Version
-currentInstalledVersion="$(defaults read "${destFile}/Contents/Info.plist" $versionKey || true)"
-# currentInstalledVersion="$(/usr/libexec/PlistBuddy -c "Print :$versionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
+currentInstalledVersion="$(/usr/libexec/PlistBuddy -c "Print :$versionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
 
 # Get App BundleVersion
-currentInstalledBundleVersion="$(defaults read "${destFile}/Contents/Info.plist" $bundleVersionKey || true)"
+currentInstalledVersion="$(/usr/libexec/PlistBuddy -c "Print :$bundleVersionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
 
 printlog "${name} version: $currentInstalledVersion bundleVersion: $currentInstalledBundleVersion"
 destFile2="/usr/local/bin/dialog"
