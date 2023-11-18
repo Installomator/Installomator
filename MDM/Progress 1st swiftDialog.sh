@@ -251,16 +251,29 @@ if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
     downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
 fi
 #printlog "$downloadURL"
-appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
+rawVersionString=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)
+
+# Get Github Version
+appNewVersion=$(echo "$rawVersionString" | awk -F '-' '{print $1}' | sed 's/[^0-9\.]//g' | sed 's/\.$//')
+
+# Get Github BundleVersion
+appNewBundleVersion=$(echo "$rawVersionString" | awk '{sub(/-/," ")}1' | awk '{print $2}' | sed 's/\r//g')
+
 #printlog "$appNewVersion"
 expectedTeamID="PWA5E9TQ59"
 destFile="/Library/Application Support/Dialog/Dialog.app"
-versionKey="CFBundleShortVersionString" #CFBundleVersion
+versionKey="CFBundleShortVersionString"
+bundleVersionKey="CFBundleVersion"
 
+# Get App Version
 currentInstalledVersion="$(defaults read "${destFile}/Contents/Info.plist" $versionKey || true)"
-printlog "${name} version: $currentInstalledVersion"
+
+# Get App BundleVersion
+currentInstalledBundleVersion="$(defaults read "${destFile}/Contents/Info.plist" $bundleVersionKey || true)"
+
+printlog "${name} version: $currentInstalledVersion bundleVersion: $currentInstalledBundleVersion"
 destFile="/usr/local/bin/dialog"
-if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; then
+if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" || "$currentInstalledBundleVersion" != "$appNewBundleVersion" ]]; then
     printlog "$name not found or version not latest."
     printlog "${destFile}"
     printlog "Installing version ${appNewVersion}…"
