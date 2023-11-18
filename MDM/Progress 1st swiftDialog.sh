@@ -89,7 +89,8 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #      Or fonts, like:
 #       "Apple SF Pro Font,/Library/Fonts/SF-Pro.ttf"
 ######################################################################
-scriptVersion="9.8"
+scriptVersion="9.9"
+# v.  9.9   : 2023-11-19 : Consider the bundle version where if the bundle version differs it will update, fixes problem where bundleversion and bundle get concatenated and it updates all the time even if version is the same.
 # v.  9.8   : 2023-10-06 : Support for FileWave, and previously Kandji. Update Progress 1st swiftDialog.sh to use native checkmark #1220
 # v.  9.7   : 2022-12-19 : Fix for LOGO_PATH for ws1
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
@@ -276,12 +277,12 @@ destFile="/usr/local/bin/dialog"
 if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" || "$currentInstalledBundleVersion" != "$appNewBundleVersion" ]]; then
     printlog "$name not found or version not latest."
     printlog "${destFile}"
-    printlog "Installing version ${appNewVersion}…"
+    printlog "Installing version ${appNewVersion} ${appNewBundleVersion}…"
     # Create temporary working directory
     tmpDir="$(mktemp -d || true)"
     printlog "Created working directory '$tmpDir'"
     # Download the installer package
-    printlog "Downloading $name package version $appNewVersion from: $downloadURL"
+    printlog "Downloading $name package version $appNewVersion $appNewBundleVersion from: $downloadURL"
     installationCount=0
     exitCode=9
     while [[ $installationCount -lt 3 && $exitCode -gt 0 ]]; do
