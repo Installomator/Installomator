@@ -201,8 +201,8 @@ if [[ ! -d "${destFile}" || ! -x "${destFile2}" || "$currentInstalledVersion" !=
         echo "ERROR : Installation of $name failed. Aborting."
         caffexit $exitCode
     else
-        echo "$name version $appNewVersion installed!"
+        echo "$name version $appNewVersion $appNewBundleVersion installed!"
     fi
 else
-    echo "$name version $appNewVersion already found. Perfect!"
+    echo "$name version $appNewVersion $appNewBundleVersion already found. Perfect!"
 fi

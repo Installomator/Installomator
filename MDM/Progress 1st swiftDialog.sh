@@ -335,10 +335,10 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" || "$
         printlog "ERROR. Installation of $name failed. Aborting."
         caffexit $exitCode
     else
-        printlog "$name version $appNewVersion installed!"
+        printlog "$name version $appNewVersion $appNewBundleVersion installed!"
     fi
 else
-    printlog "$name version $appNewVersion already found. Perfect!"
+    printlog "$name version $appNewVersion $appNewBundleVersion already found. Perfect!"
 fi
 
 
