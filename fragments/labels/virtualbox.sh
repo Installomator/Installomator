@@ -8,7 +8,7 @@ virtualbox)
     elif [[ $(arch) == arm64 ]]; then
         platform="macOSArm64"
     fi
-    downloadURL=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" | awk -F '"' "/$platform.dmg/ { print \$4 }")
-    appNewVersion=$(curl -fs "https://www.virtualbox.org/wiki/Downloads" | awk -F '"' "/$platform.dmg/ { print \$4 }" | sed -E 's/.*virtualbox\/([0-9.]*)\/.*/\1/')
+    downloadURL="https:$(curl -fsL "https://www.oracle.com/jp/virtualization/technologies/vm/downloads/virtualbox-downloads.html" | grep "${platform}.dmg" | xmllint --html --xpath 'string(//a/@href)' -)"
+    appNewVersion=$(echo "${downloadURL}" | awk -F '/' '{print $5}')
     expectedTeamID="VB5E2TV963"
     ;;
