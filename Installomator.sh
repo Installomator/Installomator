@@ -335,8 +335,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.5"
-VERSIONDATE="2023-10-15"
+VERSION="10.6beta"
+VERSIONDATE="2023-11-27"
 
 # MARK: Functions
 
@@ -2643,8 +2643,8 @@ clevershare2)
 clickshare)
     name="ClickShare"
     type="appInDmgInZip"
-    downloadURL="https://www.barco.com$( curl -fs "https://www.barco.com/en/clickshare/app" | grep -A6 -i "macos" | grep -i "FileNumber" | tr '"' "\n" | grep -i "FileNumber" )"
-    appNewVersion="$(eval "$( echo $downloadURL | sed -E 's/.*(MajorVersion.*BuildVersion=[0-9]*).*/\1/' | sed 's/&amp//g' )" ; ((MajorVersion++)) ; ((MajorVersion--)); ((MinorVersion++)) ; ((MinorVersion--)); ((PatchVersion++)) ; ((PatchVersion--)); ((BuildVersion++)) ; ((BuildVersion--)); echo "${MajorVersion}.${MinorVersion}.${PatchVersion}-b${BuildVersion}")"
+    downloadURL=$(curl -fs "https://www.barco.com/bin/barco/tde/downloadUrl.json?fileNumber=R3306192&tdeType=3" | grep -o '"downloadUrl":"https://[^"]*"' | cut -d'"' -f4)
+    appNewVersion=$(curl -s "https://assets.cloud.barco.com/clickshare/release/RELEASES" | grep -Eo "ClickShare-[0-9]+\.[0-9]+\.[0-9]+-b[0-9]+" | sed 's/ClickShare-//' | head -1)
     expectedTeamID="P6CDJZR997"
     ;;
 clickup)
@@ -3848,6 +3848,13 @@ hyper)
     downloadURL=$(downloadURLFromGit vercel hyper )
     appNewVersion=$(versionFromGit vercel hyper)
     expectedTeamID="JW6Y669B67"
+    ;;
+i1profiler)
+    name="i1Profiler"
+    type="pkgInZip"
+    downloadURL=$(curl -fs "https://downloads.xrite.com/downloads/autoupdate/i1profiler_mac_appcast.xml" | xmllint --xpath '//rss/channel/item[1]/enclosure/@url' - | sed -E 's/.*url="([^"]+)".*/\1/')
+    appNewVersion=$(curl -fs "https://downloads.xrite.com/downloads/autoupdate/i1profiler_mac_appcast.xml" | xmllint --xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString' - | sed -E 's/.*shortVersionString="([^"]+)".*/\1/')
+    expectedTeamID="2K7GT73B4R"
     ;;
 ibarcoder)
     name="iBarcoder"
@@ -6079,6 +6086,14 @@ pcoipclient)
     expectedTeamID="RU4LW7W32C"
     blockingProcesses=( "Teradici PCoIP Client" )
     ;;
+pdfexpert)
+    # PDF Expert
+    name="PDF Expert"
+    type="zip"
+    downloadURL=$(curl -fs "https://downloads.pdfexpert.com/pem3/release/appcast.xml" | grep -o 'https://downloads.pdfexpert.com/[^"]*.zip' | tail -n 1)
+    appNewVersion=$(curl -fs "https://downloads.pdfexpert.com/pem3/release/appcast.xml" | grep -o 'sparkle:shortVersionString="[^"]*"' | sed -E 's/sparkle:shortVersionString="([^"]*)"/\1/' | tail -n 1)
+    expectedTeamID="3L68KQB4HG"
+    ;;
 pdfsam)
     name="PDFsam Basic"
     type="dmg"
@@ -7504,6 +7519,78 @@ vanilla)
     type="dmg"
     downloadURL="https://macrelease.matthewpalmer.net/Vanilla.dmg"
     expectedTeamID="Z4JV2M65MH"
+    ;;
+vectorworks2021sp5)
+    name="Vectorworks 2021 SP5"
+    appName="Vectorworks 2021 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2021.vectorworksinstaller"
+    downloadURL="https://download.vectorworks.de/2021/cw/macintosh"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2022sp6)
+    name="Vectorworks 2022 SP6"
+    appName="Vectorworks 2022 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2022.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2022/mac/Vectorworks%202022%20SP6.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp1)
+    name="Vectorworks 2023 SP1"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP1.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp2)
+    name="Vectorworks 2023 SP2"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP2.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp3)
+    name="Vectorworks 2023 SP3"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP3.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp4)
+    name="Vectorworks 2023 SP4"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP4.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp5)
+    name="Vectorworks 2023 SP5"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP5.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp6)
+    name="Vectorworks 2023 SP6"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP6.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp7)
+    name="Vectorworks 2023 SP7"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP7.dmg"
+    expectedTeamID="LFNG3Q6WX2"
     ;;
 venturablocker)
     name="venturablocker"

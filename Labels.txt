@@ -260,6 +260,7 @@ hubstaff
 huddly
 hype
 hyper
+i1profiler
 ibarcoder
 ibmnotifier
 icons
@@ -487,6 +488,7 @@ paretosecurity
 parsec
 patchomator
 pcoipclient
+pdfexpert
 pdfsam
 perimeter81
 pgadmin4
@@ -666,6 +668,15 @@ unnaturalscrollwheels
 utm
 vagrant
 vanilla
+vectorworks2021sp5
+vectorworks2022sp6
+vectorworks2023sp1
+vectorworks2023sp2
+vectorworks2023sp3
+vectorworks2023sp4
+vectorworks2023sp5
+vectorworks2023sp6
+vectorworks2023sp7
 venturablocker
 veracrypt
 vfx
