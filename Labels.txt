@@ -233,7 +233,6 @@ googleadseditor
 googlechrome
 googlechromeenterprise
 googlechromepkg
-googledrive
 googledrivebackupandsync
 googledrivefilestream
 googleearth
