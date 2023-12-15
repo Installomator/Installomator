@@ -1,7 +1,17 @@
 #!/bin/sh
 
+# MARK: Variables
+icon="https://mosylebusinessweb.blob.core.windows.net/envoit-public/logo-envoit-macosappicon.png"
+icon="/Library/Addigy/macmanage/atom.icns" # Only for Addigy
+# Must be a link to a web image or a file system path
+
+removeOldIcon=0 # Set to 1 if you want the old icon to be removed first
+# Removing the icon forces a new install of swiftDialog regardless of installed version
+
+# MARK: Instructions
 ######################################################################
 # Installation of swiftDialog
+# w. custom icon for Dialog if "icon" is defined.
 #
 # No customization below…
 ######################################################################
@@ -16,7 +26,10 @@
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
-scriptVersion="9.7"
+scriptVersion="10.2"
+# v. 10.2   : 2023-05-19 : Improved PNG icon file handling.
+# v. 10.1   : 2023-05-12 : Custom icon can be icns/png file. Plistbuddy used instead of defaults.
+# v. 10.0   : 2022-11-22 : Support for custom icon for Dialog.
 # v.  9.7   : 2022-12-19 : Only kill the caffeinate process we create
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
 # v.  9.5   : 2022-09-21 : change of GitHub download
@@ -28,7 +41,7 @@ scriptVersion="9.7"
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-# Mark: Constants, logging and caffeinate
+# MARK: Constants, logging and caffeinate
 log_message="Dialog install, v$scriptVersion"
 label="Dialog-v$scriptVersion"
 
@@ -41,13 +54,7 @@ printlog(){
         echo "$timestamp :: $label : $1"
     fi
 }
-printlog "[LOG-BEGIN] ${log_message}"
-
-# Internet check
-if [[ "$(nc -z -v -G 10 1.1.1.1 53 2>&1 | grep -io "succeeded")" != "succeeded" ]]; then
-    printlog "ERROR. No internet connection, we cannot continue."
-    exit 90
-fi
+printlog "$(date +%F\ %T) : [LOG-BEGIN] ${log_message}"
 
 # No sleeping
 /usr/bin/caffeinate -d -i -m -u &
@@ -58,17 +65,79 @@ caffexit () {
     exit $1
 }
 
+# MARK: Handling icon for swiftDialog
+dialogIconLocation="/Library/Application Support/Dialog/Dialog.png"
+# Should old icon be removed?
+if [[ $removeOldIcon -eq 1 ]]; then
+    printlog "Removing old icon first"
+    rm "$dialogIconLocation" || true
+fi
+# Check Dialog installation folder
+if [ ! -d "/Library/Application Support/Dialog" ]; then
+    printlog "Dialog folder not existing or is a file, so fixing that."
+    printlog "$(rm -rv "/Library/Application Support/Dialog")"
+    printlog "$(mkdir -p "/Library/Application Support/Dialog")"
+fi
+printlog "$(file "/Library/Application Support/Dialog")"
+# Checking icon before installation
+if [[ -n $icon ]]; then
+    printlog "icon defined, so investigating that for Dialog!"
+    # NOTE: Checking various icon scenarios
+    if [[ -n "$(file "$dialogIconLocation" | cut -d: -f2 | grep -o "PNG image data")" ]]; then
+        printlog "$(file "${dialogIconLocation}")"
+        printlog "swiftDialog icon already exists as PNG file, so continuing..."
+    elif [[ "$( echo $icon | cut -d/ -f1 | cut -c 1-4 )" = "http" ]]; then
+        printlog "icon is web-link, downloading..."
+        if ! curl -fs "$icon" -o "$dialogIconLocation"; then
+            printlog "ERROR : Downloading $icon failed."
+            printlog "No icon logo for swiftDialog has been set."
+        else
+            printlog "Icon for Dialog downloaded/created."
+            printlog "$(file "${dialogIconLocation}")"
+            INSTALL=force
+        fi
+    elif [[ -n "$(file "$icon" | cut -d: -f2 | grep -o "PNG image data")" ]]; then
+        printlog "icon is PNG, can be used directly."
+        if cp "${icon}" "$dialogIconLocation"; then
+            printlog "PNG Icon for Dialog copied."
+            printlog "$(file "${dialogIconLocation}")"
+            INSTALL=force
+        else
+            printlog "ERROR : Copying $icon failed."
+            printlog "No icon logo for swiftDialog has been set."
+        fi
+    elif [[ -f "$icon" && -n "$(echo $icon | rev | cut -d. -f1 | rev | grep -oE "(icns|tif|tiff|gif|jpg|jpeg|heic)")" ]]; then
+        printlog "icon is $(echo $icon | rev | cut -d. -f1 | rev), converting..."
+        printlog "$(file "${icon}")"
+        if ! sips -s format png "${icon}" --out "$dialogIconLocation"; then
+            printlog "ERROR : Converting $icon failed."
+            printlog "No icon logo for swiftDialog has been set."
+        else
+            printlog "Icon for Dialog converted."
+            printlog "$(file "${dialogIconLocation}")"
+            INSTALL=force
+        fi
+    else
+        printlog "Icon situation not handled."
+        printlog "No icon logo for swiftDialog has been set."
+    fi
+else
+    printlog "icon not defined."
+fi
+printlog "INSTALL=${INSTALL}"
+
+# MARK: Install Swift Dialog
 name="Dialog"
 printlog "$name check for installation"
 # download URL, version and Expected Team ID
 # Method for GitHub pkg w. app version check
-gitusername="bartreardon"
+gitusername="swiftDialog"
 gitreponame="swiftDialog"
 #printlog "$gitusername $gitreponame"
 filetype="pkg"
 downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
 if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
-    printlog "GitHub API failed, trying failover."
+    printlog "WARN  : GitHub API failed, trying failover."
     #downloadURL="https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
     downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
 fi
@@ -78,12 +147,13 @@ appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases
 expectedTeamID="PWA5E9TQ59"
 destFile="/Library/Application Support/Dialog/Dialog.app"
 versionKey="CFBundleShortVersionString" #CFBundleVersion
+currentInstalledVersion="$(/usr/libexec/PlistBuddy -c "Print :$versionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
+printlog "${name} version installed: $currentInstalledVersion"
 
-currentInstalledVersion="$(defaults read "${destFile}/Contents/Info.plist" $versionKey || true)"
-printlog "${name} version: $currentInstalledVersion"
-destFile="/usr/local/bin/dialog"
-if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; then
-    printlog "$name not found or version not latest."
+destFile2="/usr/local/bin/dialog"
+# NOTE: Condition for installation
+if [[ ! -d "${destFile}" || ! -x "${destFile2}" || "$currentInstalledVersion" != "$appNewVersion" || "$INSTALL" == "force" ]]; then
+    printlog "$name not found, version not latest, icon for Dialog was changed."
     printlog "${destFile}"
     printlog "Installing version ${appNewVersion}…"
     # Create temporary working directory
@@ -97,7 +167,7 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
         curlDownload=$(curl -Ls "$downloadURL" -o "$tmpDir/$name.pkg" || true)
         curlDownloadStatus=$(echo $?)
         if [[ $curlDownloadStatus -ne 0 ]]; then
-            printlog "error downloading $downloadURL, with status $curlDownloadStatus"
+            printlog "ERROR : Error downloading $downloadURL, with status $curlDownloadStatus"
             printlog "${curlDownload}"
             exitCode=1
         else
@@ -111,7 +181,7 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
                 pkgInstall=$(installer -verbose -dumplog -pkg "$tmpDir/$name.pkg" -target "/" 2>&1)
                 pkgInstallStatus=$(echo $?)
                 if [[ $pkgInstallStatus -ne 0 ]]; then
-                    printlog "ERROR. $name package installation failed."
+                    printlog "ERROR : $name package installation failed."
                     printlog "${pkgInstall}"
                     exitCode=2
                 else
@@ -119,7 +189,7 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
                     exitCode=0
                 fi
             else
-                printlog "ERROR. Package verification failed for $name before package installation could start. Download link may be invalid."
+                printlog "ERROR : Package verification failed for $name before package installation could start. Download link may be invalid."
                 exitCode=3
             fi
         fi
@@ -140,7 +210,7 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
     printlog "Remove $(rm -Rfv "${tmpDir}" || true)"
     # Handle installation errors
     if [[ $exitCode != 0 ]]; then
-        printlog "ERROR. Installation of $name failed. Aborting."
+        printlog "ERROR : Installation of $name failed. Aborting."
         caffexit $exitCode
     else
         printlog "$name version $appNewVersion installed!"
@@ -148,5 +218,7 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
 else
     printlog "$name version $appNewVersion already found. Perfect!"
 fi
+
+printlog "$(date +%F\ %T) : [LOG-END] ${log_message}"
 
 caffexit 0
