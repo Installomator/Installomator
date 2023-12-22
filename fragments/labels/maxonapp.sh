@@ -6,7 +6,7 @@ maxonapp)
     #targetDir="/"
     downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/website/macos/maxon/maxonapp/releases/${appNewVersion}/Maxon_App_${appNewVersion}_Mac.dmg"
     installerTool="Maxon App Installer.app"
-    CLIInstaller="Maxon App Installer.app/Contents/Scripts/install.sh"
-    CLIArguments=()
+    CLIInstaller="Maxon App Installer.app/Contents/MacOS/installbuilder.sh"
+    CLIArguments=(--mode unattended --unattendedmodeui none)
     expectedTeamID="4ZY22YGXQG"
     ;;
