@@ -585,7 +585,11 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         deduplicatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
-            cleanupAndExit 16 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
+            if [[ $ignoreInstallScriptExitCode == 1 ]]; then
+                printlog "The label for this installer has ignoreInstallExitCode set to 1, so pretending everything went great regardless of its actual exit code which was: $CLIstatus" WARN
+            else
+                cleanupAndExit 16 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
+            fi
         else
             printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments" INFO
         fi
