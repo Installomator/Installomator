@@ -3,6 +3,7 @@ webexteams)
     # credit: Erik Stam (@erikstam)
     name="Webex"
     type="dmg"
+    appNewVersion=$(curl -s https://help.webex.com/en-us/article/mqkve8/Webex-App-%7C-Release-notes | grep Mac | head -n 1 | cut -d ">" -f 2 | cut -d "—" -f 2 | cut -d "<" -f 1)
     if [[ $(arch) == arm64 ]]; then
         downloadURL="https://binaries.webex.com/WebexDesktop-MACOS-Apple-Silicon-Gold/Webex.dmg"
     elif [[ $(arch) == i386 ]]; then
