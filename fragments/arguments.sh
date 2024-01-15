@@ -71,6 +71,17 @@ printlog "################## Version: $VERSION" INFO
 printlog "################## Date: $VERSIONDATE" INFO
 printlog "################## $label" INFO
 
+# MARK: finish reading the arguments:
+while [[ -n $1 ]]; do
+    if [[ $1 =~ ".*\=.*" ]]; then
+        # if an argument contains an = character, send it to eval
+        printlog "setting variable from argument $1" INFO
+        eval $1
+    fi
+    # shift to next argument
+    shift 1
+done
+
 # Check for DEBUG mode
 if [[ $DEBUG -gt 0 ]]; then
     printlog "DEBUG mode $DEBUG enabled." DEBUG
