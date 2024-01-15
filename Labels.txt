@@ -676,6 +676,7 @@ vectorworks2023sp4
 vectorworks2023sp5
 vectorworks2023sp6
 vectorworks2023sp7
+vectorworks2023sp8
 venturablocker
 veracrypt
 vfx
