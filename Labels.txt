@@ -188,6 +188,7 @@ egnytewebedit
 element
 elgatocamerahub
 elgatostreamdeck
+enpass
 escrowbuddy
 eshareosx
 espanso

@@ -28,7 +28,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 DEBUG=0
 
 # notify behavior
-NOTIFY=success
+NOTIFY=silent
 # options:
 #   - success      notify the user on success
 #   - silent       no notifications
@@ -335,8 +335,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.6beta"
-VERSIONDATE="2024-01-15"
+VERSION="10.6.4"
+VERSIONDATE="2024-01-22"
 
 # MARK: Functions
 
@@ -3180,6 +3180,13 @@ elgatostreamdeck)
     appNewVersion=$(curl -fsI "https://gc-updates.elgato.com/mac/sd-update/final/download-website.php" | grep -i ^location | sed -E 's/.*Stream_Deck_([0-9.]*).pkg/\1/g' | sed 's/\.[^.]*//3')
     expectedTeamID="Y93VXCB8Q5"
     blockingProcesses=( "Stream Deck" )
+    ;;
+enpass)
+    name="Enpass"
+    type="pkg"
+    downloadURL=$(curl -fs "https://www.enpass.io/downloads/" | grep -o 'https://dl.enpass.io/stable/mac/package/[0-9.]*/Enpass.pkg' | head -1)
+    appNewVersion=$(curl -fs "https://www.enpass.io/downloads/" | grep -o 'version [0-9.]*' | head -1 | sed -E 's/version //')
+    expectedTeamID="7ADB8CC6TF"
     ;;
 escrowbuddy)
     name="Escrow Buddy"
