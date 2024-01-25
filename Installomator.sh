@@ -335,8 +335,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.6.4"
-VERSIONDATE="2024-01-22"
+VERSION="10.6.5"
+VERSIONDATE="2024-01-25"
 
 # MARK: Functions
 
@@ -6949,6 +6949,13 @@ splashtopsos)
     downloadURL="https://download.splashtop.com/sos/SplashtopSOS.dmg"
     expectedTeamID="CPQQ3AW49Y"
     ;;
+splashtopstreamer)
+    name="Splashtop Streamer"
+    type="pkgInDmg"
+    downloadURL=$(curl -fsLI "https://my.splashtop.com/csrs/mac" | grep -i '^location:' | tail -n 1 | cut -d ' ' -f 2 | tr -d '\r')
+    appNewVersion=$(echo $downloadURL | sed -E 's/.*_v([0-9.]+).dmg/\1/')
+    expectedTeamID="CPQQ3AW49Y"
+    ;;
 spotify)
     name="Spotify"
     type="dmg"
@@ -7613,6 +7620,14 @@ vectorworks2023sp8)
     type="dmg"
     packageID="net.vectorworks.2023.vectorworksinstaller"
     downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP8.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2024update3)
+    name="Vectorworks 2024 Update 3"
+    appName="Vectorworks 2024 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server1-d.vectorworks-online.de/cw/vw2024/mac/Vectorworks%202024%20Update%203.dmg"
     expectedTeamID="LFNG3Q6WX2"
     ;;
 venturablocker)

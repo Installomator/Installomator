@@ -598,6 +598,7 @@ sonoss2
 sourcetree
 splashtopbusiness
 splashtopsos
+splashtopstreamer
 spotify
 sqlpropostgres
 sqlprostudio
@@ -678,6 +679,7 @@ vectorworks2023sp5
 vectorworks2023sp6
 vectorworks2023sp7
 vectorworks2023sp8
+vectorworks2024update3
 venturablocker
 veracrypt
 vfx
