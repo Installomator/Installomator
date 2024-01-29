@@ -335,8 +335,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.6.5"
-VERSIONDATE="2024-01-25"
+VERSION="10.6.6"
+VERSIONDATE="2024-01-29"
 
 # MARK: Functions
 
@@ -4825,6 +4825,13 @@ lulu)
     downloadURL=$(downloadURLFromGit objective-see LuLu)
     appNewVersion=$(versionFromGit objective-see LuLu)
     expectedTeamID="VBG97UB4TA"
+    ;;
+lunadisplay)
+    name="Luna Display"
+    type="dmg"
+    downloadURL=$(curl -fsLI "https://downloads.astropad.com/luna/mac/latest" | grep -i '^location:' | tail -n 1 | cut -d ' ' -f 2 | tr -d '\r' | sed 's|^/|https://downloads.astropad.com/|')
+    appNewVersion=$(echo $downloadURL | sed -E 's/.*LunaDisplay-([0-9.]+).dmg/\1/')
+    expectedTeamID="8356ZZ8Y5K"
     ;;
 macadminspython)
     name="MacAdmins Python"

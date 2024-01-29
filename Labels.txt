@@ -351,6 +351,7 @@ lsagent
 lucidlink
 lucifer
 lulu
+lunadisplay
 macadminspython
 maccyapp
 macfuse
