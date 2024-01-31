@@ -389,7 +389,7 @@ microsoftofficebusinesspro
 microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
-microsoftonedrive-rollingout
+microsoftonedrive-deferred
 microsoftonedrive-rollingout
 microsoftonedrive-rollingoutdeferred
 microsoftonedrivereset
