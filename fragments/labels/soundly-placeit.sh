@@ -1,4 +1,4 @@
-placeit)
+soundly-placeit)
     name="Placeit"
     # Other Tools: https://getsoundly.com/tools/
     type="pkg"
