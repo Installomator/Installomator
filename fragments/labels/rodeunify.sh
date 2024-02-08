@@ -1,5 +1,5 @@
-rodecentral)
-    name="RODE Central"
+rodeunify)
+    name="RODE UNIFY"
     type="pkgInZip"
     #packageID="com.rodecentral.installer"
     downloadURL="https://update.rode.com/unify_new/macos/RODE_UNIFY_MACOS.zip"
