@@ -7,8 +7,9 @@ LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewav
 item="" # enter the software to install
 # Examples: adobecreativeclouddesktop, canva, cyberduck, handbrake, inkscape, textmate, vlc
 
-# Dialog icon
+# Dialog icon and overlay icon
 icon=""
+overlayicon=""
 # icon should be a file system path or an URL to an online PNG, so beginning with either “/” or “http”.
 # In Mosyle an URL can be found by copy picture address from a Custom Command icon.
 
@@ -18,7 +19,7 @@ appPath="/Applications/Cyberduck.app"
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
-dialogApp="/Library/Application Support/Dialog/Dialog.app"
+dialogBinary="/usr/local/bin/dialog"
 dockutil="/usr/local/bin/dockutil"
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
@@ -121,8 +122,8 @@ if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2)
 else
     installomatorNotify="NOTIFY=silent"
     # check for Swift Dialog
-    if [[ ! -d $dialogApp ]]; then
-        echo "Cannot find dialog at $dialogApp"
+    if [[ ! -x $dialogBinary ]]; then
+        echo "Cannot find dialog at $dialogBinary"
         # Install using Installlomator
         cmdOutput="$(${destFile} dialog LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
         checkCmdOutput "${cmdOutput}"
@@ -224,15 +225,26 @@ else
     echo "icon: ${icon}"
 
     # display first screen
-    open -a "$dialogApp" --args \
-        --title none \
-        --icon "$icon" \
-        --message "$message" \
-        --mini \
-        --progress 100 \
-        --position bottomright \
-        --movable \
-        --commandfile "$dialog_command_file"
+    dialogCMD=("$dialogBinary"
+           --title none
+           --icon "$icon"
+           --message "$message"
+           --mini
+           --progress 100
+           --position bottomright
+           --moveable
+           --commandfile "$dialog_command_file"
+    )
+
+    if [[ -n "$overlayicon" ]]; then
+        dialogCMD+=("--overlayicon" ${overlayicon})
+    fi
+
+    echo "dialogCMD: ${dialogCMD[@]}"
+
+    "${dialogCMD[@]}" &
+
+    echo "$(date +%F\ %T) : SwiftDialog started!"
 
     # give everything a moment to catch up
     sleep 0.1
