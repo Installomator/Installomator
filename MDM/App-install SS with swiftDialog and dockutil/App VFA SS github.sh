@@ -29,13 +29,13 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     if [ -n "$archiveName" ]; then
         downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1 || true)
         if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName" || true)" == "" ]]; then
-            #printlog "Trying GitHub API for download URL."
+            #echo "Trying GitHub API for download URL."
             downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }" || true)
         fi
     else
         downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1 || true)
         if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype" || true)" == "" ]]; then
-            #printlog "Trying GitHub API for download URL."
+            #echo "Trying GitHub API for download URL."
             downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }" || true)
         fi
     fi
@@ -286,7 +286,7 @@ else
                     ;;
             esac
             if [[ ! -a "${LOGO_PATH}" ]]; then
-                printlog "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
+                echo "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
                 if [[ $(/usr/bin/sw_vers -buildVersion) > "19" ]]; then
                     LOGO_PATH="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
                 else

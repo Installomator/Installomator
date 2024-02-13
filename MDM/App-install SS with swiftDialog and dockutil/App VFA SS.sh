@@ -231,7 +231,7 @@ else
                     ;;
             esac
             if [[ ! -a "${LOGO_PATH}" ]]; then
-                printlog "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
+                echo "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
                 if [[ $(/usr/bin/sw_vers -buildVersion) > "19" ]]; then
                     LOGO_PATH="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
                 else
