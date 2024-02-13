@@ -92,7 +92,6 @@ dialogCMD=("$dialogBinary"
            --commandfile "$dialog_command_file"
 )
 
-#echo "dialogCMD: $(echo $dialogCMD | tr -s '[:blank:]')"
 echo "dialogCMD: ${dialogCMD[@]}"
 
 "${dialogCMD[@]}" &
