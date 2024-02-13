@@ -46,6 +46,8 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user_then_quit DIALOG_CMD_FIL
 # Fill the variable "item" above with a label.
 # Script will run this label through Installomator.
 ######################################################################
+scriptVersion="10.1"
+# v. 10.1   : 2024-02-13 : Improved Dialog call. Support for overlay icon as well.
 # v. 10.0.5 : Support for FileWave, and previously Kandji
 # v. 10.0.4 : Fix for LOGO_PATH for ws1, and only kill the caffeinate process we create
 # v. 10.0.3 : A bit more logging on succes, and change in ending Dialog part.
@@ -59,7 +61,7 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user_then_quit DIALOG_CMD_FIL
 # PATH declaration
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-echo "$(date +%F\ %T) [LOG-BEGIN] $item"
+echo "$(date +%F\ %T) [LOG-BEGIN] $item, v$scriptVersion"
 
 dialogUpdate() {
     # $1: dialog command
