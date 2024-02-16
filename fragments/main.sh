@@ -216,15 +216,7 @@ if [[ -n $appNewVersion ]]; then
                     updateDialog "complete" "Latest version already installed..."
                     sleep 2
                 fi
-                if [[ $DEBUG -ge 2 ]]; then
-                    printlog "appversion: $appversion"
-                    printlog "appNewVersion: $appNewVersion"
-                    printlog "appName: $name"
-                    cleanupAndExit 0 "DEBUG mode 2 enabled, just report app versions and exit." REQ
-                else
-                    cleanupAndExit 0 "No newer version." REQ
-                fi
-                
+                cleanupAndExit 0 "No newer version." REQ
             fi
         else
             printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app." WARN
@@ -233,16 +225,6 @@ if [[ -n $appNewVersion ]]; then
 else
     printlog "Latest version not specified."
 fi
-
-if [[ $DEBUG -ge 2 ]]; then
-    printlog "appversion: $appversion"
-    printlog "appNewVersion: $appNewVersion"
-    printlog "appName: $name"
-    cleanupAndExit 0 "DEBUG mode 2 enabled, just report app versions and exit." REQ
-                
-fi
-
-
 
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
