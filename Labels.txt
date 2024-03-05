@@ -224,6 +224,7 @@ front
 fsmonitor
 fujifilmwebcam
 gdevelop
+geneiousprime
 gfxcardstatus
 gimp
 githubdesktop
@@ -309,6 +310,7 @@ jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+jitsimeet
 jre8
 jumpdesktop
 jupyterlab
@@ -446,6 +448,7 @@ netnewswire
 netspot
 nextcloud
 nodejs
+nomachine
 nomad
 nomadlogin
 nordlayer
@@ -525,6 +528,7 @@ qlab
 r
 rancherdesktop
 rapidapi
+raycast
 realvncserver
 realvncviewer
 rectangle
@@ -655,6 +659,7 @@ trapcode
 trex
 tunnelbear
 tunnelblick
+typeface
 typinator
 typora
 ultimakercura

@@ -335,8 +335,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.5"
-VERSIONDATE="2023-10-15"
+VERSION="10.6beta"
+VERSIONDATE="2024-03-04"
 
 # MARK: Functions
 
@@ -3217,8 +3217,8 @@ etrecheck)
 evernote)
     name="Evernote"
     type="dmg"
-    downloadURL=$(curl -fs -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15)" "https://evernote.com/download" | grep -i ".dmg" | grep -ioe "href.*" | cut -d '"' -f2)
-    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g' )
+    downloadURL="https://mac.desktop.evernote.com/builds/Evernote-latest.dmg"
+    appNewVersion=$(curl -s https://evernote.com/release-notes | grep Latest | awk -F '<!-- -->' '{print $2}')
     expectedTeamID="Q79WDW8YH9"
     appName="Evernote.app"
     ;;
@@ -3532,6 +3532,13 @@ gdevelop)
     appNewVersion="$(versionFromGit 4ian GDevelop)"
     downloadURL="$(downloadURLFromGit 4ian GDevelop)"
     expectedTeamID="5CG65LEVUK"
+    ;;
+geneiousprime)
+    name="Geneious Prime"
+    type="dmg"
+    downloadURL="https://assets.geneious.com/installers/geneious/release/latest/Geneious_Prime_mac64_with_jre.dmg"
+    appNewVersion=""
+    expectedTeamID="3BTDDQD3L6"
     ;;
 gfxcardstatus)
     name="gfxCardStatus"
@@ -4055,11 +4062,10 @@ jamfcpr)
     expectedTeamID="PS2F6S478M"
     ;;
 jamfmigrator)
-    # credit: Mischa van der Bent
     name="jamf-migrator"
     type="zip"
     downloadURL=$(downloadURLFromGit jamf JamfMigrator)
-    #appNewVersion=$(versionFromGit jamf JamfMigrator)
+    appNewVersion=$(versionFromGit jamf JamfMigrator)
     expectedTeamID="PS2F6S478M"
     ;;
 jamfpppcutility)
@@ -4334,6 +4340,13 @@ jetbrainswebstorm)
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*\/[a-zA-Z-]*-([0-9.]*).*[-.].*dmg/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
+    ;;
+jitsimeet)
+    name="Jitsi Meet"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit Jitsi jitsi-meet-electron)
+    appNewVersion=$(versionFromGit Jitsi jitsi-meet-electron)
+    expectedTeamID="FC967L3QRG"
     ;;
 jre8)
     name="Java Runtime Environment 8"
@@ -4872,8 +4885,9 @@ mactex)
 mactracker)
     name="Mactracker"
     type="zip"
-    downloadURL=$(curl -fs "https://mactracker.ca/releasenotes-mac.html" | grep "Mactracker_" | sed "s|.*href=\"\(.*\)\">Download for macOS.*|\\1|")
-    appNewVersion=$(curl -fs "https://mactracker.ca/releasenotes-mac.html" | grep -m 1 'Version ' | sed "s|.*Version \(.*\)</strong.*|\\1|")
+    #downloadURL=$(curl -fs "https://mactracker.ca/releasenotes-mac.html" | grep "Mactracker_" | sed "s|.*href=\"\(.*\)\">Download for macOS.*|\\1|")
+    downloadURL=$(curl -fs "https://update.mactracker.ca/appcast-b.xml" | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs "https://update.mactracker.ca/appcast-b.xml" | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null | cut -d '"' -f 2)
     expectedTeamID="63TP32R3AB"
     ;;
 magicbullet)
@@ -5746,6 +5760,13 @@ nodejs)
     downloadURL="https://nodejs.org/dist/latest/node-$(curl -s https://nodejs.org/dist/latest/ | sed -nE 's|.*>node-(.*)\.pkg</a>.*|\1|p').pkg"
     expectedTeamID="HX7739G8FX"
     ;;
+nomachine)
+    name="NoMachine"
+    type="pkgInDmg"
+    downloadURL=$(curl -i -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" https://www.nomachine.com/dwl_nm_bann.php | grep -i location | cut -w -f2 | tr -d '[:cntrl:]')
+    appNewVersion=$(echo $downloadURL | grep -Eo "\d+.\d+.\d+")
+    expectedTeamID="493C5JZAGR"
+    ;;
 nomad)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="NoMAD"
@@ -6280,7 +6301,7 @@ propresenter7)
 protonvpn)
     name="ProtonVPN"
     type="dmg"
-    downloadURL=$(curl -fs "https://protonvpn.com/download" | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*\.dmg" | head -1)
+    downloadURL=$(curl -s "https://protonvpn.com/download/macos-update3.xml" | xmllint --xpath 'string(//enclosure/@url)' -)
     appNewVersion=$(echo $downloadURL | sed -e 's/^.*\/Proton.*_v\([0-9.]*\)\.dmg/\1/g')
     expectedTeamID="J6S6Q257EK"
     ;;
@@ -6377,6 +6398,14 @@ rapidapi)
     appNewVersion="$(curl -fsIL ${downloadURL} | grep -i ^location | cut -d '/' -f5 | awk -F '-' '{ print $2 }')"
     expectedTeamID="84599RL58A"
     blockingProcesses=( "RapidAPI" )
+    ;;
+raycast)
+    name="Raycast"
+    type="dmg"
+    version=$(curl -s https://releases.raycast.com/releases/latest | grep '"version":' | awk -F'"' '{print $4}')
+    downloadURL="https://releases.raycast.com/releases/${version}/download?build=universal"
+    appNewVersion=""
+    expectedTeamID="SY64MV22J9"
     ;;
 realvncviewer)
     name="Real VNC Viewer"
@@ -7419,6 +7448,13 @@ tunnelblick)
     downloadURL="https://github.com/Tunnelblick/Tunnelblick/releases/download/v${version}/Tunnelblick_${version_plus_build}.dmg"
     expectedTeamID="Z2SG5H3HC8"
     ;;
+typeface)
+    name="Typeface"
+    type="dmg"
+    downloadURL="https://dcdn.typefaceapp.com/latest"
+    appNewVersion=$(curl -fs https://dcdn.typefaceapp.com/appcast.xml | xpath '//rss/channel/item[1]/sparkle:shortVersionString /text()' 2>/dev/null )
+    expectedTeamID="X55SP58WS6"
+    ;;
 typinator)
     name="Typinator"
     type="zip"
@@ -7589,16 +7625,14 @@ vivi)
 vlc)
     name="VLC"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
-        downloadURL=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-arm64.xml | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
-        #appNewVersion=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-arm64.xml | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null | cut -d '"' -f 2 )
-    elif [[ $(arch) == "i386" ]]; then
-        downloadURL=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-intel64.xml | xpath '//rss/channel/item[last()]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 )
-        #appNewVersion=$(curl -fs http://update.videolan.org/vlc/sparkle/vlc-intel64.xml | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null | cut -d '"' -f 2 )
-    fi
-    appNewVersion=$(echo ${downloadURL} | sed -E 's/.*\/vlc-([0-9.]*).*\.dmg/\1/' )
+    latestVersionURL="https://get.videolan.org/vlc/last/macosx/"
+    archiveName=$(curl -sf "$latestVersionURL" | grep -ioE 'vlc-[0-9]+\.[0-9]+\.[0-9]+-universal\.dmg' | uniq)
+    downloadURL="${latestVersionURL}${archiveName}"
+    appNewVersion=$(awk -F'[-.]' '{print $2"."$3"."$4}' <<< "$archiveName")
+    versionKey="CFBundleShortVersionString"
     expectedTeamID="75GAHG3SZQ"
     ;;
+
 vmwarefusion)
     name="VMware Fusion"
     type="dmg"
