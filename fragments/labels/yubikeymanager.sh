@@ -1,5 +1,4 @@
 yubikeymanager)
-    # credit: Reuven Cohen
     name="YubiKey Manager"
     type="pkg"
     appCustomVersion(){/usr/local/ykman/ykman -v | awk '{print $5}'}
