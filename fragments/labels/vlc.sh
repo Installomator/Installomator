@@ -6,6 +6,5 @@ vlc)
     downloadURL="${latestVersionURL}${archiveName}"
     appNewVersion=$(awk -F'[-.]' '{print $2"."$3"."$4}' <<< "$archiveName")
     versionKey="CFBundleShortVersionString"
-    blockingProcesses=( "VLC" )
     expectedTeamID="75GAHG3SZQ"
     ;;
