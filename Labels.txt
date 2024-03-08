@@ -149,6 +149,7 @@ crashplan
 crashplansmb
 cricutdesignspace
 cryptomator
+crystalfetch
 cyberduck
 cytoscape
 daisydisk
@@ -177,6 +178,7 @@ drift
 dropbox
 druvainsync
 duckduckgo
+duet
 duodevicehealth
 dymoconnectdesktop
 dynalist
@@ -223,7 +225,10 @@ franz
 front
 fsmonitor
 fujifilmwebcam
+gather
+gathertown
 gdevelop
+geneiousprime
 gfxcardstatus
 gimp
 githubdesktop
@@ -252,6 +257,7 @@ handbrake
 hazel
 hmavpn
 homebrew
+hoppscotch
 horos
 houdahspot
 hpeasyadmin
@@ -309,6 +315,7 @@ jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+jitsimeet
 jre8
 jumpdesktop
 jupyterlab
@@ -389,7 +396,7 @@ microsoftofficebusinesspro
 microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
-microsoftonedrive-rollingout
+microsoftonedrive-deferred
 microsoftonedrive-rollingout
 microsoftonedrive-rollingoutdeferred
 microsoftonedrivereset
@@ -439,6 +446,7 @@ munki
 musescore
 muzzle
 mysqlworkbenchce
+namiral
 nanosaur
 nessusagent
 netiquette
@@ -446,6 +454,7 @@ netnewswire
 netspot
 nextcloud
 nodejs
+nomachine
 nomad
 nomadlogin
 nordlayer
@@ -471,6 +480,7 @@ omnipresence
 onionshare
 onlyofficedesktop
 onscreencontrol
+onyx
 openvpnconnect
 openvpnconnectv3
 opera
@@ -525,6 +535,7 @@ qlab
 r
 rancherdesktop
 rapidapi
+raycast
 realvncserver
 realvncviewer
 rectangle
@@ -655,6 +666,7 @@ trapcode
 trex
 tunnelbear
 tunnelblick
+typeface
 typinator
 typora
 ultimakercura
