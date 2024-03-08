@@ -149,6 +149,7 @@ crashplan
 crashplansmb
 cricutdesignspace
 cryptomator
+crystalfetch
 cyberduck
 cytoscape
 daisydisk
@@ -177,6 +178,7 @@ drift
 dropbox
 druvainsync
 duckduckgo
+duet
 duodevicehealth
 dymoconnectdesktop
 dynalist
@@ -223,6 +225,8 @@ franz
 front
 fsmonitor
 fujifilmwebcam
+gather
+gathertown
 gdevelop
 geneiousprime
 gfxcardstatus
@@ -253,6 +257,7 @@ handbrake
 hazel
 hmavpn
 homebrew
+hoppscotch
 horos
 houdahspot
 hpeasyadmin
@@ -391,7 +396,7 @@ microsoftofficebusinesspro
 microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
-microsoftonedrive-rollingout
+microsoftonedrive-deferred
 microsoftonedrive-rollingout
 microsoftonedrive-rollingoutdeferred
 microsoftonedrivereset
@@ -441,6 +446,7 @@ munki
 musescore
 muzzle
 mysqlworkbenchce
+namiral
 nanosaur
 nessusagent
 netiquette
@@ -474,6 +480,7 @@ omnipresence
 onionshare
 onlyofficedesktop
 onscreencontrol
+onyx
 openvpnconnect
 openvpnconnectv3
 opera

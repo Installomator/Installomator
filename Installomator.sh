@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-03-04"
+VERSIONDATE="2024-03-07"
 
 # MARK: Functions
 
@@ -2643,8 +2643,8 @@ clevershare2)
 clickshare)
     name="ClickShare"
     type="appInDmgInZip"
-    downloadURL="https://www.barco.com$( curl -fs "https://www.barco.com/en/clickshare/app" | grep -A6 -i "macos" | grep -i "FileNumber" | tr '"' "\n" | grep -i "FileNumber" )"
-    appNewVersion="$(eval "$( echo $downloadURL | sed -E 's/.*(MajorVersion.*BuildVersion=[0-9]*).*/\1/' | sed 's/&amp//g' )" ; ((MajorVersion++)) ; ((MajorVersion--)); ((MinorVersion++)) ; ((MinorVersion--)); ((PatchVersion++)) ; ((PatchVersion--)); ((BuildVersion++)) ; ((BuildVersion--)); echo "${MajorVersion}.${MinorVersion}.${PatchVersion}-b${BuildVersion}")"
+    downloadURL=$(curl -fs "https://www.barco.com/bin/barco/tde/downloadUrl.json?fileNumber=R3306192&tdeType=3" | grep -o '"downloadUrl":"https://[^"]*"' | cut -d'"' -f4)
+    appNewVersion=$(curl -s "https://assets.cloud.barco.com/clickshare/release/RELEASES" | grep -Eo "ClickShare-[0-9]+\.[0-9]+\.[0-9]+-b[0-9]+" | sed 's/ClickShare-//' | head -1)
     expectedTeamID="P6CDJZR997"
     ;;
 clickup)
@@ -2837,6 +2837,13 @@ cryptomator)
     downloadURL=$(downloadURLFromGit cryptomator cryptomator)
     appNewVersion=$(versionFromGit cryptomator cryptomator)
     expectedTeamID="YZQJQUHA3L"
+    ;;
+crystalfetch)
+	name="CrystalFetch"
+	type="dmg"
+    downloadURL=$(downloadURLFromGit TuringSoftware CrystalFetch)
+    appNewVersion=$(versionFromGit TuringSoftware CrystalFetch)
+    expectedTeamID="WDNLXAD4W8"
     ;;
 cyberduck)
     name="Cyberduck"
@@ -3085,6 +3092,14 @@ duckduckgo)
     appNewVersion=$(curl -fs https://staticcdn.duckduckgo.com/macos-desktop-browser/appcast.xml | xpath '(//rss/channel/item/enclosure/@sparkle:version)[last()]' 2>/dev/null | cut -d '"' -f2)
     #appNewVersion=$(curl -fs https://staticcdn.duckduckgo.com/macos-desktop-browser/appcast.xml | xpath '(//rss/channel/item/sparkle:shortVersionString)[1]' 2>/dev/null | cut -d ">" -f2 | cut -d "<" -f1)
     expectedTeamID="HKE973VLUW"
+    ;;
+duet)
+    name="Duet"
+    type="zip"
+    downloadURL="https://updates.duetdisplay.com/AppleSilicon"
+    appNewVersion="$(curl -fsIL ${downloadURL} | grep -i ^location | cut -d "/" -f6 | sed 's/duet-//' | sed 's/.zip//' | sed 's/-/./g')"
+    expectedTeamID="J6L96W8A86"
+    blockingProcesses=( "duet" "duet Networking" )
     ;;
 duodevicehealth)
     name="Duo Device Health"
@@ -3521,6 +3536,16 @@ fujifilmwebcam)
      appNewVersion=$( echo “${downloadURL}” | sed -E 's/.*XWebcamIns([0-9]*).*/\1/g' | sed -E 's/([0-9])([0-9]).*/\1\.\2/g')
      expectedTeamID="34LRP8AV2M"
      ;;
+gather|\
+gathertown)
+    name="Gather"
+    type="dmg"
+    appNewVersion="$(versionFromGit gathertown gather-town-desktop-releases)"
+    downloadURL="$(downloadURLFromGit gathertown gather-town-desktop-releases)"
+    archiveName="Gather-${appNewVersion}-universal.dmg"
+    expectedTeamID="69MCJ5CRDW"
+    ;;
+
 gdevelop)
     name="GDevelop 5"
     type="dmg"
@@ -3785,6 +3810,18 @@ homebrew)
     appNewVersion="$(versionFromGit Homebrew brew)"
     expectedTeamID="6248TWFRH6"
     archiveName="Homebrew.pkg"
+    ;;
+hoppscotch)
+    name="Hoppscotch"
+    type="dmg"
+    if [[ $(arch) == arm64 ]]; then
+        archiveName="Hoppscotch_mac_aarch64.dmg"
+    elif [[ $(arch) == i386 ]]; then
+        archiveName="Hoppscotch_mac_x64.dmg" 
+    fi
+    downloadURL="$(downloadURLFromGit hoppscotch releases)"
+    appNewVersion="$(versionFromGit hoppscotch releases)"
+    expectedTeamID="XBK86CMQGZ"
     ;;
 horos)
     name="Horos"
@@ -5173,7 +5210,7 @@ microsoftofficeremoval)
     downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Office_Removal.*.pkg" | cut -d '"' -f2)
     expectedTeamID="QGS93ZLCU7"
     ;;
-microsoftonedrive-rollingout)
+microsoftonedrive-deferred)
     # This version should match the Enterprise (Deferred) version setting of OneDrive update channel. So only use this label if that is the channel you use for OneDrive. For default update settings use label “microsoftonedrive”.
     # https://support.microsoft.com/en-us/office/onedrive-release-notes-845dcf18-f921-435e-bf28-4e24b95e5fc0#OSVersion=Mac
     name="OneDrive"
@@ -5703,6 +5740,13 @@ mysqlworkbenchce)
     appNewVersion="$(curl -fsL 'http://workbench.mysql.com/current-release' | grep fullversion | cut -d\" -f4).CE"
     expectedTeamID="VB5E2TV963"
     ;;
+namiral)
+    name="Namirial Sign"
+    type="dmg"
+    downloadURL="https://sign-be.namirial.app/download/macos"
+    expectedTeamID="V7PV54FASQ"
+    appName="Namirial Sign.app"
+    ;;
 nanosaur)
     name="Nanosaur"
     type="dmg"
@@ -5964,6 +6008,15 @@ onscreencontrol)
     appNewVersion=$(curl -sf $releaseURL | grep -m 1 "Mac_OSC_" | sed -E 's/.*OSC_([0-9.]*).zip.*/\1/g')
     downloadURL=$(curl -sf $releaseURL | grep -m 1 "Mac_OSC_" | sed "s|.*href=\"\(.*\)\" title.*|\\1|")
     expectedTeamID="5SKT5H4CPQ"
+    ;;
+onyx)
+    name="OnyX"
+    type="dmg"
+    osVersion=$( sw_vers -productVersion | cut -f1 -d'.' )
+    downloadURL="https://www.titanium-software.fr/download/$osVersion/OnyX.dmg"
+    appNewVersion=$( curl -fs https://www.titanium-software.fr/en/onyx.html | grep -Eo "OnyX [0-9]+\.[0-9]+\.[0-9]+ for macOS [^ ]+ $osVersion" | awk '{print $2}' | sort -Vr | head -1 )
+    versionKey="CFBundleShortVersionString"
+    expectedTeamID="T49MRBL8UL"
     ;;
 openvpnconnect)
     # credit: Erik Stam (@erikstam)
@@ -6938,7 +6991,7 @@ splashtopbusiness)
     name="Splashtop Business"
     type="pkgInDmg"
     splashtopbusinessVersions=$(curl -fsL "https://www.splashtop.com/wp-content/themes/responsive/downloadx.php?product=stb&platform=mac-client")
-    downloadURL=$(getJSONValue "$splashtopbusinessVersions" "url")
+    downloadURL=$(curl -Ls -w %{url_effective} -o /dev/null $(getJSONValue "$splashtopbusinessVersions" "url"))
     appNewVersion="${${downloadURL#*INSTALLER_v}%*.dmg}"
     expectedTeamID="CPQQ3AW49Y"
     ;;
