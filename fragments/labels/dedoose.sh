@@ -5,3 +5,4 @@ dedoose)
     appNewVersion=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep -o "Dedoose-.*[0-9.].*[0-9.].*[0-9.]" | cut -d'>' -f2- | tail -1)
     expectedTeamID="9U74Q6K62X"
     ;;
+

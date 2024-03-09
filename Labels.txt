@@ -158,6 +158,7 @@ darktable
 daylite
 dbeaverce
 debookee
+dedoose
 defaultfolderx
 depnotify
 desktoppr
@@ -266,6 +267,7 @@ hubstaff
 huddly
 hype
 hyper
+i1profiler
 ibarcoder
 ibmnotifier
 icons
@@ -282,6 +284,7 @@ installomator_theile
 intellijideace
 ipswupdater
 ipvisionconnect
+iriunwebcam
 isadora
 island
 istatmenus
