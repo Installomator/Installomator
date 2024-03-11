@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-03-09"
+VERSIONDATE="2024-03-10"
 
 # MARK: Functions
 
@@ -2035,6 +2035,20 @@ archiwarepst)
     expectedTeamID="5H5EU6F965"
     # blockingProcesses=( nsd )
     ;;
+arduinoide)
+    name="Arduino IDE"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="arduino-ide_[0-9.]*_macOS_arm64.dmg"
+
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="arduino-ide_[0-9.]*_macOS_64bit.dmg"
+    fi
+    downloadURL="$(downloadURLFromGit arduino arduino-ide)"
+    appNewVersion="$(versionFromGit arduino arduino-ide)"
+    expectedTeamID="7KT7ZWMCJT"
+    ;;
+
 arq7)
     name="Arq7"
     type="pkg"
@@ -6286,6 +6300,13 @@ postman)
 		appNewVersion=$(curl -fsL --head "${downloadURL}" | grep "content-disposition:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
 	fi
     expectedTeamID="H7H8Q7M5CK"
+    ;;
+powermonitor)
+    name="Power Monitor"
+    type="pkg"
+    downloadURL=$(downloadURLFromGit sap power-monitoring-tool-for-macos )
+    appNewVersion=$(versionFromGit sap power-monitoring-tool-for-macos )
+    expectedTeamID="7R5ZEU67FQ"
     ;;
 prism10)
     name="Prism 10"

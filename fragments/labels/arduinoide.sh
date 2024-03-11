@@ -11,3 +11,4 @@ arduinoide)
     appNewVersion="$(versionFromGit arduino arduino-ide)"
     expectedTeamID="7KT7ZWMCJT"
     ;;
+
