@@ -51,6 +51,7 @@ arcbrowser
 archimate
 archiwareb2go
 archiwarepst
+arduinoide
 arq7
 asana
 asperaconnect
@@ -158,6 +159,7 @@ darktable
 daylite
 dbeaverce
 debookee
+dedoose
 defaultfolderx
 depnotify
 desktoppr
@@ -266,6 +268,7 @@ hubstaff
 huddly
 hype
 hyper
+i1profiler
 ibarcoder
 ibmnotifier
 icons
@@ -282,6 +285,7 @@ installomator_theile
 intellijideace
 ipswupdater
 ipvisionconnect
+iriunwebcam
 isadora
 island
 istatmenus
@@ -511,6 +515,7 @@ podmandesktop
 polylens
 popsql
 postman
+powermonitor
 prism10
 prism9
 pritunl

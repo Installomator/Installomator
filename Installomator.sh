@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-03-07"
+VERSIONDATE="2024-03-10"
 
 # MARK: Functions
 
@@ -2035,6 +2035,20 @@ archiwarepst)
     expectedTeamID="5H5EU6F965"
     # blockingProcesses=( nsd )
     ;;
+arduinoide)
+    name="Arduino IDE"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="arduino-ide_[0-9.]*_macOS_arm64.dmg"
+
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="arduino-ide_[0-9.]*_macOS_64bit.dmg"
+    fi
+    downloadURL="$(downloadURLFromGit arduino arduino-ide)"
+    appNewVersion="$(versionFromGit arduino arduino-ide)"
+    expectedTeamID="7KT7ZWMCJT"
+    ;;
+
 arq7)
     name="Arq7"
     type="pkg"
@@ -2285,14 +2299,17 @@ bitwarden)
     expectedTeamID="LTZ2PFU5D6"
     ;;
 blender)
-    name="blender"
+    name="Blender"
     type="dmg"
+    versionKey="CFBundleShortVersionString"
+    appNewVersion=$(curl -sf https://ftp.nluug.nl/pub/graphics/blender/release/ | grep -o 'Blender[0-9]\+\.[0-9]\+' | cut -d 'r' -f 2 | sort -V | tail -1)
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL=$(curl -sfL "https://www.blender.org/download/" | xmllint --html --format - 2>/dev/null | grep -o "https://.*blender.*arm64.*.dmg" | sed '2p;d' | sed 's/www.blender.org\/download/download.blender.org/g')
+        archiveName=$(curl -sf "https://ftp.nluug.nl/pub/graphics/blender/release/Blender$appNewVersion/"| grep -o 'blender-[0-9]\+\.[0-9]\+\.[0-9]\+-macos-arm64\.dmg' | sort -V | tail -1)
+        downloadURL="https://ftp.nluug.nl/pub/graphics/blender/release/Blender$appNewVersion/$archiveName"
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL=$(curl -sfL "https://www.blender.org/download/" | xmllint --html --format - 2>/dev/null | grep -o "https://.*blender.*x64.*.dmg" | sed '2p;d' | sed 's/www.blender.org\/download/download.blender.org/g')
+        archiveName=$(curl -sf "https://ftp.nluug.nl/pub/graphics/blender/release/Blender$appNewVersion/" | grep -o 'blender-[0-9]\+\.[0-9]\+\.[0-9]\+-macos-x64\.dmg' | sort -V | tail -1)
+        downloadURL="https://ftp.nluug.nl/pub/graphics/blender/release/Blender$appNewVersion/$archiveName"
     fi
-    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g' )
     expectedTeamID="68UA947AUU"
     ;;
 bluejeans)
@@ -2917,6 +2934,14 @@ debookee)
     downloadURL=$(curl --location --fail --silent "https://www.iwaxx.com/debookee/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
     expectedTeamID="AATLWWB4MZ"
     ;;
+dedoose)
+    name="Dedoose"
+    type="dmg"
+    downloadURL=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep "Dedoose-.*[0-9.].*[0-9.].*[0-9.]dmg" | cut -d'/' -f3- | cut -f1 -d'"' | cut -c2-)
+    appNewVersion=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep -o "Dedoose-.*[0-9.].*[0-9.].*[0-9.]" | cut -d'>' -f2- | tail -1)
+    expectedTeamID="9U74Q6K62X"
+    ;;
+
 defaultfolderx)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="Default Folder X"
@@ -3893,6 +3918,13 @@ hyper)
     appNewVersion=$(versionFromGit vercel hyper)
     expectedTeamID="JW6Y669B67"
     ;;
+i1profiler)
+    name="i1Profiler"
+    type="pkgInZip"
+    downloadURL=$(curl -fs "https://downloads.xrite.com/downloads/autoupdate/i1profiler_mac_appcast.xml" | xmllint --xpath '//rss/channel/item[1]/enclosure/@url' - | sed -E 's/.*url="([^"]+)".*/\1/')
+    appNewVersion=$(curl -fs "https://downloads.xrite.com/downloads/autoupdate/i1profiler_mac_appcast.xml" | xmllint --xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString' - | sed -E 's/.*shortVersionString="([^"]+)".*/\1/')
+    expectedTeamID="2K7GT73B4R"
+    ;;
 ibarcoder)
     name="iBarcoder"
     type="dmg"
@@ -4016,6 +4048,15 @@ ipvisionconnect)
     appNewVersion="$(curl -fs "${downloadStore}" | grep osx | sort | tail -1 | sed -E 's/.*ipvision_connect_([0-9_]*)_osx.*/\1/' | tr "_" ".")"
     expectedTeamID="5RLWBLKGL2"
     ;;
+iriunwebcam)
+    name="IriunWebcam"
+    type="pkg"
+    packageID="com.iriun.pkg.multicam"
+    downloadURL="$(curl -sf "https://iriun.com" | grep "Webcam for Mac" | awk -F '"' '{ print $4; }')"
+    appNewVersion="$( echo "$downloadURL" | cut -d '-' -f 2 | sed -e 's/.pkg//' )"
+    expectedTeamID="R84MX49LQY"
+    blockingProcesses=( "IriunWebcam" )
+    ;;
 isadora)
     name="Isadora"
     type="pkgInDmg"
@@ -4032,8 +4073,8 @@ island)
     name="Island"
     type="dmg"
     downloadURL="https://d3qqq7lqx3rf23.internal.island.io/E5QCaudFDx5FE5OX4INk/stable/latest/mac/IslandX64.dmg"
-    appNewVersion=$(curl -fsLIXGET "https://d3qqq7lqx3rf23.internal.island.io/E5QCaudFDx5FE5OX4INk/stable/latest/mac/IslandX64.dmg" | grep -i "^x-amz-meta-version" | sed -e 's/x-amz-meta-version\: //')
     appCustomVersion() { echo "$(defaults read /Applications/Island.app/Contents/Info.plist CFBundleShortVersionString | sed 's/[^.]*.//' | sed -e 's/*\.//')" }
+    appNewVersion=$(curl -fsLIXGET "https://d3qqq7lqx3rf23.internal.island.io/E5QCaudFDx5FE5OX4INk/stable/latest/mac/IslandX64.dmg" | grep -i "^x-amz-meta-version" | sed -e 's/x-amz-meta-version\: //' | tr -d '\r')
     expectedTeamID="38ZC4T8AWY"
     ;;
 istatmenus)
@@ -6260,6 +6301,13 @@ postman)
 	fi
     expectedTeamID="H7H8Q7M5CK"
     ;;
+powermonitor)
+    name="Power Monitor"
+    type="pkg"
+    downloadURL=$(downloadURLFromGit sap power-monitoring-tool-for-macos )
+    appNewVersion=$(versionFromGit sap power-monitoring-tool-for-macos )
+    expectedTeamID="7R5ZEU67FQ"
+    ;;
 prism10)
     name="Prism 10"
     type="dmg"
@@ -6846,11 +6894,12 @@ sketchupviewer)
 skype)
     name="Skype"
     type="dmg"
-    downloadURL="https://get.skype.com/go/getskype-skypeformac"
-    appNewVersion=$(curl -is "https://get.skype.com/go/getskype-skypeformac" | grep ocation: | grep -o "Skype-.*dmg" | cut -d "-" -f 2 | sed 's/.dmg//')
+    downloadURL=$(curl -sfi https://get.skype.com/go/getskype-skypeformac | awk 'BEGIN{IGNORECASE=1} /location:/ {gsub(/\r/,"",$2); print $2}')
+    archiveName=$(basename "$downloadURL")
+    appNewVersion=$(awk -F'[-.]' '{print $2"."$3"."$4"."$5}' <<< "$archiveName")
     versionKey="CFBundleVersion"
+    blockingProcesses=( "Skype" , "Skype Helper" )
     expectedTeamID="AL798K98FX"
-    Company="Microsoft"
     ;;
 slab)
     name="Slab"
@@ -7148,7 +7197,7 @@ suspiciouspackage)
     name="Suspicious Package"
     type="dmg"
     downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
-    addNewVersion=$(curl -fs https://mothersruin.com/software/SuspiciousPackage/get.html | grep 'class="version"' | sed -E 's/.*>([0-9\.]*) \(.*/\1/g')
+    appNewVersion=$(curl -fs https://mothersruin.com/software/SuspiciousPackage/get.html | grep 'class="version"' | sed -E 's/.*>([0-9\.]*) \(.*/\1/g')
     expectedTeamID="936EB786NH"
     ;;
 swiftruntimeforcommandlinetools)
@@ -7635,12 +7684,7 @@ virtualbox)
     name="VirtualBox"
     type="pkgInDmg"
     pkgName="VirtualBox.pkg"
-    if [[ $(arch) == i386 ]]; then
-        platform="OSX"
-    elif [[ $(arch) == arm64 ]]; then
-        platform="macOSArm64"
-    fi
-    downloadURL="https:$(curl -fsL "https://www.oracle.com/jp/virtualization/technologies/vm/downloads/virtualbox-downloads.html" | grep "${platform}.dmg" | xmllint --html --xpath 'string(//a/@href)' -)"
+    downloadURL="https:$(curl -fsL "https://www.oracle.com/virtualization/technologies/vm/downloads/virtualbox-downloads.html" | grep "OSX.dmg" | xmllint --html --xpath 'string(//a/@href)' -)"
     appNewVersion=$(echo "${downloadURL}" | awk -F '/' '{print $5}')
     expectedTeamID="VB5E2TV963"
     ;;
@@ -7817,8 +7861,9 @@ whatroute)
 whatsapp)
     name="WhatsApp"
     type="dmg"
-    downloadURL="https://web.whatsapp.com/desktop/mac/files/WhatsApp.dmg"
+    downloadURL="https://web.whatsapp.com/desktop/mac_native/release/?configuration=Release"
     expectedTeamID="57T9237FN3"
+    appNewVersion=$(curl -s https://web.whatsapp.com/desktop/mac/releases | awk -F '"' '/"name"/ {print $4}')
     ;;
 wireshark)
     name="Wireshark"
