@@ -25,6 +25,7 @@ aircall
 airserver
 airtable
 airtame
+airtamepkg
 aldente
 alephone
 alfred
@@ -160,6 +161,7 @@ daylite
 dbeaverce
 debookee
 dedoose
+deepl
 defaultfolderx
 depnotify
 desktoppr
@@ -196,6 +198,7 @@ escrowbuddy
 eshareosx
 espanso
 etrecheck
+evercast
 evernote
 everweb
 exelbanstats
@@ -207,6 +210,8 @@ fellow
 figma
 filemakerpro
 filezilla
+finaldraft11
+finaldraft12
 findanyfile
 firefox
 firefox_da
@@ -221,6 +226,7 @@ flexoptixapp
 flowjo
 flux
 flycut
+fontbase
 fontexplorer
 fork
 franz
@@ -350,6 +356,7 @@ libericajdk17ltsfull
 libericajdk8ltsfull
 libreoffice
 libreofficelanguagepack_intl
+lightburn
 linear
 logioptions
 logitechoptions
@@ -435,6 +442,7 @@ mmhmm-desktop
 mmhmm-studio
 mobikinassistantforandroid
 mobiletolocal
+mobirise
 mochakeyboard
 mochatelnet
 mochatn3270

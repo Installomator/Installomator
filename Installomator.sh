@@ -1525,8 +1525,10 @@ valuesfromarguments)
     type="pkg"
     packageID="com.1password.1password"
     downloadURL="https://downloads.1password.com/mac/1Password.pkg"
+    relBuildVer=$(curl -s https://releases.1password.com/mac/ | grep "1Password for Mac" | grep -v Beta | head -n 1 | grep href | cut -d = -f 3 | cut -d / -f 3)
+    appNewVersion=$(curl -s "https://releases.1password.com/mac/$relBuildVer/" | grep "Updated to" | cut -d \> -f 78 | cut -d \  -f 3)
     expectedTeamID="2BUA8C4S2C"
-    blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password 8" "1Password" "1Password (Safari)" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
+    blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password 8" "1Password" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
     #forcefulQuit=YES
     ;;
 1passwordcli)
@@ -1774,6 +1776,14 @@ airtame)
     type="dmg"
     downloadURL="$(curl -fs https://airtame.com/download/ | grep -i platform=mac | head -1 | grep -o -i -E "https.*" | cut -d '"' -f1)"
     appNewVersion="$(curl -fsIL "${downloadURL}" | grep -i ^location | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')"
+    expectedTeamID="4TPSP88HN2"
+    ;;
+airtamepkg)
+    name="Airtame"
+    type="pkg"
+    packageID="com.airtame.airtame-application"
+    appNewVersion="$(curl -fs https://airtame.com/download/ | grep -i platform=mac | head -1 | grep -o -i -E "https.*" | cut -d '"' -f1 | xargs curl -fsIL | grep -i ^location | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')"
+    downloadURL="https://airtame-app.b-cdn.net/app/latest/mac/Airtame-${appNewVersion}.pkg"
     expectedTeamID="4TPSP88HN2"
     ;;
 aldente)
@@ -2942,6 +2952,13 @@ dedoose)
     expectedTeamID="9U74Q6K62X"
     ;;
 
+deepl)
+    name="DeepL"
+    type="dmg"
+    downloadURL="https://www.deepl.com/macos/download/bigsur/DeepL.dmg"
+    appNewVersion=""
+    expectedTeamID="4N8BGCG336"
+    ;;
 defaultfolderx)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="Default Folder X"
@@ -3254,6 +3271,12 @@ etrecheck)
     downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
     expectedTeamID="U87NE528LC"
     ;;
+evercast)
+    name="Evercast"
+    type="pkg"
+    downloadURL="https://s3.amazonaws.com/files.evercast.us/Evercast.pkg"
+    expectedTeamID="H2J9VR2HM2"
+    ;;
 evernote)
     name="Evernote"
     type="dmg"
@@ -3336,12 +3359,33 @@ filezilla)
     name="FileZilla"
     type="tbz"
     packageID="org.filezilla-project.filezilla"
-    downloadURL=$(curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macosx | head -n 1 | awk -F '"' '{print $2}' )
-    appNewVersion=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macosx | head -n 1 | awk -F '_' '{print $2}' )
+    if [[ $(arch) == "arm64" ]]; then
+        cpu_arch="arm64"
+    elif [[ $(arch) == "i386" ]]; then
+        cpu_arch="x86"
+    fi
+    downloadURL=$(curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos-$cpu_arch | head -n 1 | awk -F '"' '{print $2}' )
+    appNewVersion=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos-$cpu_arch | head -n 1 | awk -F '_' '{print $2}' )
     expectedTeamID="5VPGKXL75N"
     blockingProcesses=( NONE )
     ;;
 
+finaldraft11)
+    name="Final Draft 11"
+    type="pkgInZip"
+    downloadURL="https://www.finaldraft.com"
+    downloadURL+=$(curl -fs "https://www.finaldraft.com/support/install-final-draft/install-final-draft-11-macintosh/" | xmllint --html --format - 2>/dev/null | grep -o "/downloads/finaldraft.*.zip")
+    appNewVersion=$(echo $downloadURL | cut -d 't' -f5 | cut -f1 -d "M")
+    expectedTeamID="7XUZ8R5736"
+    ;;
+finaldraft12)
+    name="Final Draft 12"
+    type="appInDmgInZip"
+    downloadURL="https://www.finaldraft.com"
+    downloadURL+=$(curl -fs "https://www.finaldraft.com/support/install-final-draft/install-final-draft-12-macintosh/" | xmllint --html --format - 2>/dev/null | grep -o "/downloads/finaldraft.*.zip")
+    appNewVersion=$(echo $downloadURL | cut -d 't' -f5 | cut -f1 -d "M")
+    expectedTeamID="7XUZ8R5736"
+    ;;
 findanyfile)
     name="Find Any File"
     type="zip"
@@ -3506,6 +3550,13 @@ flycut)
     appNewVersion=$(versionFromGit TermiT Flycut )
     expectedTeamID="S8JLSG5ES7"
 ;;
+fontbase)
+    name="FontBase"
+    type="dmg"
+    appNewVersion=$(curl -s https://releases.fontba.se/mac/latest-mac.yml | grep version: | awk -F ':' '{print $2}' | sed -e 's/^ *//' -e 's/ *$//')
+    downloadURL="https://releases.fontba.se/mac/FontBase-$appNewVersion.dmg"
+    expectedTeamID="457B89RFCZ"
+    ;;
 fontexplorer)
     name="FontExplorer X Pro"
     type="dmg"
@@ -4744,6 +4795,13 @@ libreofficelanguagepack_intl)
     expectedTeamID="7P5S3ZLCN7"
     # blockingProcesses=( soffice )
     ;;
+lightburn)
+    name="LightBurn"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit LightBurnSoftware deployment)"
+    appNewVersion="$(versionFromGit LightBurnSoftware deployment)"
+    expectedTeamID="UWZQ3LL82C"
+    ;;
 linear)
     name="Linear"
     type="dmg"
@@ -5316,10 +5374,10 @@ microsoftonedrive)
     updateToolArguments=( --install --apps ONDR18 )
     ;;
 microsoftonedrivereset)
-    name="Microsoft Outlook Reset"
+    name="Microsoft OneDrive Reset"
     type="pkg"
-    packageID="com.microsoft.reset.Outlook"
-    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Outlook_Reset.*.pkg" | cut -d '"' -f2)
+    packageID="com.microsoft.reset.OneDrive"
+    downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*OneDrive_Reset.*.pkg" | cut -d '"' -f2)
     expectedTeamID="QGS93ZLCU7"
     ;;
 microsoftonenote)
@@ -5627,6 +5685,12 @@ mobiletolocal)
     downloadURL="$(downloadURLFromGit BIG-RAT mobile_to_local)"
     appNewVersion="$(versionFromGit BIG-RAT mobile_to_local)"
     expectedTeamID="PS2F6S478M"
+    ;;
+mobirise)
+    name="mobirise"
+    type="dmg"
+    downloadURL="https://download.mobirise.com/MobiriseSetup.dmg"
+    expectedTeamID="UD4494E573"
     ;;
 mochakeyboard)
     name="Mocha Keyboard"
@@ -6742,8 +6806,8 @@ keyaccess)
 scaleft)
     name="ScaleFT"
     type="pkg"
-    downloadURL="https://dist.scaleft.com/client-tools/mac/latest/ScaleFT.pkg"
-    appNewVersion=$(curl -sf "https://dist.scaleft.com/client-tools/mac/" | awk '/dir/{i++}i==2' | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
+    downloadURL="https://dist.scaleft.com/repos/macos/stable/all/macos-client/$(curl -s "https://dist.scaleft.com/repos/macos/stable/all/macos-client/" | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' | sort -V | tail -n 1)/ScaleFT-$(curl -s "https://dist.scaleft.com/repos/macos/stable/all/macos-client/" | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' | sort -V | tail -n 1 | sed 's/^v//').pkg"
+    appNewVersion=$(curl -s "https://dist.scaleft.com/repos/macos/stable/all/macos-client/" | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' | sort -V | tail -n 1 | sed 's/^v//')
     expectedTeamID="B7F62B65BN"
     blockingProcesses=( ScaleFT )
     ;;
@@ -7576,8 +7640,12 @@ typora)
 ultimakercura)
     name="Ultimaker Cura"
     type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="UltiMaker-Cura-[0-9.]*-macos-ARM64.dmg"
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="UltiMaker-Cura-[0-9.]*-macos-X64.dmg"
+    fi
     downloadURL="$(downloadURLFromGit Ultimaker Cura)"
-    archiveName="Ultimaker_Cura-[0-9].*-mac.dmg"
     appNewVersion=$(versionFromGit Ultimaker Cura )
     expectedTeamID="V4B3JXRRQS"
     ;;
@@ -7813,6 +7881,8 @@ webexteams)
     # credit: Erik Stam (@erikstam)
     name="Webex"
     type="dmg"
+    appNewVersion=$(curl -fs https://help.webex.com/en-us/article/8dmbcr/Webex-App-%7C-What%27s-New | tr '"' "\n" |  grep "Mac—"| head -1|sed 's/[^0-9\.]//g' )
+    blockingProcesses=( "Webex" "Webex Teams" "Cisco WebEx Start" "WebexHelper")
     if [[ $(arch) == arm64 ]]; then
         downloadURL="https://binaries.webex.com/WebexDesktop-MACOS-Apple-Silicon-Gold/Webex.dmg"
     elif [[ $(arch) == i386 ]]; then
@@ -7869,13 +7939,14 @@ whatsapp)
 wireshark)
     name="Wireshark"
     type="dmg"
-    appNewVersion=$(curl -fs "https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/x86-64/en-US/stable.xml" | xmllint --xpath '/rss/channel/item/enclosure/@url' - | head -1 | cut -d '"' -f 2)
-    urlToParse=$(curl -fs "https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/x86-64/en-US/stable.xml" | xmllint --xpath '/rss/channel/item/enclosure/@url' - | head -1 | cut -d ':' -f 2 | cut -d '%' -f 1)
     if [[ $(arch) == i386 ]]; then
-      downloadURL="https:$urlToParse%20Latest%20Intel%2064.dmg"
+      sparkleFeedURL="https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/x86-64/en-US/stable.xml"
     elif [[ $(arch) == arm64 ]]; then
-      downloadURL="https:$urlToParse%20Latest%20Arm%2064.dmg"
+      sparkleFeedURL="https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/arm64/en-US/stable.xml"
     fi
+    sparkleFeed=$(curl -fs "$sparkleFeedURL")
+    appNewVersion=$(echo "$sparkleFeed" | xpath '(//rss/channel/item/enclosure/@sparkle:version)[1]' 2>/dev/null | cut -d '"' -f 2)
+    downloadURL=$(echo "$sparkleFeed" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | cut -d '"' -f 2)
     expectedTeamID="7Z6EMTD2C6"
     ;;
 wordservice)
