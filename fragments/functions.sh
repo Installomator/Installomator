@@ -638,7 +638,10 @@ installFromPKG() {
 
     deduplicatelogs "$spctlOut"
 
-    if [[ $spctlStatus -ne 0 ]] ; then
+# scot: Microsoft does not notarize their Delta update packages, added extra check to allow for this
+    if [[ $spctlStatus -eq 3 ]] && [[ $expectedTeamID == "UBF8T346G9" ]] && [[ $downloadURL =~ "Delta" ]]; then
+       printlog "Microsoft does not notarize Delta updaters...continuing."
+    elif [[ $spctlStatus -ne 0 ]] ; then
     #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
         cleanupAndExit 4 "Error verifying $archiveName error:\n$logoutput" ERROR
     fi
