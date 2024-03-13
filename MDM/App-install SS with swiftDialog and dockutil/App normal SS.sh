@@ -242,7 +242,7 @@ else
         dialogCMD+=("--overlayicon" ${overlayicon})
     fi
 
-    echo "dialogCMD: ${dialogCMD[@]}"
+    echo "dialogCMD: ${dialogCMD[*]}"
 
     "${dialogCMD[@]}" &
 
