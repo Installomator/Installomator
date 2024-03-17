@@ -25,6 +25,7 @@ aircall
 airserver
 airtable
 airtame
+airtamepkg
 aldente
 alephone
 alfred
@@ -51,6 +52,7 @@ arcbrowser
 archimate
 archiwareb2go
 archiwarepst
+arduinoide
 arq7
 asana
 asperaconnect
@@ -149,6 +151,7 @@ crashplan
 crashplansmb
 cricutdesignspace
 cryptomator
+crystalfetch
 cyberduck
 cytoscape
 daisydisk
@@ -157,6 +160,8 @@ darktable
 daylite
 dbeaverce
 debookee
+dedoose
+deepl
 defaultfolderx
 depnotify
 desktoppr
@@ -177,6 +182,7 @@ drift
 dropbox
 druvainsync
 duckduckgo
+duet
 duodevicehealth
 dymoconnectdesktop
 dynalist
@@ -192,6 +198,7 @@ escrowbuddy
 eshareosx
 espanso
 etrecheck
+evercast
 evernote
 everweb
 exelbanstats
@@ -203,6 +210,8 @@ fellow
 figma
 filemakerpro
 filezilla
+finaldraft11
+finaldraft12
 findanyfile
 firefox
 firefox_da
@@ -217,13 +226,17 @@ flexoptixapp
 flowjo
 flux
 flycut
+fontbase
 fontexplorer
 fork
 franz
 front
 fsmonitor
 fujifilmwebcam
+gather
+gathertown
 gdevelop
+geneiousprime
 gfxcardstatus
 gimp
 githubdesktop
@@ -252,6 +265,7 @@ handbrake
 hazel
 hmavpn
 homebrew
+hoppscotch
 horos
 houdahspot
 hpeasyadmin
@@ -260,6 +274,7 @@ hubstaff
 huddly
 hype
 hyper
+i1profiler
 ibarcoder
 ibmnotifier
 icons
@@ -276,6 +291,7 @@ installomator_theile
 intellijideace
 ipswupdater
 ipvisionconnect
+iriunwebcam
 isadora
 island
 istatmenus
@@ -309,6 +325,7 @@ jetbrainsrider
 jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
+jitsimeet
 jre8
 jumpdesktop
 jupyterlab
@@ -339,6 +356,7 @@ libericajdk17ltsfull
 libericajdk8ltsfull
 libreoffice
 libreofficelanguagepack_intl
+lightburn
 linear
 logioptions
 logitechoptions
@@ -389,7 +407,7 @@ microsoftofficebusinesspro
 microsoftofficefactoryreset
 microsoftofficeremoval
 microsoftonedrive
-microsoftonedrive-rollingout
+microsoftonedrive-deferred
 microsoftonedrive-rollingout
 microsoftonedrive-rollingoutdeferred
 microsoftonedrivereset
@@ -424,6 +442,7 @@ mmhmm-desktop
 mmhmm-studio
 mobikinassistantforandroid
 mobiletolocal
+mobirise
 mochakeyboard
 mochatelnet
 mochatn3270
@@ -439,6 +458,7 @@ munki
 musescore
 muzzle
 mysqlworkbenchce
+namiral
 nanosaur
 nessusagent
 netiquette
@@ -446,6 +466,7 @@ netnewswire
 netspot
 nextcloud
 nodejs
+nomachine
 nomad
 nomadlogin
 nordlayer
@@ -471,6 +492,7 @@ omnipresence
 onionshare
 onlyofficedesktop
 onscreencontrol
+onyx
 openvpnconnect
 openvpnconnectv3
 opera
@@ -501,6 +523,7 @@ podmandesktop
 polylens
 popsql
 postman
+powermonitor
 prism10
 prism9
 pritunl
@@ -525,6 +548,7 @@ qlab
 r
 rancherdesktop
 rapidapi
+raycast
 realvncserver
 realvncviewer
 rectangle
@@ -655,6 +679,7 @@ trapcode
 trex
 tunnelbear
 tunnelblick
+typeface
 typinator
 typora
 ultimakercura
