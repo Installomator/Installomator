@@ -36,6 +36,7 @@ amazoncorretto17jdk
 amazoncorretto8jdk
 amazonworkspaces
 anaconda
+anastasiysextensionmanager
 androidfiletransfer
 androidstudio
 anydesk
@@ -100,6 +101,7 @@ brosix
 bugdom
 burpsuitecommunityedition
 burpsuiteprofessional
+buttercup
 caffeine
 cakebrew
 calcservice
@@ -477,6 +479,7 @@ nudgesuite
 nvivo
 nvivo13
 nvivo14
+nweasecuretestingbrowser
 obs
 obsbotwebcam
 obsidian
@@ -639,6 +642,7 @@ surfdrive
 suspiciouspackage
 swiftdialog
 swiftruntimeforcommandlinetools
+symhelper
 sync
 synologyactivebackupforbusinessagent
 synologyassistant
