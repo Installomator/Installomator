@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/zsh --no-rcs
 
 # runs through a list of Installomator items
 # and displays status using Swift Dialog
