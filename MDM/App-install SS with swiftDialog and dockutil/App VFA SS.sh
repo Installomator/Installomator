@@ -30,7 +30,7 @@ appPath="/Applications/$name.app"
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
-dialogApp="/Library/Application Support/Dialog/Dialog.app"
+dialogBinary="/usr/local/bin/dialog"
 dockutil="/usr/local/bin/dockutil"
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
@@ -57,6 +57,8 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 # Fill out the label variables above, and those will be included in the Installomator call, circa on line 248
 # Script will run this label through Installomator.
 ######################################################################
+scriptVersion="10.1"
+# v. 10.1   : 2024-02-13 : Improved Dialog call. Support for overlay icon as well.
 # v. 10.0.5 : Support for FileWave, and previously Kandji
 # v. 10.0.4 : Fix for LOGO_PATH for ws1, and only kill the caffeinate process we create
 # v. 10.0.3 : A bit more logging on succes, and change in ending Dialog part.
@@ -70,11 +72,11 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 # PATH declaration
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-echo "$(date +%F\ %T) [LOG-BEGIN] $item"
-
 if [[ -z "$item" ]]; then
     item="$name"
 fi
+
+echo "$(date +%F\ %T) [LOG-BEGIN] $item, v$scriptVersion"
 
 dialogUpdate() {
     # $1: dialog command
@@ -140,8 +142,8 @@ if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2)
 else
     installomatorNotify="NOTIFY=silent"
     # check for Swift Dialog
-    if [[ ! -d $dialogApp ]]; then
-        echo "Cannot find dialog at $dialogApp"
+    if [[ ! -x $dialogBinary ]]; then
+        echo "Cannot find dialog at $dialogBinary"
         # Install using Installlomator
         cmdOutput="$(${destFile} dialog LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
         checkCmdOutput "${cmdOutput}"
@@ -229,7 +231,7 @@ else
                     ;;
             esac
             if [[ ! -a "${LOGO_PATH}" ]]; then
-                printlog "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
+                echo "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
                 if [[ $(/usr/bin/sw_vers -buildVersion) > "19" ]]; then
                     LOGO_PATH="/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"
                 else
@@ -243,15 +245,26 @@ else
     echo "icon: ${icon}"
 
     # display first screen
-    open -a "$dialogApp" --args \
-        --title none \
-        --icon "$icon" \
-        --message "$message" \
-        --mini \
-        --progress 100 \
-        --position bottomright \
-        --movable \
-        --commandfile "$dialog_command_file"
+    dialogCMD=("$dialogBinary"
+           --title none
+           --icon "$icon"
+           --message "$message"
+           --mini
+           --progress 100
+           --position bottomright
+           --moveable
+           --commandfile "$dialog_command_file"
+    )
+
+    if [[ -n "$overlayicon" ]]; then
+        dialogCMD+=("--overlayicon" ${overlayicon})
+    fi
+
+    echo "dialogCMD: ${dialogCMD[*]}"
+
+    "${dialogCMD[@]}" &
+
+    echo "$(date +%F\ %T) : SwiftDialog started!"
 
     # give everything a moment to catch up
     sleep 0.1
