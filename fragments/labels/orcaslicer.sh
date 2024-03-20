@@ -6,8 +6,8 @@ orcaslicer)
     elif [[ $(arch) == "i386" ]]; then
         archiveName="OrcaSlicer_Mac_x86_64_*.dmg"
     fi
-    downloadURL="$(downloadURLFromGit SoftFever OrcaSlicer)"
-    appNewVersion="$(versionFromGit SoftFever OrcaSlicer)"
+    downloadURL=$(downloadURLFromGit SoftFever OrcaSlicer)
+    appNewVersion=$(versionFromGit SoftFever OrcaSlicer)
     expectedTeamID="XQK7C38HH5"
     ;;
     
