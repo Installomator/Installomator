@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-03-16"
+VERSIONDATE="2024-03-19"
 
 # MARK: Functions
 
@@ -1946,6 +1946,14 @@ anydesk)
     appNewVersion="$(curl -fs https://anydesk.com/en/downloads/mac-os | grep -i "d-block" | grep -E -o ">v[0-9.]* .*MB" | sed -E 's/.*v([0-9.]*) .*/\1/g')"
     expectedTeamID="KU6W3B6JMZ"
     ;;
+apachedirectorystudio)
+    name="ApacheDirectoryStudio"
+    type="dmg"
+    downloadURL=$( curl -fs https://directory.apache.org/studio/download/download-macosx.html | grep -o 'http[^"]*downloads[^"]*ApacheDirectoryStudio[^"]*.dmg' | head -1 )
+    appNewVersion=$( curl -fs https://directory.apache.org/studio/download/download-macosx.html  | grep -o 'studio/\([^/]*\)/ApacheDirectoryStudio' | cut -d'/' -f2 | head -1)
+    versionKey="CFBundleVersion"
+    expectedTeamID="2GLGAFWEQD"
+    ;;
 apparency)
     name="Apparency"
     type="dmg"
@@ -2150,6 +2158,14 @@ autodmg)
     downloadURL=$(downloadURLFromGit MagerValp AutoDMG)
     appNewVersion=$(versionFromGit MagerValp AutoDMG)
     expectedTeamID="5KQ3D3FG5H"
+    ;;
+automounter)
+    name="AutoMounter"
+    type="dmg"
+    downloadURL="https://www.pixeleyes.co.nz/automounter/AutoMounter.dmg"
+    appNewVersion="$( curl -fs https://www.pixeleyes.co.nz/automounter/version )"
+    versionKey="CFBundleShortVersionString"
+    expectedTeamID="UKWABN4MGL"
     ;;
 autopkgr)
     name="AutoPkgr"
@@ -4858,6 +4874,17 @@ logitechoptionsplus)
     CLIArguments=(--quiet)
     expectedTeamID="QED4VVPZWA"
     ;;
+logitune)
+    name="LogiTune"
+    archiveName="LogiTuneInstaller.dmg"
+    appName="LogiTuneInstaller.app"
+    type="dmg"
+    downloadURL="https://software.vc.logitech.com/downloads/tune/LogiTuneInstaller.dmg"
+    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-11.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
+    CLIInstaller="LogiTuneInstaller.app/Contents/MacOS/LogiTuneInstaller"
+    CLIArguments=(-silent)
+    expectedTeamID="QED4VVPZWA"
+    ;;
 logseq)
     name="Logseq"
     type="dmg"
@@ -6179,6 +6206,21 @@ opera)
 	versionKey="CFBundleVersion"
     expectedTeamID="A2P9LX4JPN"
     ;;
+orcaslicer)
+    name="OrcaSlicer"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+       downloadURL="$(downloadURLFromGit SoftFever OrcaSlicer)"
+       appNewVersion="$(versionFromGit SoftFever OrcaSlicer)"
+       archiveName="OrcaSlicer_Mac_arm64_*.dmg"
+    elif [[ $(arch) == "i386" ]]; then
+      downloadURL="$(downloadURLFromGit SoftFever OrcaSlicer)"
+      appNewVersion="$(versionFromGit SoftFever OrcaSlicer)"
+      archiveName="OrcaSlicer_Mac_x86_64_*.dmg"
+    fi
+    expectedTeamID="XQK7C38HH5"
+    ;;
+    
 origin)
      name="Origin"
      type="dmg"
@@ -8095,6 +8137,15 @@ yubicoauthenticator)
     downloadURL="https://developers.yubico.com/yubioath-flutter/Releases/yubico-authenticator-latest-mac.dmg"
     appNewVersion=""
     expectedTeamID="LQA3CS5MM7"
+    ;;
+yubikeymanager)
+    name="YubiKey Manager"
+    type="pkg"
+    appCustomVersion(){/usr/local/ykman/ykman -v | awk '{print $5}'}
+	downloadURL=$(downloadURLFromGit Yubico yubikey-manager)
+    appNewVersion=$(versionFromGit Yubico yubikey-manager)
+    expectedTeamID="LQA3CS5MM7"
+    #CLI for YubikeyManager which is not installed via the QT version.
     ;;
 yubikeymanagerqt)
     # credit: Tadayuki Onishi (@kenchan0130)
