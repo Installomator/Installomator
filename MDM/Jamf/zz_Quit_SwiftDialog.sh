@@ -5,7 +5,7 @@
 # Parameter 4: SwiftDialog command file path (`/var/tmp/dialog.log`)
 dialog_command_file=${4:-"/var/tmp/dialog.log"}
 
-# Parameter 5: Jamf recon (if value is `1`) done as part of this script, so the user gets the progress in the dialog window (default `0`)
+# Parameter 5: Jamf recon (if value is `1`) done as part of this script, so the user gets the progress in the dialog window (default `0`) Will be skipped if Installomator did not install anything.
 jamf_recon=${5:-"0"}
 
 
@@ -46,6 +46,12 @@ fi
 
 
 # MARK: Script
+
+# Go through dialog_command_file to figure out if it did not install anything
+if grep "Latest version already installed" "$dialog_command_file"; then
+	echo "$(date +%F\ %T) : No Installomator installation happened. No Jamf recon"
+    jamf_recon=0
+fi
 
 # doing jamf recon in script
 if [[ $jamf_recon -eq 1 ]]; then
