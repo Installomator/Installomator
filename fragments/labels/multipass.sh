@@ -1,4 +1,4 @@
-jamfcpr)
+multipass)
     name="multipass"
     type="pkg"
     downloadURL="$(downloadURLFromGit canonical multipass)"
