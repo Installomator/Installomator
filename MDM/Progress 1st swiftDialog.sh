@@ -1,23 +1,20 @@
 #!/bin/sh
 
 # Progress 1st with swiftDialog (auto installation at enrollment)
-instance="" # Name of used instance
+instance="e" # Name of used instance
 
-LOGO="" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji"
+LOGO="appstore" # "appstore", "jamf", "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewave"
 
 apps=(
     "swiftDialog,/usr/local/bin/dialog"
     "dockutil,/usr/local/bin/dockutil"
     "desktoppr,/usr/local/bin/desktoppr"
-    "SupportApp,/Applications/Support.app"
-    "Xink,/Applications/Xink.app"
     "Apple NewYork Font,/Library/Fonts/NewYork.ttf"
     "Apple SF Pro Font,/Library/Fonts/SF-Pro.ttf"
     "Apple SF Mono Font,/Library/Fonts/SF-Mono-Bold.otf"
     "Apple SF Compact Font,/Library/Fonts/SF-Compact.ttf"
     "Zoho WorkDrive TrueSync,/Applications/Zoho WorkDrive TrueSync.app"
     "TextMate,/Applications/TextMate.app"
-    "Sublime Text,/Applications/Sublime Text.app"
     "1Password,/Applications/1Password 7.app"
     "Mactracker,/Applications/Mactracker.app"
     "WWDC,/Applications/WWDC.app"
@@ -61,7 +58,13 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 # Applies to Mosyle App Catalog installs, VPP app installs, Installomator installs etc.
 # The script watches the existence of files in the file system, so that is used to show progress.
 #
-# Requires Dialog v1.9.1 or later (will be installed) https://github.com/bartreardon/swiftDialog
+# Requires Dialog v2 or later (will be installed) https://github.com/swiftDialog/swiftDialog
+#
+# NOTE about MDM solutions:
+# This script might not be usefull for the following solutions as they
+# have their own solution for deployment progress:
+# - mosyleb,mosylem  Mosyle has Embark
+# - kandji           Kandji has LiftOff
 #
 ######################################################################
 #
@@ -86,7 +89,8 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #      Or fonts, like:
 #       "Apple SF Pro Font,/Library/Fonts/SF-Pro.ttf"
 ######################################################################
-scriptVersion="9.7"
+scriptVersion="9.8"
+# v.  9.8   : 2023-10-06 : Support for FileWave, and previously Kandji. Update Progress 1st swiftDialog.sh to use native checkmark #1220
 # v.  9.7   : 2022-12-19 : Fix for LOGO_PATH for ws1
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
 # v.  9.5   : 2022-09-21 : change of GitHub download
@@ -187,6 +191,10 @@ case $LOGO in
         # Kandji
         LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
         ;;
+    filewave)
+        # FileWave
+        LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
+        ;;
 esac
 if [[ ! -a "${LOGO_PATH}" ]]; then
     printlog "ERROR in LOGO_PATH '${LOGO_PATH}', setting Mac App Store."
@@ -212,7 +220,7 @@ function appCheck(){
         sleep 2
     done
     dialog_command "progresstext: Install of “$(echo "$app" | cut -d ',' -f1)” complete"
-    dialog_command "listitem: $(echo "$app" | cut -d ',' -f1): ✅"
+    dialog_command "listitem: $(echo "$app" | cut -d ',' -f1): success"
     progress_index=$(defaults read $counterFile step)
     progress_index=$(( progress_index + 1 ))
     defaults write $counterFile step -int $progress_index
@@ -232,7 +240,7 @@ name="Dialog"
 printlog "$name check for installation"
 # download URL, version and Expected Team ID
 # Method for GitHub pkg w. app version check
-gitusername="bartreardon"
+gitusername="swiftDialog"
 gitreponame="swiftDialog"
 #printlog "$gitusername $gitreponame"
 filetype="pkg"

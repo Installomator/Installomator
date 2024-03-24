@@ -44,6 +44,7 @@ PROMPT_TIMEOUT=86400
 # 86400 = 24 hours (default)
 
 # behavior when blocking processes are found
+# BLOCKING_PROCESS_ACTION is ignored if app label uses updateTool
 BLOCKING_PROCESS_ACTION=tell_user
 # options:
 #   - ignore       continue even when blocking processes are found
@@ -90,6 +91,7 @@ LOGO=appstore
 #   - addigy        Addigy
 #   - microsoft     Microsoft Endpoint Manager (Intune)
 #   - ws1           Workspace ONE (AirWatch)
+#   - filewave      FileWave
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
@@ -151,7 +153,7 @@ IGNORE_DND_APPS=""
 # Swift Dialog integration
 
 # These variables will allow Installomator to communicate progress with Swift Dialog
-# https://github.com/bartreardon/swiftDialog
+# https://github.com/swiftDialog/swiftDialog
 
 # This requires Swift Dialog 2.11.2 or higher.
 

@@ -4,7 +4,7 @@
 # and displays status using Swift Dialog
 #
 # dependencies:
-# - Swift Dialog:    https://github.com/bartreardon/swiftDialog
+# - Swift Dialog:    https://github.com/swiftDialog/swiftDialog
 # - Installomator:   https://github.com/Installomator/Installomator
 # this script will install both if they are not yet present
 
