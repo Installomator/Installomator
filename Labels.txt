@@ -61,7 +61,6 @@ asperaconnect
 atext
 atextlegacy
 atlassiancompanion
-atom
 audacity
 authydesktop
 autodeskfusion360admininstall
@@ -765,4 +764,5 @@ zulujdk13
 zulujdk15
 zulujdk17
 zulujdk18
+zulujdk21
 zulujdk8
