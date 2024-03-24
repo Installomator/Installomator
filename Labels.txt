@@ -237,6 +237,7 @@ franz
 front
 fsmonitor
 fujifilmwebcam
+garminexpress
 gather
 gathertown
 gdevelop

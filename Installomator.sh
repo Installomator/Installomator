@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-03-19"
+VERSIONDATE="2024-03-23"
 
 # MARK: Functions
 
@@ -3647,6 +3647,15 @@ fujifilmwebcam)
      appNewVersion=$( echo “${downloadURL}” | sed -E 's/.*XWebcamIns([0-9]*).*/\1/g' | sed -E 's/([0-9])([0-9]).*/\1\.\2/g')
      expectedTeamID="34LRP8AV2M"
      ;;
+garminexpress)
+    name="Garmin Express"
+    type="pkgInDmg"
+    downloadURL="https://download.garmin.com/omt/express/GarminExpress.dmg"
+    garminfaqURL=$(curl -sf https://support.garmin.com/capi/content/en-US/\?productID\=168768\&tab\=software\&topicTag\=region_softwareproduct\&productTagName\=topic_express0\&ct\=content\&mr\=5\&locale\=en-US\&si\=0\&tags\=topic_express0%2Cregion_softwareproduct%2C%2C | tr "{" "\n" | grep "Garmin Express" | tr "," "\n" | grep "contentURL" | awk -F "\"" '{print$4}')
+    appNewVersion="$(curl -sfL $garminfaqURL | tr '><' "\n" | grep "Garmin Express for Mac" | head -1 | awk 'sub(/.*Mac: */,""){f=1} f{if ( sub(/ *as of.*/,"") ) f=0; print$2}').0"
+    expectedTeamID="72ES32VZUA"
+    appName="Garmin Express.app"
+    ;;
 gather|\
 gathertown)
     name="Gather"
@@ -3937,16 +3946,17 @@ hoppscotch)
 horos)
     name="Horos"
     type="dmg"
-    versionKey="CFBundleGetInfoString"
-    appNewVersion=$(curl -fs https://github.com/horosproject/horos/blob/horos/Horos/Info.plist | grep -A 4 "CFBundleGetInfoString" | tail -1 | sed -r 's/.*Horos v([^<]+).*/\1/' | sed 's/ //g')
+    versionKey="CFBundleShortVersionString"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://horosproject.org/horos-content/Horos"$appNewVersion"_Apple.dmg"
-        TeamID="8NDFEW7285"
+    	imageName=$(curl -fs https://horosproject.org/horos-content/ | grep "arm64" | tail -1 | sed "s|.*href=\"\(.*\)\">Horos.*|\\1|")
+        downloadURL="https://horosproject.org/horos-content/"$imageName""
+        appNewVersion=$(curl -fs https://horosproject.org/horos-content/ | grep "arm64" | tail -1 | sed "s|.*href=\"\(.*\)\">Horos.*|\\1|" | sed -e 's/.*_\(.*\)_.*/\1/')
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://horosproject.org/horos-content/Horos"$appNewVersion".dmg"
-        TeamID="TPT6TVH8UY"
+    	imageName=$(curl -fs https://horosproject.org/horos-content/ | grep -v -e "Apple" -e "arm64" -e "Nightly" | grep ".dmg" | tail -1 | sed "s|.*href=\"\(.*\)\">Horos.*|\\1|")
+        downloadURL="https://horosproject.org/horos-content/"$imageName""
+        appNewVersion=$(curl -fs https://horosproject.org/horos-content/ | grep -v -e "Apple" -e "arm64" -e "Nightly" | grep ".dmg" | tail -1 | sed "s|.*href=\"\(.*\)\">Horos.*|\\1|" | sed -e 's/.*Horos\(.*\).dmg.*/\1/')
     fi
-    expectedTeamID=$TeamID
+    expectedTeamID="TPT6TVH8UY"
     ;;
 houdahspot)
     name="HoudahSpot"
@@ -6458,11 +6468,7 @@ pritunl)
     name="Pritunl"
     type="pkgInZip"
     packageID="com.pritunl.pkg.Pritunl"
-    if [[ $(arch) == "arm64" ]]; then
-        archiveName="Pritunl.arm64.pkg.zip"
-    elif [[ $(arch) == "i386" ]]; then
-        archiveName="Pritunl.pkg.zip"
-    fi
+    archiveName="Pritunl.pkg.zip"
     downloadURL=$(downloadURLFromGit pritunl pritunl-client-electron)
     appNewVersion=$(versionFromGit pritunl pritunl-client-electron)
     expectedTeamID="U22BLATN63"
