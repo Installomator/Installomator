@@ -40,6 +40,7 @@ anastasiysextensionmanager
 androidfiletransfer
 androidstudio
 anydesk
+apachedirectorystudio
 apparency
 appcleaner
 applenyfonts
@@ -60,11 +61,11 @@ asperaconnect
 atext
 atextlegacy
 atlassiancompanion
-atom
 audacity
 authydesktop
 autodeskfusion360admininstall
 autodmg
+automounter
 autopkgr
 avertouch
 aviatrix
@@ -205,6 +206,7 @@ evernote
 everweb
 exelbanstats
 exifrenamer
+facebookmessenger
 fantastical
 fastscripts
 favro
@@ -226,6 +228,7 @@ firefoxpkg
 firefoxpkg_intl
 flexoptixapp
 flowjo
+flstudiomac
 flux
 flycut
 fontbase
@@ -235,6 +238,7 @@ franz
 front
 fsmonitor
 fujifilmwebcam
+garminexpress
 gather
 gathertown
 gdevelop
@@ -358,11 +362,13 @@ libericajdk17ltsfull
 libericajdk8ltsfull
 libreoffice
 libreofficelanguagepack_intl
+lifesize
 lightburn
 linear
 logioptions
 logitechoptions
 logitechoptionsplus
+logitune
 logseq
 loom
 lowprofile
@@ -457,6 +463,7 @@ montereyblocker
 morisawadesktopmanager
 mowgliiitsycal
 munki
+munkiadmin
 musescore
 muzzle
 mysqlworkbenchce
@@ -499,6 +506,7 @@ onyx
 openvpnconnect
 openvpnconnectv3
 opera
+orcaslicer
 origin
 orion
 ottomatic
@@ -549,6 +557,7 @@ python
 qgis-pr
 qlab
 r
+raindropio
 rancherdesktop
 rapidapi
 raycast
@@ -621,8 +630,10 @@ sonos
 sonoss1
 sonoss2
 sourcetree
+spark
 splashtopbusiness
 splashtopsos
+splashtopstreamer
 spotify
 sqlpropostgres
 sqlprostudio
@@ -738,6 +749,7 @@ xmind
 xquartz
 yed
 yubicoauthenticator
+yubikeymanager
 yubikeymanagerqt
 zappy
 zeplin
@@ -759,4 +771,5 @@ zulujdk13
 zulujdk15
 zulujdk17
 zulujdk18
+zulujdk21
 zulujdk8
