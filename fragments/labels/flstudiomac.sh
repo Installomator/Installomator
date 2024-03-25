@@ -6,4 +6,3 @@ flstudiomac)
     appNewVersion="$(getJSONValue $(curl -fsL "https://support.image-line.com/api.php?call=get_version_info&callback=il_get_version") "prod.741.mac.version")"
     expectedTeamID="N68WEP5ZZZ"
     ;;
-    

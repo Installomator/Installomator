@@ -206,6 +206,7 @@ evernote
 everweb
 exelbanstats
 exifrenamer
+facebookmessenger
 fantastical
 fastscripts
 favro
@@ -227,6 +228,7 @@ firefoxpkg
 firefoxpkg_intl
 flexoptixapp
 flowjo
+flstudiomac
 flux
 flycut
 fontbase
@@ -360,6 +362,7 @@ libericajdk17ltsfull
 libericajdk8ltsfull
 libreoffice
 libreofficelanguagepack_intl
+lifesize
 lightburn
 linear
 logioptions
@@ -554,6 +557,7 @@ python
 qgis-pr
 qlab
 r
+raindropio
 rancherdesktop
 rapidapi
 raycast
@@ -626,6 +630,7 @@ sonos
 sonoss1
 sonoss2
 sourcetree
+spark
 splashtopbusiness
 splashtopsos
 splashtopstreamer
