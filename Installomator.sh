@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-03-23"
+VERSIONDATE="2024-03-25"
 
 # MARK: Functions
 
@@ -2414,9 +2414,9 @@ brave)
 bravepkg)
     name="Brave Browser"
     type="pkg"
-    downloadURL="https://referrals.brave.com/latest/Brave-Browser.pkg" # Universal 
+    downloadURL="https://referrals.brave.com/latest/Brave-Browser.pkg" # Universal
         # https://referrals.brave.com/latest/Brave-Browser-arm64.pkg - ARM64
-    appNewVersion="$(curl -fsL "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath -e '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null  | cut -d '"' -f 2)"
+    appNewVersion="$(curl -fsL "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null  | cut -d '"' -f 2)"
     versionKey="CFBundleVersion"
     expectedTeamID="KL8N8XSYF4"
     ;;
@@ -3058,6 +3058,7 @@ discord)
     name="Discord"
     type="dmg"
     downloadURL="https://discordapp.com/api/download?platform=osx"
+    appNewVersion="$(curl -fsL -o /dev/null -w %{url_effective} "${downloadURL}" | awk -F'/' '{print $(NF-1)}')"
     expectedTeamID="53Q6R32WPB"
     ;;
 diskspace)
@@ -5080,7 +5081,10 @@ magicbullet)
     appCustomVersion(){
     	ls "/Users/Shared/Red Giant/uninstall" | grep bullet | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru
     }
-    appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/4406405444242-Magic-Bullet-Suite" | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | sort -gru | head -n 1)"
+    appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/4406405444242-Magic-Bullet-Suite" | grep -Eo "[0-9][0-9][0-9][0-9]+\.[0-9]+(\.[0-9]+)?" | sort -gru | head -n 1)"
+    if [[ "$appNewVersion" =~ ^[^.]*\.[^.]*$ ]]; then
+    	appNewVersion=$(echo "$appNewVersion" | sed 's/\([0-9]*\.[0-9]*\)/\1.0/')
+    fi
     downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/magicbullet/releases/$appNewVersion/MagicBulletSuite-${appNewVersion}_mac.zip"
     installerTool="Magic Bullet Suite Installer.app"
     CLIInstaller="Magic Bullet Suite Installer.app/Contents/Scripts/install.sh"
@@ -5867,6 +5871,13 @@ munki)
     expectedTeamID="T4SK8ZXCXG"
     blockingProcesses=( NONE )
     ;;
+munkiadmin)
+    name="MunkiAdmin"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit hjuutilainen munkiadmin )
+    appNewVersion=$(versionFromGit hjuutilainen munkiadmin )
+    expectedTeamID="8XXWJ76X9Y"
+    ;;
 musescore)
     name="MuseScore 4"
     type="dmg"
@@ -6420,7 +6431,11 @@ popsql)
      type="dmg"
      appNewVersion=$(curl -s 'https://popsql-releases.s3.amazonaws.com/mac/latest-mac.yml' | grep version: | cut -d' ' -f2)
      curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" )
-     downloadURL="https://get.popsql.com/"
+    if [[ $(arch) == "arm64" ]]; then
+     	downloadURL="https://get.popsql.com/download/dmg_arm64"
+    elif [[ $(arch) == "i386" ]]; then
+     	downloadURL="https://get.popsql.com/download/dmg"
+    fi
      expectedTeamID="4TFVQY839W"
      ;;
 postman)
@@ -7177,6 +7192,13 @@ splashtopsos)
     name="Splashtop SOS"
     type="dmg"
     downloadURL="https://download.splashtop.com/sos/SplashtopSOS.dmg"
+    expectedTeamID="CPQQ3AW49Y"
+    ;;
+splashtopstreamer)
+    name="Splashtop Streamer"
+    type="pkgInDmg"
+    downloadURL=$(curl -fsLI "https://my.splashtop.com/csrs/mac" | grep -i '^location:' | tail -n 1 | cut -d ' ' -f 2 | tr -d '\r')
+    appNewVersion=$(echo $downloadURL | sed -E 's/.*_v([0-9.]+).dmg/\1/')
     expectedTeamID="CPQQ3AW49Y"
     ;;
 spotify)

@@ -460,6 +460,7 @@ montereyblocker
 morisawadesktopmanager
 mowgliiitsycal
 munki
+munkiadmin
 musescore
 muzzle
 mysqlworkbenchce
@@ -627,6 +628,7 @@ sonoss2
 sourcetree
 splashtopbusiness
 splashtopsos
+splashtopstreamer
 spotify
 sqlpropostgres
 sqlprostudio
