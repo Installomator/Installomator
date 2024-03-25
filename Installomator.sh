@@ -1940,6 +1940,14 @@ anydesk)
     appNewVersion="$(curl -fs https://anydesk.com/en/downloads/mac-os | grep -i "d-block" | grep -E -o ">v[0-9.]* .*MB" | sed -E 's/.*v([0-9.]*) .*/\1/g')"
     expectedTeamID="KU6W3B6JMZ"
     ;;
+apachedirectorystudio)
+    name="ApacheDirectoryStudio"
+    type="dmg"
+    downloadURL=$( curl -fs https://directory.apache.org/studio/download/download-macosx.html | grep -o 'http[^"]*downloads[^"]*ApacheDirectoryStudio[^"]*.dmg' | head -1 )
+    appNewVersion=$( curl -fs https://directory.apache.org/studio/download/download-macosx.html  | grep -o 'studio/\([^/]*\)/ApacheDirectoryStudio' | cut -d'/' -f2 | head -1)
+    versionKey="CFBundleVersion"
+    expectedTeamID="2GLGAFWEQD"
+    ;;
 apparency)
     name="Apparency"
     type="dmg"
@@ -2103,14 +2111,6 @@ atlassiancompanion)
     expectedTeamID="UPXU4CQZ5P"
     ;;
 
-atom)
-    name="Atom"
-    type="zip"
-    archiveName="atom-mac.zip"
-    downloadURL=$(downloadURLFromGit atom atom )
-    appNewVersion=$(versionFromGit atom atom)
-    expectedTeamID="VEKTX9H2N7"
-    ;;
 audacity)
     name="Audacity"
     type="dmg"
@@ -2144,6 +2144,14 @@ autodmg)
     downloadURL=$(downloadURLFromGit MagerValp AutoDMG)
     appNewVersion=$(versionFromGit MagerValp AutoDMG)
     expectedTeamID="5KQ3D3FG5H"
+    ;;
+automounter)
+    name="AutoMounter"
+    type="dmg"
+    downloadURL="https://www.pixeleyes.co.nz/automounter/AutoMounter.dmg"
+    appNewVersion="$( curl -fs https://www.pixeleyes.co.nz/automounter/version )"
+    versionKey="CFBundleShortVersionString"
+    expectedTeamID="UKWABN4MGL"
     ;;
 autopkgr)
     name="AutoPkgr"
@@ -3612,6 +3620,15 @@ fujifilmwebcam)
      appNewVersion=$( echo “${downloadURL}” | sed -E 's/.*XWebcamIns([0-9]*).*/\1/g' | sed -E 's/([0-9])([0-9]).*/\1\.\2/g')
      expectedTeamID="34LRP8AV2M"
      ;;
+garminexpress)
+    name="Garmin Express"
+    type="pkgInDmg"
+    downloadURL="https://download.garmin.com/omt/express/GarminExpress.dmg"
+    garminfaqURL=$(curl -sf https://support.garmin.com/capi/content/en-US/\?productID\=168768\&tab\=software\&topicTag\=region_softwareproduct\&productTagName\=topic_express0\&ct\=content\&mr\=5\&locale\=en-US\&si\=0\&tags\=topic_express0%2Cregion_softwareproduct%2C%2C | tr "{" "\n" | grep "Garmin Express" | tr "," "\n" | grep "contentURL" | awk -F "\"" '{print$4}')
+    appNewVersion="$(curl -sfL $garminfaqURL | tr '><' "\n" | grep "Garmin Express for Mac" | head -1 | awk 'sub(/.*Mac: */,""){f=1} f{if ( sub(/ *as of.*/,"") ) f=0; print$2}').0"
+    expectedTeamID="72ES32VZUA"
+    appName="Garmin Express.app"
+    ;;
 gather|\
 gathertown)
     name="Gather"
@@ -3902,16 +3919,17 @@ hoppscotch)
 horos)
     name="Horos"
     type="dmg"
-    versionKey="CFBundleGetInfoString"
-    appNewVersion=$(curl -fs https://github.com/horosproject/horos/blob/horos/Horos/Info.plist | grep -A 4 "CFBundleGetInfoString" | tail -1 | sed -r 's/.*Horos v([^<]+).*/\1/' | sed 's/ //g')
+    versionKey="CFBundleShortVersionString"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://horosproject.org/horos-content/Horos"$appNewVersion"_Apple.dmg"
-        TeamID="8NDFEW7285"
+    	imageName=$(curl -fs https://horosproject.org/horos-content/ | grep "arm64" | tail -1 | sed "s|.*href=\"\(.*\)\">Horos.*|\\1|")
+        downloadURL="https://horosproject.org/horos-content/"$imageName""
+        appNewVersion=$(curl -fs https://horosproject.org/horos-content/ | grep "arm64" | tail -1 | sed "s|.*href=\"\(.*\)\">Horos.*|\\1|" | sed -e 's/.*_\(.*\)_.*/\1/')
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://horosproject.org/horos-content/Horos"$appNewVersion".dmg"
-        TeamID="TPT6TVH8UY"
+    	imageName=$(curl -fs https://horosproject.org/horos-content/ | grep -v -e "Apple" -e "arm64" -e "Nightly" | grep ".dmg" | tail -1 | sed "s|.*href=\"\(.*\)\">Horos.*|\\1|")
+        downloadURL="https://horosproject.org/horos-content/"$imageName""
+        appNewVersion=$(curl -fs https://horosproject.org/horos-content/ | grep -v -e "Apple" -e "arm64" -e "Nightly" | grep ".dmg" | tail -1 | sed "s|.*href=\"\(.*\)\">Horos.*|\\1|" | sed -e 's/.*Horos\(.*\).dmg.*/\1/')
     fi
-    expectedTeamID=$TeamID
+    expectedTeamID="TPT6TVH8UY"
     ;;
 houdahspot)
     name="HoudahSpot"
@@ -4837,6 +4855,17 @@ logitechoptionsplus)
     appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-11.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
     CLIInstaller="logioptionsplus_installer.app/Contents/MacOS/logioptionsplus_installer"
     CLIArguments=(--quiet)
+    expectedTeamID="QED4VVPZWA"
+    ;;
+logitune)
+    name="LogiTune"
+    archiveName="LogiTuneInstaller.dmg"
+    appName="LogiTuneInstaller.app"
+    type="dmg"
+    downloadURL="https://software.vc.logitech.com/downloads/tune/LogiTuneInstaller.dmg"
+    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-11.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
+    CLIInstaller="LogiTuneInstaller.app/Contents/MacOS/LogiTuneInstaller"
+    CLIArguments=(-silent)
     expectedTeamID="QED4VVPZWA"
     ;;
 logseq)
@@ -5987,12 +6016,12 @@ nvivo13)
     ;;
 nvivo|\
 nvivo14)
-    name="NVivo"
+    name="NVivo 14"
     type="dmg"
     downloadURL="https://download.qsrinternational.com/Software/NVivo14forMac/NVivo.dmg"
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | awk -F'/' '{ print $6 }' | cut -d "." -f1-3 )
-    expectedTeamID="A66L57342X"
-    blockingProcesses=( NVivo NVivoHelper )
+    expectedTeamID="8F4S7H8S59"
+    blockingProcesses=( NVivo NVivoHelper "Nvivo 14" )
     ;;
 obs)
     name="OBS"
@@ -6153,6 +6182,21 @@ opera)
 	versionKey="CFBundleVersion"
     expectedTeamID="A2P9LX4JPN"
     ;;
+orcaslicer)
+    name="OrcaSlicer"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+       downloadURL="$(downloadURLFromGit SoftFever OrcaSlicer)"
+       appNewVersion="$(versionFromGit SoftFever OrcaSlicer)"
+       archiveName="OrcaSlicer_Mac_arm64_*.dmg"
+    elif [[ $(arch) == "i386" ]]; then
+      downloadURL="$(downloadURLFromGit SoftFever OrcaSlicer)"
+      appNewVersion="$(versionFromGit SoftFever OrcaSlicer)"
+      archiveName="OrcaSlicer_Mac_x86_64_*.dmg"
+    fi
+    expectedTeamID="XQK7C38HH5"
+    ;;
+    
 origin)
      name="Origin"
      type="dmg"
@@ -6278,7 +6322,7 @@ pgadmin4)
     downloadParent="https://www.postgresql.org/ftp/pgadmin/pgadmin4/"
     appNewVersion=$(curl -fs "${downloadParent}" | grep -oE 'v[0-9]+.[0-9]+' | sort -V | tail -n 1 | sed 's/v//g')
     downloadURL="https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v$appNewVersion/macos/pgadmin4-$appNewVersion-x86_64.dmg"
-    expectedTeamID="26QKX55P9K"
+    expectedTeamID="TCHGL2R7C5"
     ;;
 pika)
     name="Pika"
@@ -6390,11 +6434,7 @@ pritunl)
     name="Pritunl"
     type="pkgInZip"
     packageID="com.pritunl.pkg.Pritunl"
-    if [[ $(arch) == "arm64" ]]; then
-        archiveName="Pritunl.arm64.pkg.zip"
-    elif [[ $(arch) == "i386" ]]; then
-        archiveName="Pritunl.pkg.zip"
-    fi
+    archiveName="Pritunl.pkg.zip"
     downloadURL=$(downloadURLFromGit pritunl pritunl-client-electron)
     appNewVersion=$(versionFromGit pritunl pritunl-client-electron)
     expectedTeamID="U22BLATN63"
@@ -7585,8 +7625,18 @@ trapcode)
     appCustomVersion(){
       ls "/Users/Shared/Red Giant/uninstall" | grep trapcode | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru
     }
-    appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/articles/8642154839580" | grep "current_record_title" | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru)"
-    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/trapcode/releases/${appNewVersion}/TrapcodeSuite-${appNewVersion}_mac.zip"
+    appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/4406405448722-Trapcode-Suite" | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 1 | sort -gru)"
+    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/trapcode/releases/${appNewVersion}/TrapcodeSuite-${appNewVersion}_Mac.zip"
+    trapcodeResponse=$(curl -s -I -L "$downloadURL")
+    trapcodeHttpStatus=$(echo "$trapcodeResponse" | head -n 1 | cut -d ' ' -f 2)
+    if [[ "trapcodeHttpStatus" == "200" ]]; then
+      printlog "DownloadURL HTTP status code: $trapcodeHttpStatus" INFO
+    elif [[ "$trapcodeHttpStatus" == "404" ]]; then
+      downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/trapcode/releases/${appNewVersion}/TrapcodeSuite-${appNewVersion}_mac.zip"
+      printlog "Had to change DownloadURL due HTTP Status." INFO
+    else
+      printlog "Unexpected HTTP status code: $trapcodeHttpStatus" ERROR
+    fi
     installerTool="Trapcode Suite Installer.app"
     CLIInstaller="Trapcode Suite Installer.app/Contents/MacOS/Trapcode Suite Installer"
     expectedTeamID="4ZY22YGXQG"
@@ -8061,6 +8111,15 @@ yubicoauthenticator)
     appNewVersion=""
     expectedTeamID="LQA3CS5MM7"
     ;;
+yubikeymanager)
+    name="YubiKey Manager"
+    type="pkg"
+    appCustomVersion(){/usr/local/ykman/ykman -v | awk '{print $5}'}
+	downloadURL=$(downloadURLFromGit Yubico yubikey-manager)
+    appNewVersion=$(versionFromGit Yubico yubikey-manager)
+    expectedTeamID="LQA3CS5MM7"
+    #CLI for YubikeyManager which is not installed via the QT version.
+    ;;
 yubikeymanagerqt)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="YubiKey Manager GUI"
@@ -8264,6 +8323,19 @@ zulujdk18)
     fi
     expectedTeamID="TDTHCUPYFR"
     appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
+    appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    ;;
+zulujdk21)
+    name="Zulu JDK 21"
+    type="pkgInDmg"
+    packageID="com.azulsystems.zulu.21"
+    if [[ $(arch) == i386 ]]; then
+        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu21.*ca-jdk21.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a><\/td>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort -V | tail -1)
+    elif [[ $(arch) == arm64 ]]; then
+        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu21.*ca-jdk21.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a><\/td>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort -V | tail -1)
+    fi
+    expectedTeamID="TDTHCUPYFR"
+    appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Info.plist" "CFBundleName" | sed 's/Zulu //'; fi }
     appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
     ;;
 zulujdk8)

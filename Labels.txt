@@ -40,6 +40,7 @@ anastasiysextensionmanager
 androidfiletransfer
 androidstudio
 anydesk
+apachedirectorystudio
 apparency
 appcleaner
 applenyfonts
@@ -60,11 +61,11 @@ asperaconnect
 atext
 atextlegacy
 atlassiancompanion
-atom
 audacity
 authydesktop
 autodeskfusion360admininstall
 autodmg
+automounter
 autopkgr
 avertouch
 aviatrix
@@ -235,6 +236,7 @@ franz
 front
 fsmonitor
 fujifilmwebcam
+garminexpress
 gather
 gathertown
 gdevelop
@@ -363,6 +365,7 @@ linear
 logioptions
 logitechoptions
 logitechoptionsplus
+logitune
 logseq
 loom
 lowprofile
@@ -499,6 +502,7 @@ onyx
 openvpnconnect
 openvpnconnectv3
 opera
+orcaslicer
 origin
 orion
 ottomatic
@@ -738,6 +742,7 @@ xmind
 xquartz
 yed
 yubicoauthenticator
+yubikeymanager
 yubikeymanagerqt
 zappy
 zeplin
@@ -759,4 +764,5 @@ zulujdk13
 zulujdk15
 zulujdk17
 zulujdk18
+zulujdk21
 zulujdk8
