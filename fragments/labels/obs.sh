@@ -2,9 +2,9 @@ obs)
     name="OBS"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        archiveName="obs-studio-[0-9.]*-macos-arm64.dmg"
+        archiveName="obs-studio-[0-9.]*-macOS-Apple.dmg"
     elif [[ $(arch) == "i386" ]]; then
-        archiveName="obs-studio-[0-9.]*-macos-x86_64.dmg"
+        archiveName="obs-studio-[0-9.]*-macOS-Intel.dmg"
     fi
     downloadURL=$(downloadURLFromGit obsproject obs-studio )
     appNewVersion=$(versionFromGit obsproject obs-studio )
