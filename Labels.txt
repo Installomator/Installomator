@@ -186,6 +186,7 @@ dropbox
 druvainsync
 duckduckgo
 duet
+duodesktop
 duodevicehealth
 dymoconnectdesktop
 dynalist
@@ -201,6 +202,7 @@ escrowbuddy
 eshareosx
 espanso
 etrecheck
+etssecurebrowser
 evercast
 evernote
 everweb
@@ -264,6 +266,7 @@ gpgsync
 grammarly
 grandperspective
 grasshopper
+grooveomnidialerenterpriseedition
 gyazo
 gyazogif
 hancock
@@ -475,10 +478,12 @@ netnewswire
 netspot
 nextcloud
 nodejs
+nodejslts
 nomachine
 nomad
 nomadlogin
 nordlayer
+nordvpn
 notion
 nova
 nudge
@@ -520,6 +525,7 @@ paretosecurity
 parsec
 patchomator
 pcoipclient
+pdfexpert
 pdfsam
 perimeter81
 pgadmin4
@@ -551,6 +557,7 @@ protonvpn
 proxyman
 prune
 prusaslicer
+pulsar
 pycharmce
 pymol
 python
@@ -640,6 +647,7 @@ sqlprostudio
 starface72x
 starface73x
 starfaceuccclient
+stats
 steelseriesengine
 strongdm
 strongsync

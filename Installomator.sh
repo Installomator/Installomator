@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-03-25"
+VERSIONDATE="2024-03-28"
 
 # MARK: Functions
 
@@ -3171,12 +3171,13 @@ duet)
     expectedTeamID="J6L96W8A86"
     blockingProcesses=( "duet" "duet Networking" )
     ;;
-duodevicehealth)
-    name="Duo Device Health"
+duodevicehealth|\
+duodesktop)
+    name="Duo Desktop"
     type="pkg"
-    downloadURL="https://dl.duosecurity.com/DuoDeviceHealth-latest.pkg"
-    appNewVersion=$(curl -fsLIXGET "https://dl.duosecurity.com/DuoDeviceHealth-latest.pkg" | grep -i "^content-disposition" | sed -e 's/.*filename\=\"DuoDeviceHealth\-\(.*\)\.pkg\".*/\1/')
-    appName="Duo Device Health.app"
+    downloadURL="https://dl.duosecurity.com/DuoDesktop-latest.pkg"
+    appNewVersion=$(curl -fsLIXGET "https://dl.duosecurity.com/DuoDesktop-latest.pkg" | grep -i "^content-disposition" | sed -e 's/.*filename\=\"DuoDesktop\-\(.*\)\.pkg\".*/\1/')
+    appName="Duo Desktop.app"
     expectedTeamID="FNN8Z5JMFP"
     ;;
 dymoconnectdesktop)
@@ -3298,6 +3299,13 @@ etrecheck)
     type="zip"
     downloadURL="https://cdn.etrecheck.com/EtreCheckPro.zip"
     expectedTeamID="U87NE528LC"
+    ;;
+etssecurebrowser)
+    name="ETS Secure Browser"
+    type="dmg"
+    downloadURL="https://ibtprod-rp.ets.org/SoftwareDistribution/rp/PROD/mac/ETS-RP-PROD.dmg"
+    versionKey="CFBundleShortVersionString"
+    expectedTeamID="WGC236CZU9"
     ;;
 evercast)
     name="Evercast"
@@ -3882,6 +3890,13 @@ grasshopper)
     pkgName="Grasshopper.dmg"
     expectedTeamID="KD6L2PTK2Q"
     ;;
+grooveomnidialerenterpriseedition)
+	name="Groove Omnidialer Enterprise Edition"
+	type="zip"
+	appNewVersion=$( curl -fs 'https://groove-dialer.s3.us-west-2.amazonaws.com/electron/enterprise/latest-mac.yml' | grep ^version: | cut -c 10-21 ) 
+	downloadURL="https://groove-dialer.s3.us-west-2.amazonaws.com/electron/enterprise/Groove+OmniDialer+Enterprise+Edition-"$appNewVersion"-universal-mac.zip" 
+	expectedTeamID="ZDYDJ5XPF3"
+;;
 gyazo)
     # credit: @matins
     name="Gyazo"
@@ -5993,6 +6008,14 @@ nodejs)
     downloadURL="https://nodejs.org/dist/latest/node-$(curl -s https://nodejs.org/dist/latest/ | sed -nE 's|.*>node-(.*)\.pkg</a>.*|\1|p').pkg"
     expectedTeamID="HX7739G8FX"
     ;;
+nodejslts)
+    name="nodejs"
+    type="pkg"
+    appNewVersion=$(curl -fsL https://nodejs.org/en | xmllint --html --xpath '//a[contains(text(),"LTS")]/@href' - 2>/dev/null | grep -oE 'v[0-9]+(\.[0-9]+)*' | head -1)
+    downloadURL="https://nodejs.org/dist/$appNewVersion/node-$appNewVersion.pkg"
+    appCustomVersion(){/usr/local/bin/node -v}
+    expectedTeamID="HX7739G8FX"
+    ;;
 nomachine)
     name="NoMachine"
     type="pkgInDmg"
@@ -6021,6 +6044,15 @@ nordlayer)
     name="NordLayer"
     type="pkg"
     downloadURL="https://downloads.nordlayer.com/mac/latest/NordLayer.pkg"
+    expectedTeamID="W5W395V82Y"
+    ;;
+nordvpn)
+    name="NordVPN"
+    type="pkg"
+    packageID="com.nordvpn.macos"
+    downloadURL="https://downloads.nordcdn.com/apps/macos/generic/NordVPN-OpenVPN/latest/NordVPN.pkg"
+    appNewVersion=$( curl -s https://downloads.nordcdn.com/apps/macos/generic/NordVPN-OpenVPN/latest/update_pkg.xml | xpath '(//sparkle:shortVersionString/text())[1]' 2>/dev/null )
+    versionKey="CFBundleShortVersionString"
     expectedTeamID="W5W395V82Y"
     ;;
 notion)
@@ -6090,12 +6122,15 @@ obs)
     name="OBS"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        archiveName="obs-studio-[0-9.]*-macos-arm64.dmg"
+        SUFeedURL="https://obsproject.com/osx_update/updates_arm64_v2.xml"
     elif [[ $(arch) == "i386" ]]; then
-        archiveName="obs-studio-[0-9.]*-macos-x86_64.dmg"
+        SUFeedURL="https://obsproject.com/osx_update/updates_x86_64_v2.xml"
     fi
-    downloadURL=$(downloadURLFromGit obsproject obs-studio )
-    appNewVersion=$(versionFromGit obsproject obs-studio )
+    appNewVersion=$(curl -fs "$SUFeedURL" | xpath '(//rss/channel/item[sparkle:channel="stable"]/sparkle:shortVersionString/text())[1]' 2>/dev/null)
+    downloadURL=$(curl -fs "$SUFeedURL" | xpath 'string(//rss/channel/item[sparkle:channel="stable"]/enclosure/@url[1])' 2>/dev/null)
+    archiveName=$(basename "$downloadURL")   
+    versionKey="CFBundleShortVersionString"
+    blockingProcesses=( "OBS Studio" )
     expectedTeamID="2MMRE5MTB8"
     ;;
 obsbotwebcam)
@@ -6365,6 +6400,14 @@ pcoipclient)
     expectedTeamID="RU4LW7W32C"
     blockingProcesses=( "Teradici PCoIP Client" )
     ;;
+pdfexpert)
+    # PDF Expert
+    name="PDF Expert"
+    type="zip"
+    downloadURL=$(curl -fs "https://downloads.pdfexpert.com/pem3/release/appcast.xml" | grep -o 'https://downloads.pdfexpert.com/[^"]*.zip' | tail -n 1)
+    appNewVersion=$(curl -fs "https://downloads.pdfexpert.com/pem3/release/appcast.xml" | grep -o 'sparkle:shortVersionString="[^"]*"' | sed -E 's/sparkle:shortVersionString="([^"]*)"/\1/' | tail -n 1)
+    expectedTeamID="3L68KQB4HG"
+    ;;
 pdfsam)
     name="PDFsam Basic"
     type="dmg"
@@ -6600,6 +6643,21 @@ prusaslicer)
     appNewVersion="$(versionFromGit prusa3d PrusaSlicer)"
     expectedTeamID="DKPB65N43Z"
     ;;
+pulsar)
+    name="Pulsar"
+    type="zip"
+    appNewVersion=$(versionFromGit pulsar-edit pulsar)
+    if [[ $(arch) = "arm64" ]]; then
+        printlog "Architecture: arm64"
+        archiveName="Silicon.Mac.Pulsar-${appNewVersion}-arm64-mac.zip"
+    else
+        printlog "Architecture: i386 (not arm64)"
+        archiveName="Intel.Mac.Pulsar-${appNewVersion}-mac.zip"
+    fi
+    downloadURL=$(downloadURLFromGit pulsar-edit pulsar)
+    expectedTeamID="D3KV2P2CZ8"
+    ;;
+
 pymol)
     name="PyMOL"
     type="dmg"
@@ -7300,6 +7358,13 @@ starfaceuccclient)
     appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "STARFACE_UCC_Client_6.7" | cut -d '"' -f 2 | sed -e 's/.*-\(.*\).zip*/\1/')
     expectedTeamID="Q965D3UXEW"
     versionKey="CFBundleVersion"
+    ;;
+stats)
+    name="Stats"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit exelban stats)"
+    appNewVersion="$(versionFromGit exelban stats)"
+    expectedTeamID="RP2S87B72W"
     ;;
 steelseriesengine)
     name="SteelSeries GG"
