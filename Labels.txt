@@ -192,6 +192,10 @@ dymoconnectdesktop
 dynalist
 easeusdatarecoverywizard
 easyfind
+eclipsetemurin11
+eclipsetemurin17
+eclipsetemurin21
+eclipsetemurin8
 egnyte
 egnytecore
 egnytewebedit
