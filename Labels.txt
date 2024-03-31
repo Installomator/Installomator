@@ -202,6 +202,7 @@ egnytewebedit
 element
 elgatocamerahub
 elgatostreamdeck
+eposconnect
 escrowbuddy
 eshareosx
 espanso
@@ -640,6 +641,8 @@ sonobus
 sonos
 sonoss1
 sonoss2
+soundly
+soundly-placeit
 sourcetree
 spark
 splashtopbusiness
@@ -760,6 +763,7 @@ xmenu
 xmind
 xquartz
 yed
+youleanloudnessmeter2
 yubicoauthenticator
 yubikeymanager
 yubikeymanagerqt

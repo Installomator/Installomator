@@ -3299,6 +3299,17 @@ elgatostreamdeck)
     expectedTeamID="Y93VXCB8Q5"
     blockingProcesses=( "Stream Deck" )
     ;;
+eposconnect)
+    name="EPOS Connect"
+    type="pkg"
+    #packageID="com.DSEA.pkg.DSEASDKM1"
+    #downloadURL="https://www.eposaudio.com/globalassets/___image-library/_enterprise/files/english/epos-connect/epos-connect-7.7.0/eposconnect_7.7.0.44457.pkg"
+    downloadURL=$(curl -fs "https://www.eposaudio.com/en/dk/software/epos-connect" | tr '"' "\n" | grep -o "^https://www.eposaudio.*.pkg$")
+    versionKey="CFBundleVersion"
+    # 2024-02-06: appNewVersion commented out as the latest version is 7.8.1 but above page only shows 7.7.0
+    appNewVersion=$(echo "$downloadURL" | sed -E 's/.*_([0-9.]*).pkg/\1/' | cut -d "." -f4)
+    expectedTeamID="8956A7Y69J"
+    ;;
 escrowbuddy)
     name="Escrow Buddy"
     type="pkg"
@@ -6729,7 +6740,7 @@ qlab)
     name="QLab"
     type="dmg"
     downloadURL="https://qlab.app/downloads/QLab.dmg"
-    appNewVersion=""
+    appNewVersion=$(curl -fs "https://qlab.app/appcast/v5/" | xpath 'string(//rss/channel[1]/item/enclosure/@sparkle:shortVersionString)')
     expectedTeamID="7672N4CCJM"
     ;;
 r)
@@ -7306,6 +7317,23 @@ sonoss2)
     type="dmg"
     downloadURL="https://www.sonos.com/redir/controller_software_mac2"
     expectedTeamID="2G4LW83Q3E"
+    ;;
+soundly-placeit)
+    name="Placeit"
+    # Other Tools: https://getsoundly.com/tools/
+    type="pkg"
+    downloadURL="https://storage.googleapis.com/soundly-plugins/Placeit.pkg"
+    #appNewVersion=""
+    expectedTeamID="67Y6N7VTDG"
+    ;;
+soundly)
+    name="Soundly"
+    # From: https://getsoundly.com
+    # Cheat Sheet: https://getsoundly.com/cheatsheet/Soundly-Cheatsheet-Mac.pdf
+    type="dmg"
+    downloadURL="https://storage.googleapis.com/soundlyapp/arm/Soundly.dmg"
+    #appNewVersion=""
+    expectedTeamID="67Y6N7VTDG"
     ;;
 sourcetree)
     name="Sourcetree"
@@ -7971,7 +7999,7 @@ vagrant)
     type="pkgInDmg"
     pkgName="vagrant.pkg"
     cpu_arch="${$(arch)/i386/amd64}"
-    downloadURL=$(curl -fsL "https://developer.hashicorp.com/vagrant/downloads" | grep -oE 'http[^"]*'$cpu_arch'[^"]*.dmg' | head -1)
+    downloadURL=$(curl -fsL "https://developer.hashicorp.com/vagrant/downloads" | grep -oE 'https[^"]*'$cpu_arch'[^"]*.dmg' | head -1)
     appNewVersion=$( echo $downloadURL | cut -d "/" -f5 )
     expectedTeamID="D38WU7D763"
     ;;
@@ -8304,10 +8332,11 @@ xmenu)
 xmind)
     name="Xmind"
     type="dmg"
-    downloadURL=https://www.xmind.net/zen/download/mac/
-    appNewVersion=$(echo $downloadURL | grep -oe "http.*\.dmg" | sed -e 's/.*\/Xmind-for-macOS-.*\-\([0-9.]*\)\.dmg/\1/g')
+    downloadURL="https://xmind.app/zen/download/mac/"
+    appNewVersion="$(curl -fsIL $downloadURL | grep -i "^location" | grep -oE 'Xmind-for-macOS-(.+?)-[0-9]+\.dmg' | sed -E 's/Xmind-for-macOS-(.+)-[0-9]+\.dmg/\1/')"
     expectedTeamID="4WV38P2X5K"
     ;;
+
 xquartz)
     # credit: AP Orlebeke (@apizz)
     name="XQuartz"
@@ -8323,6 +8352,14 @@ yed)
     downloadURL="https://www.yworks.com"$(curl -fs "https://www.yworks.com/products/yed/download" | grep -o -e "/resources/.*\.dmg" | tr " " '\n' | grep -o -e "/resources/.*\.dmg")
     appNewVersion=$(echo $downloadURL | sed -E 's/.*-([0-9.]*)_.*\.dmg/\1/')
     expectedTeamID="JD89S887M2"
+    ;;
+youleanloudnessmeter2)
+    name="Youlean Loudness Meter 2"
+    type="pkgInZip"
+    #downloadURL="https://cdn.youlean.co/wp-content/uploads/2023/03/Youlean-Loudness-Meter-2-V2.4.4-macOS.zip"
+    downloadURL=$(curl -fs "https://youlean.co/download-youlean-loudness-meter/" | grep macOS | grep -oE "https:.*-macOS.zip" | head -1)
+    appNewVersion=$(echo "$downloadURL" | sed -E 's/.*-V([0-9.]*)-macOS.zip/\1/')
+    expectedTeamID="S7KN6P3F95"
     ;;
 yubicoauthenticator)
     name="Yubico Authenticator"
