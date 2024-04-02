@@ -243,7 +243,7 @@ stubbornlyAttempt() {
     if (( $command_status == 0 )); then
       break
     fi
-    $((current_attempt++))
+    ((current_attempt++))
     sleep 1
   done
 
