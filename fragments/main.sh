@@ -297,7 +297,7 @@ else
 
     else
         printlog "No Dialog connection, just download" DEBUG
-        if [[ $downloadattempt -eq 0 ]]; then
+        if [[ $downloadattempt -eq 1 ]]; then
             printlog "1st download arguments: $ipversion -fsL --show-error --retry 5 --fail ${curlArgs[*]} ${curlOptions}"
             curldownload=$(curl -v $ipversion -fsL --show-error --retry 5 --fail ${curlArgs[@]} ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
         else
@@ -317,7 +317,7 @@ else
     fi
     printlog "curlDownloadStatus: $curlDownloadStatus, attempt: $downloadattempt" DEBUG
     deduplicatelogs "$curlDownload"
-    if [[ $curldownloadstatus -ne 0 && $downloadattempt -ge 3 ]] ; then
+    if [[ $curldownloadstatus -ne 0 && $downloadattempt -ge 4 ]] ; then
         printlog "Setting download to IPv4 only" WARN
         ipversion="-4"
     fi
@@ -340,9 +340,9 @@ else
         printlog "File type: $(file "$archiveName")" ERROR
         cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
     elif [[ $curldownloadstatus -eq 0 ]] ; then
+        printlog "Download successful" DEBUG
         printlog "File list: $(ls -lh "$archiveName")" DEBUG
         printlog "File type: $(file "$archiveName")" DEBUG
-        printlog "Download successful" DEBUG
         printlog "curl output was: $logoutput" DEBUG
         break
     fi
