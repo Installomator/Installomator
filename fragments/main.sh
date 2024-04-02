@@ -297,7 +297,7 @@ else
         readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
         printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
 
-        curlDownload=$(curl $ipversion -fL -# --show-error --fail --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+        curlDownload=$(curl $ipversion -fL -# --show-error --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
         # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
         curlDownloadStatus=$(echo $pipestatus[1])
         killProcess $downloadPipePID
@@ -305,11 +305,11 @@ else
     else
         printlog "No Dialog connection, just download" DEBUG
         if [[ $downloadattempt -eq 1 ]]; then
-            printlog "1st download arguments: $ipversion -fsL --show-error --retry 5 --fail ${curlOptions}"
-            curldownload=$(curl -v $ipversion -fsL --show-error --fail --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+            printlog "1st download arguments: $ipversion -fsL --show-error --retry 5 ${curlOptions}"
+            curldownload=$(curl -v $ipversion -fsL --show-error --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
         else
-            printlog "Subsequent download attempt: ${downloadattempt}: $ipversion -fsL --show-error -C - --fail --retry 5 ${curlOptions}"
-            curldownload=$(curl -v $ipversion -fsL --show-error -C - --fail --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+            printlog "Subsequent download attempt with Continue: ${downloadattempt}: $ipversion -fsL --show-error -C - --retry 5 ${curlOptions}"
+            curldownload=$(curl -v $ipversion -fsL --show-error -C - --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
         fi
         curldownloadstatus=$?
         printlog "Status: $curlDownloadStatus \n$curlDownload" DEBUG
