@@ -304,10 +304,8 @@ else
             printlog "Subsequent download attempt: ${downloadattempt}: $ipversion -fsL --show-error -C - --fail --retry 5 ${curlArgs[*]} ${curlOptions}"
             curldownload=$(curl -v $ipversion -fsL --show-error -C - --fail --retry 5 ${curlArgs[@]} ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
         fi
-        curlDownloadStatus=$(echo $?)
-        printlog "$curlDownload" DEBUG
-#         curldownloadstatus=$?
-#         curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+        curldownloadstatus=$?
+        printlog "Status: $curlDownloadStatus \n$curlDownload" DEBUG
     fi
     printlog "curlDownloadStatus: $curlDownloadStatus" DEBUG
     alternateError=$(printf '%s' "${curldownload}" | tail -n1 | grep -Eo 'errno [[:digit:]]+' | awk '{print $2}')
@@ -321,11 +319,11 @@ else
         printlog "Setting download to IPv4 only" WARN
         ipversion="-4"
     fi
-    if [[ $curldownloadstatus -ne 0 ]] && (( $downloadattempt < $MAXDOWNLOADATTEMPTS )); then
+    if [[ $curldownloadstatus -ne 0 ]] && [[ $downloadattempt -lt $MAXDOWNLOADATTEMPTS ]]; then
         printlog "RETRYING... Error downloading $downloadURL error: $logoutput" WARN
         #((downloadattempt++))
         sleep 15
-    elif [[ $curldownloadstatus -ne 0 ]] && (( $downloadattempt >= $MAXDOWNLOADATTEMPTS )); then
+    elif [[ $curldownloadstatus -ne 0 ]] && [[ $downloadattempt -ge $MAXDOWNLOADATTEMPTS ]]; then
         printlog "error downloading $downloadURL" ERROR
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
