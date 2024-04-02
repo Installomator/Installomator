@@ -149,6 +149,10 @@ IGNORE_DND_APPS=""
 # example that will ignore browsers when evaluating DND:
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
+# Download attempts
+MAXDOWNLOADATTEMPTS=6
+# This variable decides how many times a download attempt is tried out, if it fails
+
 
 # Swift Dialog integration
 

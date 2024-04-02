@@ -5,6 +5,9 @@
     ;;
 esac
 
+# Unalias curl to make it non-stubborn again
+unalias curl
+
 # MARK: finish reading the arguments:
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
@@ -255,10 +258,18 @@ if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
 fi
 
 # MARK: download the archive
+downloadattempt=0
+ipversion=""
+
+while [[ $downloadattempt -lt $MAXDOWNLOADATTEMPTS ]]; do
+$((downloadattempt++))
+printlog "${downloadattempt}. attempt of ${MAXDOWNLOADATTEMPTS} download attempts."
 if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
     printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
     # download
+    printlog "Fixing downloadURL" DEBUG
+    downloadURL=$(echo $downloadURL | head -n 1)
     printlog "Downloading $downloadURL to $archiveName" REQ
     if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
         printlog "notifying"
@@ -286,13 +297,35 @@ else
 
     else
         printlog "No Dialog connection, just download" DEBUG
-        curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+        if [[ $downloadattempt -eq 0 ]]; then
+            printlog "1st download arguments: $ipversion -fsL --show-error --retry 5 --fail ${curlArgs[*]} ${curlOptions}"
+            curldownload=$(curl -v $ipversion -fsL --show-error --retry 5 --fail ${curlArgs[@]} ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+        else
+            printlog "Subsequent download attempt: ${downloadattempt}: $ipversion -fsL --show-error -C - --fail --retry 5 ${curlArgs[*]} ${curlOptions}"
+            curldownload=$(curl -v $ipversion -fsL --show-error -C - --fail --retry 5 ${curlArgs[@]} ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+        fi
         curlDownloadStatus=$(echo $?)
+        printlog "$curlDownload" DEBUG
+#         curldownloadstatus=$?
+#         curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
     fi
-
+    printlog "curlDownloadStatus: $curlDownloadStatus" DEBUG
+    alternateError=$(printf '%s' "${curldownload}" | tail -n1 | grep -Eo 'errno [[:digit:]]+' | awk '{print $2}')
+    printlog "alternateError: $alternateError" DEBUG
+    if [[ -n "${alternateError}" ]]; then
+        curldownloadstatus=$alternateError
+    fi
+    printlog "curlDownloadStatus: $curlDownloadStatus, attempt: $downloadattempt" DEBUG
     deduplicatelogs "$curlDownload"
-    if [[ $curlDownloadStatus -ne 0 ]]; then
-    #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
+    if [[ $curldownloadstatus -ne 0 && $downloadattempt -ge 3 ]] ; then
+        printlog "Setting download to IPv4 only" WARN
+        ipversion="-4"
+    fi
+    if [[ $curldownloadstatus -ne 0 ]] && (( $downloadattempt < $MAXDOWNLOADATTEMPTS )); then
+        printlog "RETRYING... Error downloading $downloadURL error: $logoutput" WARN
+        downloadattempt=$((downloadattempt++))
+        sleep 15
+    elif [[ $curldownloadstatus -ne 0 ]] && (( $downloadattempt >= $MAXDOWNLOADATTEMPTS )); then
         printlog "error downloading $downloadURL" ERROR
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
@@ -306,11 +339,18 @@ else
         printlog "File list: $(ls -lh "$archiveName")" ERROR
         printlog "File type: $(file "$archiveName")" ERROR
         cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
+    elif [[ $curldownloadstatus -eq 0 ]] ; then
+        printlog "File list: $(ls -lh "$archiveName")" DEBUG
+        printlog "File type: $(file "$archiveName")" DEBUG
+        printlog "Download successful" DEBUG
+        printlog "curl output was: $logoutput" DEBUG
+        break
     fi
     printlog "File list: $(ls -lh "$archiveName")" DEBUG
     printlog "File type: $(file "$archiveName")" DEBUG
     printlog "curl output was:\n$logoutput" DEBUG
 fi
+done
 
 # MARK: when user is logged in, and app is running, prompt user to quit app
 if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
