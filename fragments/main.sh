@@ -297,7 +297,7 @@ while [[ $downloadattempt -lt $MAXDOWNLOADATTEMPTS ]]; do
             readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
             printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
 
-            curlDownload=$(curl $ipversion -fL -# --show-error --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+            curlDownload=$(curl $ipversion -fL --progress-bar --show-error -C - --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
             # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
             curlDownloadStatus=$(echo $pipestatus[1])
             killProcess $downloadPipePID
