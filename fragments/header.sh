@@ -151,7 +151,8 @@ IGNORE_DND_APPS=""
 
 # Download attempts
 MAXDOWNLOADATTEMPTS=6
-# This variable decides how many times a download attempt is tried out, if it fails
+# This variable decides how many times a download attempt is tried out, if it fails.
+# Consider only 3 if it's a self service item.
 
 
 # Swift Dialog integration

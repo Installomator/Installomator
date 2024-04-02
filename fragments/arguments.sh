@@ -99,11 +99,6 @@ if [[ ! -x $DIALOG_CMD ]]; then
     DIALOG_CMD_FILE=""
 fi
 
-# Default value of MAXDOWNLOADATTEMPTS if set too low
-if [[ $MAXDOWNLOADATTEMPTS -lt 1 ]]; then
-  MAXDOWNLOADATTEMPTS=6
-fi
-
 # Alias curl to make it stubborn for grabbing the download URL and version
 alias curl='stubbornlyAttempt curl'
 

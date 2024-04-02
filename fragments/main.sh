@@ -8,6 +8,13 @@ esac
 # Unalias curl to make it non-stubborn again
 unalias curl
 
+# Default value of MAXDOWNLOADATTEMPTS if set too low
+if [[ $MAXDOWNLOADATTEMPTS -lt 1 ]]; then
+    MAXDOWNLOADATTEMPTS=6
+elif [[ $MAXDOWNLOADATTEMPTS -lt 1 && -n $DIALOG_CMD_FILE ]]; then
+    MAXDOWNLOADATTEMPTS=3
+fi
+
 # MARK: finish reading the arguments:
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
@@ -290,7 +297,7 @@ else
         readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
         printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
 
-        curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+        curlDownload=$(curl $ipversion -fL -# --show-error --fail --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
         # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
         curlDownloadStatus=$(echo $pipestatus[1])
         killProcess $downloadPipePID
@@ -298,11 +305,11 @@ else
     else
         printlog "No Dialog connection, just download" DEBUG
         if [[ $downloadattempt -eq 1 ]]; then
-            printlog "1st download arguments: $ipversion -fsL --show-error --retry 5 --fail ${curlArgs[*]} ${curlOptions}"
-            curldownload=$(curl -v $ipversion -fsL --show-error --retry 5 --fail ${curlArgs[@]} ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+            printlog "1st download arguments: $ipversion -fsL --show-error --retry 5 --fail ${curlOptions}"
+            curldownload=$(curl -v $ipversion -fsL --show-error --fail --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
         else
-            printlog "Subsequent download attempt: ${downloadattempt}: $ipversion -fsL --show-error -C - --fail --retry 5 ${curlArgs[*]} ${curlOptions}"
-            curldownload=$(curl -v $ipversion -fsL --show-error -C - --fail --retry 5 ${curlArgs[@]} ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+            printlog "Subsequent download attempt: ${downloadattempt}: $ipversion -fsL --show-error -C - --fail --retry 5 ${curlOptions}"
+            curldownload=$(curl -v $ipversion -fsL --show-error -C - --fail --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
         fi
         curldownloadstatus=$?
         printlog "Status: $curlDownloadStatus \n$curlDownload" DEBUG
