@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-03-30"
+VERSIONDATE="2024-04-01"
 
 # MARK: Functions
 
@@ -2137,7 +2137,7 @@ autodeskfusion360admininstall)
     name="Autodesk Fusion 360 Admin Install"
     type="pkg"
     packageID="com.autodesk.edu.fusion360"
-    downloadURL="https://dl.appstreaming.autodesk.com/production/installers/Autodesk%20Fusion%20360%20Admin%20Install.pkg"
+    downloadURL="https://dl.appstreaming.autodesk.com/production/installers/Autodesk%20Fusion%20Admin%20Install.pkg"
     appNewVersion=$(curl -fs "https://dl.appstreaming.autodesk.com/production/97e6dd95735340d6ad6e222a520454db/73e72ada57b7480280f7a6f4a289729f/full.json" | sed -E 's/.*build-version":"([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/g')
     expectedTeamID="XXKJ396S2Y"
     appName="Autodesk Fusion 360.app"
@@ -3391,6 +3391,14 @@ exifrenamer)
     appNewVersion=$(curl -fs "https://www.qdev.de/?location=downloads" | grep -A1 -m1 "ExifRenamer" | tail -1 | cut -d ">" -f2 | cut -d " " -f1)
     expectedTeamID="MLF9FE35AM"
     ;;
+expressvpn)
+    name="ExpressVPN"
+    type="pkg"
+    packageID="com.expressvpn.ExpressVPN"
+    downloadURL="https://www.expressvpn.com/clients/latest/mac"
+    appNewVersion="$(curl -fsIL https://www.expressvpn.com/clients/latest/mac | grep -i ^location | sed -n -e 's/^\(.*\)\(_release\)\(.*\)$/\3\2\1/p' | sed -n -e 's/^.*mac_//p')"
+    expectedTeamID="VMES9GFUQJ"
+    ;;
 facebookmessenger)
     name="Messenger"
     type="dmg"
@@ -3790,6 +3798,16 @@ gitkraken)
     expectedTeamID="T7QVVUTZQ8"
     blockingProcesses=( "GitKraken" )
     ;;
+glpiagent)
+    name="GLPI-agent"
+    type="pkg"
+    packageID="com.teclib.glpi-agent"
+    appNewVersion="$(versionFromGit glpi-project glpi-agent)"
+    downloadURL="https://github.com/glpi-project/glpi-agent/releases/download/${appNewVersion}/GLPI-Agent-${appNewVersion}_"$(uname -m)".pkg"
+    versionKey="CFBundleShortVersionString"  
+    expectedTeamID="H7XJV96LX2"
+    blockingProcesses=( NONE )
+    ;;
 golang)
     name="GoLang"
     type="pkg"
@@ -4044,10 +4062,9 @@ hpeasyadmin)
     expectedTeamID="6HB5Y2QTA3"
     ;;
 hpeasystart)
-    # credit: Søren Theilgaard (@theilgaard)
     name="HP Easy Start"
     type="zip"
-    downloadURL="https://ftp.hp.com/pub/softlib/software12/HP_Quick_Start/osx/Applications/HP_Easy_Start.app.zip"
+    downloadURL="https://ftp.hp.com/pub/softlib/software12/HP_Quick_Start/osx/HP_Easy_Start/HP_Easy_Start.app.zip"
     expectedTeamID="6HB5Y2QTA3"
     ;;
 hubstaff)
@@ -5097,7 +5114,7 @@ macadminspython)
     packageID="org.macadmins.python.recommended"
     downloadURL=$(curl --silent --fail "https://api.github.com/repos/macadmins/python/releases/latest" | awk -F '"' "/browser_download_url/ && /python_recommended_signed/ { print \$4; exit }")
     appNewVersion=$(grep -o -E '\d+\.\d+\.\d+\.\d+' <<< $downloadURL | head -n 1)
-    expectedTeamID="9GQZ7KUFR6"
+    expectedTeamID="T4SK8ZXCXG"
     blockingProcesses=( NONE )
     ;;
 maccyapp)
@@ -7180,6 +7197,14 @@ sketchupviewer)
     downloadURL="$(curl -fs https://www.sketchup.com/sketchup/SketchUpViewer-en-dmg | grep "<a href=" | sed 's/.*href="//' | sed 's/".*//')"
     expectedTeamID="J8PVMCY7KL"
     ;;
+skim)
+    name="Skim"
+    type="dmg"
+    downloadURL="$(curl -fsL "https://skim-app.sourceforge.io/skim.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null | cut -d '"' -f 2)"
+    appNewVersion="$(curl -fsL "https://skim-app.sourceforge.io/skim.xml" | xpath '//rss/channel/item[1]/title' 2>/dev/null | sed -n 's/.*Version \([^<]*\)<\/title>.*/\1/p')"
+    expectedTeamID="J33JTA7SY9"
+    ;;
+
 skype)
     name="Skype"
     type="dmg"

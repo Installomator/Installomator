@@ -213,6 +213,7 @@ evernote
 everweb
 exelbanstats
 exifrenamer
+expressvpn
 facebookmessenger
 fantastical
 fastscripts
@@ -254,6 +255,7 @@ gfxcardstatus
 gimp
 githubdesktop
 gitkraken
+glpiagent
 golang
 googleadseditor
 googlechrome
@@ -622,6 +624,7 @@ sirimote
 sizeup
 sketch
 sketchupviewer
+skim
 skype
 slab
 slack
