@@ -262,8 +262,8 @@ downloadattempt=0
 ipversion=""
 
 while [[ $downloadattempt -lt $MAXDOWNLOADATTEMPTS ]]; do
-$((downloadattempt++))
-printlog "${downloadattempt}. attempt of ${MAXDOWNLOADATTEMPTS} download attempts."
+((downloadattempt++))
+printlog "${downloadattempt}. download attempt of ${MAXDOWNLOADATTEMPTS} attempts."
 if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
     printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
 else
@@ -323,7 +323,7 @@ else
     fi
     if [[ $curldownloadstatus -ne 0 ]] && (( $downloadattempt < $MAXDOWNLOADATTEMPTS )); then
         printlog "RETRYING... Error downloading $downloadURL error: $logoutput" WARN
-        downloadattempt=$((downloadattempt++))
+        #((downloadattempt++))
         sleep 15
     elif [[ $curldownloadstatus -ne 0 ]] && (( $downloadattempt >= $MAXDOWNLOADATTEMPTS )); then
         printlog "error downloading $downloadURL" ERROR
@@ -336,8 +336,8 @@ else
                 displaynotification "$message" "Error installing $name"
             fi
         fi
-        printlog "File list: $(ls -lh "$archiveName")" ERROR
-        printlog "File type: $(file "$archiveName")" ERROR
+        printlog "File list: $(ls -lh "$archiveName")" DEBUG
+        printlog "File type: $(file "$archiveName")" DEBUG
         cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
     elif [[ $curldownloadstatus -eq 0 ]] ; then
         printlog "Download successful" DEBUG
@@ -346,9 +346,7 @@ else
         printlog "curl output was: $logoutput" DEBUG
         break
     fi
-    printlog "File list: $(ls -lh "$archiveName")" DEBUG
-    printlog "File type: $(file "$archiveName")" DEBUG
-    printlog "curl output was:\n$logoutput" DEBUG
+    #printlog "curl output was:\n$logoutput" DEBUG
 fi
 done
 
