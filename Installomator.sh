@@ -3070,13 +3070,13 @@ diskspace)
     expectedTeamID="JME5BW3F3R"
     ;;
 #displaylinkmanager)
-#    name="DisplayLink Manager"
-#    type="pkg"
-#    #packageID="com.displaylink.displaylinkmanagerapp"
-#    downloadURL=https://www.synaptics.com$(redirect=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep 'class="download-link">Download' | sed -n '2p' | sed 's/.*href="//' | sed 's/".*//') && curl -sfL "https://www.synaptics.com$redirect" | grep 'class="no-link"' | awk -F 'href="' '{print $2}' | awk -F '"' '{print $1}')
-#    appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep "Release:" | sed -n '2p' | cut -d ' ' -f2)
-#    expectedTeamID="73YQY62QM3"
-
+    name="DisplayLink Manager"
+    type="pkg"
+    packageID="com.displaylink.displaylinkmanagerapp"
+    downloadURL=https://www.synaptics.com$(curl -fLs "https://www.synaptics.com$(curl -fLs https://www.synaptics.com/products/displaylink-graphics/downloads/macos | xmllint --html --format - 2>/dev/null | grep -oE '"/node/.+?"' | head -n1 | tr -d '"')" | xmllint --html --format - 2>/dev/null | grep -oE "/.+\.pkg")
+    appNewVersion=$(echo "${downloadURL}" | grep -Eo '[0-9]\.[0-9]+(\.[0-9])?')
+    expectedTeamID="73YQY62QM3"
+    ;;
 displaylinkmanagergraphicsconnectivity)
     name="DisplayLink Manager Graphics Connectivity"
     type="pkg"
