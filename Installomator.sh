@@ -3069,7 +3069,7 @@ diskspace)
     appNewVersion="$(versionFromGit scriptingosx diskspace)"
     expectedTeamID="JME5BW3F3R"
     ;;
-#displaylinkmanager)
+displaylinkmanager)
     name="DisplayLink Manager"
     type="pkg"
     packageID="com.displaylink.displaylinkmanagerapp"
