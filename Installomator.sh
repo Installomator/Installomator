@@ -98,7 +98,7 @@ LOGO=appstore
 
 
 # App Store apps handling
-IGNORE_APP_STORE_APPS=no
+IGNORE_APP_STORE_APPS=yes
 # options:
 #  - no            If the installed app is from App Store (which include VPP installed apps)
 #                  it will not be touched, no matter its version (default)
