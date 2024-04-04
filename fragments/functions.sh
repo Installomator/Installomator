@@ -230,25 +230,25 @@ getJSONValue() {
 
 # Calling this function with 'stubbornlyAttempt curl' will make it try several times if something failes
 stubbornlyAttempt() {
-  local -ar command_to_run=("command" "${@[1]}")
-  local -ar arguments=("${@[2,-1]}")
-  local -r MAX_ATTEMPTS=10
-  local current_attempt=0
-  local command_status=-1
-  local output=""
+    local -ar command_to_run=("command" "${@[1]}")
+    local -ar arguments=("${@[2,-1]}")
+    local -r MAX_ATTEMPTS=10
+    local current_attempt=0
+    local command_status=-1
+    local output=""
 
-  while (( $current_attempt < $MAX_ATTEMPTS )); do
-    output=$("${command_to_run[@]}" "${arguments[@]}")
-    command_status=$?
-    if (( $command_status == 0 )); then
-      break
-    fi
-    ((current_attempt++))
-    sleep 1
-  done
+    while (( $current_attempt < $MAX_ATTEMPTS )); do
+        output=$("${command_to_run[@]}" "${arguments[@]}")
+        command_status=$?
+        if (( $command_status == 0 )); then
+            break
+        fi
+        ((current_attempt++))
+        sleep 1
+    done
 
-  printf "%s" "${output}"
-  return $command_status
+    printf "%s" "${output}"
+    return $command_status
 }
 
 getAppVersion() {
