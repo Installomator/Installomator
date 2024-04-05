@@ -2019,6 +2019,13 @@ sfsymbols)
     appNewVersion=$( echo "$downloadURL" | sed -E 's/.*SF-Symbols-([0-9.]*)\..*/\1/g')
     expectedTeamID="Software Update"
     ;;
+aquamacs)
+    name="Aquamacs"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit aquamacs-emacs aquamacs-emacs)"
+    appNewVersion="$(versionFromGit aquamacs-emacs aquamacs-emacs)"
+    expectedTeamID="DTBC5BX3L9"
+    ;;
 aquaskk)
     # credit: Tadayuki Onishi (@kenchan0130)
     name="aquaskk"
@@ -3320,6 +3327,13 @@ elgatostreamdeck)
     appNewVersion=$(curl -fsI "https://gc-updates.elgato.com/mac/sd-update/final/download-website.php" | grep -i ^location | sed -E 's/.*Stream_Deck_([0-9.]*).pkg/\1/g' | sed 's/\.[^.]*//3')
     expectedTeamID="Y93VXCB8Q5"
     blockingProcesses=( "Stream Deck" )
+    ;;
+emacs)
+    name="Emacs"
+    type="dmg"
+    downloadURL="$(curl -fsL "https://emacsformacosx.com/atom/release" | xpath '//feed/entry[1]/content/div/p/a' 2>/dev/null | cut -d '"' -f 2)"
+    appNewVersion="$(echo "${downloadURL}" | sed -n 's/.*Emacs-\([0-9.-]*\)-universal.dmg/\1/p')"
+    expectedTeamID="5BRAQAFB8B"
     ;;
 eposconnect)
     name="EPOS Connect"
@@ -5317,8 +5331,8 @@ meetingbar)
 mendeleyreferencemanager)
     name="Mendeley Reference Manager"
     type="dmg"
-    downloadURL=$(curl -fs "https://www.mendeley.com/download-reference-manager/macOS" | grep -E -o "https://static.mendeley.com/bin/desktop/.*?.dmg")
-    appNewVersion=$(curl -fs "https://www.mendeley.com/download-reference-manager/macOS" | grep -E -o "https://static.mendeley.com/bin/desktop/.*?.dmg" | awk -F'mendeley-reference-manager-' '{print $2}' | sed 's/.dmg//g')
+    downloadURL=$(curl -fs "https://www.mendeley.com/download-reference-manager/macOS" | grep -oE "https://static.mendeley.com/bin/desktop/.*?.dmg")
+    appNewVersion=$(curl -fs "https://www.mendeley.com/download-reference-manager/macOS" | grep -oE "https://static.mendeley.com/bin/desktop/.*?.dmg" | sed -n 's/.*mendeley-reference-manager-\([0-9.-]*\)-x64.dmg/\1/p')
     expectedTeamID="45K89Y5X9B"
     #Company="Elsevier Inc."
     ;;
@@ -6531,7 +6545,8 @@ pdfsam)
 perimeter81)
     name="Perimeter 81"
     type="pkg"
-    downloadURL="https://static.perimeter81.com/agents/mac/snapshot/latest/Perimeter81.pkg"
+    pkgURL=$(curl -sL https://support.perimeter81.com/docs/downloading-the-agent | grep -o "Perimeter81.*.pkg")
+    downloadURL="https://static.perimeter81.com/agents/mac/$pkgURL"
     appNewVersion="$(curl -fsIL "${downloadURL}" | grep -i ^x-amz-meta-version | sed -E 's/x-amz-meta-version: //' | cut -d"." -f1-3)"
     expectedTeamID="924635PD62"
     ;;
@@ -7318,6 +7333,17 @@ smartsheet)
 	appNewVersion=$(curl -fsl 'https://smartsheet-desktop-app-builds.s3.amazonaws.com/public/darwin/latest-mac.yml' | sed -nE 's/^version: (.*)/\1/p')
 	expectedTeamID="J89ET3PY68"
 	;;
+smartsvn)
+    name="SmartSVN"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://www.smartsvn.com$(curl -fsL "https://www.smartsvn.com/download/" | grep -oE "href=\".*-aarch64.*\.dmg\"" | cut -d '"' -f 2)"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://www.smartsvn.com$(curl -fsL "https://www.smartsvn.com/download/" | grep -oE "href=\".*-x86_64.*\.dmg\"" | cut -d '"' -f 2)"
+    fi
+    appNewVersion=$(curl -fsL "https://www.smartsvn.com/download/" | grep -B 1 "changelog.txt" | grep "Version " | awk -F' ' '{ print $2 }')
+    expectedTeamID="PHMY45PTNW"
+    ;;
 snagit|\
 snagit2024)
     name="Snagit 2024"
@@ -7368,12 +7394,37 @@ snapgeneviewer)
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | tr '/' '\n' | grep -i "dmg" | sed -E 's/[a-zA-Z_]*_([0-9.]*)_mac\.dmg/\1/g' )
     expectedTeamID="WVCV9Q8Y78"
     ;;
+soapuiopensource)
+    name="SoapUI"
+    type="dmg"
+    downloadURL="$(curl -fsL "https://github.com/SmartBear/soapui/releases/latest" | grep -m 1 -o 'href=".*\.dmg".*' | cut -d '"' -f 2)"
+    appNewVersion="$(versionFromGit SmartBear soapui)"
+    appCustomVersion() {
+        while IFS= read -r line; do
+            soapUIApps+=("$line")
+        done < <(ls -d ${targetDir}/* | grep -E "SoapUI-.*\.app")
+
+        if [ -e "${soapUIApps[-1]}" ]; then
+            defaults read "${soapUIApps[-1]}/Contents/Info.plist" CFBundleShortVersionString
+        fi
+    }
+    installerTool="SoapUI ${appNewVersion} Installer.app"
+    CLIInstaller="${installerTool}/Contents/MacOS/JavaApplicationStub"
+    CLIArguments=(-q)
+    expectedTeamID="HVA5GNL2LF"
+    ;;
 sococo)
     name="Sococo"
     type="dmg"
     downloadURL="https://s.sococo.com/rs/client/mac/sococo-client-mac.dmg"
     appNewVersion=""
     expectedTeamID="MR43LR5EJ4"
+    ;;
+solstice)
+    name="Mersive Solstice"
+    type="dmg"
+    downloadURL="https://www.mersive.com/files/41693/"
+    expectedTeamID="63B5A5WDNG"
     ;;
 sonicvisualiser)
     name="Sonic Visualiser"
@@ -7814,6 +7865,13 @@ tencentmeeting)
     expectedTeamID="88L2Q4487U"
     ;;
 
+texliveutility)
+    name="TeX Live Utility"
+    type="zip"
+    downloadURL="$(downloadURLFromGit amaxwell tlutility)"
+    appNewVersion="$(versionFromGit amaxwell tlutility)"
+    expectedTeamID="966Z24PX4J"
+    ;;
 texshop)
     name="TeXShop"
     type="zip"
@@ -7849,6 +7907,13 @@ things)
     type="zip"
     downloadURL="https://culturedcode.com/things/download/"
     expectedTeamID="JLMPQHK86H"
+    ;;
+thonny)
+    name="Thonny"
+    type="pkg"
+    downloadURL="$(downloadURLFromGit thonny thonny)"
+    appNewVersion="$(versionFromGit thonny thonny)"
+    expectedTeamID="2SA9D4CVU8"
     ;;
 thunderbird)
     name="Thunderbird"
@@ -8341,6 +8406,15 @@ wordservice)
     appNewVersion="$(echo $downloadURL | sed -E 's/.*\/([0-9.]*)\/.*/\1/g')"
     appNewVersion=""
     expectedTeamID="679S2QUWR8"
+    ;;
+workplacechat)
+    name="Workplace Chat"
+    type="dmg"
+    curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" )
+    downloadPage=$(curl -s "https://www.workplace.com/resources/tech/it-configuration/download-workplace-chat")
+    downloadURL=$(echo "$downloadPage" | grep -oE 'https://[^"]+\.dmg[^"]+"' | head -n 1 | sed 's/"$//' | sed 's/&amp;/\&/g')
+    appNewVersion=$(echo "$downloadPage" | grep -oE '<td class="_3-mi">[0-9.]+<\/td>' | head -n 1 | sed -E 's/<\/?[^>]+>//g')
+    expectedTeamID="V9WTTPBFK9"
     ;;
 wrikeformac)
 #Il faut chercher une solution pour DL la version ARM

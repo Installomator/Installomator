@@ -50,6 +50,7 @@ applesfcompact
 applesfmono
 applesfpro
 applesfsymbols
+aquamacs
 aquaskk
 arcbrowser
 archimate
@@ -205,6 +206,7 @@ egnytewebedit
 element
 elgatocamerahub
 elgatostreamdeck
+emacs
 eposconnect
 escrowbuddy
 eshareosx
@@ -637,6 +639,7 @@ slab
 slack
 smartgit
 smartsheet
+smartsvn
 snagit
 snagit2019
 snagit2020
@@ -645,7 +648,9 @@ snagit2022
 snagit2023
 snagit2024
 snapgeneviewer
+soapuiopensource
 sococo
+solstice
 sonicvisualiser
 sonobus
 sonos
@@ -700,11 +705,13 @@ techsmithcapture
 telegram
 tembo
 tencentmeeting
+texliveutility
 texshop
 textexpander
 textmate
 theunarchiver
 things
+thonny
 thunderbird
 thunderbird_intl
 ticktick
@@ -762,6 +769,7 @@ whatroute
 whatsapp
 wireshark
 wordservice
+workplacechat
 wrikeformac
 wwdc
 xbar
