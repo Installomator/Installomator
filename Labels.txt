@@ -184,6 +184,7 @@ drawio
 drift
 dropbox
 druvainsync
+dstny
 duckduckgo
 duet
 duodesktop
@@ -243,6 +244,7 @@ fontbase
 fontexplorer
 fork
 franz
+freeplane
 front
 fsmonitor
 fujifilmwebcam
@@ -483,6 +485,7 @@ nessusagent
 netiquette
 netnewswire
 netspot
+networksharemounter
 nextcloud
 nodejs
 nodejslts
@@ -505,6 +508,7 @@ obsidian
 odrive
 omnidisksweeper
 omnifocus3
+omnifocus4
 omnigraffle6
 omnigraffle7
 omnioutliner5
@@ -607,6 +611,7 @@ scaleft
 screamingfrogseospider
 screencloudplayer
 screenflick
+scribus
 scrollreverser
 sdnotary
 secretive
