@@ -1954,6 +1954,14 @@ apachedirectorystudio)
     versionKey="CFBundleVersion"
     expectedTeamID="2GLGAFWEQD"
     ;;
+apachenetbeans)
+    name="Apache NetBeans"
+    type="pkg"
+    packageID="org.apache.netbeans"
+    appNewVersion=$(curl -sfL "https://netbeans.apache.org/" | xmllint --html --format - 2>/dev/null | grep -A 1 "<div class=\"annotation\">Latest release</div>" | sed '2p;d' | sed 's/<h1>Apache NetBeans //g' | sed 's/<\/h1>//g' | xargs)
+    downloadURL="https://archive.apache.org/dist/netbeans/netbeans-installers/${appNewVersion}/Apache-NetBeans-${appNewVersion}.pkg"
+    expectedTeamID="2GLGAFWEQD"
+    ;;
 apparency)
     name="Apparency"
     type="dmg"
@@ -2082,12 +2090,11 @@ arq7)
     expectedTeamID="48ZCSDVL96"
     ;;
 asana)
-     # credit: Lance Stephens (@pythoninthegrass on MacAdmins Slack)
-     name="Asana"
-     type="dmg"
-     downloadURL="https://desktop-downloads.asana.com/darwin_x64/prod/latest/Asana.dmg"
-     expectedTeamID="A679L395M8"
-     ;;
+    name="Asana"
+    type="dmg"
+    downloadURL="https://desktop-downloads.asana.com/darwin_universal/prod/latest/Asana.dmg"
+    expectedTeamID="A679L395M8"
+    ;;
 asperaconnect)
     name="$(curl -fS 'https://www.ibm.com/support/fixcentral/swg/selectFixes?parent=ibm~Other%20software&product=ibm/Other+software/IBM+Aspera+Connect' --data-raw 'showStatus=false' | egrep -o "ibm-aspera-connect_[0-9.]+_macOS_x86_64" | head -n1)"
     type="pkg"
@@ -2766,6 +2773,13 @@ cluefull)
     appNewVersion="$(echo "${downloadURL}" | sed -E 's/.*Clue*([0-9.]*)\F.*/\1/g')"
     versionKey="CFBundleVersion"
     expectedTeamID="3NX6B9TB2F"
+    ;;
+cmake)
+    name="CMake"
+    type="dmg"
+    appNewVersion=$(curl -fsL "https://cmake.org/download" | awk -F'[()]' '/id="latest"/{print $2}')
+    downloadURL="https://github.com/Kitware/CMake/releases/download/v${appNewVersion}/cmake-${appNewVersion}-macos-universal.dmg"
+    expectedTeamID="W38PE5Y733"
     ;;
 cocoapods)
     name="CocoaPods"
@@ -5792,9 +5806,9 @@ miro)
     name="Miro"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
-        downloadURL="https://desktop.miro.com/platforms/darwin-arm64/Miro.dmg"
+        downloadURL="https://desktop.miro.com/platforms/darwin-arm64/Install-Miro.dmg"
     elif [[ $(arch) == i386 ]]; then
-        downloadURL="https://desktop.miro.com/platforms/darwin/Miro.dmg"
+        downloadURL="https://desktop.miro.com/platforms/darwin/Install-Miro.dmg"
     fi
     expectedTeamID="M3GM7MFY7U"
     ;;

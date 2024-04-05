@@ -41,6 +41,7 @@ androidfiletransfer
 androidstudio
 anydesk
 apachedirectorystudio
+apachenetbeans
 apparency
 appcleaner
 applenyfonts
@@ -140,6 +141,7 @@ cloudflarewarp
 cloudya
 clue
 cluefull
+cmake
 cocoapods
 coconutbattery
 code42
