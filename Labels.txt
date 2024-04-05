@@ -583,7 +583,6 @@ realvncserver
 realvncviewer
 rectangle
 redcanarymacmonitor
-redeye
 reflector4
 relatel
 remotedesktopmanagerenterprise
@@ -608,6 +607,7 @@ rustdesk
 salesforcecli
 santa
 scaleft
+scenebuilder
 screamingfrogseospider
 screencloudplayer
 screenflick

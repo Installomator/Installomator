@@ -6884,14 +6884,6 @@ redcanarymacmonitor)
     appNewVersion="$(versionFromGit redcanaryco mac-monitor)"
     expectedTeamID="UA6JCQGF3F"
     ;;
-redeye)
-    # credit: Drew Diver (@grumpydrew on MacAdmins Slack)
-    name="Red Eye"
-    type="zip"
-    downloadURL="https://www.hexedbits.com/downloads/redeye.zip"
-    appNewVersion=$( curl -fs "https://www.hexedbits.com/redeye/" | grep "Latest version" | sed -E 's/.*Latest version ([0-9.]*),.*/\1/g' )
-    expectedTeamID="5VRJU68BZ5"
-    ;;
 reflector4)
     name="Reflector 4"
     type="dmg"
@@ -7086,6 +7078,17 @@ scaleft)
     appNewVersion=$(curl -s "https://dist.scaleft.com/repos/macos/stable/all/macos-client/" | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' | sort -V | tail -n 1 | sed 's/^v//')
     expectedTeamID="B7F62B65BN"
     blockingProcesses=( ScaleFT )
+    ;;
+scenebuilder)
+    name="SceneBuilder"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=$(curl -sfL "https://gluonhq.com/products/scene-builder/" | xmllint --html --format - 2>/dev/null | grep -o "https://.*SceneBuilder.*aarch64.dmg")
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL=$(curl -sfL "https://gluonhq.com/products/scene-builder/" | xmllint --html --format - 2>/dev/null | grep -o "https://.*SceneBuilder.*amd64.dmg")
+    fi
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g' )
+    expectedTeamID="S7ZR395D8U"
     ;;
 screamingfrogseospider)
     name="Screaming Frog SEO Spider"
