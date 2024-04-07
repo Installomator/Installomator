@@ -472,6 +472,7 @@ mochatelnet
 mochatn3270
 mochatn3812
 mochatn5250
+mockoon
 moderncsv
 mongodbcompass
 monitorcontrol
@@ -583,6 +584,7 @@ raindropio
 rancherdesktop
 rapidapi
 raycast
+realvncondemandassist
 realvncserver
 realvncviewer
 rectangle
@@ -629,6 +631,7 @@ shottr
 sidekick
 signal
 silnite
+sipgateclinq
 sirimote
 sizeup
 sketch
@@ -807,3 +810,4 @@ zulujdk17
 zulujdk18
 zulujdk21
 zulujdk8
+zulujdkfx17

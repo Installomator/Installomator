@@ -92,6 +92,7 @@ LOGO=appstore
 #   - microsoft     Microsoft Endpoint Manager (Intune)
 #   - ws1           Workspace ONE (AirWatch)
 #   - filewave      FileWave
+#   - kandji        Kandji
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
@@ -336,7 +337,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-04-05"
+VERSIONDATE="2024-04-06"
 
 # MARK: Functions
 
@@ -2732,7 +2733,7 @@ clipgrab)
     type="dmg"
     expectedTeamID="E8BJ3ZV5W8"
     downloadURL="$( curl -s 'https://clipgrab.org' | tr '"' '\n' | grep dmg )"
-    appNewVersion="$( echo "$downloadURL" | cut -d '-' -f 2 )"
+    appNewVersion="$( echo "$downloadURL" | sed -E 's/.*-([0-9.]*).dmg/\1/' )"
     ;;
 clipy)
 	name="Clipy"
@@ -3094,8 +3095,8 @@ displaylinkmanager)
     name="DisplayLink Manager"
     type="pkg"
     #packageID="com.displaylink.displaylinkmanagerapp"
-    downloadURL=https://www.synaptics.com$(redirect=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep 'class="download-link">Download' | sed -n '2p' | sed 's/.*href="//' | sed 's/".*//') && curl -sfL "https://www.synaptics.com$redirect" | grep 'class="no-link"' | awk -F 'href="' '{print $2}' | awk -F '"' '{print $1}')
-    appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep "Release:" | sed -n '2p' | cut -d ' ' -f2)
+    downloadURL=https://www.synaptics.com$(redirect=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep -m 1 'class="download-link">Download' | sed 's/.*href="//' | sed 's/".*//') && curl -sfL "https://www.synaptics.com$redirect" | grep 'class="no-link"' | awk -F 'href="' '{print $2}' | awk -F '"' '{print $1}')
+    appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep -m 1 "Release:" | cut -d ' ' -f2)
     expectedTeamID="73YQY62QM3"
     ;;
 displaylinkmanagergraphicsconnectivity)
@@ -5261,7 +5262,7 @@ malwarebytes)
     expectedTeamID="GVZRY6KDKR"
     ;;
 marathon)
-    name="Marathon"
+    name="Classic Marathon"
     type="dmg"
     archiveName="Marathon-[0-9.]*-Mac.dmg"
     versionKey="CFBundleVersion"
@@ -5270,7 +5271,7 @@ marathon)
     expectedTeamID="E8K89CXZE7"
     ;;
 marathon2)
-    name="Marathon 2"
+    name="Classic Marathon 2"
     type="dmg"
     archiveName="Marathon2-[0-9.]*-Mac.dmg"
     versionKey="CFBundleVersion"
@@ -5279,7 +5280,7 @@ marathon2)
     expectedTeamID="E8K89CXZE7"
     ;;
 marathoninfinity)
-    name="Marathon Infinity"
+    name="Classic Marathon Infinity"
     type="dmg"
     archiveName="MarathonInfinity-[0-9.]*-Mac.dmg"
     versionKey="CFBundleVersion"
@@ -5354,8 +5355,8 @@ microsoftautoupdate)
     name="Microsoft AutoUpdate"
     type="pkg"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=830196"
-    #appNewVersion=$(curl -fs https://macadmins.software/latest.xml | xpath '//latest/package[id="com.microsoft.autoupdate.standalone"]/cfbundleshortversionstring' 2>/dev/null | sed -E 's/<cfbundleshortversionstring>([0-9.]*)<.*/\1/')
-    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "Microsoft_AutoUpdate.*pkg" | sed -E 's/[a-zA-Z_]*_([0-9.]*)_.*/\1/g' | cut -d "." -f 1-2)
+    versionKey="CFBundleVersion"
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "Microsoft_AutoUpdate.*pkg" | sed -E 's/[a-zA-Z_]*_([0-9.]*)_.*/\1/g')
     expectedTeamID="UBF8T346G9"
     # commented the updatetool for MSAutoupdate, because when Autoupdate is really
     # old or broken, you want to force a new install
@@ -5976,6 +5977,14 @@ mochatn5250)
     appNewVersion=""
     expectedTeamID="RR9F5EPNVW"
     ;;
+mockoon)
+    name="Mockoon"
+    type="dmg"
+    archiveName="mockoon.setup[0-9.]*universal.dmg"
+    downloadURL="$(downloadURLFromGit mockoon mockoon)"
+    appNewVersion="$(versionFromGit mockoon mockoon)"
+    expectedTeamID="8443RQQKK6"
+    ;;
 moderncsv)
     name="Modern CSV"
     type="dmg"
@@ -6176,16 +6185,10 @@ nordvpn)
     expectedTeamID="W5W395V82Y"
     ;;
 notion)
-    # credit: Søren Theilgaard (@theilgaard)
     name="Notion"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://www.notion.so/desktop/apple-silicon/download"
-        appNewVersion=$( curl -fsIL "https://www.notion.so/desktop/apple-silicon/download" | grep -i "^location" | awk '{print $2}' | sed -e 's/.*Notion\-\(.*\)\-arm64.dmg.*/\1/' )
-    elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://www.notion.so/desktop/mac/download"
-        appNewVersion=$( curl -fsIL "https://www.notion.so/desktop/mac/download" | grep -i "^location" | awk '{print $2}' | sed -e 's/.*Notion\-\(.*\).dmg.*/\1/' )
-    fi
+    downloadURL="https://www.notion.so/desktop/mac/download"
+    appNewVersion=$(curl -fsIL "https://www.notion.so/desktop/mac/download" | grep -i "^location" | awk '{print $2}' | sed -e 's/.*Notion-\(.*\).dmg.*/\1/' | cut -d '-' -f 1)
     expectedTeamID="LBQJ96FQ8D"
     ;;
 nova)
@@ -6897,6 +6900,16 @@ realvncserver)
     expectedTeamID="ZNCQ8JEH7X"
     ;;
 
+realvncondemandassist)
+    name="On-Demand-Assist-$(curl -sL "https://www.realvnc.help/" | awk -F'"' '/Mac/ && /\.zip/{print $2}' | sed -n 's:.*generic/\(.*\)/.*:\1:p')-MacOSX-universal"
+    type="zip"
+    downloadURL=$(curl -sL "https://www.realvnc.help/" | awk -F'"' '/Mac/ && /\.zip/{print $2}')
+    appNewVersion="$(echo $downloadURL | sed -n 's:.*generic/\(.*\)/.*:\1:p')"
+    expectedTeamID="ZNCQ8JEH7X"
+    blockingProcesses=( "On-Demand Assist" "$name" )
+    appCustomVersion() { echo "$(defaults read "/Applications/On-Demand-Assist-$(curl -sL "https://www.realvnc.help/" | awk -F'"' '/Mac/ && /\.zip/{print $2}' | sed -n 's:.*generic/\(.*\)/.*:\1:p')-MacOSX-universal.app/Contents/Info.plist" CFBundleShortVersionString)" | sed 's/ ([^)]*)//' ; }
+    ;;
+
 rectangle)
     name="Rectangle"
     type="dmg"
@@ -6938,7 +6951,7 @@ remotedesktopmanagerenterprise)
 remotedesktopmanagerfree)
     name="Remote Desktop Manager"
     type="dmg"
-    downloadURL=$(curl -fsL https://devolutions.net/remote-desktop-manager/home/thankyou/rdmmacfreebin/ | grep -oe "http.*\.dmg" | head -1)
+    downloadURL=$(curl -fsL https://devolutions.net/remote-desktop-manager/home/thankyou/rdmmacbin/ | grep -oe "http.*\.dmg" | head -1)
     appNewVersion=$(echo "$downloadURL" | sed -E 's/.*\.Mac\.([0-9.]*)\.dmg/\1/g')
     expectedTeamID="N592S9ASDB"
     ;;
@@ -7246,6 +7259,14 @@ silnite)
     expectedTeamID="QWY4LRW926"
     blockingProcesses=( NONE )
     ;;
+sipgateclinq)
+    name="Sipgate CLINQ"
+    type="dmg"
+    appNewVersion=$(curl -fs -L https://desktop.download.sipgate.com/latest-mac.yml | sed -n 's/version: \(.*\)/\1/p')
+    downloadURL="https://desktop.download.sipgate.com/sipgate%20CLINQ-${appNewVersion}.dmg"
+    expectedTeamID="K4L4M6DD76"
+;;
+
 sirimote)
     name="SiriMote"
     type="zip"
@@ -7312,7 +7333,7 @@ slack)
     elif [[ $(arch) == arm64 ]]; then
        downloadURL="https://slack.com/ssb/download-osx-silicon"
     fi
-    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | cut -d "/" -f6 )
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | cut -d "/" -f7 )
     expectedTeamID="BQR82RBBHL"
     ;;
 smartgit)
@@ -7688,6 +7709,7 @@ sync)
     downloadURL="https://www.sync.com/download/apple/Sync.dmg"
     appNewVersion="$(curl -fs "https://www.sync.com/blog/category/desktop/feed/" | xpath '(//channel/item/title)[1]' 2>/dev/null | sed -E 's/^.* ([0-9.]*) .*$/\1/g')"
     expectedTeamID="7QR39CMJ3W"
+    blockingProcesses=( "Sync" "sync-worker.exe" )
     ;;
 synologyactivebackupforbusinessagent)
     name="Synology Active Backup for Business Agent"
@@ -8767,6 +8789,19 @@ zulujdk8)
     fi
     expectedTeamID="TDTHCUPYFR"
     appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Info.plist" "CFBundleName" | sed 's/Zulu //'; fi }
+    appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    ;;
+zulujdkfx17)
+    name="Zulu JDK FX 17"
+    type="pkgInDmg"
+    packageID="com.azulsystems.zulufx.17"
+    if [[ $(arch) == i386 ]]; then
+        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu17.*ca-fx-jdk17.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a><\/td>//' | sort | tail -1)
+    elif [[ $(arch) == arm64 ]]; then
+        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu17.*ca-fx-jdk17.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a><\/td>//' | sort | tail -1)
+    fi
+    expectedTeamID="TDTHCUPYFR"
+    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
     appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
     ;;
 *)
