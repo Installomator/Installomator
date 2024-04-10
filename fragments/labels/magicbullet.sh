@@ -12,12 +12,12 @@ magicbullet)
     magicbulletResponse=$(curl -s -I -L "$downloadURL")
     magicbulletHttpStatus=$(echo "$magicbulletResponse" | head -n 1 | cut -d ' ' -f 2)
     if [[ "$magicbulletHttpStatus" == "200" ]]; then
-	    printlog "DownloadURL HTTP status code: $trapcodeHttpStatus" INFO
+	    printlog "DownloadURL HTTP status code: $magicbulletHttpStatus" INFO
     elif [[ "$magicbulletHttpStatus" == "404" ]]; then
 	    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/magicbullet/releases/$appNewVersion/MagicBulletSuite-${appNewVersion}_mac.zip"
 	    printlog "Had to change DownloadURL due HTTP Status." INFO
     else
-	    printlog "Unexpected HTTP status code: $trapcodeHttpStatus" ERROR
+	    printlog "Unexpected HTTP status code: $magicbulletHttpStatus" ERROR
     fi
     installerTool="Magic Bullet Suite Installer.app"
     CLIInstaller="Magic Bullet Suite Installer.app/Contents/Scripts/install.sh"
