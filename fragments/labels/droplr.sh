@@ -4,5 +4,4 @@ droplr)
     downloadURL="$(downloadURLFromGit Droplr droplr-desktop-releases)"
     appNewVersion="$(versionFromGit Droplr droplr-desktop-releases)"
     expectedTeamID="MZ25PHMY7Y"
-    blockingProcesses=( "Droplr" )
     ;;
