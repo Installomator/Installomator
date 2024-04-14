@@ -337,7 +337,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-04-06"
+VERSIONDATE="2024-04-14"
 
 # MARK: Functions
 
@@ -2256,6 +2256,13 @@ balsamiqwireframes)
     downloadURL=https://builds.balsamiq.com/bwd/$(curl -fs "https://builds.balsamiq.com" | awk -F "<Key>bwd/" "/dmg/ {print \$3}" | awk -F "</Key>" "{print \$1}" | sed "s/ /%20/g")
     expectedTeamID="3DPKD72KQ7"
     ;;
+bambustudio)
+    name="BambuStudio"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit "bambulab" "BambuStudio")
+    appNewVersion=$(versionFromGit "bambulab" "BambuStudio")
+    expectedTeamID="F4SKHPXDD9"
+    ;;
 bartender)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="Bartender 4"
@@ -2264,12 +2271,33 @@ bartender)
     expectedTeamID="8DD663WDX4"
     ;;
 basecamp3)
-    #credit: @matins
     name="Basecamp 3"
     type="dmg"
-    downloadURL="https://bc3-desktop.s3.amazonaws.com/mac/basecamp3.dmg"
+    if [[ $(/usr/bin/arch) == "arm64" ]]; then 
+        downloadURL="https://bc3-desktop.s3.amazonaws.com/mac_arm64/basecamp3_arm64.dmg"
+    else
+        downloadURL="https://bc3-desktop.s3.amazonaws.com/mac/basecamp3.dmg"
+    fi
     expectedTeamID="2WNYUYRS7G"
     appName="Basecamp 3.app"
+    ;;
+baseline-nodaemon)
+    #Baseline by @BigMacAdmin and Second Son Consulting
+    #Use this label if you DO NOT want Baseline to run immediately upon install
+    name="Baseline"
+    type="pkg"
+    archiveName="Baseline_NoDaemon_v[0-9.]*.pkg"
+    downloadURL=$(downloadURLFromGit secondsonconsulting Baseline )
+    expectedTeamID="7Q6XP5698G"
+    ;;
+baseline)
+    #Baseline by @BigMacAdmin and Second Son Consulting
+    #Use this label if you want Baseline to run immediately upon install
+    name="Baseline"
+    type="pkg"
+    archiveName="Baseline_v[0-9.]*.pkg"
+    downloadURL=$(downloadURLFromGit secondsonconsulting Baseline )
+    expectedTeamID="7Q6XP5698G"
     ;;
 bbedit)
     name="BBEdit"
@@ -2442,6 +2470,19 @@ brosix)
     appNewVersion=""
     expectedTeamID="TA6P23NW8H"
     ;;
+bruno)
+    # https://github.com/usebruno/bruno; https://www.usebruno.com/
+    name="Bruno"
+    type="dmg"
+    if [[ $(arch) == “arm64” ]]; then
+        archiveName="bruno_[0-9.]*_arm64_mac.dmg"
+    elif [[ $(arch) == “i386” ]]; then
+        archiveName="bruno_[0-9.]*_x64_mac.dmg"
+    fi
+    downloadURL="$(downloadURLFromGit usebruno bruno)"
+    appNewVersion="$(versionFromGit usebruno bruno)"
+    expectedTeamID="W7LPPWA48L"
+    ;;
 bugdom)
     name="Bugdom"
     type="dmg"
@@ -2512,6 +2553,13 @@ calibre)
     #appNewVersion=$(versionFromGit kovidgoyal calibre )
     #archiveName="OS X dmg"
     expectedTeamID="NTY7FVCEKP"
+    ;;
+calibriteprofiler)
+    name="calibrite PROFILER"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit LUMESCA calibrite-profiler-releases)"
+    appNewVersion="$(versionFromGit LUMESCA calibrite-profiler-releases)"
+    expectedTeamID="5C392763F5"
     ;;
 camostudio)
     name="Camo Studio"
@@ -3167,6 +3215,13 @@ dropbox)
     fi
     appNewVersion=$(curl -fsIL "$downloadURL" | grep -i "^location" | sed -E 's/.*%20([0-9.]*)\.[arm64.]*dmg/\1/g' | tr -d '[:cntrl:]' )
     expectedTeamID="G7HH3F8CAK"
+    ;;
+droplr)
+    name="Droplr"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit Droplr droplr-desktop-releases)"
+    appNewVersion="$(versionFromGit Droplr droplr-desktop-releases)"
+    expectedTeamID="MZ25PHMY7Y"
     ;;
 druvainsync)
     name="Druva inSync"
@@ -4095,6 +4150,13 @@ horos)
     fi
     expectedTeamID="TPT6TVH8UY"
     ;;
+hot)
+    name="Hot"
+    type="zip"
+    downloadURL="$(downloadURLFromGit macmade Hot)"
+    appNewVersion="$(versionFromGit macmade Hot)"
+    expectedTeamID="326Y53CJMD"
+    ;;
 houdahspot)
     name="HoudahSpot"
     type="zip"
@@ -4199,6 +4261,15 @@ idrivethin)
     expectedTeamID="JWDCNYZ922"
     blockingProcesses=( NONE )
     ;;
+igv)
+    name="IGV"
+    type="zip"
+    downloadURL="$(curl -fs "https://igv.org/doc/desktop/DownloadPage/" | grep -oE "https://data.broadinstitute.org/igv/projects/downloads/.*/IGV_MacApp_.*_WithJava\.zip")"
+    appNewVersion="$(echo $downloadURL | sed -E 's/.*IGV_MacApp_([0-9]+(\.[0-9]+)*).*/\1/')"
+    appName="${name}_${appNewVersion}.app"
+    expectedTeamID="R787A9V6VV"
+    ;;
+
 iina)
     name="IINA"
     type="dmg"
@@ -4355,6 +4426,7 @@ jamfconnect)
     name="Jamf Connect"
     type="pkgInDmg"
     packageID="com.jamf.connect"
+    appNewVersion=$(getJSONValue "$(curl -s "https://learn-be.jamf.com/api/bundlelist?name_filter.field=name&name_filter.value=jamf-connect-documentation-current")" ".bundle_list[0].title" | awk -F ' ' '{print $NF}')
     downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
     expectedTeamID="483DWKW443"
     ;;
@@ -5022,11 +5094,14 @@ logitechoptions)
     ;;
 logitechoptionsplus)
     name="Logi Options+"
+    appName="logioptionsplus.app"
     archiveName="logioptionsplus_installer.zip"
-    appName="logioptionsplus_installer.app"
+    installerTool="logioptionsplus_installer.app"
     type="zip"
     downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer.zip"
-    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-11.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
+    # Latest version of Logi Options+ requires macOS 12+
+    # If older macOS is specified in the url for appNewVersion, it will never correspond to the installed version
+    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-12.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
     CLIInstaller="logioptionsplus_installer.app/Contents/MacOS/logioptionsplus_installer"
     CLIArguments=(--quiet)
     expectedTeamID="QED4VVPZWA"
@@ -5188,6 +5263,14 @@ macoslaps)
     appNewVersion="$(versionFromGit joshua-d-miller macOSLAPS)"
     expectedTeamID="9UYK4F9BSM"
     ;;
+macpass)
+    name="MacPass"
+    type="zip"
+    downloadURL=$(downloadURLFromGit MacPass MacPass)
+    appNewVersion=$(versionFromGit MacPass MacPass)
+    expectedTeamID="55SM4L4Z97"
+    ;;
+
 macports)
     name="MacPorts"
     type="pkg"
@@ -6023,6 +6106,13 @@ morisawadesktopmanager)
     downloadURL=$(getJSONValue "${morisawadesktopmanagerVersions}" "latest_url")
     appNewVersion=$(getJSONValue "${morisawadesktopmanagerVersions}" "latest_version")
     expectedTeamID="662PVPVA3N"
+    ;;
+multipass)
+    name="multipass"
+    type="pkg"
+    downloadURL="$(downloadURLFromGit canonical multipass)"
+    appNewVersion="$(versionFromGit canonical multipass)"
+    expectedTeamID="X4QN7LTP59"
     ;;
 munki)
     name="Munki"
@@ -8484,15 +8574,16 @@ xcreds)
 xeroxphaser7800)
     name="XeroxPhaser"
     type="pkgInDmg"
-    downloadURL=$(curl -fs "https://www.support.xerox.com/en-us/product/phaser-7800/downloads?platform=macOSx11" | xmllint --html --format - 2>/dev/null | grep -o "https://.*XeroxDrivers.*.dmg")
+    downloadURL=$(curl -fs "https://www.support.xerox.com/en-us/product/phaser-7800/downloads?platform=macOS14" | xmllint --html --format - 2>/dev/null | grep -o "https://.*XeroxDrivers.*.dmg")
     expectedTeamID="G59Y3XFNFR"
     ;;
+xeroxprintandscan|\
 xeroxworkcentre7800)
     name="XeroxWorkCentre"
     type="pkgInDmg"
     appCustomVersion(){ lpinfo -m | grep 783 | tail -n 1 | awk -F ', ' '{print $2}' }
-    appNewVersion=$( curl -fsL "https://www.support.xerox.com/nl-nl/product/workcentre-7800-series/downloads?platform=macOSx11" | grep .dmg | head -n 1 | awk -F '_' '{print $2}' )
-    downloadURL=$( curl -fsL "https://www.support.xerox.com/nl-nl/product/workcentre-7800-series/downloads?platform=macOSx11" | xmllint --html --format - 2>/dev/null | grep -o "https://.*XeroxDrivers.*.dmg" )
+    appNewVersion=$( curl -fsL "https://www.support.xerox.com/nl-nl/product/workcentre-7800-series/downloads?platform=macOS14" | grep .dmg | head -n 1 | awk -F '_' '{print $2}' )
+    downloadURL=$( curl -fsL "https://www.support.xerox.com/nl-nl/product/workcentre-7800-series/downloads?platform=macOS14" | xmllint --html --format - 2>/dev/null | grep -o "https://.*XeroxDrivers.*.dmg" )
     expectedTeamID="G59Y3XFNFR"
     blockingProcesses=( NONE )
 ;;
@@ -8587,6 +8678,7 @@ zerotier)
     name="ZeroTier%20One"
     type="pkg"
     packageID="com.zerotier.pkg.ZeroTierOne"
+    appNewVersion=$(versionFromGit zerotier ZeroTierOne )
     downloadURL="https://download.zerotier.com/dist/ZeroTier%20One.pkg"
     expectedTeamID="8ZD9JUCZ4V"
     ;;

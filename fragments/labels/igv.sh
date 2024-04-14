@@ -6,3 +6,4 @@ igv)
     appName="${name}_${appNewVersion}.app"
     expectedTeamID="R787A9V6VV"
     ;;
+

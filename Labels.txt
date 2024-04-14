@@ -79,8 +79,11 @@ backgroundmusic
 backgrounds
 balenaetcher
 balsamiqwireframes
+bambustudio
 bartender
 basecamp3
+baseline
+baseline-nodaemon
 bbedit
 bbeditpkg
 beamstudio
@@ -101,6 +104,7 @@ bracketsio
 brave
 bravepkg
 brosix
+bruno
 bugdom
 burpsuitecommunityedition
 burpsuiteprofessional
@@ -109,6 +113,7 @@ caffeine
 cakebrew
 calcservice
 calibre
+calibriteprofiler
 camostudio
 camtasia
 camtasia2019
@@ -186,6 +191,7 @@ dragonframe5
 drawio
 drift
 dropbox
+droplr
 druvainsync
 dstny
 duckduckgo
@@ -289,6 +295,7 @@ hmavpn
 homebrew
 hoppscotch
 horos
+hot
 houdahspot
 hpeasyadmin
 hpeasystart
@@ -302,6 +309,7 @@ ibmnotifier
 icons
 idrive
 idrivethin
+igv
 iina
 imageoptim
 imazingprofileeditor
@@ -396,6 +404,7 @@ macadminspython
 maccyapp
 macfuse
 macoslaps
+macpass
 macports
 mactex
 mactracker
@@ -479,6 +488,7 @@ monitorcontrol
 montereyblocker
 morisawadesktopmanager
 mowgliiitsycal
+multipass
 munki
 munkiadmin
 musescore
@@ -778,6 +788,7 @@ wwdc
 xbar
 xcreds
 xeroxphaser7800
+xeroxprintandscan
 xeroxworkcentre7800
 xink
 xmenu
