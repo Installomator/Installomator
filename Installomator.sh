@@ -337,7 +337,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6beta"
-VERSIONDATE="2024-04-14"
+VERSIONDATE="2024-04-23"
 
 # MARK: Functions
 
@@ -6107,6 +6107,13 @@ morisawadesktopmanager)
     appNewVersion=$(getJSONValue "${morisawadesktopmanagerVersions}" "latest_version")
     expectedTeamID="662PVPVA3N"
     ;;
+mountainduck)
+    name="Mountain Duck"
+    type="zip"
+    downloadURL=$(curl -fs https://version.mountainduck.io/changelog.rss | xpath '//rss/channel/item/enclosure/@url' 2>/dev/null | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs https://version.mountainduck.io/changelog.rss | xpath '//rss/channel/item/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2)
+    expectedTeamID="G69SCX94XU"
+    ;;
 multipass)
     name="multipass"
     type="pkg"
@@ -7077,6 +7084,22 @@ retrobatch)
     downloadURL="https://flyingmeat.com/download/Retrobatch.zip"
     appNewVersion=$(curl -fs "https://flyingmeat.com/retrobatch/" | grep -i download | grep -i zip | grep -iv Documentation | sed -E 's/.*Download.*href.*https.*zip.*Retrobatch ([0-9.]*)<.*/\1/g')
     expectedTeamID="WZCN9HJ4VP"
+    ;;
+rhino7)
+    name="Rhino 7"
+    type="dmg"
+    sparkleFeed=$(curl -fs "https://files.mcneel.com/rhino/7/mac/updates/commercialUpdates.xml")
+    appNewVersion=$(echo "$sparkleFeed" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString[1]' 2>/dev/null | cut -d '"' -f 2 | cut -d ' ' -f 1)
+    downloadURL=$(echo "$sparkleFeed" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | cut -d '"' -f 2)
+    expectedTeamID="D6XDM4N99E"
+    ;;
+rhino8)
+    name="Rhino 8"
+    type="dmg"
+    sparkleFeed=$(curl -fs "https://files.mcneel.com/rhino/8/mac/updates/commercialUpdates.xml")
+    appNewVersion=$(echo "$sparkleFeed" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | cut -d '"' -f 2 | cut -d ' ' -f 1)
+    downloadURL=$(echo "$sparkleFeed" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | cut -d '"' -f 2)
+    expectedTeamID="D6XDM4N99E"
     ;;
 ricohpsprinters)
     name="Ricoh Printers"
@@ -8117,6 +8140,14 @@ transfer)
     appNewVersion=$(curl -fs "https://www.intuitibits.com/appcasts/transfercast.xml" | xpath '(//rss/channel/item/sparkle:shortVersionString)[1]' 2>/dev/null | cut -d ">" -f2 | cut -d "<" -f1)
     expectedTeamID="2B9R362QNU"
     ;;
+transmit5)
+    name="Transmit"
+    type="zip"
+    downloadURL="https://download.panic.com/transmit/Transmit-5-Latest.zip"
+    appNewVersion="$(curl -fsI "https://download.panic.com/transmit/Transmit-5-Latest.zip" | grep -i "^location" | sed -E 's/.*Transmit%20([0-9]+(\.[0-9]+)*)\.zip/\1/' | tr -d '\r')"
+    expectedTeamID="VE8FC488U5"
+    ;;
+
 trapcode)
     name="Trapcode Suite"
     type="zip"
@@ -8875,9 +8906,9 @@ zulujdk8)
     type="pkgInDmg"
     packageID="com.azulsystems.zulu.8"
     if [[ $(arch) == i386 ]]; then
-        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu8.*ca-jdk8.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
+        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu8.*ca-jdk8.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a><\/td>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort -V | tail -1)
     elif [[ $(arch) == arm64 ]]; then
-        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu8.*ca-jdk8.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
+        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu8.*ca-jdk8.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a><\/td>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | tail -1)
     fi
     expectedTeamID="TDTHCUPYFR"
     appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Info.plist" "CFBundleName" | sed 's/Zulu //'; fi }

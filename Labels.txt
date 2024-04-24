@@ -487,6 +487,7 @@ mongodbcompass
 monitorcontrol
 montereyblocker
 morisawadesktopmanager
+mountainduck
 mowgliiitsycal
 multipass
 munki
@@ -609,6 +610,8 @@ renew
 renew-noagent
 resiliosynchome
 retrobatch
+rhino7
+rhino8
 ricohpsprinters
 ringcentralapp
 ringcentralclassicapp
@@ -735,6 +738,7 @@ tom4aconverter
 torbrowser
 tower
 transfer
+transmit5
 trapcode
 trex
 tunnelbear
