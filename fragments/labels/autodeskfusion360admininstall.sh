@@ -8,4 +8,3 @@ autodeskfusion360admininstall)
     appName="Autodesk Fusion 360.app"
     blockingProcesses=( "Autodesk Fusion 360" "Fusion 360" )
     ;;
-    
