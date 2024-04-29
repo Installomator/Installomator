@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/zsh --no-rcs
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -26,7 +26,7 @@ xpath() {
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-    
+
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
@@ -34,7 +34,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     else
         filetype=$type
     fi
-    
+
     if [ -n "$archiveDestinationName" ]; then
         downloadURL=$(curl -sf "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
     else
@@ -48,7 +48,7 @@ versionFromGit() {
     # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-        
+
     appNewVersion=$(curl --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame"
@@ -68,7 +68,7 @@ pkgInvestigation() {
         exit 4
     fi
     echo "Team ID found for PKG: $teamID"
-    
+
     echo "For PKGs it's advised to find packageID for version checking, so extracting those"
     pkgutil --expand "$pkgPath" "$archiveName"_pkg
     if [[ -a "$archiveName"_pkg/Distribution ]] ; then
@@ -92,11 +92,11 @@ dmgInvestigation() {
         exit 3
     fi
     echo "Mounted: $dmgmount"
-    
+
     # check if app og pkg exists on disk image
     appPath=$(find "$dmgmount" -name "*.app" -maxdepth 1 -print )
     pkgPath=$(find "$dmgmount" -name "*.pkg" -maxdepth 1 -print )
-    
+
     if [[ $appPath != "" ]]; then
         echo "App found: $appPath"
         if [[ $archiveExt = "dmgInZip" ]]; then
@@ -115,7 +115,7 @@ dmgInvestigation() {
         echo "Nothing found on DMG."
         exit 9
     fi
-    
+
     hdiutil detach "$dmgmount"
 }
 
@@ -297,12 +297,12 @@ elif [ "$archiveExt" = "zip" ] || [ "$archiveExt" = "tbz" ] || [ "$archiveExt" =
     echo "Compressed file found"
     # unzip the archive
     tar -xf "$archiveName"
-    
+
     # check if app og pkg exists after expanding
     appPath=$(find "$tmpDir" -name "*.app" -maxdepth 2 -print )
     pkgPath=$(find "$tmpDir" -name "*.pkg" -maxdepth 2 -print )
     archiveName=$(find "$tmpDir" -name "*.dmg" -maxdepth 2 -print )
-    
+
     if [[ $appPath != "" ]]; then
         echo "App found: $appPath"
         appInvestigation
