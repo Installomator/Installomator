@@ -116,6 +116,7 @@ camtasia2022
 camtasia2023
 camunda
 canva
+capturewolf
 carboncopycloner
 catoclient
 charles
