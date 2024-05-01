@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/zsh --no-rcs
 
 # how to remove Installomator.
 
