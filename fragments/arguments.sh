@@ -99,18 +99,6 @@ if [[ ! -x $DIALOG_CMD ]]; then
     DIALOG_CMD_FILE=""
 fi
 
-# scot: moved here from main.sh to ensure all arguments are available before executing labels
-# MARK: finish reading the arguments:
-while [[ -n $1 ]]; do
-    if [[ $1 =~ ".*\=.*" ]]; then
-        # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" INFO
-        eval $1
-    fi
-    # shift to next argument
-    shift 1
-done
-
 # MARK: labels in case statement
 case $label in
 longversion)
