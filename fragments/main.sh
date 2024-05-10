@@ -6,8 +6,9 @@
 esac
 
 # MARK: reading arguments again
+printlog "Reading arguments again: ${argumentsArray[*]}" INFO
 for argument in "${argumentsArray[@]}"; do
-    printlog "argument: $argument"
+    printlog "argument: $argument" DEBUG
     eval $argument
 done
 
