@@ -5,6 +5,17 @@
     ;;
 esac
 
+# MARK: finish reading the arguments:
+while [[ -n $1 ]]; do
+    if [[ $1 =~ ".*\=.*" ]]; then
+        # if an argument contains an = character, send it to eval
+        printlog "setting variable from argument $1" INFO
+        eval $1
+    fi
+    # shift to next argument
+    shift 1
+done
+
 # verify we have everything we need
 if [[ -z $name ]]; then
     printlog "need to provide 'name'" ERROR
