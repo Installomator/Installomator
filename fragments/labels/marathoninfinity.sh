@@ -1,5 +1,5 @@
 marathoninfinity)
-    name="Marathon Infinity"
+    name="Classic Marathon Infinity"
     type="dmg"
     archiveName="MarathonInfinity-[0-9.]*-Mac.dmg"
     versionKey="CFBundleVersion"
