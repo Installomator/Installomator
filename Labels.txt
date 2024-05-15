@@ -212,6 +212,9 @@ egnytewebedit
 element
 elgatocamerahub
 elgatostreamdeck
+emacs
+enpass
+eposconnect
 escrowbuddy
 eshareosx
 espanso
@@ -366,6 +369,7 @@ keyaccess
 keybase
 keyboardmaestro
 keyshot12
+keyshot12_2024
 keystoreexplorer
 kimplusclientmodul
 klokki
@@ -598,6 +602,7 @@ realvncserver
 realvncviewer
 rectangle
 redcanarymacmonitor
+redshift
 reflector4
 relatel
 remotedesktopmanagerenterprise
