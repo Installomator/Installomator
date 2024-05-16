@@ -698,6 +698,7 @@ sublimetext
 suitestudio
 superhuman
 supportapp
+supportapphelper
 surfdrive
 suspiciouspackage
 swiftdialog

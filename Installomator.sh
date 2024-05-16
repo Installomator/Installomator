@@ -337,7 +337,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.6.7"
-VERSIONDATE="2024-05-15"
+VERSIONDATE="2024-05-16"
 
 # MARK: Functions
 
@@ -7810,6 +7810,16 @@ superhuman)
     ;;
 supportapp)
     name="Support"
+    type="pkg"
+    packageID="nl.root3.support"
+    downloadURL=$(downloadURLFromGit root3nl SupportApp)
+    appNewVersion=$(versionFromGit root3nl SupportApp)
+    expectedTeamID="98LJ4XBGYK"
+    blockingProcesses=( NONE )
+    ;;
+supportapphelper)
+    name="SupportHelper"
+    archiveName="SupportHelper"
     type="pkg"
     packageID="nl.root3.support"
     downloadURL=$(downloadURLFromGit root3nl SupportApp)
