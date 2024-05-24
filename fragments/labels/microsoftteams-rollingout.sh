@@ -1,4 +1,4 @@
-microsoftteamsrollingout)
+microsoftteams-rollingout)
     name="Microsoft Teams"
     type="pkg"
     packageID="com.microsoft.teams2"
