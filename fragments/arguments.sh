@@ -49,6 +49,12 @@ if [[ $label == "version" ]]; then
     exit 0
 fi
 
+# Use proxy for network access if defined
+if [[ -n $PROXY ]]; then
+    printlog "Proxy defined: $PROXY" REQ
+    export ALL_PROXY="$PROXY"
+fi
+
 # MARK: Logging
 log_location="/private/var/log/Installomator.log"
 

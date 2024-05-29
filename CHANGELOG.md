@@ -1,3 +1,6 @@
+- Added `PROXY` variable to handle proxy settings if needed.
+- Arguments now load before and after the labels are loaded.
+
 ## v10.5
 
 - improved comments (#1219, #1229, #1258 )

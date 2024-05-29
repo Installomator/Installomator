@@ -151,6 +151,14 @@ IGNORE_DND_APPS=""
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
 
+# Use proxy for network access
+PROXY=""
+# Configure proxy settings so that curl can work through that if needed.
+# Please note that some proxy configurations allow text download, but block binary downloads.
+# So could be a situation where curl works for version, but not for download.
+# This error line is then shown: “curl output was: curl: (22) The requested URL returned error: 403”
+
+
 # Swift Dialog integration
 
 # These variables will allow Installomator to communicate progress with Swift Dialog
