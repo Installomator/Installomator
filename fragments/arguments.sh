@@ -60,7 +60,7 @@ if [[ -n $PROXY ]]; then
         printlog "ERROR : No proxy connection, skipping this." REQ
     else
         printlog "Proxy access detected, so using that." REQ
-    export ALL_PROXY="$PROXY"
+        export ALL_PROXY="$PROXY"
     fi
 fi
 
