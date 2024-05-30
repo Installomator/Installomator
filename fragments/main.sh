@@ -204,7 +204,7 @@ if ! cd "$tmpDir"; then
 fi
 
 # MARK: get installed version
-getAppVersion
+[[ ! $appversion ]] && getAppVersion
 printlog "appversion: $appversion"
 
 # NOTE: Exit if new version is the same as installed version (appNewVersion specified)
