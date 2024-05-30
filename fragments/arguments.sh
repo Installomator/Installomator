@@ -51,8 +51,17 @@ fi
 
 # Use proxy for network access if defined
 if [[ -n $PROXY ]]; then
-    printlog "Proxy defined: $PROXY" REQ
+    printlog "Proxy defined: $PROXY, testing access to it" REQ
+    proxyAddress=$(echo $PROXY | cut -d ":" -f1)
+    portNumber=$(echo $PROXY | cut -d ":" -f2)
+    printlog "Proxy: $proxyAddress, Port: $portNumber"
+    if cmdOutput=$(! nc -z -v -G 10 ${proxyAddress} ${portNumber} 2>&1) ; then
+        printlog "$cmdOutput" REQ
+        printlog "ERROR : No proxy connection, skipping this." REQ
+    else
+        printlog "Proxy access detected, so using that." REQ
     export ALL_PROXY="$PROXY"
+    fi
 fi
 
 # MARK: Logging

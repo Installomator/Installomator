@@ -153,7 +153,9 @@ IGNORE_DND_APPS=""
 
 # Use proxy for network access
 PROXY=""
+# Use this format for proxy: server.network.dns:port
 # Configure proxy settings so that curl can work through that if needed.
+# Port number is important for the check of access.
 # Please note that some proxy configurations allow text download, but block binary downloads.
 # So could be a situation where curl works for version, but not for download.
 # This error line is then shown: “curl output was: curl: (22) The requested URL returned error: 403”
