@@ -3,7 +3,7 @@ webexteams)
     # credit: Erik Stam (@erikstam)
     name="Webex"
     type="dmg"
-    appNewVersion=$(curl -fs https://help.webex.com/en-us/article/8dmbcr/Webex-App-%7C-What%27s-New | tr '"' "\n" |  grep "Mac—"| head -1|sed 's/[^0-9\.]//g' )
+    appNewVersion=$(curl -s https://help.webex.com/en-us/article/mqkve8/Webex-App-%7C-Release-notes | grep Mac | head -n 2 | tail -n 1 | cut -d "—" -f 2 | cut -d "<" -f 1)
     blockingProcesses=( "Webex" "Webex Teams" "Cisco WebEx Start" "WebexHelper")
     if [[ $(arch) == arm64 ]]; then
         downloadURL="https://binaries.webex.com/WebexDesktop-MACOS-Apple-Silicon-Gold/Webex.dmg"
