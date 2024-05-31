@@ -396,6 +396,7 @@ logitechoptionsplus
 logitune
 logseq
 loom
+loupedeck
 lowprofile
 lsagent
 lucidlink
@@ -622,7 +623,9 @@ ringcentralmeetings
 ringcentralphone
 rocket
 rocketchat
+rodecentral
 rodeconnect
+rodeunify
 royaltsx
 rstudio
 rustdesk
@@ -770,7 +773,7 @@ vectorworks2023sp6
 vectorworks2023sp7
 vectorworks2023sp8
 vectorworks2024update3
-venturablocker
+vectorworks2024update4
 veracrypt
 vfx
 vimac
