@@ -3,5 +3,5 @@ dangerzone)
     type="dmg"
     downloadURL="$(downloadURLFromGit freedomofpress dangerzone)"
     appNewVersion="$(versionFromGit freedomofpress dangerzone)"
-    expectedTeamID="N9B95FDWH4"
+    expectedTeamID="94ZZGGGJ3W"
     ;;
