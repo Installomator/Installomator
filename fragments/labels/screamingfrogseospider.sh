@@ -6,7 +6,7 @@ screamingfrogseospider)
     elif [[ $(arch) == arm64 ]]; then
         platform="Mac - (apple silicon)"
     fi
-    downloadURL=$(curl -fs "https://www.screamingfrog.co.uk/wp-content/themes/screamingfrog/inc/download-modal.php" | grep "${platform}" | grep -i -o "https.*\.dmg" | head -1)
-    appNewVersion=$(print "$downloadURL" | sed -E 's/https.*\/[a-zA-Z]*-([0-9.]*)\.dmg/\1/g')".0"
+    downloadURL=$(curl -fs "https://www.screamingfrog.co.uk/" | grep "$platform" | grep "ScreamingFrogSEOSpider" | sed -r 's/.*href="([^"]+).*/\1/g' )
+    appNewVersion=$( awk -F'-' '{print $3}' <<< "$downloadURL" )
     expectedTeamID="CAHEVC3HZC"
     ;;
