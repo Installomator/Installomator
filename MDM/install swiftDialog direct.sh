@@ -142,25 +142,37 @@ if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
     downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
 fi
 #printlog "$downloadURL"
-appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
-#printlog "$appNewVersion"
+rawVersionString=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)
+
+# Get Github Version
+appNewVersion=$(echo "$rawVersionString" | awk -F '-' '{print $1}' | sed 's/[^0-9\.]//g' | sed 's/\.$//')
+
+# Get Github BundleVersion
+appNewBundleVersion=$(echo "$rawVersionString" | awk '{sub(/-/," ")}1' | awk '{print $2}' | sed 's/\r//g')
+
 expectedTeamID="PWA5E9TQ59"
 destFile="/Library/Application Support/Dialog/Dialog.app"
-versionKey="CFBundleShortVersionString" #CFBundleVersion
-currentInstalledVersion="$(/usr/libexec/PlistBuddy -c "Print :$versionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
-printlog "${name} version installed: $currentInstalledVersion"
+versionKey="CFBundleShortVersionString"
+bundleVersionKey="CFBundleVersion"
 
+# Get App Version
+currentInstalledVersion="$(/usr/libexec/PlistBuddy -c "Print :$versionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
+
+# Get App BundleVersion
+currentInstalledVersion="$(/usr/libexec/PlistBuddy -c "Print :$bundleVersionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
+
+printlog "${name} version: $currentInstalledVersion bundleVersion: $currentInstalledBundleVersion"
 destFile2="/usr/local/bin/dialog"
 # NOTE: Condition for installation
-if [[ ! -d "${destFile}" || ! -x "${destFile2}" || "$currentInstalledVersion" != "$appNewVersion" || "$INSTALL" == "force" ]]; then
+if [[ ! -d "${destFile}" || ! -x "${destFile2}" || || "$currentInstalledVersion" != "$appNewVersion" || "$currentInstalledBundleVersion" != "$appNewBundleVersion" || "$INSTALL" == "force" ]]; then
     printlog "$name not found, version not latest, icon for Dialog was changed."
     printlog "${destFile}"
-    printlog "Installing version ${appNewVersion}…"
+    printlog "Installing version ${appNewVersion} ${appNewBundleVersion}…"
     # Create temporary working directory
     tmpDir="$(mktemp -d || true)"
     printlog "Created working directory '$tmpDir'"
     # Download the installer package
-    printlog "Downloading $name package version $appNewVersion from: $downloadURL"
+    printlog "Downloading $name package version $appNewVersion $appNewBundleVersion from: $downloadURL"
     installationCount=0
     exitCode=9
     while [[ $installationCount -lt 3 && $exitCode -gt 0 ]]; do
@@ -213,10 +225,10 @@ if [[ ! -d "${destFile}" || ! -x "${destFile2}" || "$currentInstalledVersion" !=
         printlog "ERROR : Installation of $name failed. Aborting."
         caffexit $exitCode
     else
-        printlog "$name version $appNewVersion installed!"
+        printlog "$name version $appNewVersion $appNewBundleVersion installed!"
     fi
 else
-    printlog "$name version $appNewVersion already found. Perfect!"
+    printlog "$name version $appNewVersion $appNewBundleVersion already found. Perfect!"
 fi
 
 printlog "$(date +%F\ %T) : [LOG-END] ${log_message}"
