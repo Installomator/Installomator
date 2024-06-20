@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.6.10"
+VERSION="10.6.11"
 VERSIONDATE="2024-06-20"
 
 # MARK: Functions
@@ -2266,7 +2266,7 @@ bambustudio)
     type="dmg"
     downloadURL=$(downloadURLFromGit "bambulab" "BambuStudio")
     appNewVersion=$(versionFromGit "bambulab" "BambuStudio")
-    expectedTeamID="F4SKHPXDD9"
+    expectedTeamID="T3UBR9Y3B2"
     ;;
 bartender)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
