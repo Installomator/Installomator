@@ -1,10 +1,10 @@
-#!/bin/zsh
+#!/bin/zsh --no-rcs
 label="" # if no label is sent to the script, this will be used
 
 # Installomator
 #
 # Downloads and installs Applications
-# 2020-2021 Installomator
+# 2020-2024 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
 #
@@ -92,6 +92,7 @@ LOGO=appstore
 #   - microsoft     Microsoft Endpoint Manager (Intune)
 #   - ws1           Workspace ONE (AirWatch)
 #   - filewave      FileWave
+#   - kandji        Kandji
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
