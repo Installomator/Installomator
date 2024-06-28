@@ -5,15 +5,11 @@
     ;;
 esac
 
-# MARK: finish reading the arguments:
-while [[ -n $1 ]]; do
-    if [[ $1 =~ ".*\=.*" ]]; then
-        # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" INFO
-        eval $1
-    fi
-    # shift to next argument
-    shift 1
+# MARK: reading arguments again
+printlog "Reading arguments again: ${argumentsArray[*]}" INFO
+for argument in "${argumentsArray[@]}"; do
+    printlog "argument: $argument" DEBUG
+    eval $argument
 done
 
 # verify we have everything we need
