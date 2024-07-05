@@ -213,6 +213,7 @@ element
 elgatocamerahub
 elgatostreamdeck
 emacs
+enpass
 eposconnect
 escrowbuddy
 eshareosx
@@ -273,7 +274,6 @@ googleadseditor
 googlechrome
 googlechromeenterprise
 googlechromepkg
-googledrive
 googledrivebackupandsync
 googledrivefilestream
 googleearth
@@ -369,6 +369,7 @@ keyaccess
 keybase
 keyboardmaestro
 keyshot12
+keyshot12_2024
 keystoreexplorer
 kimplusclientmodul
 klokki
@@ -395,11 +396,13 @@ logitechoptionsplus
 logitune
 logseq
 loom
+loupedeck
 lowprofile
 lsagent
 lucidlink
 lucifer
 lulu
+lunadisplay
 macadminspython
 maccyapp
 macfuse
@@ -600,6 +603,7 @@ realvncserver
 realvncviewer
 rectangle
 redcanarymacmonitor
+redshift
 reflector4
 relatel
 remotedesktopmanagerenterprise
@@ -619,7 +623,9 @@ ringcentralmeetings
 ringcentralphone
 rocket
 rocketchat
+rodecentral
 rodeconnect
+rodeunify
 royaltsx
 rstudio
 rustdesk
@@ -695,6 +701,7 @@ sublimetext
 suitestudio
 superhuman
 supportapp
+supportapphelper
 surfdrive
 suspiciouspackage
 swiftdialog
@@ -755,7 +762,18 @@ unnaturalscrollwheels
 utm
 vagrant
 vanilla
-venturablocker
+vectorworks2021sp5
+vectorworks2022sp6
+vectorworks2023sp1
+vectorworks2023sp2
+vectorworks2023sp3
+vectorworks2023sp4
+vectorworks2023sp5
+vectorworks2023sp6
+vectorworks2023sp7
+vectorworks2023sp8
+vectorworks2024update3
+vectorworks2024update4
 veracrypt
 vfx
 vimac
