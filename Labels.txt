@@ -206,6 +206,7 @@ eclipsetemurin11
 eclipsetemurin17
 eclipsetemurin21
 eclipsetemurin8
+ecosiabrowser
 egnyte
 egnytecore
 egnytewebedit
@@ -284,6 +285,7 @@ gpgsuite
 gpgsync
 grammarly
 grandperspective
+graphicconverter10
 grasshopper
 grooveomnidialerenterpriseedition
 gyazo
@@ -406,6 +408,8 @@ lunadisplay
 macadminspython
 maccyapp
 macfuse
+macgiro13
+macgiro14
 macoslaps
 macpass
 macports
@@ -460,6 +464,7 @@ microsoftsharepointplugin
 microsoftskypeforbusiness
 microsoftskypeforbusinessremovaltool
 microsoftteams
+microsoftteams-rollingout
 microsoftteamsclassic
 microsoftteamsnew
 microsoftteamsreset
