@@ -91,6 +91,7 @@ betterdisplay
 bettertouchtool
 beyondcomparepro
 bibdesk
+bimcollabzoom
 bitrix24
 bitwarden
 blender
@@ -418,6 +419,7 @@ mactracker
 magicbullet
 mailmate
 malwarebytes
+mamp
 marathon
 marathon2
 marathoninfinity
@@ -659,6 +661,7 @@ sipgateclinq
 sirimote
 sizeup
 sketch
+sketchup2024
 sketchupviewer
 skim
 skype
