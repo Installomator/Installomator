@@ -1,5 +1,5 @@
-yubikeymanager)
-    name="YubiKey Manager"
+yubikeymanagercli)
+    name="YubiKey Manager CLI"
     type="pkg"
     appCustomVersion(){/usr/local/ykman/ykman -v | awk '{print $5}'}
 	downloadURL=$(downloadURLFromGit Yubico yubikey-manager)
