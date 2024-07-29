@@ -8381,8 +8381,8 @@ yubicoauthenticator)
     appNewVersion=""
     expectedTeamID="LQA3CS5MM7"
     ;;
-yubikeymanager)
-    name="YubiKey Manager"
+yubikeymanagercli)
+    name="YubiKey Manager CLI"
     type="pkg"
     appCustomVersion(){/usr/local/ykman/ykman -v | awk '{print $5}'}
 	downloadURL=$(downloadURLFromGit Yubico yubikey-manager)
@@ -8391,12 +8391,10 @@ yubikeymanager)
     #CLI for YubikeyManager which is not installed via the QT version.
     ;;
 yubikeymanagerqt)
-    # credit: Tadayuki Onishi (@kenchan0130)
-    name="YubiKey Manager GUI"
+    name="YubiKey Manager"
     type="pkg"
-    downloadURL="https://developers.yubico.com/yubikey-manager-qt/Releases/$(curl -sfL https://api.github.com/repos/Yubico/yubikey-manager-qt/releases/latest | awk -F '"' '/"tag_name"/ { print $4 }')-mac.pkg"
-    #appNewVersion=$(curl -fs https://developers.yubico.com/yubikey-manager-qt/Releases/ | grep mac.pkg | head -1 | sed -E "s/.*-([0-9.]*)-mac.*/\1/") # does not work
-    appNewVersion=$(versionFromGit Yubico yubikey-manager-qt)
+    appNewVersion=$(curl -fs https://developers.yubico.com/yubikey-manager-qt/Releases/ | grep mac.pkg | head -1 | sed -E "s/.*-([0-9.]*)-mac.*/\1/")
+    downloadURL="https://developers.yubico.com/yubikey-manager-qt/Releases/yubikey-manager-qt-$appNewVersion-mac.pkg"
     expectedTeamID="LQA3CS5MM7"
     ;;
 zappy)
