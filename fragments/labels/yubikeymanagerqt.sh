@@ -1,5 +1,4 @@
 yubikeymanagerqt)
-    # credit: Tadayuki Onishi (@kenchan0130)
     name="YubiKey Manager GUI"
     type="pkg"
     downloadURL="https://developers.yubico.com/yubikey-manager-qt/Releases/yubikey-manager-qt-latest-mac.pkg"
