@@ -5,5 +5,5 @@ minecraftedu)
     downloadURL="https://aka.ms/meeclientmacos"
     appNewVersion=""
     expectedTeamID="UBF8T346G9"
-    appName="minecraftpe.app"
+    appName="minecraft-edu.app"
     ;;
