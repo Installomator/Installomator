@@ -6,7 +6,7 @@
 	- airtamepkg (#1379)
 	- anastasiysextensionmanager (#1408)
 	- apachedirectorystudio (#1301)
-	- apachenetbeans (#1493)
+	- apachenetbeans (#1493, #1739)
 	- aquamacs (#1504)
 	- arduinoide (#1505)
 	- automounter (#1300)
@@ -180,11 +180,11 @@
 	- xeroxphaser7800 (#1554)
 	- xeroxworkcentre7800 (#1554)
 	- xmind (#1474)
+	- yubikeymanagerqt (#1773)
 	- zerotier (#1418)
 	- zulujdk8 (#1570)
 - deleted labels
 	- atom (#1437)
-	- duodevicehealth
 	- redeye (#1483)
 
 ## v10.5
@@ -211,6 +211,7 @@
 	- elgatostreamdeck (#1174)
 	- escrowbuddy (#1098)
 	- franz (#1190)
+	- gephi (#1730)
 	- homebrew (#1252)
 	- isadora (#1250)
 	- jamfcheck (#1212)

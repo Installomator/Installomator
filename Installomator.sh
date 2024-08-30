@@ -336,7 +336,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.6beta"
+VERSION="10.6"
 VERSIONDATE="2024-08-30"
 
 # MARK: Functions
@@ -2261,7 +2261,7 @@ bambustudio)
     type="dmg"
     downloadURL=$(downloadURLFromGit "bambulab" "BambuStudio")
     appNewVersion=$(versionFromGit "bambulab" "BambuStudio")
-    expectedTeamID="F4SKHPXDD9"
+    expectedTeamID="T3UBR9Y3B2"
     ;;
 bartender)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
@@ -3561,19 +3561,19 @@ filemakerpro)
     ;;
 filezilla)
     name="FileZilla"
-    type="tbz"
+    type="bz2"
     packageID="org.filezilla-project.filezilla"
     if [[ $(arch) == "arm64" ]]; then
         cpu_arch="arm64"
     elif [[ $(arch) == "i386" ]]; then
         cpu_arch="x86"
     fi
-    downloadURL=$(curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos-$cpu_arch | head -n 1 | awk -F '"' '{print $2}' )
-    appNewVersion=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos-$cpu_arch | head -n 1 | awk -F '_' '{print $2}' )
+    downloadURL=$(curl -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15" -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos-$cpu_arch | head -n 1 | awk -F '"' '{print $2}' )
+    appNewVersion=$( curl -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15" -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos-$cpu_arch | head -n 1 | awk -F '_' '{print $2}' )
     expectedTeamID="5VPGKXL75N"
     blockingProcesses=( NONE )
     ;;
-
+    
 finaldraft11)
     name="Final Draft 11"
     type="pkgInZip"
@@ -3879,6 +3879,19 @@ geneiousprime)
     downloadURL="https://assets.geneious.com/installers/geneious/release/latest/Geneious_Prime_mac64_with_jre.dmg"
     appNewVersion=""
     expectedTeamID="3BTDDQD3L6"
+    ;;
+gephi)
+	# An open-source software that visualizes and manipulates large graphs with ease, featuring a user-friendly interface and powerful real-time capabilities
+    name="Gephi"
+    type="dmg"
+    if [[ $(arch) == arm64 ]]; then
+        archiveName="gephi-[0-9.]*-macos-aarch64.dmg"
+    elif [[ $(arch) == i386 ]]; then
+        archiveName="gephi-[0-9.]*-macos-x64.dmg"
+    fi
+    appNewVersion="$(versionFromGit gephi gephi)"
+    downloadURL="$(downloadURLFromGit gephi gephi)"
+    expectedTeamID="3D8H75J8UL"
     ;;
 gfxcardstatus)
     name="gfxCardStatus"
@@ -8241,9 +8254,12 @@ trapcode)
     name="Trapcode Suite"
     type="zip"
     appCustomVersion(){
-      ls "/Users/Shared/Red Giant/uninstall" | grep trapcode | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 30 | sort -gru
+      ls "/Users/Shared/Red Giant/uninstall" | grep trapcode | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | sort -gru | head -n 1
     }
-    appNewVersion="$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/4406405448722-Trapcode-Suite" | grep -Eo "202[0-9]+\.[0-9]+\.[0-9]+" | head -n 1 | sort -gru)"
+    for i in {1..5}; do
+      appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/13336955539228-Red-Giant" | grep -i "Trapcode" | grep -Eo "([0-9][0-9][0-9][0-9]\.[0-9]+(\.[0-9])?)" | sort -gru | head -n 1)
+      if [[ -n $appNewVersion ]]; then break; else sleep 1; fi
+    done
     downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/trapcode/releases/${appNewVersion}/TrapcodeSuite-${appNewVersion}_Mac.zip"
     trapcodeResponse=$(curl -s -I -L "$downloadURL")
     trapcodeHttpStatus=$(echo "$trapcodeResponse" | head -n 1 | cut -d ' ' -f 2)
@@ -8337,31 +8353,6 @@ universaltypeclient)
     #packageID="com.extensis.UniversalTypeClient.universalTypeClient70.Info.pkg" # Does not contain the real version of the download
     downloadURL=https://bin.extensis.com/$( curl -fs https://www.extensis.com/support/universal-type-server-7/ | grep -o "UTC-[0-9].*M.zip" )
     expectedTeamID="J6MMHGD9D6"
-    ;;
-universe)
-    name="Universe"
-    type="zip"
-    appCustomVersion(){
-      ls "/Users/Shared/Red Giant/uninstall" | grep universe | grep -Eo "[0-9][0-9][0-9][0-9]+\.[0-9]+(\.[0-9]+)?" | head -n 30 | sort -gru
-    }
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.maxon.net/hc/en-us/sections/4406405441426-Universe" | grep "#icon-star" -B3 | grep -Eo "[0-9][0-9][0-9][0-9]+\.[0-9]+(\.[0-9]+)?" | head -n 30 | sort -gru | sed -r 's/.*VERSION=([^<]+).*/\1/')
-    if [[ "$appNewVersion" =~ ^[^.]*\.[^.]*$ ]]; then
-    	appNewVersion=$(sed 's/\([0-9]*\.[0-9]*\)/\1.0/' <<<"$appNewVersion")
-    fi
-    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/universe/releases/${appNewVersion}/Universe-${appNewVersion}_Mac.zip"
-    universeResponse=$(curl -s -I -L "$downloadURL")
-    universeHttpStatus=$(echo "$universeResponse" | head -n 1 | cut -d ' ' -f 2)
-    if [[ "universeHttpStatus" == "200" ]]; then
-      printlog "DownloadURL HTTP status code: $universeHttpStatus" INFO
-    elif [[ "$universeHttpStatus" == "404" ]]; then
-      downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/redgiant/universe/releases/${appNewVersion}/Universe-${appNewVersion}_mac.zip"
-      printlog "Had to change DownloadURL due HTTP Status." INFO
-    else
-      printlog "Unexpected HTTP status code: $universeHttpStatus" ERROR
-    fi
-    installerTool="Universe Installer.app"
-    CLIInstaller="Universe Installer.app/Contents/MacOS/Universe Installer"
-    expectedTeamID="4ZY22YGXQG"
     ;;
 unnaturalscrollwheels)
     name="UnnaturalScrollWheels"
@@ -8768,12 +8759,10 @@ yubikeymanager)
     #CLI for YubikeyManager which is not installed via the QT version.
     ;;
 yubikeymanagerqt)
-    # credit: Tadayuki Onishi (@kenchan0130)
     name="YubiKey Manager GUI"
     type="pkg"
-    downloadURL="https://developers.yubico.com/yubikey-manager-qt/Releases/$(curl -sfL https://api.github.com/repos/Yubico/yubikey-manager-qt/releases/latest | awk -F '"' '/"tag_name"/ { print $4 }')-mac.pkg"
-    #appNewVersion=$(curl -fs https://developers.yubico.com/yubikey-manager-qt/Releases/ | grep mac.pkg | head -1 | sed -E "s/.*-([0-9.]*)-mac.*/\1/") # does not work
-    appNewVersion=$(versionFromGit Yubico yubikey-manager-qt)
+    downloadURL="https://developers.yubico.com/yubikey-manager-qt/Releases/yubikey-manager-qt-latest-mac.pkg"
+    appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i "^location" | grep -Eo "[1-9][0-9\.]*" )
     expectedTeamID="LQA3CS5MM7"
     ;;
 zappy)

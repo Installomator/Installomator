@@ -4,8 +4,8 @@ gephi)
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
         archiveName="gephi-[0-9.]*-macos-aarch64.dmg"
-    elif [[ $(arch) == i386 ]]; then 
-        archiveName="gephi-[0-9.]*-macos-x64.dmg" 
+    elif [[ $(arch) == i386 ]]; then
+        archiveName="gephi-[0-9.]*-macos-x64.dmg"
     fi
     appNewVersion="$(versionFromGit gephi gephi)"
     downloadURL="$(downloadURLFromGit gephi gephi)"
