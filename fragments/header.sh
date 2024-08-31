@@ -322,6 +322,10 @@ datadogAPI=""
 # Simply add your own API key for this in order to have logs sent to Datadog
 # See more here: https://www.datadoghq.com/product/log-management/
 
+DATADOG_INTAKE_URL="https://http-intake.logs.datadoghq.com/v1/input"
+# Change this URL for other datadog endpoints, e.g. EU data centre:
+# DATADOG_INTAKE_URL="https://http-intake.logs.datadoghq.eu/api/v2/logs"
+
 # Log Date format used when parsing logs for debugging, this is the default used by
 # install.log, override this in the case statements if you need something custom per
 # application (See adobeillustrator).  Using stadard GNU Date formatting.
