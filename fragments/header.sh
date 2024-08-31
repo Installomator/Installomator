@@ -8,11 +8,12 @@ label="" # if no label is sent to the script, this will be used
 #
 # inspired by the download scripts from William Smith and Sander Schram
 #
-# Contributers:
+# Contributors:
 #    Armin Briegel - @scriptingosx
 #    Isaac Ordonez - @issacatmann
 #    Søren Theilgaard - @Theile
 #    Adam Codega - @acodega
+#    Trevor Sysock - @BigMacAdmin
 #
 # with contributions from many others
 
