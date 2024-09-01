@@ -33,6 +33,14 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     exit "$1"
 }
 
+isAppleSilicon() {
+    [[ "$(sysctl -in hw.optional.arm64)" == '1' ]]
+}
+
+isIntel() {
+    ! isAppleSilicon
+}
+
 runAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
