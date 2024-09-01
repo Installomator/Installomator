@@ -16,7 +16,8 @@
 #  https://github.com/Installomator/Installomator
 #
 ######################################################################
-scriptVersion="9.7"
+scriptVersion="9.8"
+# v.  9.8   : 2023-02-17 : caffeinate can track this process itself, simplified, and renamed caffexit to logexit. - @wakco
 # v.  9.7   : 2022-12-19 : Only kill the caffeinate process we create
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
 # v.  9.5   : 2022-09-21 : change of GitHub download
@@ -43,20 +44,20 @@ printlog(){
 }
 printlog "[LOG-BEGIN] ${log_message}"
 
-# Internet check
-if [[ "$(nc -z -v -G 10 1.1.1.1 53 2>&1 | grep -io "succeeded")" != "succeeded" ]]; then
-    printlog "ERROR. No internet connection, we cannot continue."
-    exit 90
-fi
-
-# No sleeping
-/usr/bin/caffeinate -d -i -m -u &
-caffeinatepid=$!
-caffexit () {
-    kill "$caffeinatepid" || true
+# Log our exit
+logexit () {
     printlog "[LOG-END] Status $1"
     exit $1
 }
+
+# Internet check
+if [[ "$(nc -z -v -G 10 1.1.1.1 53 2>&1 | grep -io "succeeded")" != "succeeded" ]]; then
+    printlog "ERROR. No internet connection, we cannot continue."
+    logexit 90
+fi
+
+# No sleeping
+/usr/bin/caffeinate -dimuw $$ &
 
 name="Installomator"
 printlog "$name check for installation"
@@ -139,7 +140,7 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
     # Handle installation errors
     if [[ $exitCode != 0 ]]; then
         printlog "ERROR. Installation of $name failed. Aborting."
-        caffexit $exitCode
+        logexit $exitCode
     else
         printlog "$name version $appNewVersion installed!"
     fi
@@ -147,4 +148,4 @@ else
     printlog "$name version $appNewVersion already found. Perfect!"
 fi
 
-caffexit 0
+logexit 0
