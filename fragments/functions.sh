@@ -1091,8 +1091,10 @@ versionCompare() {
 
     # Compare each segment of the versions
     for ((i=1; i<=$length; i++)); do
-        part1=$(echo $1 | cut -d "." -f $i)
-        part2=$(echo $2 | cut -d "." -f $i)
+        # Cut the version strings up and get the ith part.
+        # Added a . to handle versions without one. The cut command would always return the full version otherwise.
+        part1=$(echo "$1." | cut -d "." -f $i)
+        part2=$(echo "$2." | cut -d "." -f $i)
 
         # Make it 0 if the segment is empty.
         if [[ -z $part1 ]]; then
