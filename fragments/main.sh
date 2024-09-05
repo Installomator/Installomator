@@ -218,7 +218,7 @@ if [[ -n $appNewVersion ]]; then
     if [[ $ADVANCED_VERSION_COMPARISON == "yes" ]]; then
         printlog "Performing advanced version comparison for $appversion and $appNewVersion"
         shouldupdate=$(versionCompare $appversion $appNewVersion)
-        printlog "Should update according to advancedversioncomparison: $shouldupdate"
+        printlog "Should update according to advanced version comparison: $shouldupdate"
     else
         shouldupdate=true
     fi
