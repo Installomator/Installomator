@@ -1,7 +1,7 @@
 googledrive|\
 googledrivefilestream)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
-    name="Google Drive File Stream"
+    name="Google Drive"
     type="pkgInDmg"
     if [[ $(arch) == "arm64" ]]; then
        packageID="com.google.drivefs.arm64"
