@@ -1,5 +1,5 @@
 microsoftteamsnew)
-    name="Microsoft Teams (work or school)"
+    name="Microsoft Teams"
     type="pkg"
     #packageID="com.microsoft.teams2"
     downloadURL="https://go.microsoft.com/fwlink/?linkid=2249065"
