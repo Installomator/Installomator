@@ -859,6 +859,31 @@ installAppInDmgInZip() {
     installFromDMG
 }
 
+installPkgInDmgInZip() {
+    # unzip the archive
+    printlog "Unzipping $archiveName"
+    tar -xf "$archiveName"
+
+    # locate dmg in zip
+    if [[ -z $pkgName ]]; then
+        # find first file ending with 'dmg'
+        findfiles=$(find "$tmpDir" -iname "*.dmg" -maxdepth 2  )
+        filearray=( ${(f)findfiles} )
+        if [[ ${#filearray} -eq 0 ]]; then
+            cleanupAndExit 22 "couldn't find dmg in zip $archiveName" ERROR
+        fi
+        archiveName="$(basename ${filearray[1]})"
+        # it is now safe to overwrite archiveName for installFromDMG
+        printlog "found dmg: $tmpDir/$archiveName"
+    else
+        # it is now safe to overwrite archiveName for installFromDMG
+        archiveName="$pkgName"
+    fi
+
+    # installPkgInDmg, DMG expected to include an pkg (will not work with app)
+    installPkgInDmg
+}
+
 runUpdateTool() {
     printlog "Function called: runUpdateTool"
     if [[ -x $updateTool ]]; then

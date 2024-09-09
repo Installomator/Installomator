@@ -192,6 +192,7 @@ NOTIFY_DIALOG=0
 #     - pkgInDmg
 #     - pkgInZip
 #     - appInDmgInZip
+#     - pkgInDmgInZip
 #     - updateronly     This last one is for labels that should only run an updateTool (see below)
 #
 # - packageID: (optional)
