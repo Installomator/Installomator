@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of what the issue is. (Ex: The app label's downloadURL is coming up blank)
 
 **Installomator version**
-What version are you running? (Ex: Installomator v. 10.7beta, date 2024-08-31)
+What version are you running? (Ex: Installomator v. 10.7beta, date 2024-08-31. Be specific if running beta.)
 
 **Additional context**
 Add any other context about the problem here.
