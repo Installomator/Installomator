@@ -8,7 +8,6 @@ arturiasoftwarecenter)
 	while [[ -z $arturiaMatch ]]
 	do
 		arturiaPlatform=$(getJSONValue "$arturiaDetails" "[$arturiaCount].platform_type" 2>/dev/null)
-		echo $arturiaPlatform
 		if [ $? -eq 1 ]; then
 			downloadURL=""
 			appNewVersion=""
