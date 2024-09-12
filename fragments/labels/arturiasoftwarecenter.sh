@@ -3,9 +3,22 @@ arturiasoftwarecenter)
     type="pkg"
     packageID="com.Arturia.ArturiaSoftwareCenter.resources"
     versionKey="CFBundleVersion"
- 	onlineVersion=$(getJSONValue "$(curl -fsL 'https://www.arturia.com/api/resources?slugs=asc&types=soft')" '[0].version')
-	downloadVersion=$(echo "${onlineVersion}" | tr '.' '_')
- 	appNewVersion=$(echo "${onlineVersion}" | cut -d. -f1-3)
-	downloadURL="https://dl.arturia.net/products/asc/soft/Arturia_Software_Center__${downloadVersion}.pkg"
+	arturiaDetails="$(curl -fsL 'https://www.arturia.com/api/resources?slugs=asc&types=soft')"
+	arturiaCount=0
+	while [[ -z $arturiaMatch ]]
+	do
+		arturiaPlatform=$(getJSONValue "$arturiaDetails" "[$arturiaCount].platform_type" 2>/dev/null)
+		echo $arturiaPlatform
+		if [ $? -eq 1 ]; then
+			downloadURL=""
+			appNewVersion=""
+			break
+		elif [[ $arturiaPlatform == "mac" ]]; then
+			downloadURL=$(getJSONValue "$arturiaDetails" "[$arturiaCount].permalink")
+			appNewVersion="$(getJSONValue "$arturiaDetails" "[$arturiaCount].version")"
+			break
+		fi
+		arturiaCount=$(( $arturiaCount + 1 ))
+	done
     expectedTeamID="T53ZHSF36C"
     ;;
