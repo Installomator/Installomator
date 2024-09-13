@@ -1,9 +1,9 @@
 virtualbox)
-    # credit: AP Orlebeke (@apizz)
     name="VirtualBox"
     type="pkgInDmg"
     pkgName="VirtualBox.pkg"
-    downloadURL="https:$(curl -fsL "https://www.oracle.com/virtualization/technologies/vm/downloads/virtualbox-downloads.html" | grep "OSX.dmg" | xmllint --html --xpath 'string(//a/@href)' -)"
-    appNewVersion=$(echo "${downloadURL}" | awk -F '/' '{print $5}')
+    virtualboxDetails=$(curl -fs 'https://update.virtualbox.org/query.php/?platform=DARWIN_64BITS_GENERIC&version=0.0.0&branch=stable')
+    downloadURL=$(echo "${virtualboxDetails}" | cut -d" " -f2)
+    appNewVersion=$(echo "${virtualboxDetails}" | cut -d" " -f1)
     expectedTeamID="VB5E2TV963"
     ;;
