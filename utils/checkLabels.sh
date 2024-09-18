@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/zsh --no-rcs
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
@@ -51,7 +51,7 @@ runAsUser() {
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-    
+
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
@@ -75,7 +75,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 versionFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
-    
+
     appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame: $appNewVersion"
@@ -192,7 +192,7 @@ for fixedArch in i386 arm64; do
         echo "########## $label"
         labelWarning=0; labelError=0; expectedExtension=""; URLextension=""
         name=""; type=""; downloadURL=""; curlOptions=""; appNewVersion=""; expectedTeamID=""; blockingProcesses=""; updateTool=""; updateToolArguments=""; archiveName=""
-        
+
         #caseLabel
         if cat "${labels_dir}/${label}.sh" | grep -v -E '^[a-z0-9\_-]*(\)|\|\\)$' | grep -v ";;" > checkLabelCurrent.sh; then
             INSTALL=force # This is only to prevent various Microsoft labels from running "msupdate --list"
