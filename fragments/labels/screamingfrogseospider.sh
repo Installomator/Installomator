@@ -1,12 +1,33 @@
 screamingfrogseospider)
     name="Screaming Frog SEO Spider"
     type="dmg"
-    if [[ $(arch) == i386 ]]; then
-        platform="Mac - (intel)"
-    elif [[ $(arch) == arm64 ]]; then
-        platform="Mac - (apple silicon)"
+    json_url="https://formulae.brew.sh/api/cask/screaming-frog-seo-spider.json"
+
+    # Télécharger les données JSON
+    json_data=$(curl -s "$json_url")
+
+    # Extraire la version
+    version=$(echo "$json_data" | awk -F '"' '/"version":/ {print $4}')
+
+    # Déterminer l'architecture et sélectionner le bon URL de téléchargement
+    if [[ $(arch) == i386 || $(arch) == "x86_64" ]]; then
+        platform="x86_64"
+    elif [[ $(arch) == "arm64" ]]; then
+        platform="aarch64"
     fi
-    downloadURL=$(curl -fs "https://www.screamingfrog.co.uk/wp-content/themes/screamingfrog/inc/download-modal.php" | grep "${platform}" | grep -i -o "https.*\.dmg" | head -1)
-    appNewVersion=$(print "$downloadURL" | sed -E 's/https.*\/[a-zA-Z]*-([0-9.]*)\.dmg/\1/g')".0"
+
+    # Construire l'URL de téléchargement
+    downloadURL="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-${version}-${platform}.dmg"
+
+    # Vérifier la version récupérée
+    appNewVersion=${version}
+
+    # Team ID attendu pour l'authentification
     expectedTeamID="CAHEVC3HZC"
+
+    # Affichage des informations pour vérification
+    echo "Name: $name"
+    echo "Version: $appNewVersion"
+    echo "Download URL: $downloadURL"
+    echo "Expected Team ID: $expectedTeamID"
     ;;
