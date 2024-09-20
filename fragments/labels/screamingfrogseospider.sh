@@ -2,26 +2,23 @@ screamingfrogseospider)
     name="Screaming Frog SEO Spider"
     type="dmg"
     
-    # Extraire les URLs de téléchargement
-    apple_silicon_url=$(curl -s https://www.screamingfrog.co.uk/seo-spider/release-history/ | grep -o 'href="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-[0-9.]*-aarch64.dmg"' | cut -d'"' -f2)
-    intel_url=$(curl -s https://www.screamingfrog.co.uk/seo-spider/release-history/ | grep -o 'href="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-[0-9.]*-x86_64.dmg"' | cut -d'"' -f2)
+    # Extraire la version de la page d'historique des versions
+    version=$(curl -s https://www.screamingfrog.co.uk/seo-spider/release-history/ | grep -o '<td style="border: 1px solid; padding: 10px;"><a href="/seo-spider-[0-9]*/#[0-9.]*">[0-9.]*</a></td>' | head -1 | grep -o '[0-9.]*</a>' | cut -d'<' -f1)
     
-    # Extraire la version du nom de fichier
-    version=$(echo "$apple_silicon_url" | grep -o '[0-9.]*-aarch64' | cut -d'-' -f1)
-    
-    # Déterminer l'architecture et sélectionner l'URL appropriée
+    # Construire les URLs de téléchargement
+    baseURL="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-${version}"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="$apple_silicon_url"
+        downloadURL="${baseURL}-aarch64.dmg"
     else
-        downloadURL="$intel_url"
+        downloadURL="${baseURL}-x86_64.dmg"
     fi
     
-    appNewVersion="$version"
+    appNewVersion="${version}"
     expectedTeamID="CAHEVC3HZC"
     
-    # Vérification du téléchargement
-    if [ -z "$downloadURL" ]; then
-        echo "Erreur: Impossible de trouver l'URL de téléchargement pour Screaming Frog SEO Spider"
+    # Vérification
+    if [ -z "$version" ] || [ -z "$downloadURL" ]; then
+        echo "Erreur: Impossible de déterminer la version ou l'URL de téléchargement pour Screaming Frog SEO Spider"
         exit 1
     fi
     
