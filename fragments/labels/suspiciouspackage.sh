@@ -1,5 +1,4 @@
 suspiciouspackage)
-    # credit: Mischa van der Bent (@mischavdbent)
     name="Suspicious Package"
     type="dmg"
     downloadURL="https://mothersruin.com/software/downloads/SuspiciousPackage.dmg"
