@@ -297,8 +297,8 @@ NOTIFY_DIALOG=0
 #   differently than the installed app, then this variable can be used to name the
 #   installer that should be located after mounting/expanding the downloaded archive.
 #   See label adobecreativeclouddesktop
-# - ignoreInstallScriptExitCode:
-#   If this is set to one, then any non-zero exit code from a CLIInstaller will not be counted as a failure.
+# - ignoreCLIInstallerExitCode:
+#   If this is set to one, then any non-zero exit code from CLIInstaller will be ignored.
 #
 ### Logging
 # Logging behavior
