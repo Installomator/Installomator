@@ -20,4 +20,3 @@ arturiamcc)
     done
     expectedTeamID="T53ZHSF36C"
     ;;
-
