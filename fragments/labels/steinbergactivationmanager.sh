@@ -7,7 +7,7 @@ steinbergactivationmanager)
     name="Steinberg Activation Manager"
     type="pkgInDmg"
     packageID="com.steinberg.activationmanager"
-	downloadURL="https://www.steinberg.net/sam-mac"
+    downloadURL="https://www.steinberg.net/sam-mac"
     appNewVersion="$( curl -LIs "${downloadURL}" | grep -i "location:" | grep "dmg" | cut -d\/ -f7 | cut -d'.' -f1-3 )"
     expectedTeamID="5PMY476BJ6"
     ;;
