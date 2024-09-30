@@ -1,4 +1,4 @@
-ltspice)
+itspice)
 	# Free software for simulating & designing analog and power circuits
     name="LTspice"
     type="pkg"
