@@ -183,6 +183,7 @@ dialog
 dialpad
 digiexam
 discord
+diskdrill
 diskspace
 displaylinkmanager
 displaylinkmanagergraphicsconnectivity
@@ -266,6 +267,7 @@ gather
 gathertown
 gdevelop
 geneiousprime
+gephi
 gfxcardstatus
 gimp
 githubdesktop
@@ -281,6 +283,7 @@ googledrivefilestream
 googleearth
 googlejapaneseinput
 googlesoftwareupdate
+gosign
 gotomeeting
 gpgsuite
 gpgsync
@@ -418,6 +421,7 @@ mactex
 mactracker
 magicbullet
 mailmate
+mailtooutlook
 malwarebytes
 mamp
 marathon
@@ -725,7 +729,6 @@ tableaupublic
 tableaureader
 tageditor
 tailscale
-talkdeskcallbar
 talkdeskcxcloud
 taskpaper
 teamviewer
@@ -766,7 +769,6 @@ ultimakercura
 umbrellaroamingclient
 uniconverter
 universaltypeclient
-universe
 unnaturalscrollwheels
 utm
 vagrant
