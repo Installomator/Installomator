@@ -3,6 +3,6 @@ vscodium)
     type="dmg"
     downloadURL="$(downloadURLFromGit VSCodium vscodium)"
     appNewVersion="$(versionFromGit VSCodium vscodium)"
-    expectedTeamID="C7S3ZQ2B8V"
+    expectedTeamID="VC39D2VNQ7"
     blockingProcesses=( Electron )
     ;;
