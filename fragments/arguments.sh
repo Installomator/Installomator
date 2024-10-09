@@ -99,6 +99,9 @@ if [[ ! -x $DIALOG_CMD ]]; then
     DIALOG_CMD_FILE=""
 fi
 
+# Alias curl to make it stubborn for grabbing the download URL and version
+alias curl='stubbornlyAttempt curl'
+
 # MARK: labels in case statement
 case $label in
 longversion)
