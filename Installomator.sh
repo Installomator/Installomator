@@ -337,8 +337,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.7.0"
-VERSIONDATE="2024-10-07"
+VERSION="10.7.1"
+VERSIONDATE="2024-10-10"
 
 # MARK: Functions
 
@@ -2659,6 +2659,15 @@ charles)
     appNewVersion=$(curl -fs https://www.charlesproxy.com/download/latest-release/ | sed -nE 's/.*version.*value="([^"]*).*/\1/p')
     downloadURL="https://www.charlesproxy.com/assets/release/$appNewVersion/charles-proxy-$appNewVersion.dmg"
     expectedTeamID="9A5PCU4FSD"
+    ;;
+chatgpt)
+    name="ChatGPT"
+    # Downloads the latest 8.1.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="dmg"
+    downloadURL="https://persistent.oaistatic.com/sidekick/public/ChatGPT.dmg"
+    # appNewVersion= not available
+    expectedTeamID="2DC432GLL2"
+    versionKey="CFBundleVersion"
     ;;
 chatwork)
      name="Chatwork"

@@ -127,6 +127,7 @@ canva
 carboncopycloner
 catoclient
 charles
+chatgpt
 chatwork
 chemdoodle
 chemdoodle2d
