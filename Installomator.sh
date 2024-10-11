@@ -337,8 +337,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.7.1"
-VERSIONDATE="2024-10-10"
+VERSION="10.7.2"
+VERSIONDATE="2024-10-11"
 
 # MARK: Functions
 
@@ -2448,9 +2448,8 @@ adobebrackets|\
 bracketsio)
     name="Brackets"
     type="dmg"
-    downloadURL=$(downloadURLFromGit brackets-cont brackets )
-    appNewVersion=$(versionFromGit brackets-cont brackets )
-    expectedTeamID="JQ525L2MZD"
+    downloadURL="https://github.com/brackets-cont/brackets/releases/download/v2.2.0/brackets.2.2.0.dmg"
+    expectedTeamID="8F632A866K"
     ;;
 brave)
     name="Brave Browser"
