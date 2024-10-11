@@ -2,7 +2,6 @@ adobebrackets|\
 bracketsio)
     name="Brackets"
     type="dmg"
-    downloadURL=$(downloadURLFromGit brackets-cont brackets )
-    appNewVersion=$(versionFromGit brackets-cont brackets )
-    expectedTeamID="JQ525L2MZD"
+    downloadURL="https://github.com/brackets-cont/brackets/releases/download/v2.2.0/brackets.2.2.0.dmg"
+    expectedTeamID="8F632A866K"
     ;;
