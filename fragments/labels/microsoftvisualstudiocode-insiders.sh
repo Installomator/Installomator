@@ -1,6 +1,5 @@
 microsoftvisualstudiocode-insiders|\
 visualstudiocode-insiders)
-    # Team Demogorgon Label
     name="Visual Studio Code - Insiders"
     type="zip"
     expectedTeamID="UBF8T346G9"
