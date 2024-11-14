@@ -704,7 +704,7 @@ sqlprostudio
 starface72x
 starface73x
 starface81x
-starfaceuccclient
+starface90x
 stats
 steelseriesengine
 strongdm
