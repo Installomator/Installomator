@@ -89,7 +89,8 @@ errorMessage="A problem was encountered setting up this Mac. Please contact IT."
 #      Or fonts, like:
 #       "Apple SF Pro Font,/Library/Fonts/SF-Pro.ttf"
 ######################################################################
-scriptVersion="9.8"
+scriptVersion="9.9"
+# v.  9.9   : 2023-11-19 : Consider the bundle version where if the bundle version differs it will update, fixes problem where bundleversion and bundle get concatenated and it updates all the time even if version is the same.
 # v.  9.8   : 2023-10-06 : Support for FileWave, and previously Kandji. Update Progress 1st swiftDialog.sh to use native checkmark #1220
 # v.  9.7   : 2022-12-19 : Fix for LOGO_PATH for ws1
 # v.  9.6   : 2022-11-15 : GitHub API call is first, only try alternative if that fails.
@@ -251,24 +252,37 @@ if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
     downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
 fi
 #printlog "$downloadURL"
-appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
+rawVersionString=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)
+
+# Get Github Version
+appNewVersion=$(echo "$rawVersionString" | awk -F '-' '{print $1}' | sed 's/[^0-9\.]//g' | sed 's/\.$//')
+
+# Get Github BundleVersion
+appNewBundleVersion=$(echo "$rawVersionString" | awk '{sub(/-/," ")}1' | awk '{print $2}' | sed 's/\r//g')
+
 #printlog "$appNewVersion"
 expectedTeamID="PWA5E9TQ59"
 destFile="/Library/Application Support/Dialog/Dialog.app"
-versionKey="CFBundleShortVersionString" #CFBundleVersion
+versionKey="CFBundleShortVersionString"
+bundleVersionKey="CFBundleVersion"
 
+# Get App Version
 currentInstalledVersion="$(defaults read "${destFile}/Contents/Info.plist" $versionKey || true)"
-printlog "${name} version: $currentInstalledVersion"
+
+# Get App BundleVersion
+currentInstalledBundleVersion="$(defaults read "${destFile}/Contents/Info.plist" $bundleVersionKey || true)"
+
+printlog "${name} version: $currentInstalledVersion bundleVersion: $currentInstalledBundleVersion"
 destFile="/usr/local/bin/dialog"
-if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; then
+if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" || "$currentInstalledBundleVersion" != "$appNewBundleVersion" ]]; then
     printlog "$name not found or version not latest."
     printlog "${destFile}"
-    printlog "Installing version ${appNewVersion}…"
+    printlog "Installing version ${appNewVersion} ${appNewBundleVersion}…"
     # Create temporary working directory
     tmpDir="$(mktemp -d || true)"
     printlog "Created working directory '$tmpDir'"
     # Download the installer package
-    printlog "Downloading $name package version $appNewVersion from: $downloadURL"
+    printlog "Downloading $name package version $appNewVersion $appNewBundleVersion from: $downloadURL"
     installationCount=0
     exitCode=9
     while [[ $installationCount -lt 3 && $exitCode -gt 0 ]]; do
@@ -321,10 +335,10 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
         printlog "ERROR. Installation of $name failed. Aborting."
         caffexit $exitCode
     else
-        printlog "$name version $appNewVersion installed!"
+        printlog "$name version $appNewVersion $appNewBundleVersion installed!"
     fi
 else
-    printlog "$name version $appNewVersion already found. Perfect!"
+    printlog "$name version $appNewVersion $appNewBundleVersion already found. Perfect!"
 fi
 
 
