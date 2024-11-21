@@ -349,6 +349,7 @@ i1profiler
 ibarcoder
 ibmnotifier
 ice
+icons
 idrive
 idrivethin
 igv
