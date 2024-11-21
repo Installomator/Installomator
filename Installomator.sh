@@ -338,7 +338,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.7beta"
-VERSIONDATE="2024-11-20"
+VERSIONDATE="2024-11-21"
 
 # MARK: Functions
 
@@ -4576,7 +4576,8 @@ ice)
     downloadURL="$(downloadURLFromGit jordanbaird Ice)"
     appNewVersion="$(versionFromGit jordanbaird Ice)"
     expectedTeamID="K2ATHQPJDP"
-    ;;icons)
+    ;;
+icons)
     name="Icons"
     type="zip"
     downloadURL=$(downloadURLFromGit SAP macOS-icon-generator )
