@@ -338,7 +338,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.7beta"
-VERSIONDATE="2024-09-02"
+VERSIONDATE="2024-11-20"
 
 # MARK: Functions
 
@@ -2367,6 +2367,13 @@ bitwarden)
     downloadURL="https://github.com/bitwarden/clients/releases/download/desktop-v${appNewVersion}/Bitwarden-${appNewVersion}-universal.dmg"
     expectedTeamID="LTZ2PFU5D6"
     ;;
+bitwigstudio)
+    name="Bitwig Studio"
+    type="dmg"
+    appNewVersion="$(curl -fs "https://www.bitwig.com/download/" | grep 'changelog' | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')"
+    downloadURL="https://www.bitwig.com/dl/Bitwig%20Studio/${appNewVersion}/installer_mac/"
+    expectedTeamID="2B6K987585"
+    ;;
 blender)
     name="Blender"
     type="dmg"
@@ -2677,6 +2684,279 @@ chemdoodle3d)
      appNewVersion=$(sed -E 's/.*-(.*).dmg/\1/g' <<< $downloadURL )
      versionKey="CFBundleVersion"
      ;;
+cherryaudioatomika)
+    name="Atomika"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.AtomikaPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/atomika-synthesizer/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/atomika-synthesizer-macos-installer?file=Atomika-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudioblue3)
+    name="Blue3 Organ"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.Blue3Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/blue3-tonewheel-organ/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/blue3-tonewheel-organ-macos-installer?file=Blue3-Organ-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudioca2600)
+    name="CA2600"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.CA2600Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/ca2600/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/ca2600-macos-installer?file=CA2600-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiochroma)
+    name="Chroma"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.ChromaPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/chroma/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/chroma-macos-installer?file=Chroma-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiocr78)
+    name="CR-78"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.CR-78Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/cr-78/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/cr-78-macos-installer?file=CR-78-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiodco106)
+    name="DCO-106"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.DCO106Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/dco-106/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/dco-106-macos-installer?file=DCO-106-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiodreamsynth)
+    name="Dreamsynth"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.DreamsynthPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/dreamsynth/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/dreamsynth-macos-installer?file=Dreamsynth-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudioeightvoice)
+    name="Eight Voice"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.EightVoicePackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/eight-voice/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/eight-voice-macos-installer?file=Eight-Voice-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudioelkax)
+    name="Elka-X"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.Elka-XPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/elka-x/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/elka-x-macos-installer?file=Elka-X-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiogalacticreverb)
+    name="Galactic Reverb"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.GalacticPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/galactic-reverb/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/galactic-reverb-macos-installer?file=Galactic-Reverb-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiogx80)
+    name="GX-80"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.GX-80Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/gx-80/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/gx-80-macos-installer?file=GX-80-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudioharmonia)
+    name="Harmonia"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.HarmoniaPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/harmonia/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/harmonia-macos-installer?file=Harmonia-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiolowdown)
+    name="Lowdown"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.LowdownPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/lowdown/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/lowdown-macos-installer?file=Lowdown-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiomemorymode)
+    name="Memorymode"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.MemorymodePackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/memorymode/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/memorymode-macos-installer?file=Memorymode-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiomercury4)
+    name="Mercury-4"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.Mercury-4Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/mercury-4/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/mercury-4-macos-installer?file=Mercury-4-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiomercury6)
+    name="Mercury-6"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.Mercury-6Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/mercury-6/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/mercury-6-macos-installer?file=Mercury-6-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiominiverse)
+    name="Miniverse"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.MiniversePackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/miniverse/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/miniverse-macos-installer?file=Miniverse-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiomoduledesigner)
+    name="Voltage Module Designer"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.VoltageModuleDesigner"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/voltage-module-designer/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/module-designer-mac/download?file=Voltage-Module-Designer-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudionovachord)
+    name="Novachord"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.NovachordPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/novachord-solovox/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/novachord-macos-installer?file=Novachord-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiooctavecat)
+    name="Octave Cat"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.OctaveCatPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/octave-cat/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/octave-cat-macos-installer?file=Octave-Cat-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiopolymode)
+    name="Polymode Synthesizer"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.PolymodePackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/polymode-synthesizer/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/polymode-synthesizer-macos-installer?file=Polymode-Synthesizer-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudioprosoloist)
+    name="Pro Soloist"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.ProSoloistPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/pro-soloist/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/pro-soloist-macos-installer?file=Pro-Soloist-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiops20)
+    name="PS-20"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.PS-20Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/ps-20/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/ps-20-macos-installer?file=PS-20-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiops3300)
+    name="PS-3300"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.PS-3300Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/ps-3300/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/ps-3300-macos-installer?file=PS-3300-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudioquadra)
+    name="Quadra"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.QuadraPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/quadra/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/quadra-macos-installer?file=Quadra-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiorackmode)
+    name="Rackmode"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.RackmodePackage-StandAlone"
+    blockingProcesses=( "Rackmode Frequency Shifter" "Rackmode Graphic EQ" "Rackmode Parametric EQ" "Rackmode Phaser" "Rackmode Ring Modulator" "Rackmode String Filter" "Rackmode Vocoder" "Rackmode Vocoder FX" )
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/rackmode/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/rackmode-macos-installer?file=Rackmode-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiosines)
+    name="Sines"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.SinesPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/sines/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/sines-macos-installer?file=Sines-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiosolovox)
+    name="Solovox"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.SolovoxPackage-StandAlone"
+    appNewVersion="$(curl -fs curl -fs https://cherryaudio.com/products/novachord-solovox/version-history | grep -E -o ".<h4>Solovox</h4>.{0,40}" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/solovox-macos-installer?file=Solovox-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiostardust201)
+    name="Stardust 201 Tape Echo"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.Stardust201Package-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/stardust-201/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/stardust-201-macos-installer?file=Stardust-201-Tape-Echo-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiosurrealisticmg1plus)
+    name="Surrealistic MG-1 Plus"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.MG-1PlusPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/surrealistic-mg-1-plus/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/surrealistic-mg-1-plus-macos-installer?file=Surrealistic-MG-1-Plus-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiosync)
+    name="Cherry Audio Sync"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.SyncPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/sync/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/sync-macos-installer?file=Cherry-Audio-Sync-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiosynthesizerexpander)
+    name="Synthesizer Expander Module"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.SynthesizerExpanderModulePackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/synthesizer-expander-module/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/synthesizer-expander-module-macos-installer?file=Synthesizer-Expander-Module-Installer-macOS.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiovoltagemodular)
+    name="Voltage Modular"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.VoltageModularPackageUniversal-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/voltage-modular/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/voltage-mac/download?file=Voltage-Modular-Installer-macOS-Universal.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
+cherryaudiowurlybird140b)
+    name="Wurlybird 140B"
+    type="pkg"
+    packageID="com.cherryaudio.pkg.Wurlybird140bPackage-StandAlone"
+    appNewVersion="$(curl -fs https://cherryaudio.com/products/wurlybird140b/version-history | grep -A 6 "info" | grep -Eo "([0-9]+(\.[0-9]+)+)" | head -1 | xargs)"
+    downloadURL="https://store.cherryaudio.com/downloads/wurlybird140b-macos-installer?file=Wurlybird140B.pkg"
+    expectedTeamID="A2XFV22B2X"
+    ;;
 chromeremotedesktop)
     name="chromeremotedesktop"
     type="pkgInDmg"
@@ -4289,7 +4569,14 @@ ibmnotifier)
     appNewVersion="$(curl -sLI "https://github.com/IBM/mac-ibm-notifications/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | cut -d "-" -f2 | sed 's/[^0-9\.]//g')"
     expectedTeamID="PETKK2G752"
     ;;
-icons)
+ice)
+	# A versatile macOS menu bar management tool that allows users to hide, show, and rearrange menu bar items
+    name="Ice"
+    type="zip"
+    downloadURL="$(downloadURLFromGit jordanbaird Ice)"
+    appNewVersion="$(versionFromGit jordanbaird Ice)"
+    expectedTeamID="K2ATHQPJDP"
+    ;;icons)
     name="Icons"
     type="zip"
     downloadURL=$(downloadURLFromGit SAP macOS-icon-generator )
@@ -4460,6 +4747,17 @@ mowgliiitsycal)
     appNewVersion=$(curl -fs https://s3.amazonaws.com/itsycal/itsycal.xml | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     expectedTeamID="HFT3T55WND"
     ;;
+izotopeproductportal)
+    name="iZotope Product Portal"
+    type="dmg"
+    izotopeDetails="$(curl -fs 'https://productportal.izotope.com/api/productupdate' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 ProductPortal/1.4.8/b28/macOS-x86_64 Safari/537.36')"
+    appNewVersion=$(getJSONValue "${izotopeDetails}" "[0].Version")
+    downloadURL=$(getJSONValue "${izotopeDetails}" "[0].OSXDownloadURL")
+    installerTool="Install Product Portal.app"
+    CLIInstaller="Install Product Portal.app/Contents/MacOS/installbuilder.sh"
+    CLIArguments=( --mode unattended --disable-components launch_after_install )
+    expectedTeamID="QGULMAPEB2"
+    ;;
 jabradirect)
     name="Jabra Direct"
     type="pkgInDmg"
@@ -4481,8 +4779,8 @@ jamfconnect)
     name="Jamf Connect"
     type="pkgInDmg"
     packageID="com.jamf.connect"
-    appNewVersion=$(getJSONValue "$(curl -s "https://learn-be.jamf.com/api/bundlelist?name_filter.field=name&name_filter.value=jamf-connect-documentation-current")" ".bundle_list[0].title" | awk -F ' ' '{print $NF}')
     downloadURL="https://files.jamfconnect.com/JamfConnect.dmg"
+    appNewVersion=$(curl -fsIL "${downloadURL}" | grep "x-amz-meta-version" | grep -o "[0-9.].*[0-9.].*[0-9]")
     expectedTeamID="483DWKW443"
     ;;
 jamfconnectconfiguration)
@@ -5855,6 +6153,14 @@ microsoftremotedesktop)
     updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
     updateToolArguments=( --install --apps MSRD10 )
     ;;
+microsoftremotehelp)
+    name="Microsoft Remote Help"
+    type="pkg"
+    downloadURL="https://aka.ms/downloadremotehelpmacos"
+    versionKey="CFBundleVersion"
+    appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i location: | grep -o "Microsoft_Remote_Help.*pkg" | sed -E 's/[a-zA-Z_]*_([0-9.]*)_.*/\1/g')
+    expectedTeamID="UBF8T346G9"
+    ;;
 microsoftsharepointplugin)
     # Microsoft has marked this "oldpackage", should probably not be used anymore
     name="MicrosoftSharePointPlugin"
@@ -5955,6 +6261,15 @@ visualstudiocode)
     expectedTeamID="UBF8T346G9"
     appName="Visual Studio Code.app"
     blockingProcesses=( Code )
+    ;;
+microsoftwindowsapp)
+    name="Windows App"
+    type="pkg"
+    packageID="com.microsoft.rdc.macos"
+    blockingProcesses=( "Windows App" "Microsoft Remote Desktop" )
+    downloadURL="https://go.microsoft.com/fwlink/?linkid=868963"
+    appNewVersion="$(curl -is "${downloadURL}" | grep "Location" | grep -o '[0-9][0-9]\.[0-9]*\.[0-9]*')"
+    expectedTeamID="UBF8T346G9"
     ;;
 microsoftword)
     name="Microsoft Word"
@@ -6284,6 +6599,20 @@ nanosaur)
     downloadURL=$(downloadURLFromGit jorio Nanosaur)
     appNewVersion=$(versionFromGit jorio Nanosaur)
     expectedTeamID="RVNL7XC27G"
+    ;;
+nativeaccess)
+    name="Native Access"
+    type="zip"
+    if [[ $(arch) == "arm64" ]]; then
+        naDetails="$(curl -fs "https://na-update.native-instruments.com/arm64/latest-mac.yml")"
+        naItem="arm64/$(echo "$naDetails" | grep "path" | awk '{print $2}' | xargs)"
+    elif [[ $(arch) == "i386" ]]; then
+        naDetails="$(curl -fs "https://na-update.native-instruments.com/latest-mac.yml")"
+        naItem="$(echo "$naDetails" | grep "path" | awk '{print $2}' | xargs)"
+    fi
+    downloadURL="https://na-update.native-instruments.com/${naItem}"
+    appNewVersion="$(echo "$naDetails" | grep "version" | awk '{print $2}' | xargs)"
+    expectedTeamID="83K5EG6Z9V"
     ;;
 nessusagent)
     name="Nessus Agent"
@@ -6718,6 +7047,15 @@ parsec)
     type="pkg"
     downloadURL="https://builds.parsecgaming.com/package/parsec-macos.pkg"
     expectedTeamID="Y9MY52XZDB"
+    ;;
+particulars)
+    name="Particulars"
+    type="pkg"
+    packageID="net.glencode.Particulars"
+    downloadURL="https://particulars.app/_downloads/Particulars-latest.pkg"
+    appNewVersion=$(curl -fsI "${downloadURL}" | grep -i location | grep -oE "[0-9]+\.[0-9]+")
+    expectedTeamID="2Z25XDNP2X"
+    blockingProcesses=( NONE )
     ;;
 patchomator)
     name="patchomator"
@@ -7304,6 +7642,42 @@ rodeunify)
     appNewVersion=$(curl -fs https://rode.com/en/release-notes/unify | xmllint --html --format - 2>/dev/null | tr '"' '\n' | sed 's/\&quot\;/\n/g' | grep -i -o "Version .*" | head -1 | cut -w -f2)
     expectedTeamID="Z9T72PWTJA"
     ;;
+rogueamoebaaudiohijack4)
+    name="Audio Hijack"
+    type="zip"
+    raSysVer="$(sw_vers -productVersion | sed 's/\.//g')"
+    raVerDetails="$(curl -fs "https://rogueamoeba.net/ping/versionCheck.cgi?format=sparkle&bundleid=com.rogueamoeba.audiohijack&system=${raSysVer}&version=40000000")"
+    downloadURL="$(echo "${raVerDetails}" | xpath 'string(//rss/channel/item/enclosure/@url)' 2>/dev/null)"
+    appNewVersion="$(echo "${raVerDetails}" | xpath 'string(//rss/channel/item/enclosure/@sparkle:version)' 2>/dev/null)"
+    expectedTeamID="7266XEXAPM"
+    ;;
+rogueamoebafission2)
+    name="Fission"
+    type="zip"
+    raSysVer="$(sw_vers -productVersion | sed 's/\.//g')"
+    raVerDetails="$(curl -fs "https://rogueamoeba.net/ping/versionCheck.cgi?format=sparkle&bundleid=com.rogueamoeba.Fission&system=${raSysVer}&version=20000000")"
+    downloadURL="$(echo "${raVerDetails}" | xpath 'string(//rss/channel/item/enclosure/@url)' 2>/dev/null)"
+    appNewVersion="$(echo "${raVerDetails}" | xpath 'string(//rss/channel/item/enclosure/@sparkle:version)' 2>/dev/null)"
+    expectedTeamID="7266XEXAPM"
+    ;;
+rogueamoebaloopback2)
+    name="Loopback"
+    type="zip"
+    raSysVer="$(sw_vers -productVersion | sed 's/\.//g')"
+    raVerDetails="$(curl -fs "https://rogueamoeba.net/ping/versionCheck.cgi?format=sparkle&bundleid=com.rogueamoeba.Loopback&system=${raSysVer}&version=20000000")"
+    downloadURL="$(echo "${raVerDetails}" | xpath 'string(//rss/channel/item/enclosure/@url)' 2>/dev/null)"
+    appNewVersion="$(echo "${raVerDetails}" | xpath 'string(//rss/channel/item/enclosure/@sparkle:version)' 2>/dev/null)"
+    expectedTeamID="7266XEXAPM"
+    ;;
+rogueamoebasoundsource5)
+    name="SoundSource"
+    type="zip"
+    raSysVer="$(sw_vers -productVersion | sed 's/\.//g')"
+    raVerDetails="$(curl -fs "https://rogueamoeba.net/ping/versionCheck.cgi?format=sparkle&bundleid=com.rogueamoeba.soundsource&system=${raSysVer}&version=5000000")"
+    downloadURL="$(echo "${raVerDetails}" | xpath 'string(//rss/channel/item/enclosure/@url)' 2>/dev/null)"
+    appNewVersion="$(echo "${raVerDetails}" | xpath 'string(//rss/channel/item/enclosure/@sparkle:version)' 2>/dev/null)"
+    expectedTeamID="7266XEXAPM"
+    ;;
 royaltsx)
     name="Royal TSX"
     type="dmg"
@@ -7372,6 +7746,13 @@ scaleft)
     expectedTeamID="B7F62B65BN"
     blockingProcesses=( ScaleFT )
     ;;
+scapple)
+    name="Scapple"
+    type="dmg"
+    downloadURL="https://scrivener.s3.amazonaws.com/Scapple.dmg"
+    appNewVersion="$(curl -fs "https://scrivener.s3.amazonaws.com/mac_updates/scapple.xml" | xpath 'string(//rss/channel/item[last()]/enclosure/@sparkle:shortVersionString)' 2>/dev/null)"
+    expectedTeamID="W4QTL7X778"
+    ;;
 scenebuilder)
     name="SceneBuilder"
     type="dmg"
@@ -7382,6 +7763,13 @@ scenebuilder)
     fi
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g' )
     expectedTeamID="S7ZR395D8U"
+    ;;
+scmenu)
+    name="SC Menu"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit boberito sc_menu)"
+    appNewVersion="$(versionFromGit boberito sc_menu)"
+    expectedTeamID="2WUMX954UB"
     ;;
 screamingfrogseospider)
     name="Screaming Frog SEO Spider"
@@ -7777,6 +8165,18 @@ splashtopstreamer)
     downloadURL=$(curl -fsLI "https://my.splashtop.com/csrs/mac" | grep -i '^location:' | tail -n 1 | cut -d ' ' -f 2 | tr -d '\r')
     appNewVersion=$(echo $downloadURL | sed -E 's/.*_v([0-9.]+).dmg/\1/')
     expectedTeamID="CPQQ3AW49Y"
+    ;;
+splice)
+    name="Splice"
+    type="zip"
+    if [[ "$(arch)" == "arm64" ]]; then
+        appNewVersion=$(getJSONValue "$(curl -fs 'https://api.splice.com/v2/desktop/darwin/stable/latest?v=1.0.0&architecture=arm64')" "name")
+        downloadURL="https://desktop.splice.com/darwin/stable/arm64/Splice.app.zip"
+    else
+        appNewVersion=$(getJSONValue "$(curl -fs 'https://api.splice.com/v2/desktop/darwin/stable/latest?v=1.0.0&architecture=x64')" "name")
+        downloadURL="https://desktop.splice.com/darwin/stable/x64/Splice.app.zip"
+    fi
+    expectedTeamID="9962T6AKMH"
     ;;
 spotify)
     name="Spotify"
@@ -8345,6 +8745,13 @@ typora)
     appNewVersion=$(curl -fs "https://www.typora.io/download/dev_update.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | cut -d '"' -f2)
     expectedTeamID="9HWK5273G4"
     ;;
+uaconnect)
+    name="UA Connect"
+    type="dmg"
+    downloadURL="https://www.uaudio.com/apps/uaconnect/mac/installer"
+    appNewVersion="$(curl -Ifs "$downloadURL" | grep 'location:' | cut -d'_' -f4-6 | tr '_' '.')"
+    expectedTeamID="4KAC9AX6CG"
+    ;;
 ultimakercura)
     name="Ultimaker Cura"
     type="dmg"
@@ -8467,6 +8874,13 @@ viscosity)
     downloadURL="https://www.sparklabs.com/downloads/Viscosity.dmg"
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[a-zA-Z.\-]*%20([0-9.]*)\..*/\1/g' )
     expectedTeamID="34XR7GXFPX"
+    ;;
+visualz)
+    name="Visualz"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit madchops1 visualz-releases)"
+    appNewVersion="$(versionFromGit madchops1 visualz-releases)"
+    expectedTeamID="6RLU6426R3"
     ;;
 vivaldi)
     name="Vivaldi"
@@ -8649,6 +9063,15 @@ wordservice)
     appNewVersion="$(echo $downloadURL | sed -E 's/.*\/([0-9.]*)\/.*/\1/g')"
     appNewVersion=""
     expectedTeamID="679S2QUWR8"
+    ;;
+workbrew)
+    name="Workbrew"
+    type="pkg"
+    packageID="com.workbrew.Workbrew"
+    downloadURL="https://console.workbrew.com/downloads/macos"
+    appNewVersion="$(curl -ifs "https://console.workbrew.com/downloads/macos" | grep -o "Workbrew-[0-9].[0.9].[0-9][0-9].pkg" | grep -o "[0-9].[0.9].[0-9][0-9]")"
+    appCustomVersion(){ /opt/workbrew/bin/brew --version | grep "Workbrew " | awk '{ print $2 }' | cut -d'-' -f1 }
+    expectedTeamID="676JW3JDLF"
     ;;
 workplacechat)
     name="Workplace Chat"
@@ -9137,7 +9560,11 @@ case $LOGO in
         ;;
     microsoft)
         # Microsoft Endpoint Manager (Intune)
-        LOGO="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+        if [[ -d "/Library/Intune/Microsoft Intune Agent.app" ]]; then
+            LOGO="/Library/Intune/Microsoft Intune Agent.app/Contents/Resources/AppIcon.icns"
+        elif [[ -d "/Applications/Company Portal.app" ]]; then
+            LOGO="/Applications/Company Portal.app/Contents/Resources/AppIcon.icns"
+        fi
         if [[ -z $MDMProfileName ]]; then; MDMProfileName="Management Profile"; fi
         ;;
     ws1)
