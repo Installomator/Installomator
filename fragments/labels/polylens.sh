@@ -1,7 +1,8 @@
 polylens)
     name="Poly Lens"
     type="dmg"
-    appNewVersion=$(curl -fs "https://info.lens.poly.com/lens-dt-rn/atom.xml" | grep "Version" | head -1 | cut -d "[" -f3 | sed 's/Version //g' | sed 's/]]\>\<\/title\>//g')
-    downloadURL="https://swupdate.lens.poly.com/lens-desktop-mac/$appNewVersion/$appNewVersion/PolyLens-$appNewVersion.dmg"
+    polyDetails="$(curl -fs 'https://api.silica-prod01.io.lens.poly.com/graphql' -X POST -H 'Content-Type: application/json' --data-raw '{"operationName":"LensSoftwareUpdateAvailable","variables":{"productId":"lens-desktop-mac","releaseChannel":null},"query":"query LensSoftwareUpdateAvailable($productId: ID!, $releaseChannel: String) {availableProductSoftwareByPid(pid: $productId, releaseChannel: $releaseChannel) {version productBuild {build archiveUrl __typename} __typename}}"}')"
+    appNewVersion=$(getJSONValue "$polyDetails" "data.availableProductSoftwareByPid.version")
+    downloadURL=$(getJSONValue "$polyDetails" "data.availableProductSoftwareByPid.productBuild.archiveUrl")
     expectedTeamID="SKWK2Q7JJV"
     ;;
