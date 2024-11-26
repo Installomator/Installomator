@@ -293,6 +293,7 @@ flycut
 fontbase
 fontexplorer
 fork
+foxitpdfreader
 franz
 freeplane
 front
