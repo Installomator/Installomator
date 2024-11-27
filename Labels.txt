@@ -173,7 +173,6 @@ chronosync
 cinema4d
 cisdem-documentreader
 citrixworkspace
-cleartouchcollage
 clevershare2
 clickshare
 clickup
