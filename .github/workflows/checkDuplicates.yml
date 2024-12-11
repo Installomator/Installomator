@@ -1,6 +1,7 @@
 name: Check for Duplicates
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
   issues:
     types: [opened]
   pull_request:
@@ -14,15 +15,19 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-            });
+            try {
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+              });
 
-            const newIssue = context.payload.issue || context.payload.pull_request;
-            const duplicate = issues.find(issue => issue.title.toLowerCase() === newIssue.title.toLowerCase());
+              const newIssue = context.payload.issue || context.payload.pull_request;
+              const duplicate = issues.find(issue => issue.title.toLowerCase() === newIssue.title.toLowerCase());
 
-            if (duplicate) {
-              core.setFailed(`Duplicate found: ${duplicate.html_url}`);
+              if (duplicate) {
+                core.setFailed(`Duplicate found: ${duplicate.html_url}`);
+              }
+            } catch (error) {
+              core.setFailed(`Error checking for duplicates: ${error.message}`);
             }
