@@ -1,6 +1,6 @@
 name: Check for Duplicates
 
-on: main
+on:
   issues:
     types: [opened]
   pull_request:
