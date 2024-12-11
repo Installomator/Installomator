@@ -1,6 +1,6 @@
 name: Check for Duplicates
 
-on:
+on: workflow_dispatch
   issues:
     types: [opened]
   pull_request:
