@@ -1,0 +1,28 @@
+name: Check for Duplicates
+
+on: main
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  check-duplicates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for duplicates
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            });
+
+            const newIssue = context.payload.issue || context.payload.pull_request;
+            const duplicate = issues.find(issue => issue.title.toLowerCase() === newIssue.title.toLowerCase());
+
+            if (duplicate) {
+              core.setFailed(`Duplicate found: ${duplicate.html_url}`);
+            }
