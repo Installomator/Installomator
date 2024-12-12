@@ -1,8 +1,9 @@
 privileges)
     # credit: Erik Stam (@erikstam)
-    name="Privileges"
-    type="zip"
-    downloadURL=$(downloadURLFromGit sap macOS-enterprise-privileges )
-    appNewVersion=$(versionFromGit sap macOS-enterprise-privileges )
+    name="Privileges_2.0.0"
+    type="pkg"
+    packageID="corp.sap.privileges.pkg"
+    downloadURL="$(downloadURLFromGit SAP macOS-enterprise-privileges)"
+    appNewVersion="$(versionFromGit SAP macOS-enterprise-privileges)"
     expectedTeamID="7R5ZEU67FQ"
     ;;
