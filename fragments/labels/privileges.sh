@@ -1,4 +1,4 @@
-privileges)
+privileges2)
     # credit: Erik Stam (@erikstam)
     name="Privileges_2.0.0"
     type="pkg"
