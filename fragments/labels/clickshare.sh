@@ -1,7 +1,11 @@
 clickshare)
     name="ClickShare"
     type="appInDmgInZip"
-    downloadURL=$(curl -fs "https://www.barco.com/bin/barco/tde/downloadUrl.json?fileNumber=R3306192&tdeType=3" | grep -o '"downloadUrl":"https://[^"]*"' | cut -d'"' -f4)
-    appNewVersion=$(curl -s "https://assets.cloud.barco.com/clickshare/release/RELEASES" | grep -Eo "ClickShare-[0-9]+\.[0-9]+\.[0-9]+-b[0-9]+" | sed 's/ClickShare-//' | head -1)
+    clickshareAppInfo="$( curl -fs "https://www.barco.com/bin/barco/tde/details.json?fileNumber=R3306192&tdeType=3" )"
+    appNewVersion="$( expr $( getJSONValue "$clickshareAppInfo" majorVersion ) + 1 - 1 )"
+    appNewVersion+=".$( expr $( getJSONValue "$clickshareAppInfo" minorVersion ) + 1 - 1 )"
+    appNewVersion+=".$( expr $( getJSONValue "$clickshareAppInfo" patchVersion ) + 1 - 1 )"
+    appNewVersion+="-b$( expr $( getJSONValue "$clickshareAppInfo" buildVersion ) + 1 - 1 )"
+    downloadURL="$( getJSONValue "$( curl -fs "https://www.barco.com/bin/barco/tde/downloadUrl.json?fileNumber=R3306192&tdeType=3" )" downloadUrl )"
     expectedTeamID="P6CDJZR997"
     ;;
