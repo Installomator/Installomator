@@ -3,6 +3,6 @@ amazonworkspaces)
     name="Workspaces"
     type="pkg"
     downloadURL="https://d2td7dqidlhjx7.cloudfront.net/prod/global/osx/WorkSpaces.pkg"
-    appNewVersion=$(curl -fs https://d2td7dqidlhjx7.cloudfront.net/prod/iad/osx/WorkSpacesAppCast_macOS_20171023.xml | grep -o "Version*.*<" | head -1 | cut -d " " -f2 | cut -d "<" -f1)
+    appNewVersion=$(curl -fs --key-type pem --key /Applications/WorkSpaces.app/Contents/Resources/dsa_pub.pem https://d2td7dqidlhjx7.cloudfront.net/prod/iad/osx/WorkSpacesAppCast_macOS_20171023.xml | grep -o "Version*.*<" | head -1 | cut -d " " -f2 | cut -d "<" -f1)
     expectedTeamID="94KV3E626L"
     ;;
