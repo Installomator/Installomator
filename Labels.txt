@@ -318,6 +318,7 @@ googleearth
 googlejapaneseinput
 googlesoftwareupdate
 gosign
+gotiengviet
 gotomeeting
 gpgsuite
 gpgsync
@@ -463,6 +464,7 @@ mattermost
 maxonapp
 mdmwatchdog
 meetingbar
+meistertask
 mendeleyreferencemanager
 menumeters
 merlinproject
@@ -615,6 +617,7 @@ plisteditpro
 podmandesktop
 polylens
 popsql
+portingkit
 postman
 powermonitor
 prism10
@@ -701,6 +704,7 @@ shotcut
 shottr
 sidekick
 signal
+signiantapp
 silnite
 sipgateclinq
 sirimote
@@ -801,6 +805,7 @@ trapcode
 trex
 tunnelbear
 tunnelblick
+tuple
 typeface
 typinator
 typora
