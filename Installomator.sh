@@ -139,6 +139,11 @@ REOPEN="yes"
 #            use DEPNotify, then DEPNotify can present a more nice name to the user,
 #            instead of just the label name.
 
+# Only let Installomator return the appNewVerison of the label
+RETURN_LABEL_NEW_VERSION=0
+# options: 
+#   - 1      Installomator will return the appNewVersion of the label and exit, so last line of
+#            output will be that version.
 
 # Interrupt Do Not Disturb (DND) full screen apps
 INTERRUPT_DND="yes"
@@ -9704,24 +9709,31 @@ if [[ "$type" != "updateronly" && ($INSTALL == "force" || $IGNORE_APP_STORE_APPS
 fi
 if [[ -n $appNewVersion ]]; then
     printlog "Latest version of $name is $appNewVersion"
-    if [[ $appversion == $appNewVersion ]]; then
-        if [[ $DEBUG -ne 1 ]]; then
-            printlog "There is no newer version available."
-            if [[ $INSTALL != "force" ]]; then
-                message="$name, version $appNewVersion, is the latest version."
-                if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
-                    printlog "notifying"
-                    displaynotification "$message" "No update for $name!"
+    if [[ "$RETURN_LABEL_NEW_VERSION" -ne 1 ]]; then
+        if [[ $appversion == $appNewVersion ]]; then
+            if [[ $DEBUG -ne 1 ]]; then
+                printlog "There is no newer version available."
+                if [[ $INSTALL != "force" ]]; then
+                    message="$name, version $appNewVersion, is the latest version."
+                    if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
+                        printlog "notifying"
+                        displaynotification "$message" "No update for $name!"
+                    fi
+                    if [[ $DIALOG_CMD_FILE != "" ]]; then
+                        updateDialog "complete" "Latest version already installed..."
+                        sleep 2
+                    fi
+                    cleanupAndExit 0 "No newer version." REQ
                 fi
-                if [[ $DIALOG_CMD_FILE != "" ]]; then
-                    updateDialog "complete" "Latest version already installed..."
-                    sleep 2
-                fi
-                cleanupAndExit 0 "No newer version." REQ
+            else
+                printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app." WARN
             fi
-        else
-            printlog "DEBUG mode 1 enabled, not exiting, but there is no new version of app." WARN
         fi
+    else
+        printlog "Only returning label latest version available." REQ
+        printlog "$appNewVersion"
+        echo "$appNewVersion"
+        exit
     fi
 else
     printlog "Latest version not specified."
