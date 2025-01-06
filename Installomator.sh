@@ -9736,7 +9736,14 @@ if [[ -n $appNewVersion ]]; then
         exit
     fi
 else
-    printlog "Latest version not specified."
+    if [[ "$RETURN_LABEL_NEW_VERSION" -ne 1 ]]; then
+        printlog "Latest version not specified."
+    else
+        printlog "Only returning label latest verison available." REQ
+        printlog "Unknown"
+        echo "Unknown"
+        exit
+    fi
 fi
 
 # MARK: check if this is an Update and we can use updateTool
