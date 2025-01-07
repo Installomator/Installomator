@@ -48,7 +48,7 @@ jobs:
     - name: Commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: "Runner compiled Installomator.sh using assemble.sh"
+        commit_message: "Runner compiled Installomator.sh and Labels.txt using assemble.sh"
         file_pattern: |
           Installomator.sh
           Labels.txt
