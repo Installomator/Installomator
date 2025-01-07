@@ -14,8 +14,8 @@ jobs:
     runs-on: macos-latest
 
     env:
-      GIT_USERNAME: "<TODO: insert name here>"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GIT_USERNAME: "installomator-bot"
+      GITHUB_TOKEN: ${{ secrets.AC_GH_TOKEN }}
 
     steps:
     # Checkout the repository
