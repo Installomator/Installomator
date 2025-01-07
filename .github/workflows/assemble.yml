@@ -49,5 +49,7 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: "Runner compiled Installomator.sh using assemble.sh"
-        file_pattern: "Installomator.sh"
+        file_pattern: |
+          Installomator.sh
+          Labels.txt
 
