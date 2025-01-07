@@ -338,7 +338,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.7beta"
-VERSIONDATE="2025-01-02"
+VERSIONDATE="2025-01-07"
 
 # MARK: Functions
 
@@ -7256,6 +7256,15 @@ privileges)
     type="zip"
     downloadURL=$(downloadURLFromGit sap macOS-enterprise-privileges )
     appNewVersion=$(versionFromGit sap macOS-enterprise-privileges )
+    expectedTeamID="7R5ZEU67FQ"
+    ;;
+privileges2)
+    # credit: Matt Adams (@d3xbot)
+    name="Privileges"
+    type="pkg"
+    packageID="corp.sap.privileges.pkg"
+    downloadURL="$(downloadURLFromGit SAP macOS-enterprise-privileges)"
+    appNewVersion="$(versionFromGit SAP macOS-enterprise-privileges)"
     expectedTeamID="7R5ZEU67FQ"
     ;;
 processing3)
