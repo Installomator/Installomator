@@ -15,7 +15,7 @@ jobs:
 
     env:
       GIT_USERNAME: "installomator-bot"
-      GITHUB_TOKEN: ${{ secrets.AC_GH_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     # Checkout the repository
