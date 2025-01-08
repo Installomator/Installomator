@@ -4825,7 +4825,8 @@ jamfprintermanager)
     downloadURL="$(downloadURLFromGit jamf jamf-printer-manager)"
     appNewVersion="$(versionFromGit jamf jamf-printer-manager)"
     expectedTeamID="483DWKW443"
-    ;;jamfreenroller)
+    ;;
+jamfreenroller)
     # credit: Mischa van der Bent
     name="ReEnroller"
     type="zip"

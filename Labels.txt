@@ -377,6 +377,7 @@ jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfprintermanager
+jamfreenroller
 jamovi
 jasp
 jdk17
