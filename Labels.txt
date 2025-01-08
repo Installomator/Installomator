@@ -376,7 +376,7 @@ jamfconnectconfiguration
 jamfcpr
 jamfmigrator
 jamfpppcutility
-jamfreenroller
+jamfprintermanager
 jamovi
 jasp
 jdk17
@@ -624,6 +624,7 @@ prism10
 prism9
 pritunl
 privileges
+privileges2
 processing3
 processing4
 proctortrack

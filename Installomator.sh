@@ -338,7 +338,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.7beta"
-VERSIONDATE="2025-01-07"
+VERSIONDATE="2025-01-08"
 
 # MARK: Functions
 
@@ -4819,7 +4819,13 @@ jamfpppcutility)
     appNewVersion=$(versionFromGit jamf PPPC-Utility)
     expectedTeamID="483DWKW443"
     ;;
-jamfreenroller)
+jamfprintermanager)
+    name="Jamf Printer Manager"
+    type="zip"
+    downloadURL="$(downloadURLFromGit jamf jamf-printer-manager)"
+    appNewVersion="$(versionFromGit jamf jamf-printer-manager)"
+    expectedTeamID="483DWKW443"
+    ;;jamfreenroller)
     # credit: Mischa van der Bent
     name="ReEnroller"
     type="zip"
