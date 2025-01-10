@@ -1,12 +1,12 @@
 screamingfrogseospider)
     name="Screaming Frog SEO Spider"
     type="dmg"
-    if [[ $(arch) == i386 ]]; then
-        platform="Mac - (intel)"
-    elif [[ $(arch) == arm64 ]]; then
-        platform="Mac - (apple silicon)"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="$(curl -s https://www.screamingfrog.co.uk/seo-spider/release-history/ | grep -o 'href="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-[0-9.]*-aarch64.dmg"' | cut -d'"' -f2)"
+        appNewVersion="$(echo "$downloadURL" | grep -o '[0-9.]*-aarch64' | cut -d'-' -f1)"
+    else
+        downloadURL="$(curl -s https://www.screamingfrog.co.uk/seo-spider/release-history/ | grep -o 'href="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-[0-9.]*-x86_64.dmg"' | cut -d'"' -f2)"
+        appNewVersion="$(echo "$downloadURL" | grep -o '[0-9.]*-x86_64' | cut -d'-' -f1)"
     fi
-    downloadURL=$(curl -fs "https://www.screamingfrog.co.uk/wp-content/themes/screamingfrog/inc/download-modal.php" | grep "${platform}" | grep -i -o "https.*\.dmg" | head -1)
-    appNewVersion=$(print "$downloadURL" | sed -E 's/https.*\/[a-zA-Z]*-([0-9.]*)\.dmg/\1/g')".0"
     expectedTeamID="CAHEVC3HZC"
-    ;;
+;;
