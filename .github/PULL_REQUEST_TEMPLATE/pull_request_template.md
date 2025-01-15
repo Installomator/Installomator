@@ -1,12 +1,3 @@
----
-name: New or updated app label
-about: Adding a label or fixing an existing label
-title: '[New/Fixed]: [label here]'
-labels: application
-assignees: ''
-
----
-
 All questions must be filled out or your Pull Request will be closed for lack of information. The first three questions should be answered `Yes` before submitting the pull request.
 ---
 **Have you confirmed this pull request is not a duplicate?**
