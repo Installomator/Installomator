@@ -1,3 +1,9 @@
+---
+name: Pull request
+about: General pull request template
+
+---
+
 All questions must be filled out or your Pull Request will be closed for lack of information. The first three questions should be answered `Yes` before submitting the pull request.
 ---
 **Have you confirmed this pull request is not a duplicate?**
