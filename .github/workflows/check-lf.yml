@@ -1,0 +1,26 @@
+name: Check LF at End of PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-lf:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Check if PR files end with LF
+      run: |
+        files=$(git diff --name-only origin/main)
+        for file in $files; do
+          if [ -f "$file" ]; then
+            last_char=$(tail -c 1 "$file" | od -An -t uC)
+            if [ "$last_char" != "10" ]; then
+              echo "::error file=$file::The file '$file' does not end with an LF control character. Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request. We recommend installing/using an EditorConfig plugin for your editor."
+              exit 1
+            fi
+          fi
+        done
