@@ -3,6 +3,7 @@ name: Check LF at End of PR
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
   check-lf:
