@@ -6,4 +6,3 @@ opera)
 	versionKey="CFBundleVersion"
     expectedTeamID="A2P9LX4JPN"
     ;;
-    
