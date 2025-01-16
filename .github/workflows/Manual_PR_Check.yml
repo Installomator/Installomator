@@ -17,31 +17,33 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0 # Fetch the full history to allow diffing
-          repository: ${{ github.repository }}
 
       - name: Fetch PR details
         id: pr-details
         uses: octokit/request-action@v2.x
         with:
           route: GET /repos/${{ github.repository }}/pulls/${{ github.event.inputs.pr_number }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Determine base branch
-        id: determine-base
         run: |
-          echo "::set-output name=BASE_BRANCH::${{ steps.pr-details.outputs.data.base.ref }}"
+          echo "${{ steps.pr-details.outputs.data.base.ref }}" > base_branch.txt
+
+      - name: Read base branch into environment
+        id: read-base-branch
+        run: |
+          echo "BASE_BRANCH=$(cat base_branch.txt)" >> $GITHUB_ENV
 
       - name: Fetch base branch
         run: |
-          git fetch origin ${{ steps.determine-base.outputs.BASE_BRANCH }}
+          git fetch origin ${{ env.BASE_BRANCH }}
 
       - name: Check out PR's base branch
         run: |
-          git checkout ${{ steps.determine-base.outputs.BASE_BRANCH }}
+          git checkout ${{ env.BASE_BRANCH }}
 
       - name: Check if PR files end with LF
         run: |
-          files=$(git diff --name-only ${{ steps.determine-base.outputs.BASE_BRANCH }} HEAD)
+          files=$(git diff --name-only ${{ env.BASE_BRANCH }} HEAD)
           for file in $files; do
             if [ -f "$file" ]; then
               last_char=$(tail -c 1 "$file" | od -An -t uC | tr -d '[:space:]')
