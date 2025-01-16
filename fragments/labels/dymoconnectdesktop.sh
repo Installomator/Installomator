@@ -5,5 +5,4 @@ dymoconnectdesktop)
     archiveName="DCDMac${appNewVersion}.pkg"
     downloadURL="https://download.dymo.com/dymo/Software/Mac/DCDMac${appNewVersion}.pkg"
     expectedTeamID="N3S6676K3E"
-    blockingProcesses="DYMO Connect"
     ;;
