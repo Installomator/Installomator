@@ -422,6 +422,7 @@ krita
 lastpass
 latexit
 launchbar
+launchcontrol
 lcadvancedvpnclient
 lexarrecoverytool
 lgcalibrationstudio
@@ -570,6 +571,7 @@ nvivo13
 nvivo14
 nweasecuretestingbrowser
 obs
+obsbotcenter
 obsbotwebcam
 obsidian
 odrive
@@ -615,7 +617,10 @@ plantronicshub
 platypus
 plexmediaserver
 plisteditpro
+podman
 podmandesktop
+podmandesktopairgap
+polleverywhere
 polylens
 popsql
 portingkit
@@ -648,6 +653,7 @@ r
 raindropio
 rancherdesktop
 rapidapi
+rawtherapee
 raycast
 realvncondemandassist
 realvncserver
@@ -684,6 +690,7 @@ rogueamoebasoundsource5
 royaltsx
 rstudio
 rustdesk
+safeexambrowser
 salesforcecli
 santa
 scaleft
@@ -782,6 +789,7 @@ teamviewerhostcustom
 teamviewerqs
 teamviewerqscustom
 techsmithcapture
+teladocproviderinstaller
 telegram
 tembo
 tencentmeeting
