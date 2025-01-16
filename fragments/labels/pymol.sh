@@ -1,5 +1,4 @@
 pymol)
-	# An open-source molecular visualization system used for 3D modeling of molecular structures
     name="PyMOL"
     type="dmg"
     downloadURL=$(curl -s -L "https://pymol.org/" | grep -oE 'href="([^"]*installers/PyMOL-[^"]*-MacOS[^"]*\.dmg)"' | cut -d'"' -f2 | sort -rV | head -n1)
