@@ -1,5 +1,4 @@
 apachenetbeans)
-	# An open-source integrated development environment (IDE) for developing with Java, PHP, JavaScript, and other languages
     name="Apache NetBeans"
     type="pkg"
     appNewVersion=$( curl -fs "https://netbeans.apache.org/front/main/download/index.html" | grep -o 'Apache NetBeans [0-9]\+' | sed 's/Apache NetBeans //' | head -n 1 )
