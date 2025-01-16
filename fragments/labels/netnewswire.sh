@@ -1,5 +1,4 @@
 netnewswire)
-    # NetNewsWire is a free, open-source RSS reader for macOS that allows users to efficiently follow and manage their favorite websites and blogs
     name="NetNewsWire"
     type="zip"
     downloadURL="$(curl -fs https://ranchero.com/downloads/netnewswire-release.xml | xmllint --xpath 'string(//item[1]/enclosure/@url)' -)"
