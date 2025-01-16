@@ -292,6 +292,7 @@ flycut
 fontbase
 fontexplorer
 fork
+foxitpdfeditor
 foxitpdfreader
 franz
 freeplane
@@ -835,6 +836,7 @@ vectorworks2023sp7
 vectorworks2023sp8
 vectorworks2024update3
 vectorworks2024update4
+venturablocker
 veracrypt
 vfx
 vimac
