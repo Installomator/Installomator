@@ -5,3 +5,4 @@ unityhub)
     appNewVersion=$(curl -s https://unity.com/unity-hub/release-notes | grep -oE '>[0-9]+\.[0-9]+\.[0-9]+<' | head -1 | tr -d '<>')
     expectedTeamID="9QW8UQUTAA"
     ;;
+
