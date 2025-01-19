@@ -338,7 +338,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.7beta"
-VERSIONDATE="2025-01-15"
+VERSIONDATE="2025-01-18"
 
 # MARK: Functions
 
@@ -3003,6 +3003,54 @@ cinema4d)
     expectedTeamID="4ZY22YGXQG"
     ;;
 
+cinema4d2023)
+    name="Cinema 4D"
+    type="dmg"
+    appCustomVersion(){
+      defaults read "/Applications/Maxon Cinema 4D 2023/Cinema 4D.app/Contents/Info.plist" CFBundleGetInfoString | grep -Eo "2023+\.[0-9]+\.[0-9]+"
+    }
+    productDownloadsPage=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*downloads/cinema-4d-2023[^"]*' | head -1)
+    downloadURL=$(curl -fsL $productDownloadsPage | grep -oE 'https://[^"]*\.dmg' | head -1)
+    appNewVersion=$(sed -E 's/.*_([0-9.]*)_Mac\.dmg/\1/g' <<< $downloadURL)
+    targetDir="/Applications/Maxon Cinema 4D 2023"
+    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/maxon/cinema4d/releases/${appNewVersion}/Cinema4D_2023_${appNewVersion}_Mac.dmg"
+    installerTool="Maxon Cinema 4D Installer.app"
+    CLIInstaller="Maxon Cinema 4D Installer.app/Contents/MacOS/installbuilder.sh"
+    CLIArguments=(--mode unattended --unattendedmodeui none)
+    expectedTeamID="4ZY22YGXQG"
+    ;;
+cinema4d2024)
+    name="Cinema 4D"
+    type="dmg"
+    appCustomVersion(){
+      defaults read "/Applications/Maxon Cinema 4D 2024/Cinema 4D.app/Contents/Info.plist" CFBundleGetInfoString | grep -Eo "2024+\.[0-9]+\.[0-9]+"
+    }
+    productDownloadsPage=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*downloads/cinema-4d-2024[^"]*' | head -1)
+    downloadURL=$(curl -fsL $productDownloadsPage | grep -oE 'https://[^"]*\.dmg' | head -1)
+    appNewVersion=$(sed -E 's/.*_([0-9.]*)_Mac\.dmg/\1/g' <<< $downloadURL)
+    targetDir="/Applications/Maxon Cinema 4D 2024"
+    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/maxon/cinema4d/releases/${appNewVersion}/Cinema4D_2024_${appNewVersion}_Mac.dmg"
+    installerTool="Maxon Cinema 4D Installer.app"
+    CLIInstaller="Maxon Cinema 4D Installer.app/Contents/MacOS/installbuilder.sh"
+    CLIArguments=(--mode unattended --unattendedmodeui none)
+    expectedTeamID="4ZY22YGXQG"
+    ;;
+cinema4d2025)
+    name="Cinema 4D"
+    type="dmg"
+    appCustomVersion(){
+      defaults read "/Applications/Maxon Cinema 4D 2025/Cinema 4D.app/Contents/Info.plist" CFBundleGetInfoString | grep -Eo "2025+\.[0-9]+\.[0-9]+"
+    }
+    productDownloadsPage=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*downloads/cinema-4d-2025[^"]*' | head -1)
+    downloadURL=$(curl -fsL $productDownloadsPage | grep -oE 'https://[^"]*\.dmg' | head -1)
+    appNewVersion=$(sed -E 's/.*_([0-9.]*)_Mac\.dmg/\1/g' <<< $downloadURL)
+    targetDir="/Applications/Maxon Cinema 4D 2025"
+    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/maxon/cinema4d/releases/${appNewVersion}/Cinema4D_2025_${appNewVersion}_Mac.dmg"
+    installerTool="Maxon Cinema 4D Installer.app"
+    CLIInstaller="Maxon Cinema 4D Installer.app/Contents/MacOS/installbuilder.sh"
+    CLIArguments=(--mode unattended --unattendedmodeui none)
+    expectedTeamID="4ZY22YGXQG"
+    ;;
 cisdem-documentreader)
     name="cisdem-documentreader"
     type="dmg"
@@ -3760,6 +3808,13 @@ etssecurebrowser)
     downloadURL="https://ibtprod-rp.ets.org/SoftwareDistribution/rp/PROD/mac/ETS-RP-PROD.dmg"
     versionKey="CFBundleShortVersionString"
     expectedTeamID="WGC236CZU9"
+    ;;
+eul)
+    name="eul"
+    type="zip"
+    downloadURL="$(downloadURLFromGit gao-sun eul)"
+    appNewVersion="$(versionFromGit gao-sun eul)"
+    expectedTeamID="M8G2RFZVFV"
     ;;
 evercast)
     name="Evercast"
@@ -5104,6 +5159,13 @@ jitsimeet)
     downloadURL=$(downloadURLFromGit Jitsi jitsi-meet-electron)
     appNewVersion=$(versionFromGit Jitsi jitsi-meet-electron)
     expectedTeamID="FC967L3QRG"
+    ;;
+joplin)
+    name="Joplin"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit laurent22 joplin)"
+    appNewVersion="$(versionFromGit laurent22 joplin)"
+    expectedTeamID="A9BXAFS6CT"
     ;;
 jre8)
     name="Java Runtime Environment 8"
@@ -8286,6 +8348,13 @@ spotify)
     # appNewVersion=$(curl -fs https://www.spotify.com/us/opensource/ | cat | grep -o "<td>.*.</td>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1) # does not result in the same version as downloaded
     expectedTeamID="2FNC3A47ZF"
     ;;
+sqlitebrowser)
+    name="DB Browser for SQLite"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit sqlitebrowser sqlitebrowser)
+    appNewVersion=$(versionFromGit sqlitebrowser sqlitebrowser)
+    expectedTeamID="C34AV33YLK"
+;;
 sqlpropostgres)
     name="SQLPro for Postgres"
     type="zip"
@@ -8967,6 +9036,22 @@ vimac)
     downloadURL=$(curl -fs "https://vimacapp.com/latest-release-metadata" | tr ',' '\n' | awk -F\" '/download_url/ {print $4}')
     appNewVersion=$(curl -fs "https://vimacapp.com/latest-release-metadata" | tr ',' '\n' | awk -F\" '/short_version/ {print $4}')
     expectedTeamID="LQ2VH8VB84"
+    ;;
+vimcal)
+    name="Vimcal"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        fileDownloadName=$(curl -s https://www.vimcal.com/downloads/mac | grep -o 'Vimcal-[0-9.]\+-arm64\.dmg' | head -n 1)
+        appNewVersion="${fileDownloadName#Vimcal-}"
+        appNewVersion="${appNewVersion%-arm64.dmg}"
+        downloadURL="https://vimcal-m1.s3.us-west-1.amazonaws.com/$fileDownloadName"
+    elif [[ $(arch) == "i386" ]]; then
+        fileDownloadName=$(curl -s https://www.vimcal.com/downloads/mac | grep -o 'Vimcal-[0-9.]\+\.dmg' | head -n 1)
+        appNewVersion="${fileDownloadName#Vimcal-}"
+        appNewVersion="${appNewVersion%.dmg}"
+        downloadURL="https://vimcal-production.s3.us-west-1.amazonaws.com/$fileDownloadName"
+    fi
+    expectedTeamID="7F7GXK9J99"
     ;;
 virtualbox)
     # credit: AP Orlebeke (@apizz)

@@ -169,6 +169,9 @@ chromeremotedesktop
 chronoagent
 chronosync
 cinema4d
+cinema4d2023
+cinema4d2024
+cinema4d2025
 cisdem-documentreader
 citrixworkspace
 cleartouchcollage
@@ -256,6 +259,7 @@ eshareosx
 espanso
 etrecheck
 etssecurebrowser
+eul
 evercast
 evernote
 everweb
@@ -399,6 +403,7 @@ jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
 jitsimeet
+joplin
 jre8
 jumpdesktop
 jupyterlab
@@ -752,6 +757,7 @@ splashtopsos
 splashtopstreamer
 splice
 spotify
+sqlitebrowser
 sqlpropostgres
 sqlprostudio
 starface72x
@@ -832,6 +838,7 @@ venturablocker
 veracrypt
 vfx
 vimac
+vimcal
 virtualbox
 virtualbuddy
 viscosity
