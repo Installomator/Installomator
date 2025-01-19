@@ -3,7 +3,9 @@ vimcal)
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
         fileDownloadName=$(curl -s https://www.vimcal.com/downloads/mac | grep -o 'Vimcal-[0-9.]\+-arm64\.dmg' | head -n 1)
-        appNewVersion="${fileDownloadName#Vimcal-%.dmg}"
+        appNewVersion="${fileName#Vimcal-}"
+        appNewVersion="${appNewVersion%-arm64}"
+        appNewVersion="${appNewVersion:r}"
         downloadURL="https://vimcal-m1.s3.us-west-1.amazonaws.com/$fileDownloadName"
     elif [[ $(arch) == "i386" ]]; then
         fileDownloadName=$(curl -s https://www.vimcal.com/downloads/mac | grep -o 'Vimcal-[0-9.]\+\.dmg' | head -n 1)
