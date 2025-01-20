@@ -1,4 +1,4 @@
-name: Check LF at End of PR
+name: Ensure PR Ends with Line Feed
 
 on:
   pull_request:
@@ -22,7 +22,7 @@ jobs:
       id: determine-base
       run: echo "::set-output name=BASE_BRANCH::$(git merge-base --fork-point origin/main HEAD || git merge-base origin/main HEAD)"
 
-    - name: Check if PR files end with LF
+    - name: Check if PR ends with line feed
       run: |
         files=$(git diff --name-only ${{ steps.determine-base.outputs.BASE_BRANCH }} HEAD)
         for file in $files; do
