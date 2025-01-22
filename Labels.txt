@@ -4,6 +4,11 @@
 4kvideodownloader
 8x8
 abetterfinderrename11
+abletonlive12intro
+abletonlive12lite
+abletonlive12standard
+abletonlive12suite
+abletonlive12trial
 abstract
 acorn
 acroniscyberprotectconnect
@@ -30,7 +35,7 @@ aldente
 alephone
 alfred
 altserver
-amazonchime
+amadeuspro2
 amazoncorretto11jdk
 amazoncorretto17jdk
 amazoncorretto8jdk
@@ -58,6 +63,7 @@ archiwareb2go
 archiwarepst
 arduinoide
 arq7
+arturiasoftwarecenter
 asana
 asperaconnect
 atext
@@ -331,7 +337,7 @@ grammarly
 grandperspective
 grasshopper
 grooveomnidialerenterpriseedition
-gyazo
+guardianbrowser
 gyazogif
 hancock
 handbrake
@@ -357,6 +363,7 @@ idrive
 idrivethin
 igv
 iina
+ikproductmanager
 imageoptim
 imazingprofileeditor
 inetclearreportsdesigner
@@ -632,7 +639,7 @@ polleverywhere
 polylens
 popsql
 portingkit
-postman
+postgresapp
 powermonitor
 prism10
 prism9
@@ -732,7 +739,7 @@ skim
 skype
 slab
 slack
-smartgit
+sloth
 smartsheet
 smartsvn
 snagit
@@ -775,7 +782,7 @@ subethaedit
 sublimemerge
 sublimetext
 suitestudio
-superhuman
+supercollider
 supportapp
 surfdrive
 suspiciouspackage
@@ -830,12 +837,15 @@ typeface
 typinator
 typora
 uaconnect
+ujamportal
 ultimakercura
 umbrellaroamingclient
 uniconverter
 universaltypeclient
 unnaturalscrollwheels
 utm
+uviportal
+uviworkstation
 vagrant
 vanilla
 venturablocker
@@ -860,7 +870,7 @@ vscodium
 vysor
 wacomdrivers
 wallyezflash
-weasis
+wavescentral
 webex
 webexmeetings
 webexteams
@@ -869,6 +879,7 @@ wechat
 weprint
 whatroute
 whatsapp
+whimsical
 wireshark
 wordservice
 workbrew
