@@ -211,6 +211,7 @@ dbeaverce
 debookee
 dedoose
 deepl
+deezer
 defaultfolderx
 depnotify
 desktoppr
