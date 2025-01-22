@@ -338,7 +338,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.7beta"
-VERSIONDATE="2025-01-18"
+VERSIONDATE="2025-01-22"
 
 # MARK: Functions
 
@@ -1811,7 +1811,13 @@ alfred)
     appName="Alfred 5.app"
     expectedTeamID="XZZXE9SED4"
     ;;
-alttab)
+altserver)
+    name="AltServer"
+    type="zip"
+    downloadURL="https://cdn.altstore.io/file/altstore/altserver.zip"
+    appNewVersion=""
+    expectedTeamID="6XVY5G3U44"
+    ;;alttab)
     name="AltTab"
     type="zip"
     downloadURL=$(downloadURLFromGit lwouis alt-tab-macos)
@@ -3392,7 +3398,14 @@ deepl)
     appNewVersion=""
     expectedTeamID="4N8BGCG336"
     ;;
-defaultfolderx)
+deezer)
+    name="Deezer"
+    type="dmg"
+    # There is no arm/universal binary. Need rosetta2 to run it on apple silicon
+    downloadURL="https://www.deezer.com/desktop/download?platform=darwin&architecture=x64"
+    appNewVersion=$(curl -fsLI "$downloadURL" | grep -o "DeezerDesktop_[0-9]*\.[0-9]*\.[0-9]*" | cut -d'_' -f2)
+    expectedTeamID="7QLUP2K45C"
+    ;;defaultfolderx)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="Default Folder X"
     type="dmg"
@@ -3499,7 +3512,14 @@ displaylinkmanagergraphicsconnectivity)
     appNewVersion=$(echo "${downloadURL}" | grep -Eo '[0-9]\.[0-9]+(\.[0-9])?')
     expectedTeamID="73YQY62QM3"
     ;;
-docker)
+displaynote)
+name="displaynote"
+type="pkg"
+packageID="com.displaynote.DisplayNoteApp"
+downloadURL="https://montage-updates.displaynote.com/api/download/f10632d2-9fbf-11e8-8999-ff918fb3468a/vanilla/released/last?app_name=displaynote-mac"
+appNewVersion="$(curl -fsIL "https://montage-updates.displaynote.com/api/download/f10632d2-9fbf-11e8-8999-ff918fb3468a/vanilla/released/last?app_name=displaynote-mac" | grep -i ^Content-Disposition | sed -n 's/.*displaynote-mac-\([0-9.]*\)-released\.pkg.*/\1/p')"
+expectedTeamID="Q3ML87W6WF"
+;;docker)
     name="Docker"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
@@ -3721,7 +3741,13 @@ egnytewebedit)
     blockingProcesses=( NONE )
     ;;
     
-element)
+elasticvue)
+    name="elasticvue"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit cars10 elasticvue)"
+    appNewVersion="$(versionFromGit cars10 elasticvue)"
+    expectedTeamID="9L4YGY6JVY"
+    ;;element)
     name="Element"
     type="dmg"
     downloadURL="https://packages.riot.im/desktop/install/macos/Element.dmg"
@@ -3944,6 +3970,15 @@ finaldraft12)
     downloadURL="https://www.finaldraft.com"
     downloadURL+=$(curl -fs "https://www.finaldraft.com/support/install-final-draft/install-final-draft-12-macintosh/" | xmllint --html --format - 2>/dev/null | grep -o "/downloads/finaldraft.*.zip")
     appNewVersion=$(echo $downloadURL | cut -d 't' -f5 | cut -f1 -d "M")
+    expectedTeamID="7XUZ8R5736"
+    ;;
+finaldraft13)
+    #credit to @adamcodega on Slack for helping to fix the curl
+    name="Final Draft 13"
+    type="appInDmgInZip"
+    downloadURL="https://www.finaldraft.com$(curl -fs "https://www.finaldraft.com/support/install-final-draft/install-final-draft-13-macintosh/" | xmllint --html --format - 2>/dev/null | grep -o "/downloads/finaldraft.*.zip" | head -n 1)"
+    appNewVersion=$(echo $downloadURL | cut -d 't' -f5 | cut -f1 -d "M")
+    versionKey="CFBundleShortVersionString"
     expectedTeamID="7XUZ8R5736"
     ;;
 findanyfile)
@@ -5529,7 +5564,13 @@ linear)
     blockingProcesses=( "Linear" )
     ;;
     
-logioptions|\
+linearmouse)
+    name="LinearMouse"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit linearmouse linearmouse)"
+    appNewVersion="$(versionFromGit linearmouse linearmouse)"
+    expectedTeamID="C5686NKYJ7"
+    ;;logioptions|\
 logitechoptions)
     name="Logi Options"
     type="pkgInZip"
@@ -5711,6 +5752,14 @@ macfuse)
     appNewVersion=$(versionFromGit osxfuse osxfuse)
     expectedTeamID="3T5GSNBU6W"
     ;;
+masterfader)
+#credit: @sintichn macadmins slack
+name="MasterFader"
+type="dmg"
+appNewVersion="$(curl -sf https://mackie.com/en/products/mixers/master-fader/master_fader.html | grep -m 1 "macOS" | sed -n 's/.*Fader \([0-9]\)\.\([0-9]\).*/\1_\2_/p')"
+downloadURL="https://mackie.com/img/file_resources/Master_Fader_v"$appNewVersion"Setup.dmg"
+expectedTeamID="6X5AC85L48"
+;;
 macoslaps)
     name="macOSLAPS"
     type="pkg"
@@ -6413,7 +6462,13 @@ miniconda)
 	fi
     expectedTeamID="Z5788K4JT7"
     ;;
-miro)
+minisim)
+    name="Minisim"
+    type="zip"
+    downloadURL="$(downloadURLFromGit okwasniewski MiniSim)"
+    appNewVersion="$(versionFromGit okwasniewski MiniSim)"
+    expectedTeamID="Z3M9P6G4WY"
+    ;;miro)
     # credit: @matins
     name="Miro"
     type="dmg"
@@ -7039,6 +7094,17 @@ opera)
     appNewVersion="$(printf "$downloadURL" | sed -E 's/https.*\/([0-9.]*)\/mac\/.*/\1/')"
 	versionKey="CFBundleVersion"
     expectedTeamID="A2P9LX4JPN"
+    ;;
+orbstack)
+    name="OrbStack"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://orbstack.dev/download/stable/latest/arm64"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL=https://orbstack.dev/download/stable/latest/amd64
+    fi
+    appNewVersion=$( curl --fail --silent --head $downloadURL | grep "location:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )
+    expectedTeamID="HUAQ24HBR6"
     ;;
 orcaslicer)
     name="OrcaSlicer"
@@ -8384,6 +8450,15 @@ starface73x)
     type="dmg"
     downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.3" | cut -d '"' -f 2)
     appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.3" | cut -d '"' -f 2 | cut -d '-' -f 4 | sed 's/\(.*\).dmg/\1/')
+    expectedTeamID="Q965D3UXEW"
+    versionKey="CFBundleVersion"
+    ;;
+starface81x)
+    name="STARFACE"
+    # Downloads the latest 8.1.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="dmg"
+    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure' | grep -m 1 "8.1" | sed 's/.*url\(.*\).dmg/\1/' | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure' | grep -m 1 "8.1" | sed 's/.*sparkle:version\(.*\) type/\1/' | cut -d '"' -f 2)
     expectedTeamID="Q965D3UXEW"
     versionKey="CFBundleVersion"
     ;;

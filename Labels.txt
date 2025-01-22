@@ -29,7 +29,7 @@ airtamepkg
 aldente
 alephone
 alfred
-alttab
+altserver
 amazonchime
 amazoncorretto11jdk
 amazoncorretto17jdk
@@ -212,7 +212,6 @@ debookee
 dedoose
 deepl
 deezer
-defaultfolderx
 depnotify
 desktoppr
 detectxswift
@@ -225,7 +224,7 @@ diskdrill
 diskspace
 displaylinkmanager
 displaylinkmanagergraphicsconnectivity
-docker
+displaynote
 dockutil
 dragonframe5
 drawio
@@ -250,7 +249,7 @@ ecosiabrowser
 egnyte
 egnytecore
 egnytewebedit
-element
+elasticvue
 elgatocamerahub
 elgatostreamdeck
 emacs
@@ -277,6 +276,7 @@ filemakerpro
 filezilla
 finaldraft11
 finaldraft12
+finaldraft13
 findanyfile
 firefox
 firefox_da
@@ -440,7 +440,7 @@ libreofficelanguagepack_intl
 lifesize
 lightburn
 linear
-logioptions
+linearmouse
 logitechoptions
 logitechoptionsplus
 logitune
@@ -467,6 +467,7 @@ malwarebytes
 marathon
 marathon2
 marathoninfinity
+masterfader
 masv
 mattermost
 maxonapp
@@ -523,7 +524,7 @@ microsoftwordreset
 mightymike
 mindmanager
 miniconda
-miro
+minisim
 mist
 mist-cli
 mkuser
@@ -597,6 +598,7 @@ onyx
 openvpnconnect
 openvpnconnectv3
 opera
+orbstack
 orcaslicer
 origin
 orion
@@ -763,6 +765,7 @@ sqlpropostgres
 sqlprostudio
 starface72x
 starface73x
+starface81x
 starfaceuccclient
 stats
 steelseriesengine
