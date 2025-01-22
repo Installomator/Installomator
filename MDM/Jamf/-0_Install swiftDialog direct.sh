@@ -117,26 +117,36 @@ if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
     #downloadURL="https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
     downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
 fi
-#echo "$downloadURL"
-appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
+#echo "$downloadURL"rawVersionString=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)
+
+# Get Github Version
+appNewVersion=$(echo "$rawVersionString" | awk -F '-' '{print $1}' | sed 's/[^0-9\.]//g' | sed 's/\.$//')
+
+# Get Github BundleVersion
+appNewBundleVersion=$(echo "$rawVersionString" | awk '{sub(/-/," ")}1' | awk '{print $2}' | sed 's/\r//g')
+
 #echo "$appNewVersion"
 expectedTeamID="PWA5E9TQ59"
 destFile="/Library/Application Support/Dialog/Dialog.app"
-versionKey="CFBundleShortVersionString" #CFBundleVersion
+versionKey="CFBundleShortVersionString"
+bundleVersionKey="CFBundleVersion"
+
 currentInstalledVersion="$(/usr/libexec/PlistBuddy -c "Print :$versionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
-echo "${name} version installed: $currentInstalledVersion"
+currentInstalledBundleVersion="$(/usr/libexec/PlistBuddy -c "Print :$bundleVersionKey" "${destFile}/Contents/Info.plist" | tr -d "[:special:]" || true)"
+
+echo "${name} version installed: $currentInstalledVersion bundleVersion: $currentInstalledBundleVersion"
 
 destFile2="/usr/local/bin/dialog"
 # NOTE: Condition for installation
-if [[ ! -d "${destFile}" || ! -x "${destFile2}" || "$currentInstalledVersion" != "$appNewVersion" || "$INSTALL" == "force" ]]; then
+if [[ ! -d "${destFile}" || ! -x "${destFile2}" || "$currentInstalledVersion" != "$appNewVersion" || "$currentInstalledBundleVersion" != "$appNewBundleVersion" || "$INSTALL" == "force" ]]; then
     echo "$name not found, version not latest, icon for Dialog was changed."
     echo "${destFile}"
-    echo "Installing version ${appNewVersion}…"
+    echo "Installing version ${appNewVersion} ${appNewBundleVersion}…"
     # Create temporary working directory
     tmpDir="$(mktemp -d || true)"
     echo "Created working directory '$tmpDir'"
     # Download the installer package
-    echo "Downloading $name package version $appNewVersion from: $downloadURL"
+    echo "Downloading $name package version $appNewVersion $appNewBundleVersion from: $downloadURL"
     installationCount=0
     exitCode=9
     while [[ $installationCount -lt 3 && $exitCode -gt 0 ]]; do
@@ -189,8 +199,8 @@ if [[ ! -d "${destFile}" || ! -x "${destFile2}" || "$currentInstalledVersion" !=
         echo "ERROR : Installation of $name failed. Aborting."
         caffexit $exitCode
     else
-        echo "$name version $appNewVersion installed!"
+        echo "$name version $appNewVersion $appNewBundleVersion installed!"
     fi
 else
-    echo "$name version $appNewVersion already found. Perfect!"
+    echo "$name version $appNewVersion $appNewBundleVersion already found. Perfect!"
 fi
