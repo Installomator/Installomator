@@ -5,6 +5,16 @@
     ;;
 esac
 
+# Unalias curl to make it non-stubborn again
+unalias curl
+
+# Default value of MAXDOWNLOADATTEMPTS if set too low
+if [[ $MAXDOWNLOADATTEMPTS -lt 1 ]]; then
+    MAXDOWNLOADATTEMPTS=6
+elif [[ $MAXDOWNLOADATTEMPTS -lt 1 && -n $DIALOG_CMD_FILE ]]; then
+    MAXDOWNLOADATTEMPTS=3
+fi
+
 # MARK: finish reading the arguments:
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
@@ -259,62 +269,95 @@ if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
 fi
 
 # MARK: download the archive
-if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
-    printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
-else
-    # download
-    printlog "Downloading $downloadURL to $archiveName" REQ
-    if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
-        printlog "notifying"
-        if [[ $updateDetected == "YES" ]]; then
-            displaynotification "Downloading $name update" "Download in progress …"
-        else
-            displaynotification "Downloading new $name" "Download in progress …"
-        fi
-    fi
+downloadattempt=0
+ipversion=""
 
-    if [[ $DIALOG_CMD_FILE != "" ]]; then
-        # pipe
-        pipe="$tmpDir/downloadpipe"
-        # initialise named pipe for curl output
-        initNamedPipe create $pipe
-
-        # run the pipe read in the background
-        readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
-        printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
-
-        curlDownload=$(curl -fL -# --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
-        # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
-        curlDownloadStatus=$(echo $pipestatus[1])
-        killProcess $downloadPipePID
-
+while [[ $downloadattempt -lt $MAXDOWNLOADATTEMPTS ]]; do
+    ((downloadattempt++))
+    printlog "${downloadattempt}. download attempt of ${MAXDOWNLOADATTEMPTS} attempts."
+    if [ -f "$archiveName" ] && [ "$DEBUG" -eq 1 ]; then
+        printlog "$archiveName exists and DEBUG mode 1 enabled, skipping download"
     else
-        printlog "No Dialog connection, just download" DEBUG
-        curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
-        curlDownloadStatus=$(echo $?)
-    fi
-
-    deduplicatelogs "$curlDownload"
-    if [[ $curlDownloadStatus -ne 0 ]]; then
-    #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
-        printlog "error downloading $downloadURL" ERROR
-        message="$name update/installation failed. This will be logged, so IT can follow up."
+        # download
+        printlog "Fixing downloadURL" DEBUG
+        downloadURL=$(echo $downloadURL | head -n 1)
+        printlog "Downloading $downloadURL to $archiveName" REQ
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
             printlog "notifying"
             if [[ $updateDetected == "YES" ]]; then
-                displaynotification "$message" "Error updating $name"
+                displaynotification "Downloading $name update" "Download in progress …"
             else
-                displaynotification "$message" "Error installing $name"
+                displaynotification "Downloading new $name" "Download in progress …"
             fi
         fi
-        printlog "File list: $(ls -lh "$archiveName")" ERROR
-        printlog "File type: $(file "$archiveName")" ERROR
-        cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
+
+        if [[ $DIALOG_CMD_FILE != "" ]]; then
+            # pipe
+            pipe="$tmpDir/downloadpipe"
+            # initialise named pipe for curl output
+            initNamedPipe create $pipe
+
+            # run the pipe read in the background
+            readDownloadPipe $pipe "$DIALOG_CMD_FILE" & downloadPipePID=$!
+            printlog "listening to output of curl with pipe $pipe and command file $DIALOG_CMD_FILE on PID $downloadPipePID" DEBUG
+
+            curlDownload=$(curl $ipversion -fL --progress-bar --show-error -C - --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1 | tee $pipe)
+            # because we are tee-ing the output, we want the pipe status of the first command in the chain, not the most recent one
+            curlDownloadStatus=$(echo $pipestatus[1])
+            killProcess $downloadPipePID
+
+        else
+            printlog "No Dialog connection, just download" DEBUG
+            if [[ $downloadattempt -eq 1 ]]; then
+                printlog "1st download arguments: $ipversion -fsL --show-error --retry 5 ${curlOptions}"
+                curldownload=$(curl -v $ipversion -fsL --show-error --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+            else
+                printlog "Subsequent download attempt with Continue: ${downloadattempt}: $ipversion -fsL --show-error -C - --retry 5 ${curlOptions}"
+                curldownload=$(curl -v $ipversion -fsL --show-error -C - --retry 5 ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
+            fi
+            curldownloadstatus=$?
+            printlog "Status: $curlDownloadStatus \n$curlDownload" DEBUG
+        fi
+        printlog "curlDownloadStatus: $curlDownloadStatus" DEBUG
+        alternateError=$(printf '%s' "${curldownload}" | tail -n1 | grep -Eo 'errno [[:digit:]]+' | awk '{print $2}')
+        printlog "alternateError: $alternateError" DEBUG
+        if [[ -n "${alternateError}" ]]; then
+            curldownloadstatus=$alternateError
+        fi
+        printlog "curlDownloadStatus: $curlDownloadStatus, attempt: $downloadattempt" DEBUG
+        deduplicatelogs "$curlDownload"
+        if [[ $curldownloadstatus -ne 0 && $downloadattempt -ge 4 ]] ; then
+            printlog "Setting download to IPv4 only" WARN
+            ipversion="-4"
+        fi
+        if [[ $curldownloadstatus -ne 0 ]] && [[ $downloadattempt -lt $MAXDOWNLOADATTEMPTS ]]; then
+            printlog "RETRYING... Error downloading $downloadURL error: $logoutput" WARN
+            #((downloadattempt++))
+            sleep 15
+        elif [[ $curldownloadstatus -ne 0 ]] && [[ $downloadattempt -ge $MAXDOWNLOADATTEMPTS ]]; then
+            printlog "error downloading $downloadURL" ERROR
+            message="$name update/installation failed. This will be logged, so IT can follow up."
+            if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
+                printlog "notifying"
+                if [[ $updateDetected == "YES" ]]; then
+                    displaynotification "$message" "Error updating $name"
+                else
+                    displaynotification "$message" "Error installing $name"
+                fi
+            fi
+            printlog "File list: $(ls -lh "$archiveName")" DEBUG
+            printlog "File type: $(file "$archiveName")" DEBUG
+            cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
+        elif [[ $curldownloadstatus -eq 0 ]] ; then
+            printlog "Download successful" DEBUG
+            printlog "File list: $(ls -lh "$archiveName")" DEBUG
+            printlog "File type: $(file "$archiveName")" DEBUG
+            printlog "curl output was: $logoutput" DEBUG
+            break
+        fi
+        #printlog "curl output was:\n$logoutput" DEBUG
     fi
-    printlog "File list: $(ls -lh "$archiveName")" DEBUG
-    printlog "File type: $(file "$archiveName")" DEBUG
-    printlog "curl output was:\n$logoutput" DEBUG
-fi
+done
 
 # MARK: when user is logged in, and app is running, prompt user to quit app
 if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
