@@ -5,4 +5,3 @@ wavescentral)
     appNewVersion=$( curl -sf "https://register.waves.com/Autoupdate/Updates/ByProductId/1/central-mac" | grep version | cut -d" " -f2 | xargs )
     expectedTeamID="GT6E3XD798"
     ;;
-    

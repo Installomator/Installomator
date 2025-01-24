@@ -35,7 +35,9 @@ aldente
 alephone
 alfred
 altserver
+alttab
 amadeuspro2
+amazonchime
 amazoncorretto11jdk
 amazoncorretto17jdk
 amazoncorretto8jdk
@@ -218,6 +220,7 @@ debookee
 dedoose
 deepl
 deezer
+defaultfolderx
 depnotify
 desktoppr
 detectxswift
@@ -230,7 +233,7 @@ diskdrill
 diskspace
 displaylinkmanager
 displaylinkmanagergraphicsconnectivity
-displaynote
+docker
 dockutil
 dragonframe5
 drawio
@@ -256,6 +259,7 @@ egnyte
 egnytecore
 egnytewebedit
 elasticvue
+element
 elgatocamerahub
 elgatostreamdeck
 emacs
@@ -338,6 +342,7 @@ grandperspective
 grasshopper
 grooveomnidialerenterpriseedition
 guardianbrowser
+gyazo
 gyazogif
 hancock
 handbrake
@@ -448,6 +453,7 @@ lifesize
 lightburn
 linear
 linearmouse
+logioptions
 logitechoptions
 logitechoptionsplus
 logitune
@@ -532,6 +538,7 @@ mightymike
 mindmanager
 miniconda
 minisim
+miro
 mist
 mist-cli
 mkuser
@@ -640,6 +647,7 @@ polylens
 popsql
 portingkit
 postgresapp
+postman
 powermonitor
 prism10
 prism9
@@ -740,6 +748,7 @@ skype
 slab
 slack
 sloth
+smartgit
 smartsheet
 smartsvn
 snagit
@@ -783,6 +792,7 @@ sublimemerge
 sublimetext
 suitestudio
 supercollider
+superhuman
 supportapp
 surfdrive
 suspiciouspackage
@@ -871,6 +881,7 @@ vysor
 wacomdrivers
 wallyezflash
 wavescentral
+weasis
 webex
 webexmeetings
 webexteams

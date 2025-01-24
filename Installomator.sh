@@ -337,8 +337,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.7beta"
-VERSIONDATE="2025-01-22"
+VERSION="10.7"
+VERSIONDATE="2025-01-24"
 
 # MARK: Functions
 
@@ -1862,7 +1862,8 @@ altserver)
     downloadURL="https://cdn.altstore.io/file/altstore/altserver.zip"
     appNewVersion=""
     expectedTeamID="6XVY5G3U44"
-    ;;alttab)
+    ;;
+alttab)
     name="AltTab"
     type="zip"
     downloadURL=$(downloadURLFromGit lwouis alt-tab-macos)
@@ -1875,7 +1876,8 @@ amadeuspro2)
     type="zip"
     downloadURL="https://s3.amazonaws.com/AmadeusPro2/AmadeusPro.zip"
     expectedTeamID="FWDH9W45C2"
-    ;;amazonchime)
+    ;;
+amazonchime)
     # credit: @dvsjr macadmins slack
     name="Amazon Chime"
     type="dmg"
@@ -3480,7 +3482,8 @@ deezer)
     downloadURL="https://www.deezer.com/desktop/download?platform=darwin&architecture=x64"
     appNewVersion=$(curl -fsLI "$downloadURL" | grep -o "DeezerDesktop_[0-9]*\.[0-9]*\.[0-9]*" | cut -d'_' -f2)
     expectedTeamID="7QLUP2K45C"
-    ;;defaultfolderx)
+    ;;
+defaultfolderx)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="Default Folder X"
     type="dmg"
@@ -3587,14 +3590,15 @@ displaylinkmanagergraphicsconnectivity)
     appNewVersion=$(echo "${downloadURL}" | grep -Eo '[0-9]\.[0-9]+(\.[0-9])?')
     expectedTeamID="73YQY62QM3"
     ;;
-displaynote)
-name="displaynote"
-type="pkg"
-packageID="com.displaynote.DisplayNoteApp"
-downloadURL="https://montage-updates.displaynote.com/api/download/f10632d2-9fbf-11e8-8999-ff918fb3468a/vanilla/released/last?app_name=displaynote-mac"
-appNewVersion="$(curl -fsIL "https://montage-updates.displaynote.com/api/download/f10632d2-9fbf-11e8-8999-ff918fb3468a/vanilla/released/last?app_name=displaynote-mac" | grep -i ^Content-Disposition | sed -n 's/.*displaynote-mac-\([0-9.]*\)-released\.pkg.*/\1/p')"
-expectedTeamID="Q3ML87W6WF"
-;;docker)
+    displaynote)
+    name="displaynote"
+    type="pkg"
+    packageID="com.displaynote.DisplayNoteApp"
+    downloadURL="https://montage-updates.displaynote.com/api/download/f10632d2-9fbf-11e8-8999-ff918fb3468a/vanilla/released/last?app_name=displaynote-mac"
+    appNewVersion="$(curl -fsIL "https://montage-updates.displaynote.com/api/download/f10632d2-9fbf-11e8-8999-ff918fb3468a/vanilla/released/last?app_name=displaynote-mac" | grep -i ^Content-Disposition | sed -n 's/.*displaynote-mac-\([0-9.]*\)-released\.pkg.*/\1/p')"
+    expectedTeamID="Q3ML87W6WF"
+    ;;
+docker)
     name="Docker"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
@@ -3822,7 +3826,8 @@ elasticvue)
     downloadURL="$(downloadURLFromGit cars10 elasticvue)"
     appNewVersion="$(versionFromGit cars10 elasticvue)"
     expectedTeamID="9L4YGY6JVY"
-    ;;element)
+    ;;
+element)
     name="Element"
     type="dmg"
     downloadURL="https://packages.riot.im/desktop/install/macos/Element.dmg"
@@ -4590,7 +4595,8 @@ guardianbrowser)
        downloadURL="https://production-archimedes-secure-browser-artifacts.s3.amazonaws.com/latest/mac-arm64/guardian-browser-arm64.dmg"
     fi
     expectedTeamID="7TCATJSU2Y"
-    ;;gyazo)
+    ;;
+gyazo)
     # credit: @matins
     name="Gyazo"
     type="dmg"
@@ -5663,7 +5669,8 @@ linearmouse)
     downloadURL="$(downloadURLFromGit linearmouse linearmouse)"
     appNewVersion="$(versionFromGit linearmouse linearmouse)"
     expectedTeamID="C5686NKYJ7"
-    ;;logioptions|\
+    ;;
+logioptions|\
 logitechoptions)
     name="Logi Options"
     type="pkgInZip"
@@ -6561,7 +6568,8 @@ minisim)
     downloadURL="$(downloadURLFromGit okwasniewski MiniSim)"
     appNewVersion="$(versionFromGit okwasniewski MiniSim)"
     expectedTeamID="Z3M9P6G4WY"
-    ;;miro)
+    ;;
+miro)
     # credit: @matins
     name="Miro"
     type="dmg"
@@ -7482,7 +7490,8 @@ postgresapp)
     appNewVersion=$(versionFromGit PostgresApp PostgresApp)
     archiveName="Postgres-$appNewVersion.dmg"
     expectedTeamID="ZF84SJ5A3G"
-    ;;postman)
+    ;;
+postman)
     name="Postman"
     type="zip"
     curlOptions=( -H "accept-encoding: gzip, deflate, br")
@@ -8304,7 +8313,8 @@ sloth)
     downloadURL=$(downloadURLFromGit sveinbjornt Sloth)
     appNewVersion=$(versionFromGit sveinbjornt Sloth)
     expectedTeamID="5WX26Y89JP"
-    ;;smartgit)
+    ;;
+smartgit)
     name="SmartGit"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
@@ -8655,7 +8665,8 @@ supercollider)
     downloadURL=$(downloadURLFromGit "supercollider" "supercollider")
     appNewVersion=$(versionFromGit "supercollider" "supercollider")
     expectedTeamID="HE5VJFE9E4"
-    ;;superhuman)
+    ;;
+superhuman)
     name="superhuman"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
@@ -9403,7 +9414,7 @@ wavescentral)
     appNewVersion=$( curl -sf "https://register.waves.com/Autoupdate/Updates/ByProductId/1/central-mac" | grep version | cut -d" " -f2 | xargs )
     expectedTeamID="GT6E3XD798"
     ;;
-    weasis)
+weasis)
     name="Weasis"
     type="pkg"
     packageID="org.weasis.launcher"
