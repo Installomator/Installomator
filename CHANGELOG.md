@@ -1,3 +1,8 @@
+
+- Added `PROXY` variable to handle proxy settings if needed.
+- Arguments now load before and after the labels are loaded.
+
+
 ## v10.7
 
 - GitHub automation for testing (#2118)
