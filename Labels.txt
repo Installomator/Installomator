@@ -92,6 +92,7 @@ bartender
 basecamp3
 baseline
 baseline-nodaemon
+basictex
 bbedit
 bbeditpkg
 beamstudio
@@ -130,6 +131,7 @@ camtasia2020
 camtasia2021
 camtasia2022
 camtasia2023
+camtasia2024
 camunda
 canva
 carboncopycloner
@@ -822,6 +824,7 @@ tembo
 tencentmeeting
 texliveutility
 texshop
+texshop-alternative
 textexpander
 textmate
 theunarchiver
