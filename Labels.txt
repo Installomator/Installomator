@@ -399,6 +399,7 @@ jamfprintermanager
 jamfreenroller
 jamovi
 jasp
+jcpswdmgr
 jdk17
 jdk18
 jdk19
@@ -420,6 +421,7 @@ jetbrainswebstorm
 jitsimeet
 joplin
 jre8
+jumpcloudpasswordmanager
 jumpdesktop
 jupyterlab
 kap
@@ -926,6 +928,7 @@ zoomclient
 zoomgov
 zoomoutlookplugin
 zoomoutlookpluginremoval
+zoompresence
 zoomrooms
 zotero
 zulip
