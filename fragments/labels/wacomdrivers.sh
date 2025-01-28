@@ -1,7 +1,6 @@
 wacomdrivers)
     name="Wacom Center"
     type="pkgInDmg"
-    appCustomVersion(){defaults read "/Applications/Wacom Tablet.localized/Wacom Center.app/Contents/Info.plist" CFBundleShortVersionString}
     downloadURL="$(curl -fs https://www.wacom.com/en-us/support/product-support/drivers | grep -e "drivers/mac/professional.*dmg" | head -1 | tr '"' "\n" | grep -i http)"
     expectedTeamID="EG27766DY7"
     #pkgName="Install Wacom Tablet.pkg"
