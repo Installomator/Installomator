@@ -4,6 +4,11 @@
 4kvideodownloader
 8x8
 abetterfinderrename11
+abletonlive12intro
+abletonlive12lite
+abletonlive12standard
+abletonlive12suite
+abletonlive12trial
 abstract
 acorn
 acroniscyberprotectconnect
@@ -29,7 +34,9 @@ airtamepkg
 aldente
 alephone
 alfred
+altserver
 alttab
+amadeuspro2
 amazonchime
 amazoncorretto11jdk
 amazoncorretto17jdk
@@ -58,6 +65,7 @@ archiwareb2go
 archiwarepst
 arduinoide
 arq7
+arturiasoftwarecenter
 asana
 asperaconnect
 atext
@@ -84,6 +92,7 @@ bartender
 basecamp3
 baseline
 baseline-nodaemon
+basictex
 bbedit
 bbeditpkg
 beamstudio
@@ -123,6 +132,7 @@ camtasia2020
 camtasia2021
 camtasia2022
 camtasia2023
+camtasia2024
 camunda
 canva
 carboncopycloner
@@ -171,6 +181,9 @@ chromeremotedesktop
 chronoagent
 chronosync
 cinema4d
+cinema4d2023
+cinema4d2024
+cinema4d2025
 cisdem-documentreader
 citrixworkspace
 clevershare2
@@ -209,6 +222,7 @@ dbeaverce
 debookee
 dedoose
 deepl
+deezer
 defaultfolderx
 depnotify
 desktoppr
@@ -247,6 +261,7 @@ ecosiabrowser
 egnyte
 egnytecore
 egnytewebedit
+elasticvue
 element
 elgatocamerahub
 elgatostreamdeck
@@ -258,6 +273,7 @@ eshareosx
 espanso
 etrecheck
 etssecurebrowser
+eul
 evercast
 evernote
 everweb
@@ -274,6 +290,7 @@ filemakerpro
 filezilla
 finaldraft11
 finaldraft12
+finaldraft13
 findanyfile
 firefox
 firefox_da
@@ -321,6 +338,7 @@ googleearth
 googlejapaneseinput
 googlesoftwareupdate
 gosign
+gotiengviet
 gotomeeting
 gpgsuite
 gpgsync
@@ -329,6 +347,7 @@ grandperspective
 graphicconverter10
 grasshopper
 grooveomnidialerenterpriseedition
+guardianbrowser
 gyazo
 gyazogif
 hancock
@@ -355,6 +374,7 @@ idrive
 idrivethin
 igv
 iina
+ikproductmanager
 imageoptim
 imazingprofileeditor
 inetclearreportsdesigner
@@ -379,9 +399,11 @@ jamfconnectconfiguration
 jamfcpr
 jamfmigrator
 jamfpppcutility
+jamfprintermanager
 jamfreenroller
 jamovi
 jasp
+jcpswdmgr
 jdk17
 jdk18
 jdk19
@@ -401,7 +423,9 @@ jetbrainsrubymine
 jetbrainstoolbox
 jetbrainswebstorm
 jitsimeet
+joplin
 jre8
+jumpcloudpasswordmanager
 jumpdesktop
 jupyterlab
 kap
@@ -424,6 +448,7 @@ krita
 lastpass
 latexit
 launchbar
+launchcontrol
 lcadvancedvpnclient
 lexarrecoverytool
 lgcalibrationstudio
@@ -435,6 +460,7 @@ libreofficelanguagepack_intl
 lifesize
 lightburn
 linear
+linearmouse
 logioptions
 logitechoptions
 logitechoptionsplus
@@ -466,11 +492,13 @@ mamp
 marathon
 marathon2
 marathoninfinity
+masterfader
 masv
 mattermost
 maxonapp
 mdmwatchdog
 meetingbar
+meistertask
 mendeleyreferencemanager
 menumeters
 merlinproject
@@ -521,6 +549,7 @@ microsoftwordreset
 mightymike
 mindmanager
 miniconda
+minisim
 miro
 mist
 mist-cli
@@ -575,6 +604,7 @@ nvivo13
 nvivo14
 nweasecuretestingbrowser
 obs
+obsbotcenter
 obsbotwebcam
 obsidian
 odrive
@@ -594,6 +624,7 @@ onyx
 openvpnconnect
 openvpnconnectv3
 opera
+orbstack
 orcaslicer
 origin
 orion
@@ -620,15 +651,21 @@ plantronicshub
 platypus
 plexmediaserver
 plisteditpro
+podman
 podmandesktop
+podmandesktopairgap
+polleverywhere
 polylens
 popsql
+portingkit
+postgresapp
 postman
 powermonitor
 prism10
 prism9
 pritunl
 privileges
+privileges2
 processing3
 processing4
 proctortrack
@@ -651,6 +688,7 @@ r
 raindropio
 rancherdesktop
 rapidapi
+rawtherapee
 raycast
 realvncondemandassist
 realvncserver
@@ -687,6 +725,7 @@ rogueamoebasoundsource5
 royaltsx
 rstudio
 rustdesk
+safeexambrowser
 salesforcecli
 santa
 scaleft
@@ -709,6 +748,7 @@ shotcut
 shottr
 sidekick
 signal
+signiantapp
 silnite
 sipgateclinq
 sirimote
@@ -720,6 +760,7 @@ skim
 skype
 slab
 slack
+sloth
 smartgit
 smartsheet
 smartsvn
@@ -748,12 +789,12 @@ splashtopsos
 splashtopstreamer
 splice
 spotify
+sqlitebrowser
 sqlpropostgres
 sqlprostudio
 starface72x
 starface73x
-starface81x
-starface90x
+starfaceuccclient
 stats
 steelseriesengine
 strongdm
@@ -762,6 +803,7 @@ subethaedit
 sublimemerge
 sublimetext
 suitestudio
+supercollider
 superhuman
 supportapp
 supportapphelper
@@ -787,11 +829,13 @@ teamviewerhostcustom
 teamviewerqs
 teamviewerqscustom
 techsmithcapture
+teladocproviderinstaller
 telegram
 tembo
 tencentmeeting
 texliveutility
 texshop
+texshop-alternative
 textexpander
 textmate
 theunarchiver
@@ -812,16 +856,18 @@ trapcode
 trex
 tunnelbear
 tunnelblick
+tuple
 typeface
 typinator
 typora
-uaconnect
 ultimakercura
 umbrellaroamingclient
 uniconverter
 universaltypeclient
 unnaturalscrollwheels
 utm
+uviportal
+uviworkstation
 vagrant
 vanilla
 vectorworks2021sp5
@@ -840,6 +886,7 @@ venturablocker
 veracrypt
 vfx
 vimac
+vimcal
 virtualbox
 virtualbuddy
 viscosity
@@ -857,6 +904,7 @@ vscodium
 vysor
 wacomdrivers
 wallyezflash
+wavescentral
 weasis
 webex
 webexmeetings
@@ -867,6 +915,7 @@ wechat
 weprint
 whatroute
 whatsapp
+whimsical
 wireshark
 wordservice
 workbrew
@@ -899,6 +948,7 @@ zoomclient
 zoomgov
 zoomoutlookplugin
 zoomoutlookpluginremoval
+zoompresence
 zoomrooms
 zotero
 zulip
