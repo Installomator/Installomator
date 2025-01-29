@@ -794,7 +794,8 @@ sqlpropostgres
 sqlprostudio
 starface72x
 starface73x
-starfaceuccclient
+starface81x
+starface90x
 stats
 steelseriesengine
 strongdm
@@ -860,6 +861,8 @@ tuple
 typeface
 typinator
 typora
+uaconnect
+ujamportal
 ultimakercura
 umbrellaroamingclient
 uniconverter

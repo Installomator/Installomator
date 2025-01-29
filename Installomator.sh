@@ -26,10 +26,10 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=1
+DEBUG=0
 
 # notify behavior
-NOTIFY=success
+NOTIFY=silent
 # options:
 #   - success      notify the user on success
 #   - silent       no notifications
@@ -347,8 +347,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.8beta"
-VERSIONDATE="2025-01-28"
+VERSION="10.8.0"
+VERSIONDATE="2025-01-29"
 
 # MARK: Functions
 
@@ -1269,6 +1269,11 @@ finishing() {
             displaynotification "$message" "$name installation complete!"
         fi
     fi
+
+    # Do Jamf Recon
+    printlog "Running jamf recon"
+    /usr/local/bin/jamf recon
+    
 }
 
 # Detect if there is an app actively making a display sleep assertion, e.g.
@@ -2046,7 +2051,7 @@ anydesk)
     type="dmg"
     downloadURL="https://download.anydesk.com/anydesk.dmg"
     appNewVersion="$(curl -fs https://anydesk.com/en/downloads/mac-os | grep -i "d-block" | grep -E -o ">v[0-9.]* .*MB" | sed -E 's/.*v([0-9.]*) .*/\1/g')"
-    expectedTeamID="KU6W3B6JMZ"
+    expectedTeamID="KHRWM533LU"
     ;;
 apachedirectorystudio)
     name="ApacheDirectoryStudio"
@@ -2481,6 +2486,13 @@ bibdesk)
     appNewVersion="$(echo $html_page_source | grep -i "current version" | sed -n 's:.*BibDesk-\(.*\).dmg.*:\1:p')"
     expectedTeamID="J33JTA7SY9"
     ;;
+bimcollabzoom)
+    name="BIMcollab Zoom"
+    type="pkgInDmg"
+    downloadURL="https://bimcollab.com/download/ZOOM/MAC"
+    appNewVersion=$(curl -fs "https://helpcenter.bimcollab.com/portal/de/kb/articles/downloads-de" | grep -o '<div>Build[^<]*</div>' | awk -F 'Build' '{print $2}' | awk -F '<' '{print $1}' | sed 's/&nbsp;&nbsp;//' | xargs)
+    expectedTeamID="Y6ZY6GR8Y3" 
+    ;;
 bitrix24)
      name="Bitrix24"
      type="dmg"
@@ -2572,9 +2584,8 @@ adobebrackets|\
 bracketsio)
     name="Brackets"
     type="dmg"
-    downloadURL=$(downloadURLFromGit brackets-cont brackets )
-    appNewVersion=$(versionFromGit brackets-cont brackets )
-    expectedTeamID="JQ525L2MZD"
+    downloadURL="https://github.com/brackets-cont/brackets/releases/download/v2.2.0/brackets.2.2.0.dmg"
+    expectedTeamID="8F632A866K"
     ;;
 brave)
     name="Brave Browser"
@@ -2796,6 +2807,15 @@ charles)
     appNewVersion=$(curl -fs https://www.charlesproxy.com/download/latest-release/ | sed -nE 's/.*version.*value="([^"]*).*/\1/p')
     downloadURL="https://www.charlesproxy.com/assets/release/$appNewVersion/charles-proxy-$appNewVersion.dmg"
     expectedTeamID="9A5PCU4FSD"
+    ;;
+chatgpt)
+    name="ChatGPT"
+    # Downloads the latest 8.1.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="dmg"
+    downloadURL="https://persistent.oaistatic.com/sidekick/public/ChatGPT.dmg"
+    # appNewVersion= not available
+    expectedTeamID="2DC432GLL2"
+    versionKey="CFBundleVersion"
     ;;
 chatwork)
      name="Chatwork"
@@ -3204,20 +3224,19 @@ citrixworkspace)
     curlOptions=( --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
     parseURL() {
         urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html#ctx-dl-eula-external'
-        htmlDocument=$(curl -s -L $urlToParse)
+        htmlDocument=$(curl -s -L --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" $urlToParse)
         xmllint --html --xpath "string(//a[contains(@rel, 'downloads.citrix.com')]/@rel)" 2> /dev/null <(print $htmlDocument)
     }
     downloadURL="https:$(parseURL)"
     newVersionString() {
         urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html'
-        htmlDocument=$(curl -fs $urlToParse)
+        htmlDocument=$(curl -fs --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" $urlToParse)
         xmllint --html --xpath 'string(//p[contains(., "Version")])' 2> /dev/null <(print $htmlDocument)
     }
     appNewVersion=$(newVersionString | cut -d ' ' -f2 | cut -d '(' -f1)
     versionKey="CitrixVersionString"
     expectedTeamID="S272Y5R93J"
-    ;;
-cleartouchcollage)
+    ;;cleartouchcollage)
     name="Collage"
     type="pkgInZip"
     packageID="com.cvte.cleartouch.mac"
@@ -3915,6 +3934,13 @@ emacs)
     appNewVersion="$(echo "${downloadURL}" | sed -n 's/.*Emacs-\([0-9.-]*\)-universal.dmg/\1/p')"
     expectedTeamID="5BRAQAFB8B"
     ;;
+enpass)
+    name="Enpass"
+    type="pkg"
+    downloadURL=$(curl -fs "https://www.enpass.io/downloads/" | grep -o 'https://dl.enpass.io/stable/mac/package/[0-9.]*/Enpass.pkg' | head -1)
+    appNewVersion=$(curl -fs "https://www.enpass.io/downloads/" | grep -o 'version [0-9.]*' | head -1 | sed -E 's/version //')
+    expectedTeamID="7ADB8CC6TF"
+    ;;
 eposconnect)
     name="EPOS Connect"
     type="pkg"
@@ -4091,7 +4117,6 @@ filezilla)
     expectedTeamID="5VPGKXL75N"
     blockingProcesses=( NONE )
     ;;
-    
 finaldraft11)
     name="Final Draft 11"
     type="pkgInZip"
@@ -4319,6 +4344,22 @@ fork)
     appNewVersion="$(curl -fs "https://git-fork.com/update/feed.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | cut -d '"' -f2)"
     expectedTeamID="Q6M7LEEA66"
     ;;
+foxitpdfeditor)
+    name="Foxit PDF Editor"
+    type="pkg"
+    downloadURL="https://www.foxit.com/downloads/latest.html?product=Foxit-PDF-Editor-Suite-Pro-Teams-Mac&platform=Mac-OS-X&language=Multi%20Language"
+    appNewVersion=$(curl -fsSL "https://www.foxit.com/pdf-editor/version-history.html" | awk '/<div class="tab-product hide" id="tab-editor-suite-mac">/,/<\/div>/' | sed -n 's/.*<h3>Version \([0-9.]*\)<\/h3>.*/\1/p' | head -n 1)
+    expectedTeamID="8GN47HTP75"
+    ;;
+foxitpdfreader)
+    name="Foxit PDF Reader"
+    type="pkg"
+    #the packageID versioning seems to be in line with Foxit PDF Editor and does not reflect the installed versionNumber
+    #packageID="com.foxit.pkg.pdfreader"
+    downloadURL="https://www.foxit.com/downloads/latest.html?product=Foxit-Reader&platform=Mac-OS-X"
+    appNewVersion=$(curl -fsSL "https://www.foxit.com/pdf-editor/version-history.html" | awk '/<div class="tab-product hide" id="tab-editor-suite-mac">/,/<\/div>/' | sed -n 's/.*<h3>Version \([0-9.]*\)<\/h3>.*/\1/p' | head -n 1)
+    expectedTeamID="8GN47HTP75"
+    ;;
 franz)
     name="Franz"
     type="dmg"
@@ -4519,14 +4560,13 @@ googlechromepkg)
     # Note: this url acknowledges that you accept the terms of service
     # https://support.google.com/chrome/a/answer/9915669
     #
+    appNewVersion=$(curl -fs "https://chromiumdash.appspot.com/fetch_releases?channel=stable&platform=mac&num=1&offset=0" | grep -o '"version":"[0-9.]*"' | head -1 | sed -E 's/"version":"([0-9.]+)"/\1/')
     downloadURL="https://dl.google.com/chrome/mac/stable/accept_tos%3Dhttps%253A%252F%252Fwww.google.com%252Fintl%252Fen_ph%252Fchrome%252Fterms%252F%26_and_accept_tos%3Dhttps%253A%252F%252Fpolicies.google.com%252Fterms/googlechrome.pkg"
-    appNewVersion=$(getJSONValue "$(curl -fsL "https://versionhistory.googleapis.com/v1/chrome/platforms/mac/channels/stable/versions/all/releases?filter=fraction>0.01,endtime=none&order_by=version%20desc" )" "releases[0].version" )
     expectedTeamID="EQHXZ8M8AV"
-    updateTool="/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/GoogleSoftwareUpdateAgent.app/Contents/MacOS/GoogleSoftwareUpdateAgent"
-    updateToolArguments=( -runMode oneshot -userInitiated YES )
-    updateToolRunAsCurrentUser=1
-    ;;
-googledrive|\
+    #updateTool="/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/GoogleSoftwareUpdateAgent.app/Contents/MacOS/GoogleSoftwareUpdateAgent"
+    #updateToolArguments=( -runMode oneshot -userInitiated YES )
+    #updateToolRunAsCurrentUser=1
+    ;;googledrive|\
 googledrivefilestream)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="Google Drive File Stream"
@@ -4626,6 +4666,14 @@ grandperspective)
     downloadURL="https://sourceforge.net/projects/grandperspectiv/files/latest/download"
     appNewVersion=$(curl -s https://sourceforge.net/projects/grandperspectiv/files/grandperspective/ | grep -A1 'Click to enter' | head -1 | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
     expectedTeamID="3Z75QZGN66"
+    ;;
+graphicconverter10)
+    name="GraphicConverter 10"
+    type="zip"
+    downloadURL=$(curl -fs "https://www.lemkesoft.info/sparkle/graphicconverter/graphicconverter10.xml" | grep -i 'enclosure url=' | grep -m 1 ".zip" | cut -d '"' -f 2)
+    appNewVersion=$(curl -fs "https://www.lemkesoft.info/sparkle/graphicconverter/graphicconverter10.xml" | grep -i 'enclosure url=' | grep -m 1 ".zip" | cut -d '"' -f 6 | sed 's/.*"\(.*\)".*/\1/')
+    expectedTeamID="FAVZJT8J4U"
+    versionKey="CFBundleShortVersionString"
     ;;
 grasshopper)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
@@ -5898,6 +5946,13 @@ lulu)
     appNewVersion=$(versionFromGit objective-see LuLu)
     expectedTeamID="VBG97UB4TA"
     ;;
+lunadisplay)
+    name="Luna Display"
+    type="dmg"
+    downloadURL=$(curl -fsLI "https://downloads.astropad.com/luna/mac/latest" | grep -i '^location:' | tail -n 1 | cut -d ' ' -f 2 | tr -d '\r' | sed 's|^/|https://downloads.astropad.com/|')
+    appNewVersion=$(echo $downloadURL | sed -E 's/.*LunaDisplay-([0-9.]+).dmg/\1/')
+    expectedTeamID="8356ZZ8Y5K"
+    ;;
 macadminspython)
     name="MacAdmins Python"
     type="pkg"
@@ -5921,6 +5976,20 @@ macfuse)
     downloadURL=$(downloadURLFromGit osxfuse osxfuse)
     appNewVersion=$(versionFromGit osxfuse osxfuse)
     expectedTeamID="3T5GSNBU6W"
+    ;;
+macgiro13)
+    name="MacGiro 13"
+    type="pkg"
+    downloadURL="https://www.med-i-bit.de/130YW3nnEPlqSnRB7ROM/MacGiro130.pkg"
+    expectedTeamID="G458QMSYRT"
+    versionKey="CFBundleShortVersionString"
+    ;;
+macgiro14)
+    name="MacGiro 14"
+    type="pkg"
+    downloadURL="https://www.med-i-bit.de/140DV7brcHg3T5RfIw8F/MacGiro140.pkg"
+    expectedTeamID="G458QMSYRT"
+    versionKey="CFBundleShortVersionString"
     ;;
 masterfader)
 #credit: @sintichn macadmins slack
@@ -6044,6 +6113,13 @@ malwarebytes)
     downloadURL="https://downloads.malwarebytes.com/file/mb3-mac"
     appNewVersion=$(curl -Ifs https://downloads.malwarebytes.com/file/mb3-mac | grep "location" | sed -E 's/.*-Mac-([0-9\.]*)\.pkg/\1/g')
     expectedTeamID="GVZRY6KDKR"
+    ;;
+mamp)
+    name="MAMP"
+    type="pkg"
+    downloadURL="$(curl -fsL 'https://www.mamp.info/en/downloads/' | grep -o 'https://downloads.mamp.info/MAMP-PRO/macOS/MAMP-PRO/MAMP-MAMP-PRO-[^"]*.pkg' | head -1)"
+    appNewVersion="$(echo "${downloadURL}" | grep -o 'MAMP-MAMP-PRO-[0-9]*\.[0-9]*' | sed 's/MAMP-MAMP-PRO-//')"
+    expectedTeamID="5KCB5KHK77"
     ;;
 marathon)
     name="Classic Marathon"
@@ -8338,6 +8414,16 @@ sketch)
     appNewVersion=$( grep -oE '\d+\.\d+' <<< $downloadURL)
     expectedTeamID="WUGMZZ5K46"
     ;;
+sketchup2024)
+    name="SketchUp 2024"
+    type="dmg"
+    downloadURL="$(curl -s https://www.sketchup.com/en/download/all | grep -o 'https://download.sketchup.com/SketchUp-2024[^"]*.dmg')"
+    folderName="SketchUp 2024"
+    appName="${folderName}/SketchUp.app"
+    appNewVersion=$(echo "$downloadURL" | grep -o 'SketchUp-20[0-9][0-9]-[0-9]*-[0-9]*' | awk -F '-' '{year=substr($2, 3, 2); if (year >= 24) printf "%d.0.%s", year, $NF; else printf "%d.%s", year+2000, $NF}')
+    versionKey="CFBundleVersion"
+    expectedTeamID="J8PVMCY7KL"
+    ;;
 sketchupviewer)
     name="SketchUpViewer"
     type="dmg"
@@ -8657,7 +8743,15 @@ starface81x)
     expectedTeamID="Q965D3UXEW"
     versionKey="CFBundleVersion"
     ;;
-starfaceuccclient)
+starface90x)
+    name="STARFACE"
+    # Downloads the latest 9.0.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="dmg"
+    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure ' | grep -i 'url=' | grep -m 1 "9.0" | cut -d '"' -f 10)
+    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure ' | grep -i 'url=' | grep -m 1 "9.0" | cut -d '"' -f 4)
+    expectedTeamID="Q965D3UXEW"
+    versionKey="CFBundleVersion"
+    ;;starfaceuccclient)
     name="STARFACE UCC Client"
     # Downloads the latest 6.7.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
     type="zip"
@@ -8755,6 +8849,16 @@ superhuman)
     ;;
 supportapp)
     name="Support"
+    type="pkg"
+    packageID="nl.root3.support"
+    downloadURL=$(downloadURLFromGit root3nl SupportApp)
+    appNewVersion=$(versionFromGit root3nl SupportApp)
+    expectedTeamID="98LJ4XBGYK"
+    blockingProcesses=( NONE )
+    ;;
+supportapphelper)
+    name="SupportHelper"
+    archiveName="SupportHelper"
     type="pkg"
     packageID="nl.root3.support"
     downloadURL=$(downloadURLFromGit root3nl SupportApp)
@@ -9317,6 +9421,116 @@ vanilla)
     downloadURL="https://macrelease.matthewpalmer.net/Vanilla.dmg"
     expectedTeamID="Z4JV2M65MH"
     ;;
+vectorworks2021sp5)
+    name="Vectorworks 2021 SP5"
+    appName="Vectorworks 2021 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2021.vectorworksinstaller"
+    downloadURL="https://download.vectorworks.de/2021/cw/macintosh"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2022sp6)
+    name="Vectorworks 2022 SP6"
+    appName="Vectorworks 2022 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2022.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2022/mac/Vectorworks%202022%20SP6.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp1)
+    name="Vectorworks 2023 SP1"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP1.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp2)
+    name="Vectorworks 2023 SP2"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP2.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp3)
+    name="Vectorworks 2023 SP3"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP3.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp4)
+    name="Vectorworks 2023 SP4"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP4.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp5)
+    name="Vectorworks 2023 SP5"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP5.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp6)
+    name="Vectorworks 2023 SP6"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP6.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp7)
+    name="Vectorworks 2023 SP7"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP7.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2023sp8)
+    name="Vectorworks 2023 SP8"
+    appName="Vectorworks 2023 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server3-d.vectorworks-online.de/cw/vw2023/mac/Vectorworks%202023%20SP8.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2024update3)
+    name="Vectorworks 2024 Update 3"
+    appName="Vectorworks 2024 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2023.vectorworksinstaller"
+    downloadURL="https://server1-d.vectorworks-online.de/cw/vw2024/mac/Vectorworks%202024%20Update%203.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
+vectorworks2024update4)
+    name="Vectorworks 2024 Update 4"
+    appName="Vectorworks 2024 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2024.vectorworksinstaller"
+    downloadURL="https://server1-d.vectorworks-online.de/cw/vw2024/mac/Vectorworks%202024%20Update%204.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;vectorworks2024update5)
+    name="Vectorworks 2024 Update 5"
+    appName="Vectorworks 2024 installieren.app"
+    type="dmg"
+    packageID="net.vectorworks.2024.vectorworksinstaller"
+    downloadURL="https://server1-d.vectorworks-online.de/cw/vw2024/mac/Vectorworks%202024%20Update%205.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;vectorworks2025update2)
+    name="Vectorworks 2025 Update 2"
+    appName="Vectorworks 2025 Installationsmanager.app"
+    type="dmg"
+    packageID="net.vectorworks.2024.vectorworksinstaller"
+    downloadURL="https://server1-d.vectorworks-online.de/cw/vw2025/mac/Vectorworks%202025%20Update%202.dmg"
+    expectedTeamID="LFNG3Q6WX2"
+    ;;
 venturablocker)
     name="venturablocker"
     type="pkg"
@@ -9539,6 +9753,17 @@ webextoolsremoval)
     packageID="com.microsoft.remove.WebExPT"
     downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*WebExPT_Removal.*.pkg" | cut -d '"' -f2)
     expectedTeamID="QGS93ZLCU7"
+    ;;
+webexvdiplugin)
+    name="Cisco Webex VDI Plugin"
+    type="pkg"
+    if [[ "$(arch)" == "arm64" ]]; then
+        downloadURL=$(curl -fsSL https://help.webex.com/en-us/article/ntp1us7/Webex-App-%7C-VDI-release-notes#reference-template_e92f9ad6-4f8c-4f69-b967-8615da1788ad 2>/dev/null | awk -F 'href="' '/<td align="" headers="">MacOS \(Apple Silicon\)/ {split($2, a, "\""); print a[1]; exit}')
+    else
+        downloadURL=$(curl -fsSl https://help.webex.com/en-us/article/ntp1us7/Webex-App-%7C-VDI-release-notes#reference-template_e92f9ad6-4f8c-4f69-b967-8615da1788ad 2>/dev/null | awk -F 'href="' '/<td align="" headers="">MacOS \(Intel base\)/ {split($2, a, "\""); print a[1]; exit}')
+    fi
+    expectedTeamID="DE8Y96K9QP"
+    appNewVersion=$(curl -fsSL https://help.webex.com/en-us/article/ntp1us7/Webex-App-%7C-VDI-release-notes#reference-template_e92f9ad6-4f8c-4f69-b967-8615da1788ad 2>/dev/null | awk '/<th align="" font-weight="bold" id="">Webex App VDI Plugin/ {gsub(/.*\(/, "", $0); gsub(/\).*/, "", $0); print; exit}')
     ;;
 wechat)
     name="WeChat"
