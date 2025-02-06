@@ -6,4 +6,3 @@ launchcontrol)
 	downloadURL="https://www.soma-zone.com/download/files/LaunchControl-$appNewVersion.tar.xz"
     expectedTeamID="H665B6EEXC"
     ;;
-    
