@@ -6,6 +6,8 @@
 LIVE_RUN=0 # set to 1 to apply changes to PR's
 max_prs=5 # max number of PR's to process
 max_dl_size=10 # in MB (unused but could be used to download and check team ID)
+#sort_order="created-desc" # newest PR's first
+sort_order="created-asc" # oldest PR's first
 
 # check requirements
 # we need gh and probably also jq
@@ -74,7 +76,7 @@ jsonValue() {
 echo "Processing $max_prs PR's with no labels"
 echo ""
 
-open_prs=( $(gh pr list --search "no:label" -L $max_prs | awk '{print $1}') )
+open_prs=( $(gh pr list --search "no:label sort:${sort_order}" -L $max_prs | awk '{print $1}') )
 
 if [[ ${#open_prs[@]} -eq 0 ]]; then
     echo "No PR's with no labels"
@@ -84,16 +86,19 @@ fi
 for pr_num in $open_prs; do
     echo "***** Start PR $pr_num *****"
     git checkout main 2>&1 > /dev/null
-
+    pr_comment=""
     changed_files=( $(gh pr diff $pr_num --name-only) )
     echo "Files changed: ${#changed_files[@]}"
     echo "Files: \n ${changed_files[@]}"
     # check if there is only one file changed
-    #if [[ ${#changed_files[@]} -eq 1 ]]; then
+    if [[ ${#changed_files[@]} -gt 5 ]]; then
+        echo "⚠️ PR $pr_num has more than 5 files changed - skipping"
+        continue
+    fi
     for filename in $changed_files; do
         # changed file should be in the format "fragments/labels/<somename>.sh"
         if [[ $filename =~ "fragments/labels/" ]]; then
-            pr_comment=""
+            pr_comment+=$(echo "File $filename")$'\n'
             checks_passed=0
             checks_failed=0
             content=$(pr_raw_content "$pr_num" "$filename")
@@ -134,7 +139,7 @@ for pr_num in $open_prs; do
                 if [[ -n $downloadURL ]]; then
                     pr_comment+=$(echo "└ Download URL: $downloadURL")$'\n'
                     # check to see if the url is reachable
-                    jsonData=$(curl -sI -w '%{header_json}\n%{json}' -o /dev/null $downloadURL)
+                    jsonData=$(curl -sIL -w '%{header_json}\n%{json}' -o /dev/null $downloadURL)
                     http_code=$(jsonValue "http_code" "$jsonData")
                     if [[ $http_code -eq 200 ]]; then
                         pr_comment+=$(echo "  ├ ✅ URL is reachable")$'\n'
@@ -173,23 +178,24 @@ for pr_num in $open_prs; do
                 pr_comment+=$(echo "❌ Please review the PR and make necessary changes")$'\n'
                 assign_gh_label $pr_num "checks_failed"
             fi
-
-            echo "switching back to main branch"
-            git checkout main 2>&1 > /dev/null
-
-            # dummy run - explain what else we would do
-            if [[ $LIVE_RUN -eq 0 ]]; then
-                echo "ℹ️  DEBUG: The following steps will take place if this was not a dummy run"
-                echo "ℹ️  Set the label on the PR $pr_num to 'application'"
-                echo "ℹ️  add comment to PR $pr_num with processing information"
-            fi
-            assign_gh_label $pr_num "application"
-            add_gh_comment $pr_num "🤖 Processing robot:\n${pr_comment}"
+            pr_comment+=$(echo "****")$'\n'
         else
             echo "⚠️ File $filename in PR $pr_num does not look like a label - skipping"
-            assign_gh_label $pr_num "improvement"
+            assign_gh_label $pr_num "not a label"
         fi
     done
+
+    echo "switching back to main branch"
+    git checkout main 2>&1 > /dev/null
+
+    # dummy run - explain what else we would do
+    if [[ $LIVE_RUN -eq 0 ]]; then
+        echo "ℹ️  DEBUG: The following steps will take place if this was not a dummy run"
+        echo "ℹ️  Set the label on the PR $pr_num to 'application'"
+        echo "ℹ️  add comment to PR $pr_num with processing information"
+    fi
+    assign_gh_label $pr_num "application"
+    add_gh_comment $pr_num "🤖 Processing robot:\n${pr_comment}"
 
     echo "***** End PR $pr_num *****"
     echo ""
