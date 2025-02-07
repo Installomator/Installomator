@@ -5,3 +5,4 @@ elevate24)
     appNewVersion="$(versionFromGit Jigsaw24 Elevate24)"
     expectedTeamID="BVDW99KYDU"
     ;;
+    
