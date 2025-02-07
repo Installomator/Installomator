@@ -111,6 +111,7 @@ for pr_num in $open_prs; do
         if [[ $filename =~ "fragments/labels/" ]]; then
             assign_gh_label $pr_num "application"
             has_app_component=1
+            pr_comment+="🤖 Validation robot 🤖"$'\n'
             pr_comment+=$(echo "File $filename")$'\n'
             checks_passed=0
             checks_failed=0
@@ -224,7 +225,7 @@ for pr_num in $open_prs; do
             echo "⚠️ PR $pr_num has non-label components"
             pr_comment+=$(echo "⚠️ PR has a new/updated label but also includes non-label components - These will need to be verified and cleaned up before PR can be merged")$'\n'
         fi
-        add_gh_comment $pr_num "🤖 Processing robot: $'\n' ${pr_comment}"
+        add_gh_comment $pr_num "${pr_comment}"
     fi
 
     echo "***** End PR $pr_num *****"
