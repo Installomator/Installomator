@@ -4,7 +4,10 @@
 
 # Variables
 LIVE_RUN=0 # set to 1 to apply changes to PR's
-max_prs=5 # max number of PR's to process
+if [[ $1 == "do-live-run" ]]; then
+    LIVE_RUN=1
+fi
+max_prs=2 # max number of PR's to process
 max_dl_size=10 # in MB (unused but could be used to download and check team ID)
 #sort_order="created-desc" # newest PR's first
 sort_order="created-asc" # oldest PR's first
@@ -17,6 +20,12 @@ for cmd in gh jq; do
         exit 1
     fi
 done
+
+if [[ $LIVE_RUN -eq 0 ]]; then
+    echo ""
+    echo "** Performing a dry run - no changes will be made **"
+    echo ""
+fi
 
 # load functions from Installomator
 functionsPath="fragments/functions.sh"
@@ -87,6 +96,8 @@ for pr_num in $open_prs; do
     echo "***** Start PR $pr_num *****"
     git checkout main 2>&1 > /dev/null
     pr_comment=""
+    has_app_component=0
+    has_non_app_component=0
     changed_files=( $(gh pr diff $pr_num --name-only) )
     echo "Files changed: ${#changed_files[@]}"
     echo "Files: \n ${changed_files[@]}"
@@ -98,17 +109,18 @@ for pr_num in $open_prs; do
     for filename in $changed_files; do
         # changed file should be in the format "fragments/labels/<somename>.sh"
         if [[ $filename =~ "fragments/labels/" ]]; then
+            assign_gh_label $pr_num "application"
+            has_app_component=1
             pr_comment+=$(echo "File $filename")$'\n'
             checks_passed=0
             checks_failed=0
             content=$(pr_raw_content "$pr_num" "$filename")
             if [[ $content == "NO FILE" ]]; then
                 echo "Failed to get content for $filename"
-                assign_gh_label $pr_num "invalid"
+                assign_gh_label $pr_num "incomplete"
                 continue
             fi
-            #echo "Content: \n $content"
-            #exit 0
+
             label=$(label_name_for_content "$content")
             echo "** PR Info:"
             echo "├ Label name: $label"
@@ -129,13 +141,24 @@ for pr_num in $open_prs; do
             #echo "finished processing label $label"
 
             pr_comment+=$(echo "** Label info:")$'\n'
+
+            # check if the file ends with an LF control character
+            last_char=$(tail -c 1 "$filename" | od -An -t uC | tr -d '[:space:]')
+            if [ "$last_char" != "10" ]; then
+                pr_comment+="├ ❌ The file '$filename' does not end with an LF control character. We recommend installing/using an EditorConfig plugin for your editor."$'\n'
+                checks_failed=$((checks_failed+1))
+            else
+                pr_comment+="├ ✅ correct line ending"$'\n'
+                checks_passed=$((checks_passed+1))
+            fi
+
             # process label info
             if [[ -n $name ]]; then
-                pr_comment+=$(echo "├ Name: ✅ $name")$'\n'
-                pr_comment+="├ Type: "; [[ -z $type ]] && { pr_comment+=" ❌ no type"$'\n'; ((checks_failed++)); } || { pr_comment+=" ✅ $type"$'\n'; ((checks_passed++)); }
-                pr_comment+="├ Expected Team: "; [[ -z $expectedTeamID ]] && { pr_comment+=" ❌ no team ID"$'\n'; ((checks_failed++)); } || { pr_comment+=" ✅ $expectedTeamID"$'\n'; ((checks_passed++)); }
-                pr_comment+="├ App New Version: "; [[ -z $appNewVersion ]] && { pr_comment+=" ❌ no version info"$'\n'; ((checks_failed++)); } || { pr_comment+=" ✅ $appNewVersion"$'\n'; ((checks_passed++)); }
-                
+                pr_comment+=$(echo "├ ✅ Name: $name")$'\n'; ((checks_passed++))
+                pr_comment+="├ "; [[ -z $type ]] && { pr_comment+=" ❌ "; ((checks_failed++)); } || { pr_comment+=" ✅ "; ((checks_passed++)); }; pr_comment+="Type: ${type:-Missing}"$'\n' 
+                pr_comment+="├ "; [[ -z $expectedTeamID ]] && { pr_comment+=" ❌ "; ((checks_failed++)); } || { pr_comment+=" ✅ "; ((checks_passed++)); }; pr_comment+="Expected Team: ${expectedTeamID:-Missing}"$'\n' 
+                pr_comment+="├ "; [[ -z $appNewVersion ]] && { pr_comment+=" ⚠️  "; } || { pr_comment+=" ✅ "; ((checks_passed++)); }; pr_comment+="App New Version: ${appNewVersion:-Missing}"$'\n' 
+                    
                 if [[ -n $downloadURL ]]; then
                     pr_comment+=$(echo "└ Download URL: $downloadURL")$'\n'
                     # check to see if the url is reachable
@@ -171,31 +194,38 @@ for pr_num in $open_prs; do
 
             if [[ $checks_failed -eq 0 ]]; then
                 pr_comment+=$(echo "✅ All checks passed")$'\n'
+                assign_gh_label $pr_num "validated"
             else
                 pr_comment+=$(echo "** WARNING: Some checks failed")$'\n'
                 pr_comment+=$(echo "✅ $checks_passed checks passed")$'\n'
                 pr_comment+=$(echo "❌ $checks_failed checks failed")$'\n'
-                pr_comment+=$(echo "❌ Please review the PR and make necessary changes")$'\n'
-                assign_gh_label $pr_num "checks_failed"
+                pr_comment+=$(echo "❌ Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request.")$'\n'
+                assign_gh_label $pr_num "incomplete"
             fi
             pr_comment+=$(echo "****")$'\n'
         else
             echo "⚠️ File $filename in PR $pr_num does not look like a label - skipping"
-            assign_gh_label $pr_num "not a label"
+            has_non_app_component=1
+            # assign_gh_label $pr_num "not a label"
         fi
     done
 
     echo "switching back to main branch"
     git checkout main 2>&1 > /dev/null
 
-    # dummy run - explain what else we would do
-    if [[ $LIVE_RUN -eq 0 ]]; then
-        echo "ℹ️  DEBUG: The following steps will take place if this was not a dummy run"
-        echo "ℹ️  Set the label on the PR $pr_num to 'application'"
-        echo "ℹ️  add comment to PR $pr_num with processing information"
+    if [[ $has_app_component -eq 1 ]]; then
+        # dummy run - explain what else we would do
+        if [[ $LIVE_RUN -eq 0 ]]; then
+            echo "ℹ️  DEBUG: The following steps will take place if this was not a dummy run"
+            echo "ℹ️  Set the label on the PR $pr_num to 'application'"
+            echo "ℹ️  add comment to PR $pr_num with processing information"
+        fi
+        if [[ $has_non_app_component -eq 1 ]]; then
+            echo "⚠️ PR $pr_num has non-label components"
+            pr_comment+=$(echo "⚠️ PR has a new/updated label but also includes non-label components - These will need to be verified and cleaned up before PR can be merged")$'\n'
+        fi
+        add_gh_comment $pr_num "🤖 Processing robot: $'\n' ${pr_comment}"
     fi
-    assign_gh_label $pr_num "application"
-    add_gh_comment $pr_num "🤖 Processing robot:\n${pr_comment}"
 
     echo "***** End PR $pr_num *****"
     echo ""
