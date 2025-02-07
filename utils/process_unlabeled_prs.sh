@@ -310,8 +310,8 @@ for pr_num in $open_prs; do
         if [[ $TEST_PR -eq 1 ]]; then
             echo "ℹ️  Testing PR $pr_num"
             echo "${pr_comment}"
-            if [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
-                echo "⚠️ Download size is greater than $MAX_DL_SIZE MB - skipping"
+            if [[ ! $downloadSize -gt 0 ]] || [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
+                echo "⚠️ Download size is not available or greater than $MAX_DL_SIZE MB - skipping"
             elif [[ $checks_failed -gt 0 ]]; then
                 echo "⚠️ PR $pr_num has failed checks - skipping"
             else
