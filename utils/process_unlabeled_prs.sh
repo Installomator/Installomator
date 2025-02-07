@@ -7,10 +7,17 @@ LIVE_RUN=0 # set to 1 to apply changes to PR's
 if [[ $1 == "do-live-run" ]]; then
     LIVE_RUN=1
 fi
-max_prs=2 # max number of PR's to process
+max_prs=30 # max number of PR's to process
 max_dl_size=10 # in MB (unused but could be used to download and check team ID)
 #sort_order="created-desc" # newest PR's first
 sort_order="created-asc" # oldest PR's first
+# unlabelled PR's
+# search_string="no:label sort:${sort_order}"
+# unprocessed application PR's with no comments
+search_string="is:open is:pr label:application -label:incomplete -label:validated -label:\"waiting for response\" -label:invalid comments:0"
+# unprocessed application PR's with comments
+# search_string="is:pr is:open in:comments \"Error fetching label info\"" 
+
 
 # check requirements
 # we need gh and probably also jq
@@ -45,6 +52,16 @@ assign_gh_label() {
     echo "Added label \"$LABEL_NAME\" to PR $PR_NUMBER"
 }
 
+remove_gh_label() {
+    local PR_NUMBER=$1
+    local LABEL_NAME=$2
+    # remove the label from the PR
+    if [[ $LIVE_RUN -eq 1 ]]; then
+        gh pr edit $PR_NUMBER --remove-label $LABEL_NAME
+    fi
+    echo "Removed label \"$LABEL_NAME\" from PR $PR_NUMBER"
+}
+
 add_gh_comment() {
     local PR_NUMBER=$1
     local COMMENT=$2
@@ -72,7 +89,8 @@ pr_raw_content() {
 label_name_for_content() {
     RAW_CONTENT="$1"
     # get the first line of the file and strip trailing characters. this will be the label name
-    LABEL_NAME=$(echo $RAW_CONTENT | head -n 1 | head -n 1 | sed 's/[\|\\)]//g')
+    # also split on | in case multiple labels are defined on the same line
+    LABEL_NAME=$(echo $RAW_CONTENT | head -n 1 | awk -F "|" '{print $1}' | sed 's/[\|\\)]//g')
     echo $LABEL_NAME
 }
 
@@ -82,10 +100,10 @@ jsonValue() {
     jq -j 'select(.'$value' != null) | .'$value'' <<< $json
 }   
 
-echo "Processing $max_prs PR's with no labels"
+echo "Processing up to $max_prs PR's with search string: $search_string"
 echo ""
 
-open_prs=( $(gh pr list --search "no:label sort:${sort_order}" -L $max_prs | awk '{print $1}') )
+open_prs=( $(gh pr list --search "${search_string}" -L $max_prs | awk '{print $1}') )
 
 if [[ ${#open_prs[@]} -eq 0 ]]; then
     echo "No PR's with no labels"
@@ -156,9 +174,9 @@ for pr_num in $open_prs; do
             # process label info
             if [[ -n $name ]]; then
                 pr_comment+=$(echo "├ ✅ Name: $name")$'\n'; ((checks_passed++))
-                pr_comment+="├ "; [[ -z $type ]] && { pr_comment+=" ❌ "; ((checks_failed++)); } || { pr_comment+=" ✅ "; ((checks_passed++)); }; pr_comment+="Type: ${type:-Missing}"$'\n' 
-                pr_comment+="├ "; [[ -z $expectedTeamID ]] && { pr_comment+=" ❌ "; ((checks_failed++)); } || { pr_comment+=" ✅ "; ((checks_passed++)); }; pr_comment+="Expected Team: ${expectedTeamID:-Missing}"$'\n' 
-                pr_comment+="├ "; [[ -z $appNewVersion ]] && { pr_comment+=" ⚠️  "; } || { pr_comment+=" ✅ "; ((checks_passed++)); }; pr_comment+="App New Version: ${appNewVersion:-Missing}"$'\n' 
+                pr_comment+="├ "; [[ -z $type ]] && { pr_comment+="❌ "; ((checks_failed++)); } || { pr_comment+="✅ "; ((checks_passed++)); }; pr_comment+="Type: ${type:-Missing}"$'\n' 
+                pr_comment+="├ "; [[ -z $expectedTeamID ]] && { pr_comment+="❌ "; ((checks_failed++)); } || { pr_comment+="✅ "; ((checks_passed++)); }; pr_comment+="Expected Team: ${expectedTeamID:-Missing}"$'\n' 
+                pr_comment+="├ "; [[ -z $appNewVersion ]] && { pr_comment+="⚠️  "; } || { pr_comment+="✅ "; ((checks_passed++)); }; pr_comment+="App New Version: ${appNewVersion:-Missing}"$'\n' 
                     
                 if [[ -n $downloadURL ]]; then
                     pr_comment+=$(echo "└ Download URL: $downloadURL")$'\n'
@@ -196,12 +214,14 @@ for pr_num in $open_prs; do
             if [[ $checks_failed -eq 0 ]]; then
                 pr_comment+=$(echo "✅ All checks passed")$'\n'
                 assign_gh_label $pr_num "validated"
+                remove_gh_label $pr_num "incomplete"
             else
                 pr_comment+=$(echo "** WARNING: Some checks failed")$'\n'
                 pr_comment+=$(echo "✅ $checks_passed checks passed")$'\n'
                 pr_comment+=$(echo "❌ $checks_failed checks failed")$'\n'
                 pr_comment+=$(echo "❌ Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request.")$'\n'
                 assign_gh_label $pr_num "incomplete"
+                remove_gh_label $pr_num "validated"
             fi
             pr_comment+=$(echo "****")$'\n'
         else
