@@ -9,4 +9,3 @@ papers)
     appNewVersion="$(curl -fs "https://update.readcube.com/desktop/updates/latest-mac.yml" | grep "version:" | awk '{ print $2 }')"
     expectedTeamID="FY6R4ETYH7"
     ;;
-    
