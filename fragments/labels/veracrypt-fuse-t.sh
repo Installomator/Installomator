@@ -6,4 +6,3 @@ veracrypt-fuse-t)
     appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_FUSE-T_([0-9.]*.*)\.dmg/\1/g')
     expectedTeamID="Z933746L2S"
     ;;
-    

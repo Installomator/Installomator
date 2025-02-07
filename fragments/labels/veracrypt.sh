@@ -7,4 +7,3 @@ veracrypt-macfuse)
     appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*.*)\.dmg/\1/g')
     expectedTeamID="Z933746L2S"
     ;;
-    
