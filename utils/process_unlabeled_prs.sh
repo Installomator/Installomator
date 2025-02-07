@@ -91,7 +91,10 @@ pr_raw_content() {
     local PR_NUMBER=$1
     local FILE_PATH=$2
     # Get the PR branch name
-    gh pr checkout $PR_NUMBER > /dev/null
+    if ! gh pr checkout $PR_NUMBER > /dev/null; then
+        echo "Failed to checkout PR $PR_NUMBER"
+        return 1
+    fi
     if [[ -e $FILE_PATH ]]; then
         RAW_CONTENT=$(cat $FILE_PATH)
     else
@@ -190,9 +193,11 @@ for pr_num in $open_prs; do
             checks_passed=0
             checks_failed=0
             content=$(pr_raw_content "$pr_num" "$filename")
-            if [[ $content == "NO FILE" ]]; then
+            # echo "Content: \n$content"
+            if [[ $content == "NO FILE" ]] || [[ $content =~ "Failed to checkout PR" ]]; then
                 echo "Failed to get content for $filename"
                 assign_gh_label $pr_num "incomplete"
+                checks_failed=$((checks_failed+1))
                 continue
             fi
 
