@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-02-04"
+VERSIONDATE="2025-02-07"
 
 # MARK: Functions
 
@@ -3764,7 +3764,7 @@ duodesktop)
 dymoconnectdesktop)
     name="DYMO Connect"
     type="pkg"
-    appNewVersion=$(curl -s https://formulae.brew.sh/cask/dymo-label | grep -o 'Current version:.*[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | head -1)
+    appNewVersion=$(curl -s https://formulae.brew.sh/cask/dymo-connect | grep -o 'Current version:.*[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | head -1)
     archiveName="DCDMac${appNewVersion}.pkg"
     downloadURL="https://download.dymo.com/dymo/Software/Mac/DCDMac${appNewVersion}.pkg"
     expectedTeamID="N3S6676K3E"
@@ -4517,7 +4517,7 @@ googlechromepkg)
     # https://support.google.com/chrome/a/answer/9915669
     #
     downloadURL="https://dl.google.com/chrome/mac/stable/accept_tos%3Dhttps%253A%252F%252Fwww.google.com%252Fintl%252Fen_ph%252Fchrome%252Fterms%252F%26_and_accept_tos%3Dhttps%253A%252F%252Fpolicies.google.com%252Fterms/googlechrome.pkg"
-    appNewVersion=$(getJSONValue "$(curl -fsL "https://versionhistory.googleapis.com/v1/chrome/platforms/mac/channels/stable/versions/all/releases?filter=fraction>0.01,endtime=none&order_by=version%20desc" )" "releases[0].version" )
+    appNewVersion=$(getJSONValue "$(curl -fsL "https://versionhistory.googleapis.com/v1/chrome/platforms/mac/channels/stable/versions/all/releases?filter=fraction%3E0.01,endtime=none&order_by=version%20desc" )" "releases[0].version" )
     expectedTeamID="EQHXZ8M8AV"
     updateTool="/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/GoogleSoftwareUpdateAgent.app/Contents/MacOS/GoogleSoftwareUpdateAgent"
     updateToolArguments=( -runMode oneshot -userInitiated YES )
@@ -5565,9 +5565,10 @@ launchbar)
     expectedTeamID="MLZF7K7B5R"
     ;;
 launchcontrol)
+	# A macOS GUI application for managing and configuring system services and launch daemons
     name="LaunchControl"
     type="tbz"
-    appNewVersion="$(curl -Ls https://www.soma-zone.com/download/files/ | grep -o 'LaunchControl-[0-9]*\.[0-9]*\.[0-9]*\.tar\.xz' | sed -E 's/LaunchControl-([0-9]*\.[0-9]*\.[0-9]*)\.tar\.xz/\1/' | sort -V | tail -n 1)"
+    appNewVersion="$(curl -Ls https://www.soma-zone.com/download/files/ | grep -oE 'LaunchControl-[0-9]+\.[0-9]+(\.[0-9]+)?\.tar\.xz' | grep -vE 'DP|_update' | sed -E 's/LaunchControl-([0-9]+\.[0-9]+(\.[0-9]+)?)\.tar\.xz/\1/' | sort -V | tail -n 1)"
 	downloadURL="https://www.soma-zone.com/download/files/LaunchControl-$appNewVersion.tar.xz"
     expectedTeamID="H665B6EEXC"
     ;;
@@ -8850,11 +8851,21 @@ tableaupublic)
     ;;
 tableaureader)
     name="Tableau Reader"
-    type="pkgInDmg"
-    packageID="com.tableausoftware.reader.app"
-    downloadURL="https://www.tableau.com/downloads/reader/mac"
+    type="pkg"
+    tableauUpdateFeed=$(curl -fsL "https://downloads.tableau.com/TableauAutoUpdate.xml")
+    latestVersion=$(echo "${tableauUpdateFeed}" | xmllint --xpath '//*[local-name()="version"]/@latestVersion' - | tr ' ' '\n' | awk -F'"' '{print $2}' | sort -nr | head -n1)
+    nameVersion=$(echo "${tableauUpdateFeed}" | xmllint --xpath "//*[local-name()='version'][@latestVersion='$latestVersion']/@name" - 2>/dev/null | awk -F'"' '{print $2}')
+    name="${name} ${nameVersion}"
+    appNewVersion=$(echo "${tableauUpdateFeed}" | xmllint --xpath "//*[local-name()='version'][@latestVersion='$latestVersion']/@releaseNotesVersion" - | awk -F'"' '{print $2}')
+    if [[ $(arch) == "arm64" ]]; then
+        readerMac=$(echo "${tableauUpdateFeed}" | xmllint --xpath "//*[local-name()='version'][@latestVersion='$latestVersion']//*[local-name()='installer'][@type='readerMacArm64']/@name" - | awk -F'"' '{print $2}')
+    elif [[ $(arch) == "i386" ]]; then
+        readerMac=$(echo "${tableauUpdateFeed}"  | xmllint --xpath "//*[local-name()='version'][@latestVersion='$latestVersion']//*[local-name()='installer'][@type='readerMac']/@name" - | awk -F'"' '{print $2}')
+    fi
+    downloadURL="https://downloads.tableau.com/esdalt/$appNewVersion/$readerMac"
     expectedTeamID="QJ4XPRK37C"
     ;;
+
 tageditor)
      name="Tag Editor"
      type="dmg"
