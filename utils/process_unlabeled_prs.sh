@@ -4,19 +4,33 @@
 
 # Variables
 LIVE_RUN=0 # set to 1 to apply changes to PR's
-if [[ $1 == "do-live-run" ]]; then
-    LIVE_RUN=1
-fi
-max_prs=30 # max number of PR's to process
-max_dl_size=10 # in MB (unused but could be used to download and check team ID)
-#sort_order="created-desc" # newest PR's first
-sort_order="created-asc" # oldest PR's first
+TEST_PR=0 # set to 1 to test the PR instead of validating it
+MAX_PR_COUNT=5 # max number of PR's to process
+MAX_DL_SIZE=50 # in MB (unused but could be used to download and check team ID)
+#SORT_ORDER="created-desc" # newest PR's first
+SORT_ORDER="created-asc" # oldest PR's first
+SEARCH_STRING="no:label sort:${SORT_ORDER}"
+
+# MARK: reading rest of the arguments
+while [[ -n $1 ]]; do
+    if [[ $1 =~ ".*\=.*" ]]; then
+        IFS='=' read -r varname value <<< "$1"
+        # Assign the extracted values
+        declare "$varname=$value"
+    fi
+    # shift to next argument
+    shift 1
+done
+
 # unlabelled PR's
-# search_string="no:label sort:${sort_order}"
+# SEARCH_STRING="no:label sort:${SORT_ORDER}"
 # unprocessed application PR's with no comments
-search_string="is:open is:pr label:application -label:incomplete -label:validated -label:\"waiting for response\" -label:invalid comments:0"
+# SEARCH_STRING="is:open is:pr label:application -label:incomplete -label:validated -label:\"waiting for response\" -label:invalid comments:0"
 # unprocessed application PR's with comments
-# search_string="is:pr is:open in:comments \"Error fetching label info\"" 
+# SEARCH_STRING="is:pr is:open in:comments \"Error fetching label info\"" 
+if [[ $TEST_PR -eq 1 ]]; then
+    SEARCH_STRING="is:pr is:open label:application label:validated -label:\"waiting for response\" -label:invalid -label:attention-required -label:incomplete sort:${SORT_ORDER}"
+fi
 
 
 # check requirements
@@ -42,7 +56,7 @@ assign_gh_label() {
     local PR_NUMBER=$1
     local LABEL_NAME=$2
     # assign the label to the PR
-    if [[ $LIVE_RUN -eq 1 ]]; then
+    if [[ $LIVE_RUN -eq 1 ]] && [[ $TEST_PR -eq 0 ]] ; then
         if ! gh label list | grep -q $LABEL_NAME; then
             # create the label if it doesn't exist
             gh label create $LABEL_NAME -d "Label for $LABEL_NAME"
@@ -56,7 +70,7 @@ remove_gh_label() {
     local PR_NUMBER=$1
     local LABEL_NAME=$2
     # remove the label from the PR
-    if [[ $LIVE_RUN -eq 1 ]]; then
+    if [[ $LIVE_RUN -eq 1 ]] && [[ $TEST_PR -eq 0 ]] ; then
         gh pr edit $PR_NUMBER --remove-label $LABEL_NAME
     fi
     echo "Removed label \"$LABEL_NAME\" from PR $PR_NUMBER"
@@ -98,15 +112,57 @@ jsonValue() {
     local value=$1
     local json=$2
     jq -j 'select(.'$value' != null) | .'$value'' <<< $json
-}   
+}
 
-echo "Processing up to $max_prs PR's with search string: $search_string"
+perform_pr_test() {
+    local pr_num=$1
+    local label=$2
+
+    if [[ $LIVE_RUN -eq 0 ]]; then
+        echo "ℹ️  DEBUG: This is a dummy run - no changes will be made"
+        return 0
+    fi
+
+    # clean build folder
+    if [[ -d build ]]; then
+        rm -rf build/*
+    fi
+
+    if ! gh pr checkout $pr_num -b "pr/$pr_num"; then
+        echo "Failed to checkout PR $pr_num"
+        return 1
+    fi
+
+    if ! utils/assemble.sh $label; then
+        exitcode=$?
+        echo "something went wrong, stopping here"
+        echo "exit code: $exitcode"
+        return 1
+    else
+        echo
+        echo "All good!"
+        echo
+
+        read -q query"?Merge into main? (y/n)"
+
+        if [[ $query == 'y' ]]; then
+            git checkout main
+            git merge "pr/$pr_num" -m "label: $label, see #$pr_num"
+            git branch -d "pr/$pr_num"
+            gh pr comment $pr_num --body 'Thank you!'
+        fi
+    fi
+    return 0
+}
+
+
+echo "Processing up to $MAX_PR_COUNT PR's with search string: $SEARCH_STRING"
 echo ""
 
-open_prs=( $(gh pr list --search "${search_string}" -L $max_prs | awk '{print $1}') )
+open_prs=( $(gh pr list --search "${SEARCH_STRING}" -L $MAX_PR_COUNT | awk '{print $1}') )
 
 if [[ ${#open_prs[@]} -eq 0 ]]; then
-    echo "No PR's with no labels"
+    echo "No PR's match the search criteria. Nothing to do 🎉"
     exit 0
 fi
 
@@ -212,6 +268,7 @@ for pr_num in $open_prs; do
             unset expectedTeamID
 
             if [[ $checks_failed -eq 0 ]]; then
+                # if we are testing the PR, we don't want to apply the label
                 pr_comment+=$(echo "✅ All checks passed")$'\n'
                 assign_gh_label $pr_num "validated"
                 remove_gh_label $pr_num "incomplete"
@@ -245,7 +302,20 @@ for pr_num in $open_prs; do
             echo "⚠️ PR $pr_num has non-label components"
             pr_comment+=$(echo "⚠️ PR has a new/updated label but also includes non-label components - These will need to be verified and cleaned up before PR can be merged")$'\n'
         fi
-        add_gh_comment $pr_num "${pr_comment}"
+        if [[ $TEST_PR -eq 1 ]]; then
+            echo "ℹ️  Testing PR $pr_num"
+            echo "${pr_comment}"
+            if [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
+                echo "⚠️ Download size is greater than $MAX_DL_SIZE MB - skipping"
+            elif [[ $checks_failed -gt 0 ]]; then
+                echo "⚠️ PR $pr_num has failed checks - skipping"
+            else
+                echo "✅ PR $pr_num has passed checks - performing test before merge"
+                perform_pr_test $pr_num $label
+            fi
+        else
+            add_gh_comment $pr_num "${pr_comment}"
+        fi
     fi
 
     echo "***** End PR $pr_num *****"
