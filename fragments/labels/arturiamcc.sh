@@ -3,7 +3,7 @@ arturiamcc)
     type="pkg"
     arturiaDetails="$(curl -fsL 'https://www.arturia.com/api/resources?slugs=mccu&types=soft')"
     arturiaCount=0
-    maxEntries=$(getJSONValue "$arturiaDetails" "length" 2>/dev/null) # Get the number of entries
+    maxEntries=$(getJSONValue "$arturiaDetails" "length" 2>/dev/null)
     downloadURL=""
     appNewVersion=""
     while [[ $arturiaCount -lt $maxEntries ]]; do
