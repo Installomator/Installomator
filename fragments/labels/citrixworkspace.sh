@@ -5,7 +5,7 @@ citrixworkspace)
     curlOptions=( --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
     parseURL() {
         urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html#ctx-dl-eula-external'
-        htmlDocument=$(curl -s -L $urlToParse)
+        htmlDocument=$(curl -s -L $urlToParse  $curlOptions)
         xmllint --html --xpath "string(//a[contains(@rel, 'downloads.citrix.com')]/@rel)" 2> /dev/null <(print $htmlDocument)
     }
     downloadURL="https:$(parseURL)"
