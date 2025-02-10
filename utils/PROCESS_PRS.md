@@ -96,7 +96,7 @@ If the test fails, the PR is left open and the report is added as a comment. The
 ./utils/process_prs.sh LIVE_RUN=1
 ```
 
-### Run in live test mode on the oldest 20 PR's with a mac download size of 300MB
+### Run in live test mode on the oldest 20 PR's with a max download size of 300MB
 
 ```bash
 ./utils/process_prs.sh LIVE_RUN=1 TEST_PR=1 MAX_DL_SIZE=300 MAX_PR_COUNT=20
@@ -114,4 +114,10 @@ A suggested workflow for re-processing a PR that failed a previous validation an
 # re-test PR live mode. If the test passes, the PR can be merged
 ./utils/process_prs.sh LIVE_RUN=1 TEST_PR=1 PR_NUM=123
 
+```
+
+You could also process previous PR's in bulk. For example use the SEARCH_STRING to find all PR's that have the `application` and `invalid` label updated in the last two days and re-process them.
+
+```bash
+./utils/process_prs.sh TEST_PR=0 LIVE_RUN=0 SEARCH_STRING="is:open is:pr label:application label:incomplete updated:$(date -v-2d "+%Y-%m-%d")"
 ```
