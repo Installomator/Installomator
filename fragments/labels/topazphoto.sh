@@ -7,4 +7,3 @@ topazphotoai)
     archiveName="TopazPhotoAI-${appNewVersion}.pkg"
     expectedTeamID="3G3JE37ZHF"
     ;;
-
