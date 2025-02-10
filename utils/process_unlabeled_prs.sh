@@ -6,10 +6,24 @@
 LIVE_RUN=0 # set to 1 to apply changes to PR's
 TEST_PR=0 # set to 1 to test the PR instead of validating it
 MAX_PR_COUNT=5 # max number of PR's to process
-MAX_DL_SIZE=50 # in MB (unused but could be used to download and check team ID)
+MAX_DL_SIZE=50 # in MB
 #SORT_ORDER="created-desc" # newest PR's first
 SORT_ORDER="created-asc" # oldest PR's first
 SEARCH_STRING="no:label sort:${SORT_ORDER}"
+
+if [[ $1 == "help" ]]; then
+    echo "Usage: process_unlabeled_prs.sh"
+    echo "Options:"
+    echo "  LIVE_RUN=<num> - set to 1 to apply changes to PR's. default is 0"
+    echo "  TEST_PR=<num> - set to 1 to perform a full test of PR's instead of validating it. default is 0"
+    echo "    testing will imply a search for PR's with the label 'application' and 'validated'"
+    echo "  MAX_DL_SIZE=<num> - max download size in MB when in TEST_PR mode. default is 50"
+    echo "  MAX_PR_COUNT=<num> - max number of PR's to process. default is 5"
+    echo "  SEARCH_STRING='<string>' - search string to use for PR's. default is 'no:label sort:created-asc'"
+    echo "    uses github search syntax"
+    echo "  SORT_ORDER='[ created-asc | created-desc ]' - sort order for PR's. default is 'created-asc' (oldest first)"
+    exit 0
+fi
 
 # MARK: reading rest of the arguments
 while [[ -n $1 ]]; do
