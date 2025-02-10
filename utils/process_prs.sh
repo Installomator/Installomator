@@ -11,6 +11,7 @@ MAX_DL_SIZE=50 # in MB
 SORT_ORDER="created-asc" # oldest PR's first
 SEARCH_STRING="no:label sort:${SORT_ORDER}"
 FROM_PR_NUM=0
+PR_NUM=0
 
 if [[ $1 == "help" ]]; then
     echo "Usage: process_unlabeled_prs.sh"
@@ -23,6 +24,8 @@ if [[ $1 == "help" ]]; then
     echo "  SEARCH_STRING='<string>' - search string to use for PR's. default is 'no:label sort:created-asc'"
     echo "    uses github search syntax"
     echo "  SORT_ORDER='[ created-asc | created-desc ]' - sort order for PR's. default is 'created-asc' (oldest first)"
+    echo "  FROM_PR_NUM=<num> - start processing PR's from this number. default is 0"
+    echo "  PR_NUM=<num> - process a single PR number"
     exit 0
 fi
 
@@ -165,9 +168,15 @@ perform_pr_test() {
 
         if [[ $query == 'y' ]]; then
             git checkout main
-            git merge "pr/$pr_num" -m "label: $label, see #$pr_num"
-            git branch -d "pr/$pr_num"
-            gh pr comment $pr_num --body 'Thank you!'
+            if git merge "pr/$pr_num" -m "label: $label, see #$pr_num"; then
+                git branch -d "pr/$pr_num"
+                gh pr comment $pr_num --body 'Thank you!'
+            else
+                echo "Failed to merge PR $pr_num - aborting"
+                git merge --abort
+                git checkout main
+                return 1
+            fi
         fi
     fi
     return 0
@@ -179,7 +188,12 @@ perform_pr_test() {
 echo "Processing up to $MAX_PR_COUNT PR's with search string: $SEARCH_STRING"
 echo ""
 
-open_prs=( $(gh pr list --search "${SEARCH_STRING}" -L $MAX_PR_COUNT | awk '{print $1}') )
+if [[ $PR_NUM -gt 0 ]]; then
+    echo "Processing PR $PR_NUM"
+    open_prs=( $PR_NUM )
+else
+    open_prs=( $(gh pr list --search "${SEARCH_STRING}" -L $MAX_PR_COUNT | awk '{print $1}') )
+fi
 
 if [[ ${#open_prs[@]} -eq 0 ]]; then
     echo "No PR's match the search criteria. Nothing to do 🎉"
@@ -369,6 +383,10 @@ EOF
                     echo "✅ PR $pr_num has been tested"
                 else
                     echo "❌ PR $pr_num test failed for some reason 🙁"
+                    # add attention-required label
+                    assign_gh_label $pr_num "attention-required"
+                    # add a comment to the PR that the test failed
+                    add_gh_comment $pr_num "🤖 Testing Robot Says - ❌ PR test failed for some reason 🙁. Manual intervention by the Installomator team is required for this one"
                     ((skip_count++))
                 fi
             fi
