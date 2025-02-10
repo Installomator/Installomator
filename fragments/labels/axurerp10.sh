@@ -10,5 +10,4 @@ axurerp10)
     expectedTeamID="HUMW6UU796"
     versionKey="CFBundleVersion"
     appName="Axure RP 10.app"
-    blockingProcesses=( "Axure RP 10" )
     ;;
