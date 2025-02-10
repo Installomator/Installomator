@@ -158,6 +158,8 @@ perform_pr_test() {
     return 0
 }
 
+# print list of all functions  
+# print -l ${(ok)functions}
 
 echo "Processing up to $MAX_PR_COUNT PR's with search string: $SEARCH_STRING"
 echo ""
@@ -193,7 +195,7 @@ for pr_num in $open_prs; do
             checks_passed=0
             checks_failed=0
             content=$(pr_raw_content "$pr_num" "$filename")
-            # echo "Content: \n$content"
+
             if [[ $content == "NO FILE" ]] || [[ $content =~ "Failed to checkout PR" ]]; then
                 echo "Failed to get content for $filename"
                 assign_gh_label $pr_num "incomplete"
@@ -208,16 +210,26 @@ for pr_num in $open_prs; do
             echo "└ File: $filename"
 
             # Process the fragment in a case block which should match the label
+            # write content to a temp file
+            tmpfile=$(mktemp /tmp/labelcontent.XXXXXX)
             #echo "Processing label $label ..."
-            caseStatement="
+            caseStatement=$(cat <<EOF
+            #source "${functionsPath}"
+            #declare -fx xpath 
             case $label in
                 $content
                 *)
-                    echo \"$label didn't match anything in the case block - weird.\"
+                echo "$label didn't match anything in the case block - weird."
                 ;;
             esac
-            "
-            eval $caseStatement
+EOF
+            )
+            echo "$caseStatement" > $tmpfile
+            # source the temp file (using this instead of eval)
+            source $tmpfile
+            cat $tmpfile
+            # rempve temp file
+            rm $tmpfile
             #echo "finished processing label $label"
 
             pr_comment+=$(echo "** Label info:")$'\n'
@@ -242,7 +254,7 @@ for pr_num in $open_prs; do
                 if [[ -n $downloadURL ]]; then
                     pr_comment+=$(echo "└ Download URL: $downloadURL")$'\n'
                     # check to see if the url is reachable
-                    jsonData=$(curl -sIL -w '%{header_json}\n%{json}' -o /dev/null $downloadURL)
+                    jsonData=$(curl -sIL -w '%{header_json}\n%{json}' -o /dev/null "$downloadURL")
                     http_code=$(jsonValue "http_code" "$jsonData")
                     if [[ $http_code -eq 200 ]]; then
                         pr_comment+=$(echo "  ├ ✅ URL is reachable")$'\n'
@@ -253,8 +265,17 @@ for pr_num in $open_prs; do
                         else
                             pr_comment+=$(echo "  └ ⚠️  Download Size: could not determine download size")$'\n'
                         fi
+                    elif [[ $http_code -eq 403 ]]; then
+                        pr_comment+="  ├ ❌ URL requires authentication"$'\n'
+                        checks_failed=$((checks_failed+1))
+                    elif [[ $http_code -eq 405 ]]; then
+                        pr_comment+="  ├ ⚠️  URL appears to be reachable but does not support HEAD requests"$'\n'
+                        pr_comment+="  └ ⚠️  Download Size: could not determine download size"$'\n'
+                    elif [[ $http_code -eq 418 ]]; then
+                        pr_comment+="  ├ 🫖 Remote server is a teapot"$'\n'
                     else
                         pr_comment+=$(echo "  └ ❌ URL is not reachable - error $http_code")$'\n'
+                        pr_comment+=$(echo "  ├ Check [RFC status codes](https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes) for more details")$'\n'
                         checks_failed=$((checks_failed+1))
                     fi
                 else
@@ -282,6 +303,8 @@ for pr_num in $open_prs; do
                 pr_comment+=$(echo "✅ $checks_passed checks passed")$'\n'
                 pr_comment+=$(echo "❌ $checks_failed checks failed")$'\n'
                 pr_comment+=$(echo "❌ Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request.")$'\n'
+                pr_comment+=$(echo "**This is an automated check and response and does not cover all edge cases.**")$'\n'
+                pr_comment+=$(echo "Failed checks just mean that some automations could not complete to validation. This PR may still be validated after manual review")$'\n'
                 assign_gh_label $pr_num "incomplete"
                 remove_gh_label $pr_num "validated"
             fi
