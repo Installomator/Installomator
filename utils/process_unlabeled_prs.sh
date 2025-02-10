@@ -10,6 +10,7 @@ MAX_DL_SIZE=50 # in MB
 #SORT_ORDER="created-desc" # newest PR's first
 SORT_ORDER="created-asc" # oldest PR's first
 SEARCH_STRING="no:label sort:${SORT_ORDER}"
+FROM_PR_NUM=0
 
 if [[ $1 == "help" ]]; then
     echo "Usage: process_unlabeled_prs.sh"
@@ -185,8 +186,15 @@ if [[ ${#open_prs[@]} -eq 0 ]]; then
     exit 0
 fi
 
+skip_count=0
+
 for pr_num in $open_prs; do
     echo "***** Start PR $pr_num *****"
+    if [[ $pr_num -lt $FROM_PR_NUM ]]; then
+        echo "Skipping PR $pr_num"
+        ((skip_count++))
+        continue
+    fi
     git checkout main 2>&1 > /dev/null
     pr_comment=""
     has_app_component=0
@@ -197,6 +205,7 @@ for pr_num in $open_prs; do
     # check if there is only one file changed
     if [[ ${#changed_files[@]} -gt 5 ]]; then
         echo "⚠️ PR $pr_num has more than 5 files changed - skipping"
+        ((skip_count++))
         continue
     fi
     for filename in $changed_files; do
@@ -214,6 +223,7 @@ for pr_num in $open_prs; do
                 echo "Failed to get content for $filename"
                 assign_gh_label $pr_num "incomplete"
                 checks_failed=$((checks_failed+1))
+                ((skip_count++))
                 continue
             fi
 
@@ -349,11 +359,18 @@ EOF
             echo "${pr_comment}"
             if [[ ! $downloadSize -gt 0 ]] || [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
                 echo "⚠️ Download size is not available or greater than $MAX_DL_SIZE MB - skipping"
+                ((skip_count++))
             elif [[ $checks_failed -gt 0 ]]; then
                 echo "⚠️ PR $pr_num has failed checks - skipping"
+                ((skip_count++))
             else
                 echo "✅ PR $pr_num has passed checks - performing test before merge"
-                perform_pr_test $pr_num $label
+                if perform_pr_test $pr_num $label; then
+                    echo "✅ PR $pr_num has been tested"
+                else
+                    echo "❌ PR $pr_num test failed for some reason 🙁"
+                    ((skip_count++))
+                fi
             fi
         else
             add_gh_comment $pr_num "${pr_comment}"
@@ -363,6 +380,22 @@ EOF
     echo "***** End PR $pr_num *****"
     echo ""
 done
+
+if [[ $skip_count -gt 0 ]]; then
+    echo "Skipped $skip_count PR's out of $MAX_PR_COUNT requested"
+fi
+
+if [[ $TEST_PR -eq 1 ]] && [[ $LIVE_RUN -eq 1 ]]; then
+    echo "Testing complete where dwnloads are less than $MAX_DL_SIZE MB"
+    echo "Do you want to push the changes to the remote repository?"
+    read -q query"?Push changes? (y/n)"
+    if [[ $query == 'y' ]]; then
+        git push
+    else
+        echo "Changes not pushed"
+        echo "PR merges will not apply to the remote repository until changes are pushed"
+    fi
+fi
 
 echo "Done"
 exit 0
