@@ -14,7 +14,7 @@ FROM_PR_NUM=0
 PR_NUM=0
 
 if [[ $1 == "help" ]]; then
-    echo "Usage: process_unlabeled_prs.sh"
+    echo "Usage: process_prs.sh"
     echo "Options:"
     echo "  LIVE_RUN=<num> - set to 1 to apply changes to PR's. default is 0"
     echo "  TEST_PR=<num> - set to 1 to perform a full test of PR's instead of validating it. default is 0"
@@ -169,6 +169,8 @@ perform_pr_test() {
         if [[ $query == 'y' ]]; then
             git checkout main
             if git merge "pr/$pr_num" -m "label: $label, see #$pr_num"; then
+                assign_gh_label $pr_num "validated"
+                remove_gh_label $pr_num "incomplete"
                 git branch -d "pr/$pr_num"
                 gh pr comment $pr_num --body 'Thank you!'
             else
@@ -371,6 +373,14 @@ EOF
         if [[ $TEST_PR -eq 1 ]]; then
             echo "ℹ️  Testing PR $pr_num"
             echo "${pr_comment}"
+            if [[ $PR_NUM -gt 0 ]] && [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
+                echo "⚠️ Download size of $downloadSize MB is greater than max size $MAX_DL_SIZE MB"
+                read -q override"?Override? (y/n)"
+                if [[ $override == 'y' ]]; then
+                    echo "✅ Override"
+                    MAX_DL_SIZE=$((downloadSize+1))
+                fi
+            fi
             if [[ ! $downloadSize -gt 0 ]] || [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
                 echo "⚠️ Download size is not available or greater than $MAX_DL_SIZE MB - skipping"
                 ((skip_count++))
