@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-02-10"
+VERSIONDATE="2025-02-12"
 
 # MARK: Functions
 
@@ -7574,6 +7574,13 @@ openeid)
     blockingProcesses=( "EstEIDTokenApp" "EstEIDTokenNotify" "web-eid" )
     appCustomVersion(){ if [[ -d /Applications/Utilities/EstEIDTokenApp.app ]] && [[ -d /Applications/Utilities/web-eid.app ]];then /usr/sbin/pkgutil --pkg-info ee.ria.open-eid | grep "version" | awk '{print$2}';fi }
     ;;
+openrefine)
+    name="OpenRefine"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit OpenRefine OpenRefine)
+    appNewVersion=$(versionFromGit OpenRefine OpenRefine)
+    expectedTeamID="P7W52F7J7L"
+    ;;
 openvpnconnect)
     # credit: Erik Stam (@erikstam)
     name="OpenVPN"
@@ -9013,6 +9020,15 @@ starface81x)
     type="dmg"
     downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure' | grep -m 1 "8.1" | sed 's/.*url\(.*\).dmg/\1/' | cut -d '"' -f 2)
     appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure' | grep -m 1 "8.1" | sed 's/.*sparkle:version\(.*\) type/\1/' | cut -d '"' -f 2)
+    expectedTeamID="Q965D3UXEW"
+    versionKey="CFBundleVersion"
+    ;;
+starface90x)
+    name="STARFACE"
+    # Downloads the latest 9.0.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="dmg"
+    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure ' | grep -i 'url=' | grep -m 1 "9.0" | cut -d '"' -f 10)
+    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure ' | grep -i 'url=' | grep -m 1 "9.0" | cut -d '"' -f 4)
     expectedTeamID="Q965D3UXEW"
     versionKey="CFBundleVersion"
     ;;

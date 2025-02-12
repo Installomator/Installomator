@@ -640,6 +640,7 @@ onlyofficedesktop
 onscreencontrol
 onyx
 openeid
+openrefine
 openvpnconnect
 openvpnconnectv3
 opera
@@ -816,6 +817,7 @@ sqlprostudio
 starface72x
 starface73x
 starface81x
+starface90x
 starfaceuccclient
 stats
 steelseriesengine
