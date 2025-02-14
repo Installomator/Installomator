@@ -5,15 +5,11 @@
     ;;
 esac
 
-# MARK: finish reading the arguments:
-while [[ -n $1 ]]; do
-    if [[ $1 =~ ".*\=.*" ]]; then
-        # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" INFO
-        eval $1
-    fi
-    # shift to next argument
-    shift 1
+# MARK: reading arguments again
+printlog "Reading arguments again: ${argumentsArray[*]}" INFO
+for argument in "${argumentsArray[@]}"; do
+    printlog "argument: $argument" DEBUG
+    eval $argument
 done
 
 # verify we have everything we need
@@ -294,9 +290,14 @@ else
         curlDownloadStatus=$(echo $?)
     fi
 
-    deduplicatelogs "$curlDownload"
-    if [[ $curlDownloadStatus -ne 0 ]]; then
-    #if ! curl --location --fail --silent "$downloadURL" -o "$archiveName"; then
+    # Trying to detect proxy or web filter on downloaded file
+    archiveSHA=$(shasum "$archiveName" | cut -w -f 1)
+    archiveSize=$(du -k "$archiveName" | cut -w -f 1)
+    archiveType=$(file "$archiveName" | cut -d ':' -f2 )
+    printlog "Downloaded $archiveName – Type is $archiveType – SHA is $archiveSHA – Size is $archiveSize kB" INFO
+
+    # Trying to detect download errors, including proxy or web filter blocking on downloaded file
+    if [[ $curlDownloadStatus -ne 0 || $archiveType == *ASCII* ]]; then
         printlog "error downloading $downloadURL" ERROR
         message="$name update/installation failed. This will be logged, so IT can follow up."
         if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
@@ -307,13 +308,15 @@ else
                 displaynotification "$message" "Error installing $name"
             fi
         fi
-        printlog "File list: $(ls -lh "$archiveName")" ERROR
-        printlog "File type: $(file "$archiveName")" ERROR
-        cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
+        if [[ $archiveType == *ASCII* ]]; then
+            firstLines=$(head -c 51170 $archiveName)
+            deduplicatelogs $firstLines
+            cleanupAndExit 2 "File Downloaded is ASCII, we’re probably being blocked by a proxy or filter.  First 5k of file is:\n$logoutput" ERROR
+        else
+            deduplicatelogs "$curlDownload"
+            cleanupAndExit 2 "Error downloading $downloadURL error:\n$logoutput" ERROR
+        fi
     fi
-    printlog "File list: $(ls -lh "$archiveName")" DEBUG
-    printlog "File type: $(file "$archiveName")" DEBUG
-    printlog "curl output was:\n$logoutput" DEBUG
 fi
 
 # MARK: when user is logged in, and app is running, prompt user to quit app
