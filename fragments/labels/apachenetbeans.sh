@@ -1,8 +1,7 @@
 apachenetbeans)
     name="Apache NetBeans"
     type="pkg"
-    packageID="org.apache.netbeans"
-    appNewVersion=$(curl -sfL "https://netbeans.apache.org/" | xmllint --html --format - 2>/dev/null | grep -A 1 "<div class=\"annotation\">Latest release</div>" | sed '2p;d' | sed 's/<h1>Apache NetBeans //g' | sed 's/<\/h1>//g' | xargs)
-    downloadURL="https://archive.apache.org/dist/netbeans/netbeans-installers/${appNewVersion}/Apache-NetBeans-${appNewVersion}.pkg"
+    appNewVersion=$( curl -fs "https://netbeans.apache.org/front/main/download/index.html" | grep -o 'Apache NetBeans [0-9]\+' | sed 's/Apache NetBeans //' | head -n 1 )
+    downloadURL="https://dlcdn.apache.org/netbeans/netbeans-installers/"${appNewVersion}"/Apache-NetBeans-"${appNewVersion}".pkg"
     expectedTeamID="2GLGAFWEQD"
     ;;
