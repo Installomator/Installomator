@@ -12,5 +12,6 @@ blackmagicvideohub)
 	    -e '"https://www.blackmagicdesign.com/api/register/us/download/" + download_id')")
     appNewVersion=$(echo ${downloadURL} | grep -oE '/v([0-9.]+)' | cut -d'v' -f2)
     appCustomVersion(){ grep "release_version" "/Applications/Blackmagic Videohub/Videohub Setup.app/Contents/Resources/settings.ini" | awk -F "=" '{print$2}'}
+    blockingProcesses=( VideohubControl VideohubHardwarePanelSetup "Videohub Setup" )
     expectedTeamID="9ZGFBWLSYP"
     ;;
