@@ -10,5 +10,6 @@ blackmagicdesktopvideo)
         -e 'download_id = update.urls["Mac OS X"][0].downloadId' \
  	    -e '"https://www.blackmagicdesign.com/api/register/us/download/" + download_id')")
     appNewVersion=$(echo ${downloadURL} | grep -oE '/v([0-9.]+)' | cut -d'v' -f2)
+    blockingProcesses=( BlackmagicDesktopVideoSetup LiveKey )
     expectedTeamID="9ZGFBWLSYP"
     ;;
