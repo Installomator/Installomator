@@ -1,0 +1,36 @@
+name: Ensure PR Ends with Line Feed
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  check-lf:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Fetch all branches
+      run: git fetch --all
+
+    - name: Determine base branch
+      id: determine-base
+      run: echo "::set-output name=BASE_BRANCH::$(git merge-base --fork-point origin/main HEAD || git merge-base origin/main HEAD)"
+
+    - name: Check if PR ends with line feed
+      run: |
+        files=$(git diff --name-only ${{ steps.determine-base.outputs.BASE_BRANCH }} HEAD)
+        for file in $files; do
+          if [ -f "$file" ]; then
+            last_char=$(tail -c 1 "$file" | od -An -t uC | tr -d '[:space:]')
+            if [ "$last_char" != "10" ]; then
+              echo "::error file=$file::The file '$file' does not end with an LF control character. Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request. We recommend installing/using an EditorConfig plugin for your editor."
+              exit 1
+            fi
+          fi
+        done

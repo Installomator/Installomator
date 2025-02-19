@@ -1,6 +1,6 @@
 # Display Installomator Progress with SwiftDialog in Jamf
 
-Installomator 10 has functionality to communicate with [Bart Reardon's swiftDialog](https://github.com/bartreardon/swiftDialog). When you set the `DIALOG_CMD_FILE` variable Installomator will write progress for downloads and installation (with pkgs) to the command file which allows swiftDialog to display the progress.
+Installomator 10 has functionality to communicate with [Bart Reardon's swiftDialog](https://github.com/swiftDialog/swiftDialog). When you set the `DIALOG_CMD_FILE` variable Installomator will write progress for downloads and installation (with pkgs) to the command file which allows swiftDialog to display the progress.
 
 However, you have to launch and setup swiftDialog to display a window with a progress bar before Installomator launches and also make sure swiftDialog quits after Installomator has run. This may seem complex at first but allows to configure swiftDialog just for your case without needing to modify the Installomator script.
 
