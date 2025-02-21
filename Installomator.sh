@@ -336,6 +336,8 @@ MDMProfileName=""
 datadogAPI=""
 # Simply add your own API key for this in order to have logs sent to Datadog
 # See more here: https://www.datadoghq.com/product/log-management/
+DATADOG_LOGFORMAT='${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}'
+DATADOG_REPEAT_LOGFORMAT='${log_priority} : $mdmURL : $APPLICATION : $VERSION : $SESSION : Last Log repeated ${logrepeat} times'
 
 # Log Date format used when parsing logs for debugging, this is the default used by
 # install.log, override this in the case statements if you need something custom per
@@ -351,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.8beta"
+VERSION="11.0beta2"
 VERSIONDATE="2025-02-21"
 
 # MARK: Functions
@@ -478,7 +480,8 @@ printlog(){
         echo "$timestamp" : "${log_priority}${space_char} : $label : Last Log repeated ${logrepeat} times" | tee -a $log_location
 
         if [[ ! -z $datadogAPI ]]; then
-            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : $APPLICATION : $VERSION : $SESSION : Last Log repeated ${logrepeat} times" > /dev/null
+          datadogLogEntry=$(eval "echo $DATADOG_REPEAT_LOGFORMAT")
+          curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${datadogLogEntry}" > /dev/null
         fi
         logrepeat=0
     fi
@@ -487,7 +490,8 @@ printlog(){
     # then post to Datadog's HTTPs endpoint.
     if [[ -n $datadogAPI && ${levels[$log_priority]} -ge ${levels[$datadogLoggingLevel]} ]]; then
         while IFS= read -r logmessage; do
-            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" > /dev/null
+          datadogLogEntry=$(eval "echo $DATADOG_LOGFORMAT")
+          curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${datadogLogEntry}" > /dev/null
         done <<< "$log_message"
     fi
 
@@ -941,7 +945,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         fi
 
         # set ownership to current user
-        if [[ "$currentUser" != "loginwindow" && $SYSTEMOWNER -ne 1 ]]; then
+        if [[ "$currentUser" != "loginwindow" && "$currentUser" != "_mbsetupuser" && $SYSTEMOWNER -ne 1 ]]; then
             printlog "Changing owner to $currentUser" WARN
             chown -R "$currentUser" "$targetDir/$appName"
         else
@@ -1003,9 +1007,9 @@ installFromPKG() {
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
 
-    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
-    # Apple signed software has no teamID, grab entire origin instead
-    if [[ -z $teamID ]]; then
+    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $NF }' | tr -d '()' )
+    # Apple signed software has no teamID, grab entire text after origin= instead
+    if [[ -z $teamID ]] || [[ $teamID == "origin="* ]]; then
         teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
     fi
 
@@ -8711,6 +8715,20 @@ shottr)
     downloadURL="https://shottr.cc$(curl -fs "https://shottr.cc/newversion.html" | grep -o '\/dl\/Shottr-[0-9].[0-9].[0-9]\.dmg' | head -1 | xargs)"
     appNewVersion=$(echo $downloadURL | grep -o '[0-9].[0-9].[0-9]' | xargs)
     expectedTeamID="2Y683PRQWN"
+    ;;
+shutterencoder)
+    name="Shutter Encoder"
+    type="pkg"
+    curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" )
+    webSource=$(curl -L $curlOptions --request GET --url "https://www.shutterencoder.com/changelog.html&render_js=1")
+    if [[ $(arch) == "arm64" ]]; then
+        appNewVersion=$(grep "href=\"Shutter Encoder .* Apple Silicon" <<< $webSource | awk '{print$4}')
+        downloadURL=$(grep "APPLE SILICON VERSION" <<< $webSource | grep -oe "https://.*\" class" | sed -e 's/" class//')
+    elif [[ $(arch) == "i386" ]]; then
+        appNewVersion=$(grep "href=\"Shutter Encoder .* Mac 64bits" <<< $webSource | awk '{print$4}')
+        downloadURL=$(grep ">INTEL 64-BITS VERSION" <<< $webSource | grep -oe "https://.*\" class" | sed -e 's/" class//')
+    fi
+    expectedTeamID="LZ28YRG3Q4"
     ;;
 sidekick)
     name="Sidekick"
