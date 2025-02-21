@@ -1,9 +1,10 @@
 skype)
     name="Skype"
     type="dmg"
-    downloadURL="https://get.skype.com/go/getskype-skypeformac"
-    appNewVersion=$(curl -is "https://get.skype.com/go/getskype-skypeformac" | grep ocation: | grep -o "Skype-.*dmg" | cut -d "-" -f 2 | sed 's/.dmg//')
+    downloadURL=$(curl -sfi https://get.skype.com/go/getskype-skypeformac | awk 'BEGIN{IGNORECASE=1} /location:/ {gsub(/\r/,"",$2); print $2}')
+    archiveName=$(basename "$downloadURL")
+    appNewVersion=$(awk -F'[-.]' '{print $2"."$3"."$4"."$5}' <<< "$archiveName")
     versionKey="CFBundleVersion"
+    blockingProcesses=( "Skype" , "Skype Helper" )
     expectedTeamID="AL798K98FX"
-    Company="Microsoft"
     ;;

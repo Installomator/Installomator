@@ -1,18 +1,19 @@
-#!/bin/zsh
+#!/bin/zsh --no-rcs
 label="" # if no label is sent to the script, this will be used
 
 # Installomator
 #
 # Downloads and installs Applications
-# 2020-2021 Installomator
+# 2020-2024 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
 #
-# Contributers:
+# Contributors:
 #    Armin Briegel - @scriptingosx
 #    Isaac Ordonez - @issacatmann
 #    Søren Theilgaard - @Theile
 #    Adam Codega - @acodega
+#    Trevor Sysock - @BigMacAdmin
 #
 # with contributions from many others
 
@@ -33,6 +34,13 @@ NOTIFY=success
 #   - success      notify the user on success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
+
+# app to show notifications
+NOTIFIER_APP=""
+# options:
+#   - dialog           Swift Dialog (version greater than 2.0 required)
+#   - ibmnotifier      IBM Notifier (version greater than 2.0 required)
+# If not defined, Installomator will look for MDM native notification app (Jamf Pro and AirWatch), and if not found will use Swift Dialog (if found), or IBM Notifier (if found) or else it will use AppleScript (osascript)
 
 # time in seconds to wait for a prompt to be answered before exiting the script
 PROMPT_TIMEOUT=86400
@@ -92,6 +100,7 @@ LOGO=appstore
 #   - microsoft     Microsoft Endpoint Manager (Intune)
 #   - ws1           Workspace ONE (AirWatch)
 #   - filewave      FileWave
+#   - kandji        Kandji
 # path can also be set in the command call, and if file exists, it will be used.
 # Like 'LOGO="/System/Applications/App\ Store.app/Contents/Resources/AppIcon.icns"'
 # (spaces have to be escaped).
@@ -150,6 +159,16 @@ IGNORE_DND_APPS=""
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
 
+# Use proxy for network access
+PROXY=""
+# Use this format for proxy: server.network.dns:port
+# Configure proxy settings so that curl can work through that if needed.
+# Port number is important for the check of access.
+# Please note that some proxy configurations allow text download, but block binary downloads.
+# So could be a situation where curl works for version, but not for download.
+# This error line is then shown: “curl output was: curl: (22) The requested URL returned error: 403”
+
+
 # Swift Dialog integration
 
 # These variables will allow Installomator to communicate progress with Swift Dialog
@@ -167,9 +186,6 @@ DIALOG_LIST_ITEM_NAME=""
 # When this variable is set, progress for downloads and installs will be sent to this
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
-
-NOTIFY_DIALOG=0
-# If this variable is set to 1, then we will check for installed Swift Dialog v. 2 or later, and use that for notification
 
 
 # NOTE: How labels work

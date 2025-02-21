@@ -25,6 +25,21 @@ fi
 # first argument is the label
 label=$1
 
+# MARK: reading rest of the arguments
+argumentsArray=()
+while [[ -n $1 ]]; do
+    if [[ $1 =~ ".*\=.*" ]]; then
+        # if an argument contains an = character, send it to eval
+        printlog "setting variable from argument $1" INFO
+        argumentsArray+=( $1 )
+        eval $1
+    fi
+    # shift to next argument
+    shift 1
+done
+printlog "Total items in argumentsArray: ${#argumentsArray[@]}" INFO
+printlog "argumentsArray: ${argumentsArray[*]}" INFO
+
 # lowercase the label
 label=${label:l}
 
@@ -32,6 +47,21 @@ label=${label:l}
 if [[ $label == "version" ]]; then
     echo "$VERSION"
     exit 0
+fi
+
+# NOTE: Use proxy for network access if defined
+if [[ -n $PROXY ]]; then
+    printlog "Proxy defined: $PROXY, testing access to it" REQ
+    proxyAddress=$(echo $PROXY | cut -d ":" -f1)
+    portNumber=$(echo $PROXY | cut -d ":" -f2)
+    printlog "Proxy: $proxyAddress, Port: $portNumber"
+    if cmdOutput=$(! nc -z -v -G 10 ${proxyAddress} ${portNumber} 2>&1) ; then
+        printlog "$cmdOutput" REQ
+        printlog "ERROR : No proxy connection, skipping this." REQ
+    else
+        printlog "Proxy access detected, so using that." REQ
+        export ALL_PROXY="$PROXY"
+    fi
 fi
 
 # MARK: Logging
@@ -89,6 +119,13 @@ if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR
 fi
+
+# NOTE: 3rd party and MDM Notification binaries
+manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action" # Jamf Pro
+hubcli="/usr/local/bin/hubcli" # AirWatch Workspace ONE
+macmanage="/Library/Addigy/macmanage/MacManage.app/Contents/MacOS/MacManage" # Addigy, currently no notifications
+#swiftdialog="/usr/local/bin/dialog" # dialog
+ibmnotifier="/Applications/IBM Notifier.app/Contents/MacOS/IBM Notifier" #ibmnotifier
 
 # check Swift Dialog presence and version
 DIALOG_CMD="/usr/local/bin/dialog"

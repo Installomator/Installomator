@@ -1,9 +1,9 @@
-#!/bin/zsh
+#!/bin/zsh --no-rcs
 
 # This script will create individual labels files from the original Installomator.sh script
 # Only for internal use
 
-label_re='^([a-z0-9\_-]*)(\)|\|\\)$' 
+label_re='^([a-z0-9\_-]*)(\)|\|\\)$'
 endlabel_re='^(    |\t);;$'
 
 label_dir="fragments/labels"
@@ -12,7 +12,7 @@ IFS=$'\n'
 
 in_label=0
 current_label=""
-while read -r line; do 
+while read -r line; do
     if [[ $in_label -eq 0 && "$line" =~ $label_re ]]; then
         label_name=${match[1]}
         echo "found label $label_name"
@@ -26,5 +26,5 @@ while read -r line; do
         in_label=0
         current_label=""
     fi
-    
+
 done <../Installomator.sh

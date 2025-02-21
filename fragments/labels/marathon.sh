@@ -1,5 +1,5 @@
 marathon)
-    name="Marathon"
+    name="Classic Marathon"
     type="dmg"
     archiveName="Marathon-[0-9.]*-Mac.dmg"
     versionKey="CFBundleVersion"

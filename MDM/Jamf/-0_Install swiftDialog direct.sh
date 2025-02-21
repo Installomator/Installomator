@@ -5,12 +5,10 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 # MARK: Arguments/Parameters
 
-# Parameter 4: Custom icon web-link in png-format for swiftDialog app (if no icon is provided Self Service icon will be used)
-# Must be a link to a web image or a file system path
+# Parameter 4: Custom icon for swiftDialog. Value can be a path on the client or a URL. If no icon is provided Self Service icon will be used.
 icon=${4}
 
-# Parameter 5: Remove old icon (1) or not
-# Removing the icon forces a new install of swiftDialog regardless of installed version
+# Parameter 5: Remove old icon (if value is `1`) or not (default `0`). Removing the icon forces a new install of swiftDialog regardless of installed version.
 removeOldIcon=${5:-0}
 
 # MARK: sanity checks

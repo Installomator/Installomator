@@ -1,4 +1,4 @@
-microsoftonedrive-rollingout)
+microsoftonedrive-deferred)
     # This version should match the Enterprise (Deferred) version setting of OneDrive update channel. So only use this label if that is the channel you use for OneDrive. For default update settings use label “microsoftonedrive”.
     # https://support.microsoft.com/en-us/office/onedrive-release-notes-845dcf18-f921-435e-bf28-4e24b95e5fc0#OSVersion=Mac
     name="OneDrive"
