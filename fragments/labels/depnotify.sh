@@ -1,8 +1,6 @@
 depnotify)
     name="DEPNotify"
     type="pkg"
-    #packageID="menu.nomad.depnotify"
-    downloadURL="https://files.nomad.menu/DEPNotify.pkg"
-    #appNewVersion=$()
+    downloadURL="https://files.jamfconnect.com/DEPNotify.pkg"
     expectedTeamID="VRPY9KHGX6"
     ;;

@@ -1,0 +1,52 @@
+name: Assemble Labels (Manual)
+
+# Run manually for testing and validation
+on: [workflow_dispatch]
+
+# Comment out the above line and uncomment below to run this on schedule
+#on:
+#  schedule:
+#    # Run 5 min past midnight
+#    - cron: '5 0 * * *'
+
+jobs:
+  build-and-compile:
+    runs-on: macos-latest
+
+    env:
+      GIT_USERNAME: "installomator-bot"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Configure git
+    - name: Set up git
+      run: |
+        git config --global user.name "${GIT_USERNAME}"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global init.defaultBranch main
+
+    # Run the assemble.sh script
+    - name: Compile data using assemble.sh
+      run: |
+        chmod +x utils/assemble.sh
+        ./utils/assemble.sh --script
+        echo "assemble_script_status=$?" >> $GITHUB_ENV  # Save exit status in env variable
+
+    # Validate
+    - name: Validate assemble.sh execution
+      run: |
+        if [ "${{ env.assemble_script_status }}" -ne 0 ]; then
+          echo "Error: assemble.sh failed with exit code ${env.assemble_script_status}"
+          exit 1
+        fi
+
+    # Commit and push changes (if any)
+    - name: Commit and push changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Runner compiled Installomator.sh and Labels.txt using assemble.sh"
+        file_pattern:  'Installomator.sh Labels.txt'

@@ -8,5 +8,4 @@ crashplan)
     expectedTeamID="UGHXR79U6M"
     pkgName="Install CrashPlan.pkg"
     packageID="com.crashplan.app.pkg"
-    blockingProcesses=( $name )
     ;;

@@ -50,28 +50,13 @@ reloadAsUser() {
 displaydialog() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-#     if [[ "$NOTIFIER_APP" = "dialog" ]]; then
-#         printlog "Swift Dialog dialog override" INFO
-#         "$DIALOG_CMD" --title "$title" --message "$message" --ontop --button2text "Not Now" --button1text "Quit and Update" --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
-#         if [[ $? -eq 2 ]]; then
-#             echo "Not Now" # Clicked button
-#         fi
-#     else
-#         printlog "AppleScript dialog fallback" INFO
     runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Not Now\", \"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\" giving up after $PROMPT_TIMEOUT)"
-#     fi
 }
 
 displaydialogContinue() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Installomator"}
-#     if [[ "$NOTIFIER_APP" = "dialog" ]]; then
-#         printlog "Swift Dialog dialog override" INFO
-#         "$DIALOG_CMD" --title "$title" --message "$message" --ontop --button1text "Quit and Update" --button2disabled --icon "$installedAppPath" --overlayicon "/Library/Application Support/Dialog/Dialog.app" --mini --moveable # "$LOGO"
-#     else
-#         printlog "AppleScript dialog fallback" INFO
     runAsUser osascript -e "button returned of (display dialog \"$message\" with  title \"$title\" buttons {\"Quit and Update\"} default button \"Quit and Update\" with icon POSIX file \"$LOGO\")"
-#     fi
 }
 
 displaynotification() { # $1: message $2: title
@@ -241,11 +226,11 @@ versionFromGit() {
 xpath() {
 	# the xpath tool changes in Big Sur and now requires the `-e` option
 	if [[ $(sw_vers -buildVersion) > "20A" ]]; then
-		/usr/bin/xpath -e $@
+		/usr/bin/xpath -q -e $@
 		# alternative: switch to xmllint (which is not perl)
 		#xmllint --xpath $@ -
 	else
-		/usr/bin/xpath $@
+		/usr/bin/xpath -q $@
 	fi
 }
 
@@ -296,11 +281,11 @@ getAppVersion() {
 #            targetDir="/Applications/Utilities"
 #        fi
     else
-    #    applist=$(mdfind "kind:application $appName" -0 )
         printlog "name: $name, appName: $appName"
-        applist=$(mdfind "kind:application AND name:$name" -0 )
+        # mdfind now handling if kind is either Application or App
+        applist=$(mdfind "kMDItemContentType:com.apple.application AND kMDItemFSName:\"$name\"" -0 2>/dev/null)
+#        applist=$(mdfind "kMDItemContentType:com.apple.application AND kMDItemFSName:\"$appName\"" -0 2>/dev/null)
 #        printlog "App(s) found: ${applist}" DEBUG
-#        applist=$(mdfind "kind:application AND name:$appName" -0 )
     fi
     if [[ -z $applist ]]; then
         printlog "No previous app found" WARN
