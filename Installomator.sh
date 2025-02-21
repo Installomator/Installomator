@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-02-12"
+VERSIONDATE="2025-02-21"
 
 # MARK: Functions
 
@@ -3614,6 +3614,14 @@ cyberduck)
     appNewVersion=$(curl -fs https://version.cyberduck.io/changelog.rss | xpath '//rss/channel/item/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2 )
     expectedTeamID="G69SCX94XU"
     ;;
+cycling74max)
+    name="Max"
+    type="dmg"
+    downloadURL="$( curl -s "https://cycling74.com/downloads" $curlOptions | tr '"' '\n' | grep -m1 "Max.*dmg" )"
+    appNewVersion=$(curl -s https://cycling74.com/downloads | grep -oE '9\.\d+\.\d+' | head -n 1)
+    versionKey="CFBundleVersion"
+    expectedTeamID="GBXXCFCVW5"
+    ;;
 cytoscape)
     name="Cytoscape"
     #appName="Cytoscape Installer.app"
@@ -3948,6 +3956,25 @@ easeusdatarecoverywizard)
     downloadURL=$( curl -fsIL https://down.easeus.com/product/mac_drw_free_setup | grep -i "^location" | awk '{print $2}' | tr -d '\r\n' )
     #appNewVersion=""
     expectedTeamID="DLLVW95FSM"
+    ;;
+eastwestinstallationcenter)
+    name="EW Installation Center"
+    type="pkgInZip"
+    packageID="com.eastwest.pkg.installationcenter"
+    downloadXML="$(curl -fs 'http://s3.amazonaws.com/ic-resources/products/IC.xml')"
+    downloadURL="$(echo "${downloadXML}" | xpath '(//product/files/file[@platform="mac"]/url/text())' 2>/dev/null)"
+    appNewVersion="$(echo "${downloadXML}" | xpath '(//product/version/text())' 2>/dev/null)"
+    expectedTeamID="TWK4WE76V9"
+    ;;
+eastwestplay)
+    name="Play"
+    type="pkgInZip"
+    downloadXML="$(curl -fs 'http://s3.amazonaws.com/ic-resources/products/PLAY.xml')"
+    downloadURL="$(echo "${downloadXML}" | xpath '(//product/files/file[@platform="mac"]/url/text())' 2>/dev/null)"
+    appNewVersion="$(echo "${downloadXML}" | xpath '(//product/version/text())' 2>/dev/null)"
+    appCustomVersion(){ /usr/bin/defaults read "/Library/Application Support/East West/Play.app/Contents/Info.plist" CFBundleShortVersionString }
+    pkgName="Play Installer ${appNewVersion}.pkg"
+    expectedTeamID="TWK4WE76V9"
     ;;
 easyfind)
     name="EasyFind"
@@ -6322,6 +6349,13 @@ malwarebytes)
     appNewVersion=$(curl -Ifs https://downloads.malwarebytes.com/file/mb3-mac | grep "location" | sed -E 's/.*-Mac-([0-9\.]*)\.pkg/\1/g')
     expectedTeamID="GVZRY6KDKR"
     ;;
+mamp)
+    name="MAMP"
+    type="pkg"
+    downloadURL="$(curl -fsL 'https://www.mamp.info/en/downloads/' | grep -o 'https://downloads.mamp.info/MAMP-PRO/macOS/MAMP-PRO/MAMP-MAMP-PRO-[^"]*.pkg' | head -1)"
+    appNewVersion="$(echo "${downloadURL}" | grep -o 'MAMP-MAMP-PRO-[0-9]*\.[0-9]*' | sed 's/MAMP-MAMP-PRO-//')"
+    expectedTeamID="5KCB5KHK77"
+    ;;
 marathon)
     name="Classic Marathon"
     type="dmg"
@@ -7665,6 +7699,19 @@ ottomatic)
     downloadURL=$(downloadURLFromGit jorio OttoMatic)
     appNewVersion=$(versionFromGit jorio OttoMatic)
     expectedTeamID="RVNL7XC27G"
+    ;;
+outputarcade)
+    name="Arcade"
+    type="pkg"
+    arcadeVersion="$(curl -fs "https://api.output.com/v1/arcade_version")"
+    if [[ -d "/Applications/Arcade.app" ]]; then
+        downloadURL=$(getJSONValue "$arcadeVersion" packages.mac.url)
+    else
+        downloadUpgrade=$(getJSONValue "$arcadeVersion" packages.mac.url)
+        downloadURL=$(echo "${downloadUpgrade}" | sed "s/Update/Install/")
+    fi
+    appNewVersion=$(getJSONValue "$arcadeVersion" version)
+    expectedTeamID="M4BQRFQ23V"
     ;;
 outputhub)
     name="Output Hub"
@@ -9570,6 +9617,17 @@ tom4aconverter)
      appNewVersion=$(curl -sf "https://amvidia.com/to-m4a-converter" | grep -o -E '"softwareVersion":.'"{8}" | sed 's/\"//g' | awk -F ': ' '{print $2}')
      expectedTeamID="F2TH9XX9CJ"
      ;;
+topazgigapixel|\
+topazgigapixelai)
+    # credit: Tully Jagoe
+    name="Topaz Gigapixel AI"
+    type="pkg"
+    appNewVersion=$(curl -fsL https://community.topazlabs.com/c/gigapixel-ai/gigapixel-ai/66 | grep -o "raw-topic-link'>.*<" | grep -o "v.*<" | sed -E 's/[v|<]//g' | head -1)
+    versionKey="CFBundleShortVersionString"
+    downloadURL="https://downloads.topazlabs.com/deploy/TopazGigapixelAI/${appNewVersion}/TopazGigapixelAI-${appNewVersion}.pkg"
+    archiveName="TopazGigapixelAI-${appNewVersion}.pkg"
+    expectedTeamID="3G3JE37ZHF"
+    ;;
 torbrowser)
     # credit: Søren Theilgaard (@theilgaard)
     name="Tor Browser"

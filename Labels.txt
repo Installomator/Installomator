@@ -219,6 +219,7 @@ cricutdesignspace
 cryptomator
 crystalfetch
 cyberduck
+cycling74max
 cytoscape
 daisydisk
 dangerzone
@@ -258,6 +259,8 @@ duodevicehealth
 dymoconnectdesktop
 dynalist
 easeusdatarecoverywizard
+eastwestinstallationcenter
+eastwestplay
 easyfind
 eclipsetemurin11
 eclipsetemurin17
@@ -501,6 +504,7 @@ magicbullet
 mailmate
 mailtooutlook
 malwarebytes
+mamp
 marathon
 marathon2
 marathoninfinity
@@ -650,6 +654,7 @@ origin
 orion
 osquery
 ottomatic
+outputarcade
 outputhub
 outset
 overflow
@@ -881,6 +886,8 @@ tidal
 todoist
 toggltrack
 tom4aconverter
+topazgigapixel
+topazgigapixelai
 torbrowser
 tower
 transfer
