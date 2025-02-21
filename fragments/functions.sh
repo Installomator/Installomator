@@ -62,19 +62,36 @@ displaydialogContinue() { # $1: message $2: title
 displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
-    manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
-    hubcli="/usr/local/bin/hubcli"
-    swiftdialog="/usr/local/bin/dialog"
 
-    if [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 && "$NOTIFY_DIALOG" -eq 1 ]]; then
-        "$swiftdialog" --notification --title "$title" --message "$message"
+    # For notifications, built in MDM tools have priority over 3. party tools, and AppleScript is the fallback option.
+    # Unless the 3. party tool is specified in variable NOTIFIER_APP
+
+    if [[ "$NOTIFIER_APP" = "dialog" && "$($DIALOG_CMD --version | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "Swift Dialog notification override" INFO
+        printlog "${DIALOG_CMD}: $($DIALOG_CMD --version)" DEBUG
+        "$DIALOG_CMD" --notification --title "$title" --message "$message"
+    elif [[ "$NOTIFIER_APP" = "ibmnotifier" && "$($ibmnotifier --version | cut -d ":" -f2 | grep -oe "[0-9.]*" | head -1 | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "IBM Notifier notification override" INFO
+        printlog "${ibmnotifier}: $($ibmnotifier --version)" DEBUG
+        "$ibmnotifier" -type banner -title "$title" -subtitle "$message" -timeout
     elif [[ -x "$manageaction" ]]; then
+        printlog "Jamf notification" INFO
+        printlog "${manageaction}: $($DIALOG_CMD --version)" DEBUG
          "$manageaction" -message "$message" -title "$title" &
     elif [[ -x "$hubcli" ]]; then
+        printlog "AirWatch Workspace ONE notification" INFO
+        printlog "${hubcli}: $($DIALOG_CMD --version)" DEBUG
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
-    elif [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 ]]; then
-         "$swiftdialog" --notification --title "$title" --message "$message"
+    elif [[ "$($DIALOG_CMD --version | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "Swift Dialog notification" INFO
+        printlog "${DIALOG_CMD}: $($DIALOG_CMD --version)" DEBUG
+        "$DIALOG_CMD" --notification --title "$title" --message "$message"
+    elif [[ "$($ibmnotifier --version | cut -d ":" -f2 | grep -oe "[0-9.]*" | head -1 | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "IBM Notifier notification" INFO
+        printlog "${ibmnotifier}: $($ibmnotifier --version)" DEBUG
+        "$ibmnotifier" -type banner -title "$title" -subtitle "$message" -timeout
     else
+        printlog "AppleScript notification fallback" INFO
         runAsUser osascript -e "display notification \"$message\" with title \"$title\""
     fi
 }
@@ -209,11 +226,11 @@ versionFromGit() {
 xpath() {
 	# the xpath tool changes in Big Sur and now requires the `-e` option
 	if [[ $(sw_vers -buildVersion) > "20A" ]]; then
-		/usr/bin/xpath -e $@
+		/usr/bin/xpath -q -e $@
 		# alternative: switch to xmllint (which is not perl)
 		#xmllint --xpath $@ -
 	else
-		/usr/bin/xpath $@
+		/usr/bin/xpath -q $@
 	fi
 }
 
@@ -264,11 +281,11 @@ getAppVersion() {
 #            targetDir="/Applications/Utilities"
 #        fi
     else
-    #    applist=$(mdfind "kind:application $appName" -0 )
         printlog "name: $name, appName: $appName"
-        applist=$(mdfind "kind:application AND name:$name" -0 )
+        # mdfind now handling if kind is either Application or App
+        applist=$(mdfind "kMDItemContentType:com.apple.application AND kMDItemFSName:\"$name\"" -0 2>/dev/null)
+#        applist=$(mdfind "kMDItemContentType:com.apple.application AND kMDItemFSName:\"$appName\"" -0 2>/dev/null)
 #        printlog "App(s) found: ${applist}" DEBUG
-#        applist=$(mdfind "kind:application AND name:$appName" -0 )
     fi
     if [[ -z $applist ]]; then
         printlog "No previous app found" WARN
@@ -568,7 +585,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         fi
 
         # set ownership to current user
-        if [[ "$currentUser" != "loginwindow" && $SYSTEMOWNER -ne 1 ]]; then
+        if [[ "$currentUser" != "loginwindow" && "$currentUser" != "_mbsetupuser" && $SYSTEMOWNER -ne 1 ]]; then
             printlog "Changing owner to $currentUser" WARN
             chown -R "$currentUser" "$targetDir/$appName"
         else
