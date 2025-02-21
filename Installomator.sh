@@ -35,6 +35,13 @@ NOTIFY=success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
 
+# app to show notifications
+NOTIFIER_APP=""
+# options:
+#   - dialog           Swift Dialog (version greater than 2.0 required)
+#   - ibmnotifier      IBM Notifier (version greater than 2.0 required)
+# If not defined, Installomator will look for MDM native notification app (Jamf Pro and AirWatch), and if not found will use Swift Dialog (if found), or IBM Notifier (if found) or else it will use AppleScript (osascript)
+
 # time in seconds to wait for a prompt to be answered before exiting the script
 PROMPT_TIMEOUT=86400
 # Common times translated into seconds
@@ -179,9 +186,6 @@ DIALOG_LIST_ITEM_NAME=""
 # When this variable is set, progress for downloads and installs will be sent to this
 # listitem.
 # When the variable is unset, progress will be sent to Swift Dialog's main progress bar.
-
-NOTIFY_DIALOG=0
-# If this variable is set to 1, then we will check for installed Swift Dialog v. 2 or later, and use that for notification
 
 
 # NOTE: How labels work
@@ -414,17 +418,36 @@ displaydialogContinue() { # $1: message $2: title
 displaynotification() { # $1: message $2: title
     message=${1:-"Message"}
     title=${2:-"Notification"}
-    manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
-    hubcli="/usr/local/bin/hubcli"
-    swiftdialog="/usr/local/bin/dialog"
 
-    if [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 && "$NOTIFY_DIALOG" -eq 1 ]]; then
-        "$swiftdialog" --notification --title "$title" --message "$message"
+    # For notifications, built in MDM tools have priority over 3. party tools, and AppleScript is the fallback option.
+    # Unless the 3. party tool is specified in variable NOTIFIER_APP
+
+    if [[ "$NOTIFIER_APP" = "dialog" && "$($DIALOG_CMD --version | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "Swift Dialog notification override" INFO
+        printlog "${DIALOG_CMD}: $($DIALOG_CMD --version)" DEBUG
+        "$DIALOG_CMD" --notification --title "$title" --message "$message"
+    elif [[ "$NOTIFIER_APP" = "ibmnotifier" && "$($ibmnotifier --version | cut -d ":" -f2 | grep -oe "[0-9.]*" | head -1 | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "IBM Notifier notification override" INFO
+        printlog "${ibmnotifier}: $($ibmnotifier --version)" DEBUG
+        "$ibmnotifier" -type banner -title "$title" -subtitle "$message" -timeout
     elif [[ -x "$manageaction" ]]; then
+        printlog "Jamf notification" INFO
+        printlog "${manageaction}: $($DIALOG_CMD --version)" DEBUG
          "$manageaction" -message "$message" -title "$title" &
     elif [[ -x "$hubcli" ]]; then
+        printlog "AirWatch Workspace ONE notification" INFO
+        printlog "${hubcli}: $($DIALOG_CMD --version)" DEBUG
          "$hubcli" notify -t "$title" -i "$message" -c "Dismiss"
+    elif [[ "$($DIALOG_CMD --version | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "Swift Dialog notification" INFO
+        printlog "${DIALOG_CMD}: $($DIALOG_CMD --version)" DEBUG
+        "$DIALOG_CMD" --notification --title "$title" --message "$message"
+    elif [[ "$($ibmnotifier --version | cut -d ":" -f2 | grep -oe "[0-9.]*" | head -1 | cut -d "." -f1)" -ge 2 ]]; then
+        printlog "IBM Notifier notification" INFO
+        printlog "${ibmnotifier}: $($ibmnotifier --version)" DEBUG
+        "$ibmnotifier" -type banner -title "$title" -subtitle "$message" -timeout
     else
+        printlog "AppleScript notification fallback" INFO
         runAsUser osascript -e "display notification \"$message\" with title \"$title\""
     fi
 }
@@ -1529,6 +1552,13 @@ if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR
 fi
+
+# NOTE: 3rd party and MDM Notification binaries
+manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action" # Jamf Pro
+hubcli="/usr/local/bin/hubcli" # AirWatch Workspace ONE
+macmanage="/Library/Addigy/macmanage/MacManage.app/Contents/MacOS/MacManage" # Addigy, currently no notifications
+#swiftdialog="/usr/local/bin/dialog" # dialog
+ibmnotifier="/Applications/IBM Notifier.app/Contents/MacOS/IBM Notifier" #ibmnotifier
 
 # check Swift Dialog presence and version
 DIALOG_CMD="/usr/local/bin/dialog"
@@ -5240,9 +5270,9 @@ isadora)
 island)
     name="Island"
     type="dmg"
-    downloadURL="https://d3qqq7lqx3rf23.internal.island.io/E5QCaudFDx5FE5OX4INk/stable/latest/mac/IslandX64.dmg"
+    downloadURL="" # Customers MUST request a dedicated URL from the vendor to use this label. ie. https://your_tenant_id.internal.island.io/id_provided_by_vendor/stable/latest/mac/IslandX64.dmg
     appCustomVersion() { echo "$(defaults read /Applications/Island.app/Contents/Info.plist CFBundleShortVersionString | sed 's/[^.]*.//' | sed -e 's/*\.//')" }
-    appNewVersion=$(curl -fsLIXGET "https://d3qqq7lqx3rf23.internal.island.io/E5QCaudFDx5FE5OX4INk/stable/latest/mac/IslandX64.dmg" | grep -i "^x-amz-meta-version" | sed -e 's/x-amz-meta-version\: //' | tr -d '\r')
+    appNewVersion=$(curl -fsLIXGET ${downloadURL} | grep -i "^x-amz-meta-version" | sed -e 's/x-amz-meta-version\: //' | tr -d '\r')
     expectedTeamID="38ZC4T8AWY"
     ;;
 istatmenus)
