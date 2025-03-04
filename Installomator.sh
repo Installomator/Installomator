@@ -5049,6 +5049,14 @@ hyper)
     appNewVersion=$(versionFromGit vercel hyper)
     expectedTeamID="JW6Y669B67"
     ;;
+httpie)
+    name="HTTPie"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit "httpie" "desktop")
+    appNewVersion=$(versionFromGit "httpie" "desktop")
+    expectedTeamID="8T89SYW982"
+    blockingProcesses=( NONE )
+    ;;
 i1profiler)
     name="i1Profiler"
     type="pkgInZip"
