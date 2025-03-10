@@ -1,4 +1,3 @@
-camtasia|\
 camtasia2024)
     name="Camtasia 2024"
     type="dmg"
