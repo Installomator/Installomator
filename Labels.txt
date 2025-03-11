@@ -218,6 +218,7 @@ crashplansmb
 cricutdesignspace
 cryptomator
 crystalfetch
+cursor
 cyberduck
 cycling74max
 cytoscape

@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-02-21"
+VERSIONDATE="2025-03-11"
 
 # MARK: Functions
 
@@ -3606,6 +3606,14 @@ crystalfetch)
     downloadURL=$(downloadURLFromGit TuringSoftware CrystalFetch)
     appNewVersion=$(versionFromGit TuringSoftware CrystalFetch)
     expectedTeamID="WDNLXAD4W8"
+    ;;
+cursor)
+    name="Cursor"
+    type="dmg"
+    downloadURL="https://anysphere-binaries.s3.us-east-1.amazonaws.com/production/be4f0962469499f009005e66867c8402202ff0b7/darwin/arm64/Cursor-darwin-arm64.dmg"
+    appNewVersion=""
+    expectedTeamID="VDXQ22DGB9"
+     blockingProcesses=( "Cursor" )
     ;;
 cyberduck)
     name="Cyberduck"
