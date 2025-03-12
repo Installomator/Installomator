@@ -50,6 +50,7 @@ anaconda
 anastasiysextensionmanager
 androidfiletransfer
 androidstudio
+ankerwork
 anydesk
 apachedirectorystudio
 apachenetbeans

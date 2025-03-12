@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-03-11"
+VERSIONDATE="2025-03-12"
 
 # MARK: Functions
 
@@ -2188,6 +2188,13 @@ androidstudio)
     expectedTeamID="EQHXZ8M8AV"
     blockingProcesses=( androidstudio )
     ;;
+ankerwork)
+    name="AnkerWork"
+    type="dmg"
+    downloadURL="https://ankerwork.s3.us-west-2.amazonaws.com/electron/AnkerWork-Setup-arm64.dmg"
+    expectedTeamID="BVL93LPC7F"
+    blockingProcesses=( "AnkerWork" )
+    ;;
 anydesk)
     name="AnyDesk"
     type="dmg"
@@ -3611,9 +3618,9 @@ cursor)
     name="Cursor"
     type="dmg"
     downloadURL="https://anysphere-binaries.s3.us-east-1.amazonaws.com/production/be4f0962469499f009005e66867c8402202ff0b7/darwin/arm64/Cursor-darwin-arm64.dmg"
-    appNewVersion=""
+    appNewVersion="getJSONValue "$(curl -fs 'https://api2.cursor.sh/updates/api/update/darwin-universal/cursor/0.10.10/')" "name""
     expectedTeamID="VDXQ22DGB9"
-     blockingProcesses=( "Cursor" )
+    blockingProcesses=( "Cursor" )
     ;;
 cyberduck)
     name="Cyberduck"
