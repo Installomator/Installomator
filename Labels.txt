@@ -772,6 +772,7 @@ secretive
 selfcontrol
 sequelace
 sequelpro
+sessionmanagerplugin
 sfsymbols
 shield
 shotcut
