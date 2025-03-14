@@ -3622,7 +3622,6 @@ cursor)
     expectedTeamID="VDXQ22DGB9"
     blockingProcesses=( "Cursor" )
     ;;
- 
 cyberduck)
     name="Cyberduck"
     type="zip"
