@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-03-13"
+VERSIONDATE="2025-03-14"
 
 # MARK: Functions
 
@@ -3618,10 +3618,11 @@ cursor)
     name="Cursor"
     type="dmg"
     downloadURL="https://anysphere-binaries.s3.us-east-1.amazonaws.com/production/be4f0962469499f009005e66867c8402202ff0b7/darwin/arm64/Cursor-darwin-arm64.dmg"
-    appNewVersion="getJSONValue "$(curl -fs 'https://api2.cursor.sh/updates/api/update/darwin-universal/cursor/0.10.10/')" "name""
+    appNewVersion=""
     expectedTeamID="VDXQ22DGB9"
     blockingProcesses=( "Cursor" )
     ;;
+ 
 cyberduck)
     name="Cyberduck"
     type="zip"
