@@ -5898,6 +5898,7 @@ lghubinstaller)
     type="zip"
     downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.zip"
     expectedTeamID="QED4VVPZWA"
+    blockingProcesses=( "Logitech G HUB" )
     ;;
 libericajdk11ltsfull)
     name="Liberica JDK 11 LTS Full"
@@ -8428,6 +8429,7 @@ rive)
     type="dmg"
     downloadURL="https://releases.rive.app/macos/latest/Rive.dmg"
     expectedTeamID="NJ3JMFUNS9"
+    blockingProcesses=( "Rive" )
     ;;
 rocket)
     name="Rocket"
