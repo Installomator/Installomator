@@ -471,6 +471,7 @@ launchcontrol
 lcadvancedvpnclient
 lexarrecoverytool
 lgcalibrationstudio
+lghubinstaller
 libericajdk11ltsfull
 libericajdk17ltsfull
 libericajdk8ltsfull
@@ -743,6 +744,7 @@ ringcentralapp
 ringcentralclassicapp
 ringcentralmeetings
 ringcentralphone
+rive
 rocket
 rocketchat
 rodecentral

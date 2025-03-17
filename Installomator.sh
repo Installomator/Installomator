@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-03-14"
+VERSIONDATE="2025-03-17"
 
 # MARK: Functions
 
@@ -5893,6 +5893,12 @@ lgcalibrationstudio)
     downloadURL=$(curl -sf $releaseURL | grep -m 1 "Mac_LCS_" | sed "s|.*href=\"\(.*\)\" title.*|\\1|")
     expectedTeamID="5SKT5H4CPQ"
     ;;
+lghubinstaller)
+    name="lghub_installer"
+    type="zip"
+    downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.zip"
+    expectedTeamID="QED4VVPZWA"
+    ;;
 libericajdk11ltsfull)
     name="Liberica JDK 11 LTS Full"
     type="pkg"
@@ -8416,6 +8422,12 @@ ringcentralphone)
     downloadURL="https://downloads.ringcentral.com/sp/RingCentralForMac"
     expectedTeamID="M932RC5J66"
     blockingProcesses=( "RingCentral Phone" )
+    ;;
+rive)
+    name="Rive"
+    type="dmg"
+    downloadURL="https://releases.rive.app/macos/latest/Rive.dmg"
+    expectedTeamID="NJ3JMFUNS9"
     ;;
 rocket)
     name="Rocket"
