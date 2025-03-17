@@ -8,3 +8,4 @@ toonboomstoryboardpro2024)
     versionKey="CFBundleVersion"
     expectedTeamID="U5LPYJSPQ3"
     ;;
+    
