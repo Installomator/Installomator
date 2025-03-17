@@ -10,5 +10,4 @@ rancherdesktop)
     fi
     appNewVersion="$(versionFromGit rancher-sandbox rancher-desktop)"
     expectedTeamID="2Q6FHJR3H3"
-    appName="Rancher Desktop.app"
     ;;
