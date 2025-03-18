@@ -7197,7 +7197,7 @@ monitorcontrol)
     type="dmg"
     downloadURL="$(downloadURLFromGit MonitorControl MonitorControl)"
     appNewVersion="$(versionFromGit MonitorControl MonitorControl)"
-    expectedTeamID="CYC8C8R4K9"
+    expectedTeamID="299YSU96J7"
     ;;
 montereyblocker)
     name="montereyblocker"
