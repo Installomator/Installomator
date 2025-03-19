@@ -8,3 +8,4 @@ dragonframe2024)
     appNewVersion="$( echo "$downloadURL" | cut -d '_' -f 2 | cut -d '.' -f 1-3 )"
     versionKey="CFBundleShortVersionString"
     ;;
+    
