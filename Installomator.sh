@@ -26,7 +26,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=0
+DEBUG=1
 
 # notify behavior
 NOTIFY=success
@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-03-17"
+VERSIONDATE="2025-03-20"
 
 # MARK: Functions
 
@@ -3617,10 +3617,10 @@ crystalfetch)
 cursor)
     name="Cursor"
     type="dmg"
-    downloadURL="https://anysphere-binaries.s3.us-east-1.amazonaws.com/production/be4f0962469499f009005e66867c8402202ff0b7/darwin/arm64/Cursor-darwin-arm64.dmg"
-    appNewVersion=""
+    appNewVersion=$(curl -sL "https://www.cursor.com/changelog" | xmllint --html -xpath "//article[1]" - 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -n 1)
+    downloadURL=$(curl -fsL "https://www.cursor.com/api/download?platform=darwin-universal&releaseTrack=stable" | grep -o '"downloadUrl":"[^"]*"' | sed 's/"downloadUrl":"\([^"]*\)"/\1/')
     expectedTeamID="VDXQ22DGB9"
-    blockingProcesses=( Cursor )
+    blockingProcesses=( "Cursor" )
     ;;
 cyberduck)
     name="Cyberduck"
@@ -5892,13 +5892,6 @@ lgcalibrationstudio)
     appNewVersion=$(curl -sf $releaseURL | grep -m 1 "Mac_LCS_" | sed -E 's/.*LCS_([0-9.]*).zip.*/\1/g')
     downloadURL=$(curl -sf $releaseURL | grep -m 1 "Mac_LCS_" | sed "s|.*href=\"\(.*\)\" title.*|\\1|")
     expectedTeamID="5SKT5H4CPQ"
-    ;;
-lghubinstaller)
-    name="lghub_installer"
-    type="zip"
-    downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.zip"
-    expectedTeamID="QED4VVPZWA"
-    blockingProcesses=( "Logitech G HUB" )
     ;;
 libericajdk11ltsfull)
     name="Liberica JDK 11 LTS Full"
@@ -8429,7 +8422,6 @@ rive)
     type="dmg"
     downloadURL="https://releases.rive.app/macos/latest/Rive.dmg"
     expectedTeamID="NJ3JMFUNS9"
-    blockingProcesses=( "Rive" )
     ;;
 rocket)
     name="Rocket"
