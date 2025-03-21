@@ -353,8 +353,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="11.0beta2"
-VERSIONDATE="2025-02-21"
+VERSION="10.8beta"
+VERSIONDATE="2025-03-21"
 
 # MARK: Functions
 
@@ -1950,7 +1950,7 @@ aftermath)
     packageID="com.jamf.aftermath"
     downloadURL="$(downloadURLFromGit jamf aftermath)"
     appNewVersion="$(versionFromGit jamf aftermath)"
-    expectedTeamID="6PV5YF2UES"
+    expectedTeamID="C793NB2B2B"
     ;;
 aircall)
     name="Aircall"
@@ -3861,15 +3861,20 @@ displaylinkmanagergraphicsconnectivity)
 docker)
     name="Docker"
     type="dmg"
-    if [[ $(arch) == arm64 ]]; then
-     downloadURL="https://desktop.docker.com/mac/stable/arm64/Docker.dmg"
-     appNewVersion=$( curl -fs "https://desktop.docker.com/mac/main/arm64/appcast.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[last()]' 2>/dev/null | cut -d '"' -f2 )
-    elif [[ $(arch) == i386 ]]; then
-     downloadURL="https://desktop.docker.com/mac/stable/amd64/Docker.dmg"
-     appNewVersion=$( curl -fs "https://desktop.docker.com/mac/main/amd64/appcast.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[last()]' 2>/dev/null | cut -d '"' -f2 )
+    if [[ "$(arch)" == arm64 ]]; then
+        downloadURL="https://desktop.docker.com/mac/stable/arm64/Docker.dmg"
+        appNewVersion=$( curl -fs "https://desktop.docker.com/mac/main/arm64/appcast.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[last()]' 2>/dev/null | cut -d '"' -f2 )
+    elif [[ "$(arch)" == i386 ]]; then
+        downloadURL="https://desktop.docker.com/mac/stable/amd64/Docker.dmg"
+        appNewVersion=$( curl -fs "https://desktop.docker.com/mac/main/amd64/appcast.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[last()]' 2>/dev/null | cut -d '"' -f2 )
+    fi
+    CLIInstaller="Docker.app/Contents/MacOS/install"
+    CLIArguments=(--accept-license)
+    if [[ "${currentUser}" != "loginwindow" ]];then
+        CLIArguments+=(--user "${currentUser}")
     fi
     expectedTeamID="9BNSXJN65R"
-    blockingProcesses=( "Docker Desktop" "Docker" )
+    blockingProcesses=( "Docker Desktop" )
     ;;
 dockutil)
     name="dockutil"
@@ -3996,6 +4001,15 @@ eastwestinstallationcenter)
     type="pkgInZip"
     packageID="com.eastwest.pkg.installationcenter"
     downloadXML="$(curl -fs 'http://s3.amazonaws.com/ic-resources/products/IC.xml')"
+    downloadURL="$(echo "${downloadXML}" | xpath '(//product/files/file[@platform="mac"]/url/text())' 2>/dev/null)"
+    appNewVersion="$(echo "${downloadXML}" | xpath '(//product/version/text())' 2>/dev/null)"
+    expectedTeamID="TWK4WE76V9"
+    ;;
+eastwestopus)
+    name="Opus"
+    type="pkgInZip"
+    packageID="com.eastwest.pkg.OpusInstaller"
+    downloadXML="$(curl -fs 'http://s3.amazonaws.com/ic-resources/products/OPUS.xml')"
     downloadURL="$(echo "${downloadXML}" | xpath '(//product/files/file[@platform="mac"]/url/text())' 2>/dev/null)"
     appNewVersion="$(echo "${downloadXML}" | xpath '(//product/version/text())' 2>/dev/null)"
     expectedTeamID="TWK4WE76V9"
@@ -4756,7 +4770,7 @@ googlechrome)
     name="Google Chrome"
     type="dmg"
     downloadURL="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
-    appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}')
+    appNewVersion=$(getJSONValue "$(curl -s "https://chromiumdash.appspot.com/fetch_releases?platform=Mac&channel=Stable&num=1")" "[0].version")
     expectedTeamID="EQHXZ8M8AV"
     printlog "WARNING for ERROR: Label googlechrome should not be used. Instead use googlechromepkg as per recommendations from Google. It's not fully certain that the app actually gets updated here. googlechromepkg will have built in updates and make sure the client is updated in the future." REQ
     ;;
@@ -5233,6 +5247,13 @@ installomator_theile)
     expectedTeamID="JME5BW3F3R"
     blockingProcesses=( NONE )
     ;;
+installomatormate)
+	name="InstallomatorMate"
+	type="zip"
+	downloadURL="https://hennig.nu/repo/installomatormate/InstallomatorMate.zip"
+    appNewVersion=$( curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs https://hennig.nu/repo/installomatormate/appcast.xml | sed -n 's/.*<sparkle:shortVersionString>\(.*\)<\/sparkle:shortVersionString>.*/\1/p' | head -1 )
+	expectedTeamID="AGXG97HK25"
+	;;
 ipswupdater)
     name="IPSW Updater"
     type="zip"
@@ -5584,6 +5605,7 @@ jetbrainspycharm)
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*-([0-9.]+)[-.].*/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
+    blockingProcesses=( pycharm )
     ;;
 jetbrainspycharmce|\
 pycharmce)
@@ -5597,6 +5619,7 @@ pycharmce)
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*-([0-9.]+)[-.].*/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
+    blockingProcesses=( pycharm )
     ;;
 jetbrainsrider)
     name="Rider"
@@ -5769,8 +5792,10 @@ keybase)
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
         downloadURL=$(curl -s https://keybase.io/docs/the_app/install_macos | grep data-target | cut -d '"' -f2 | grep arm64 )
+        appNewVersion=$( curl -sfL https://prerelease.keybase.io/update-darwin-arm64-prod-v2.json | grep '"version": '  | awk '{print $2}' | awk -F\" '{print $2}' )
     elif [[ $(arch) == i386 ]]; then
         downloadURL=$(curl -s https://keybase.io/docs/the_app/install_macos | grep data-target | cut -d '"' -f2 | grep -v arm64 )
+        appNewVersion=$( curl -sfL https://prerelease.keybase.io/update-darwin-prod-v2.json | grep '"version": '  | awk '{print $2}' | awk -F\" '{print $2}' )
     fi
     expectedTeamID="99229SGT5K"
     ;; 
@@ -5792,8 +5817,9 @@ keyshot12)
     downloadURL="https://www.keyshot.com/download/357619/"
     appNewVersion="$( curl -v "$downloadURL" 2>&1 | grep location | cut -d '_' -f 4 | cut -d '.' -f 1-2 )"
     ;;
-keyshot12_2024)
-    name="KeyShot12"
+keyshot|\
+keyshot2024)
+    name="KeyShot"
     type="pkg"
     expectedTeamID="W7B24M74T3"
     downloadURL="https://www.keyshot.com/download/370762/"
@@ -6379,8 +6405,8 @@ mailtooutlook)
 malwarebytes)
     name="Malwarebytes"
     type="pkg"
-    downloadURL="https://downloads.malwarebytes.com/file/mb3-mac"
-    appNewVersion=$(curl -Ifs https://downloads.malwarebytes.com/file/mb3-mac | grep "location" | sed -E 's/.*-Mac-([0-9\.]*)\.pkg/\1/g')
+    downloadURL="https://downloads.malwarebytes.com/file/mb-mac"
+    appNewVersion=$(curl -Ifs https://downloads.malwarebytes.com/file/mb-mac | grep "location" | sed -E 's/.*-Mac-([0-9\.]*)\.pkg/\1/g')
     expectedTeamID="GVZRY6KDKR"
     ;;
 mamp)
@@ -6487,6 +6513,14 @@ merlinproject)
     downloadURL="https://www.projectwizards.net/downloads/MerlinProject.zip"
     appNewVersion="$(curl -fs "https://www.projectwizards.net/de/support/release-notes"  | grep Version | head -n 6 | tail -n 1 | sed 's/[^0-9.]*//g')"
     expectedTeamID="9R6P9VZV27"
+    ;;
+mestrenova)
+    name="MestReNova"
+    type="dmg"
+    mestrenovaDownloadVersion=$(curl -fs "https://mestrelab.com/download" | grep -Ei '([0-9]+.){2}[0-9]-[0-9]{5}' | head -n 1 | sed -E 's/.*-([0-9]+.[0-9]+.[0-9]+-[0-9]{5}).*/\1/g')
+    downloadURL="https://mestrelab.com/downloads/mnova/mac/MestReNova-$mestrenovaDownloadVersion.dmg"
+    appNewVersion=$(echo "$mestrenovaDownloadVersion" | cut -d '-' -f1)
+    expectedTeamID="DH5EKRR34H"
     ;;
 microsoftautoupdate)
     name="Microsoft AutoUpdate"
@@ -8579,6 +8613,13 @@ keyaccess)
     # Don't forget to at least set the host, or nothing will happen.
     # defaults write /Library/Preferences/com.sassafras.KeyAccess host -string "host.name"
     ;;
+sawgrassprintutility)
+    name="Sawgrass Print Utility"
+    type="dmg"
+    downloadURL="https://print.sawgrassink.com/SawgrassPrintUtility.dmg"
+    appNewVersion=$(curl -fsL https://pm-dist-channel.s3.amazonaws.com/latest-mac.yml | grep "version" | cut -d " " -f 2)
+    expectedTeamID="2DD4HMHX5K"
+    ;;
 scaleft)
     name="ScaleFT"
     type="pkg"
@@ -8616,12 +8657,12 @@ screamingfrogseospider)
     name="Screaming Frog SEO Spider"
     type="dmg"
     if [[ $(arch) == i386 ]]; then
-        platform="Mac - (intel)"
+        platform="x86_64"
     elif [[ $(arch) == arm64 ]]; then
-        platform="Mac - (apple silicon)"
+        platform="aarch64"
     fi
-    downloadURL=$(curl -fs "https://www.screamingfrog.co.uk/wp-content/themes/screamingfrog/inc/download-modal.php" | grep "${platform}" | grep -i -o "https.*\.dmg" | head -1)
-    appNewVersion=$(print "$downloadURL" | sed -E 's/https.*\/[a-zA-Z]*-([0-9.]*)\.dmg/\1/g')".0"
+    appNewVersion=$(curl -fs "https://download.screamingfrog.co.uk/products/seo-spider/getlatestversion.php")
+    downloadURL="https://download.screamingfrog.co.uk/products/seo-spider/ScreamingFrogSEOSpider-${appNewVersion}-${platform}.dmg"
     expectedTeamID="CAHEVC3HZC"
     ;;
 screencloudplayer)
