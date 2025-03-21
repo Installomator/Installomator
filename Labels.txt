@@ -398,6 +398,7 @@ inmusicsoftwarecenter
 insomnia
 installomator
 installomator_theile
+installomatormate
 intellijideace
 ipswupdater
 ipvisionconnect
