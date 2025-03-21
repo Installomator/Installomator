@@ -23,7 +23,7 @@ printUsage() {
     echo "                                  if testing is successful, the option to merge the PR will be presented"
     echo "  -d, --max-download-size <num> - max download size in MB when in TEST_PR mode. default is 50"
     echo "  -i, --ignore-missing-download-size - ignore missing download size in TEST_PR mode"
-    echo "  -p, --max-pr-count <num>      - max number of PR's to process. default is 5"
+    echo "  -c, --max-pr-count <num>      - max number of PR's to process. default is 5"
     echo "  -s, --search-string <string>  - search string to use for PR's. default is 'no:label sort:created-asc'"
     echo "                                  if test-pr is set, this will be overridden to:"
     echo "                                    'is:pr is:open label:application label:validated -label:\"waiting for response\""
@@ -32,7 +32,7 @@ printUsage() {
     echo "  -o, --sort-order <order>      - sort order for PR's. default is 'created-asc' (oldest first)"
     echo "                                  options are 'created-asc' or 'created-desc'"
     echo "  -f, --from-pr-num <num>       - start processing PR's from this number. default is 0"
-    echo "  -n, --pr-num <num>            - process a single PR number"
+    echo "  -p, --pr-num <num>            - process a single PR number"
     echo "  -h, --help                    - display this help"
     exit 0
 }
