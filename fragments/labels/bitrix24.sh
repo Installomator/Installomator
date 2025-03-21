@@ -4,5 +4,4 @@ bitrix24)
      archiveName="bitrix24_desktop.dmg"
      downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop.dmg"
      expectedTeamID="5B3T3A994N"
-     blockingProcesses=( "Bitrix24" )
      ;;
