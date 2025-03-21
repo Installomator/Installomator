@@ -93,9 +93,12 @@ fi
 # check Swift Dialog presence and version
 DIALOG_CMD="/usr/local/bin/dialog"
 
-if [[ ! -x $DIALOG_CMD ]]; then
+# check UIT Notifier presence
+NOTIFIER_CMD="/Applications/Utilities/UIT Notifier.app/Contents/MacOS/UIT Notifier"
+
+if [[ ! -x $DIALOG_CMD && ! -x $NOTIFIER_CMD ]]; then
     # Swift Dialog is not installed, clear cmd file variable to ignore
-    printlog "SwiftDialog is not installed, clear cmd file var"
+    printlog "SwiftDialog or IBM Notifier is not installed, clear cmd file var"
     DIALOG_CMD_FILE=""
 fi
 

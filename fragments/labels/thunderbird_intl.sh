@@ -3,7 +3,7 @@ thunderbird_intl)
     # and install corrosponding version of Thunderbird
     name="Thunderbird"
     type="dmg"
-    userLanguage=$(if [ -e "/Applications/${name}.app/Contents/Resources/locale.ini" ]; then tail -1 "/Applications/${name}.app/Contents/Resources/locale.ini" | grep "locale=" | awk -F'=' '{ print $2 }'; else runAsUser defaults read .GlobalPreferences AppleLocale | tr '_' '-'; fi)
+    userLanguage=$(if [ -e "/Applications/${name}.app/Contents/Resources/locale.ini" ]; then tail -1 "/Applications/${name}.app/Contents/Resources/locale.ini" | grep "locale=" | awk -F'=' '{ print $2 }';elif [ -d "/Applications/${name}.app/Contents/Resources/sv.lproj" ]; then echo "sv-SE";elif [ -d "/Applications/${name}.app/Contents/Resources/en.lproj" ]; then echo "en-GB";else runAsUser defaults read .GlobalPreferences AppleLocale | tr '_' '-'; fi)
     printlog "Found language $userLanguage to be used for $name."
     releaseURL="https://ftp.mozilla.org/pub/thunderbird/releases/latest/README.txt"
     until curl -fs $releaseURL | grep -q "=$userLanguage"; do

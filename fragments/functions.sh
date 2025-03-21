@@ -65,9 +65,12 @@ displaynotification() { # $1: message $2: title
     manageaction="/Library/Application Support/JAMF/bin/Management Action.app/Contents/MacOS/Management Action"
     hubcli="/usr/local/bin/hubcli"
     swiftdialog="/usr/local/bin/dialog"
+    ibmnotifier="/Applications/Utilities/UIT Notifier.app/Contents/MacOS/UIT Notifier"
 
     if [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 && "$NOTIFY_DIALOG" -eq 1 ]]; then
         "$swiftdialog" --notification --title "$title" --message "$message"
+    elif [[ -x "$ibmnotifier" ]]; then
+         "$ibmnotifier" "-type" "banner" "-title" "$title" "-subtitle" "$message" &
     elif [[ -x "$manageaction" ]]; then
          "$manageaction" -message "$message" -title "$title" &
     elif [[ -x "$hubcli" ]]; then
@@ -1035,6 +1038,12 @@ updateDialog() {
         progress=$state
     fi
 
+    if [[ $state == "success" ]]; then
+        if [[ -x "$NOTIFIER_CMD" ]]; then
+            killall "UIT Notifier Popup" 2>/dev/null
+        fi
+    fi
+
     # when to cmdfile is set, do nothing
     if [[ $cmd_file == "" ]]; then
         return
@@ -1043,10 +1052,23 @@ updateDialog() {
     if [[ $listitem == "" ]]; then
         # no listitem set, update main progress bar and progress text
         if [[ $progress != "" ]]; then
-            echo "progress: $progress" >> $cmd_file
+            if [[ -x "$NOTIFIER_CMD" ]]; then
+                echo "/percent $progress" >> $cmd_file
+            else
+                echo "progress: $progress" >> $cmd_file
+            fi
         fi
+
         if [[ $message != "" ]]; then
-            echo "progresstext: $message" >> $cmd_file
+            if [[ -x "$NOTIFIER_CMD" ]]; then
+                if [[ $state == "fail" ]]; then
+                    echo "/percent 100 /bottom_message $message" >> $cmd_file
+                else
+                    echo "/bottom_message $message" >> $cmd_file
+                fi
+            else
+                echo "progresstext: $message" >> $cmd_file
+            fi
         fi
     else
         # list item has a value, so we update the progress and text in the list

@@ -1,4 +1,3 @@
-nvivo|\
 nvivo14)
     name="NVivo 14"
     type="dmg"

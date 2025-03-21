@@ -26,7 +26,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=1
+DEBUG=0
 
 # notify behavior
 NOTIFY=success
@@ -83,7 +83,7 @@ BLOCKING_PROCESS_ACTION=tell_user
 
 
 # logo-icon used in dialog boxes if app is blocking
-LOGO=appstore
+LOGO=jamf
 # options:
 #   - appstore      Icon is Apple App Store (default)
 #   - jamf          JAMF Pro
@@ -159,7 +159,7 @@ IGNORE_DND_APPS=""
 
 # This requires Swift Dialog 2.11.2 or higher.
 
-DIALOG_CMD_FILE=""
+DIALOG_CMD_FILE="/private/tmp/pbnotifier"
 # When this variable is set, Installomator will write Swift Dialog commands to this path.
 # Installomator will not launch Swift Dialog. The process calling Installomator will have
 # launch and configure Swift Dialog to listen to this file.
