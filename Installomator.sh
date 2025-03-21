@@ -353,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.8beta"
+VERSION="11.0beta2"
 VERSIONDATE="2025-03-21"
 
 # MARK: Functions
@@ -1959,6 +1959,13 @@ aircall)
     downloadURL=$(echo "${aircallUpdate}" | sed -n 's/.*"url":"\([^"]*\)".*/\1/p')
     appNewVersion=$(echo "${aircallUpdate}" | sed -n 's/.*"name":"\([^"]*\)".*/\1/p')
     expectedTeamID="3ML357Q795"
+    ;;
+airflow)
+    name="Air"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit AirLabsTeam desktop-releases)"
+    appNewVersion="$(versionFromGit AirLabsTeam desktop-releases)"
+    expectedTeamID="8RBYE8TY7T"
     ;;
 airserver)
     # credit: AP Orlebeke (@apizz)
