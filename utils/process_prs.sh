@@ -45,11 +45,11 @@ while [[ "$#" -gt 0 ]]; do
         --test-pr|-t) TEST_PR=1;;
         --max-download-size|-d) MAX_DL_SIZE="$2"; shift ;;
         --ignore-missing-download-size|-i) IGNORE_MISSING_DOWNLOAD_SIZE=1 ;;
-        --max-pr-count|-p) MAX_PR_COUNT="$2"; shift ;;
+        --max-pr-count|-c) MAX_PR_COUNT="$2"; shift ;;
         --search-string|-s) SEARCH_STRING="$2"; shift ;;
         --sort-order|-o) SORT_ORDER="$2"; shift ;;
         --from-pr-num|-f) FROM_PR_NUM="$2"; shift ;;
-        --pr-num|-n) PR_NUM="$2"; shift ;;
+        --pr-num|-p) PR_NUM="$2"; shift ;;
         *) echo "Unknown argument: $1"; printUsage; exit 1 ;;
     esac
     shift
