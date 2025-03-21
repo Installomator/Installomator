@@ -260,6 +260,7 @@ dymoconnectdesktop
 dynalist
 easeusdatarecoverywizard
 eastwestinstallationcenter
+eastwestopus
 eastwestplay
 easyfind
 eclipsetemurin11
@@ -453,8 +454,9 @@ keka
 keyaccess
 keybase
 keyboardmaestro
+keyshot
 keyshot12
-keyshot12_2024
+keyshot2024
 keystoreexplorer
 kimplusclientmodul
 klokki
@@ -518,6 +520,7 @@ meistertask
 mendeleyreferencemanager
 menumeters
 merlinproject
+mestrenova
 microsoftautoupdate
 microsoftazuredatastudio
 microsoftazurestorageexplorer
@@ -756,6 +759,7 @@ rustdesk
 safeexambrowser
 salesforcecli
 santa
+sawgrassprintutility
 scaleft
 scapple
 scenebuilder
