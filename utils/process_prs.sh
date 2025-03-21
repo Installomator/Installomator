@@ -7,37 +7,52 @@ LIVE_RUN=0 # set to 1 to apply changes to PR's
 TEST_PR=0 # set to 1 to test the PR instead of validating it
 MAX_PR_COUNT=5 # max number of PR's to process
 MAX_DL_SIZE=50 # in MB
+IGNORE_MISSING_DOWNLOAD_SIZE=0
 #SORT_ORDER="created-desc" # newest PR's first
 SORT_ORDER="created-asc" # oldest PR's first
 SEARCH_STRING="no:label sort:${SORT_ORDER}"
 FROM_PR_NUM=0
 PR_NUM=0
 
-if [[ $1 == "help" ]]; then
+printUsage() {
     echo "Usage: process_prs.sh"
     echo "Options:"
-    echo "  LIVE_RUN=<num> - set to 1 to apply changes to PR's. default is 0"
-    echo "  TEST_PR=<num> - set to 1 to perform a full test of PR's instead of validating it. default is 0"
-    echo "    testing will imply a search for PR's with the label 'application' and 'validated'"
-    echo "  MAX_DL_SIZE=<num> - max download size in MB when in TEST_PR mode. default is 50"
-    echo "  MAX_PR_COUNT=<num> - max number of PR's to process. default is 5"
-    echo "  SEARCH_STRING='<string>' - search string to use for PR's. default is 'no:label sort:created-asc'"
-    echo "    uses github search syntax"
-    echo "  SORT_ORDER='[ created-asc | created-desc ]' - sort order for PR's. default is 'created-asc' (oldest first)"
-    echo "  FROM_PR_NUM=<num> - start processing PR's from this number. default is 0"
-    echo "  PR_NUM=<num> - process a single PR number"
+    echo "  --live-run                    - will apply changes to PR's."
+    echo "  -t, --test-pr                 - perform a full test of PR's instead of validating it. default is to validate only"
+    echo "                                  testing will imply a search for PR's with the label 'application' and 'validated'"
+    echo "                                  if testing is successful, the option to merge the PR will be presented"
+    echo "  -d, --max-download-size <num> - max download size in MB when in TEST_PR mode. default is 50"
+    echo "  -i, --ignore-missing-download-size - ignore missing download size in TEST_PR mode"
+    echo "  -p, --max-pr-count <num>      - max number of PR's to process. default is 5"
+    echo "  -s, --search-string <string>  - search string to use for PR's. default is 'no:label sort:created-asc'"
+    echo "                                  if test-pr is set, this will be overridden to:"
+    echo "                                    'is:pr is:open label:application label:validated -label:\"waiting for response\""
+    echo "                                     -label:invalid -label:attention-required -label:incomplete sort:${SORT_ORDER}'"
+    echo "                                  uses github search syntax"
+    echo "  -o, --sort-order <order>      - sort order for PR's. default is 'created-asc' (oldest first)"
+    echo "                                  options are 'created-asc' or 'created-desc'"
+    echo "  -f, --from-pr-num <num>       - start processing PR's from this number. default is 0"
+    echo "  -n, --pr-num <num>            - process a single PR number"
+    echo "  -h, --help                    - display this help"
     exit 0
-fi
+}
 
-# MARK: reading rest of the arguments
-while [[ -n $1 ]]; do
-    if [[ $1 =~ ".*\=.*" ]]; then
-        IFS='=' read -r varname value <<< "$1"
-        # Assign the extracted values
-        declare "$varname=$value"
-    fi
-    # shift to next argument
-    shift 1
+# Loop through named arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --help|-h) printUsage; exit 0;;
+        --live-run) LIVE_RUN=1;;
+        --test-pr|-t) TEST_PR=1;;
+        --max-download-size|-d) MAX_DL_SIZE="$2"; shift ;;
+        --ignore-missing-download-size|-i) IGNORE_MISSING_DOWNLOAD_SIZE=1 ;;
+        --max-pr-count|-p) MAX_PR_COUNT="$2"; shift ;;
+        --search-string|-s) SEARCH_STRING="$2"; shift ;;
+        --sort-order|-o) SORT_ORDER="$2"; shift ;;
+        --from-pr-num|-f) FROM_PR_NUM="$2"; shift ;;
+        --pr-num|-n) PR_NUM="$2"; shift ;;
+        *) echo "Unknown argument: $1"; printUsage; exit 1 ;;
+    esac
+    shift
 done
 
 # unlabelled PR's
@@ -74,7 +89,7 @@ assign_gh_label() {
     local PR_NUMBER=$1
     local LABEL_NAME=$2
     # assign the label to the PR
-    if [[ $LIVE_RUN -eq 1 ]] && [[ $TEST_PR -eq 0 ]] ; then
+    if [[ $LIVE_RUN -eq 1 ]]; then
         if ! gh label list | grep -q $LABEL_NAME; then
             # create the label if it doesn't exist
             gh label create $LABEL_NAME -d "Label for $LABEL_NAME"
@@ -88,7 +103,7 @@ remove_gh_label() {
     local PR_NUMBER=$1
     local LABEL_NAME=$2
     # remove the label from the PR
-    if [[ $LIVE_RUN -eq 1 ]] && [[ $TEST_PR -eq 0 ]] ; then
+    if [[ $LIVE_RUN -eq 1 ]]; then
         gh pr edit $PR_NUMBER --remove-label $LABEL_NAME
     fi
     echo "Removed label \"$LABEL_NAME\" from PR $PR_NUMBER"
@@ -139,11 +154,6 @@ perform_pr_test() {
     local pr_num=$1
     local label=$2
 
-    if [[ $LIVE_RUN -eq 0 ]]; then
-        echo "ℹ️  DEBUG: This is a dummy run - no changes will be made"
-        return 0
-    fi
-
     # clean build folder
     if [[ -d build ]]; then
         rm -rf build/*
@@ -163,6 +173,11 @@ perform_pr_test() {
         echo
         echo "All good!"
         echo
+
+        if [[ $LIVE_RUN -eq 0 ]]; then
+            echo "ℹ️  DEBUG: This is a dry run - no changes will be made"
+            return 0
+        fi
 
         read -q query"?Merge into main? (y/n)"
 
@@ -203,8 +218,12 @@ if [[ ${#open_prs[@]} -eq 0 ]]; then
 fi
 
 skip_count=0
+processed_count=0
 
 for pr_num in $open_prs; do
+    ((processed_count++))
+    echo "***** Processing PR $processed_count of $MAX_PR_COUNT *****"
+    echo ""
     echo "***** Start PR $pr_num *****"
     if [[ $pr_num -lt $FROM_PR_NUM ]]; then
         echo "Skipping PR $pr_num"
@@ -306,7 +325,7 @@ EOF
                             pr_comment+=$(echo "  └ ⚠️  Download Size: could not determine download size")$'\n'
                         fi
                     elif [[ $http_code -eq 403 ]]; then
-                        pr_comment+="  ├ ❌ URL requires authentication"$'\n'
+                        pr_comment+="  ├ ⛔️ URL requires authentication"$'\n'
                         checks_failed=$((checks_failed+1))
                     elif [[ $http_code -eq 405 ]]; then
                         pr_comment+="  ├ ⚠️  URL appears to be reachable but does not support HEAD requests"$'\n'
@@ -314,8 +333,9 @@ EOF
                     elif [[ $http_code -eq 418 ]]; then
                         pr_comment+="  ├ 🫖 Remote server is a teapot"$'\n'
                     else
-                        pr_comment+=$(echo "  └ ❌ URL is not reachable - error $http_code")$'\n'
-                        pr_comment+=$(echo "  ├ Check [RFC status codes](https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes) for more details")$'\n'
+                        pr_comment+=$(echo "  └ ❓ URL is not reachable - error $http_code")$'\n'
+                        pr_comment+=$(echo "   ├ This could be becaue the server has blocked header requests or some other issue. Human validation is required")$'\n'
+                        pr_comment+=$(echo "   ├ Check [RFC status codes](https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes) for more details")$'\n'
                         checks_failed=$((checks_failed+1))
                     fi
                 else
@@ -340,12 +360,12 @@ EOF
                 remove_gh_label $pr_num "incomplete"
             else
                 pr_comment+=$(echo "** WARNING: Some checks failed")$'\n'
-                pr_comment+=$(echo "✅ $checks_passed checks passed")$'\n'
-                pr_comment+=$(echo "❌ $checks_failed checks failed")$'\n'
-                pr_comment+=$(echo "❌ Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request.")$'\n'
+                pr_comment+=$(echo "😃 $checks_passed checks passed")$'\n'
+                pr_comment+=$(echo "🙁 $checks_failed checks failed")$'\n'
+                pr_comment+=$(echo "⚠️ Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request.")$'\n'
                 pr_comment+=$(echo "**This is an automated check and response and does not cover all edge cases.**")$'\n'
-                pr_comment+=$(echo "Failed checks just mean that some automations could not complete to validation. This PR may still be validated after manual review")$'\n'
-                assign_gh_label $pr_num "incomplete"
+                pr_comment+=$(echo "Failed checks just mean that some automations could not complete to validation. This PR may still be validated after manual review by the installomator team")$'\n'
+                assign_gh_label $pr_num "attention-required"
                 remove_gh_label $pr_num "validated"
             fi
             pr_comment+=$(echo "****")$'\n'
@@ -381,7 +401,7 @@ EOF
                     MAX_DL_SIZE=$((downloadSize+1))
                 fi
             fi
-            if [[ ! $downloadSize -gt 0 ]] || [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
+            if [[ $IGNORE_MISSING_DOWNLOAD_SIZE -eq 0  ]] && { [[ ! $downloadSize -gt 0 ]] || [[ $downloadSize -gt $MAX_DL_SIZE ]] }; then
                 echo "⚠️ Download size is not available or greater than $MAX_DL_SIZE MB - skipping"
                 ((skip_count++))
             elif [[ $checks_failed -gt 0 ]]; then
@@ -396,7 +416,7 @@ EOF
                     # add attention-required label
                     assign_gh_label $pr_num "attention-required"
                     # add a comment to the PR that the test failed
-                    add_gh_comment $pr_num "🤖 Testing Robot Says - ❌ PR test failed for some reason 🙁. Manual intervention by the Installomator team is required for this one"
+                    add_gh_comment $pr_num "🤖 Testing Robot Says - ⚠️ PR test failed for some reason 🙁. Manual intervention by the Installomator team is required for this one"
                     ((skip_count++))
                 fi
             fi
