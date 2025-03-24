@@ -455,6 +455,7 @@ jumpdesktop
 jupyterlab
 kap
 karabinerelements
+kdrive
 keepassxc
 keeperpasswordmanager
 keepingyouawake
@@ -833,6 +834,7 @@ splashtopsos
 splashtopstreamer
 splice
 spotify
+sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
@@ -903,6 +905,8 @@ tidal
 todoist
 toggltrack
 tom4aconverter
+toonboomharmonypremium2024
+toonboomstoryboardpro2024
 topazgigapixel
 topazgigapixelai
 topazphoto

@@ -2639,7 +2639,6 @@ bitrix24)
      archiveName="bitrix24_desktop.dmg"
      downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop.dmg"
      expectedTeamID="5B3T3A994N"
-     blockingProcesses=( "Bitrix24" )
      ;;
 bitwarden)
     name="Bitwarden"
@@ -3572,7 +3571,6 @@ craftmanagerforsketch)
     ;;
 crashplan)
     name="CrashPlan"
-    appName="CrashPlan.app"
     type="pkgInDmg"
     downloadURL="https://download.crashplan.com/installs/agent/latest-mac.dmg"
     appNewVersion=$( curl -sfI https://download.crashplan.com/installs/agent/latest-mac.dmg | awk -F'/' '/Location: /{print $7}' )
@@ -4863,7 +4861,6 @@ gosign)
     type="dmg"
     downloadURL="https://rinnovofirma.infocert.it/gosign/download/darwin/latest/"
     expectedTeamID="QC25859FX9"
-    appName="GoSign-Desktop.app"
     ;;
 gotiengviet)
     name="GoTiengViet"
@@ -5293,7 +5290,6 @@ iriunwebcam)
     downloadURL="$(curl -sf "https://iriun.com" | grep "Webcam for Mac" | awk -F '"' '{ print $4; }')"
     appNewVersion="$( echo "$downloadURL" | cut -d '-' -f 2 | sed -e 's/.pkg//' )"
     expectedTeamID="R84MX49LQY"
-    blockingProcesses=( "IriunWebcam" )
     ;;
 isadora)
     name="Isadora"
@@ -5767,6 +5763,15 @@ karabinerelements)
     appNewVersion=$(versionFromGit pqrs-org Karabiner-Elements)
     expectedTeamID="G43BCU2T37"
     ;;
+kdrive)
+    name="kDrive"
+    type="pkg"
+    packageID="com.infomaniak.drive.desktopclient"
+    jsonData=$(curl -sf https://www.infomaniak.com/drive/latest)
+    downloadURL=$(getJSONValue "$jsonData" "macos.downloadurl")
+    appNewVersion=$(getJSONValue "$jsonData" "macos.version")
+    expectedTeamID="864VDCS2QY"
+    ;;
 keepassxc)
     name="KeePassXC"
     type="dmg"
@@ -5793,7 +5798,6 @@ keepingyouawake)
     downloadURL=$(downloadURLFromGit newmarcel KeepingYouAwake)
     appNewVersion=$(versionFromGit newmarcel KeepingYouAwake)
     expectedTeamID="5KESHV9W85"
-    blockingProcesses=( "KeepingYouAwake" )
     ;;
 keka)
     name="Keka"
@@ -7113,7 +7117,6 @@ mkuser)
     ;;
 mmhmm-studio)
     name="mmhmm Studio"
-    appName="mmhmm Studio.app"
     type="pkg"
     downloadURL="https://updates.mmhmm.app/mac/mmhmmStudio.pkg"
     curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Safari/605.1.15" )
@@ -7128,7 +7131,6 @@ mmhmm-desktop)
     curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Safari/605.1.15" )
     appNewVersion=""
     expectedTeamID="M3KUT44L48"
-    blockingProcesses=( "mmhmm" )
     ;;
 mobikinassistantforandroid)
     name="MobiKin Assistant for Android"
@@ -7349,7 +7351,6 @@ namiral)
     type="dmg"
     downloadURL="https://sign-be.namirial.app/download/macos"
     expectedTeamID="V7PV54FASQ"
-    appName="Namirial Sign.app"
     ;;
 nanosaur)
     name="Nanosaur"
@@ -7787,7 +7788,6 @@ orion)
     type="dmg"
     downloadURL="https://cdn.kagi.com/downloads/OrionInstaller.dmg"
     expectedTeamID="TFVG979488"
-    blockingProcesses=( "Orion" )
     ;;
 osquery)
     name="osquery-*"
@@ -8302,7 +8302,6 @@ rancherdesktop)
     fi
     appNewVersion="$(versionFromGit rancher-sandbox rancher-desktop)"
     expectedTeamID="2Q6FHJR3H3"
-    appName="Rancher Desktop.app"
     ;;
 rapidapi)
     name="RapidAPI"
@@ -8499,6 +8498,8 @@ ricohpsprinters)
 ringcentralapp)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
     name="RingCentral"
+    appNewVersion=$(curl -fs https://support.ringcentral.com/gb/en/release-notes/ringex/desktop.html | grep -i -m1 "<div>Version" | sed 's/[^0-9\.]//g')
+    appCustomVersion() { defaults read /Applications/RingCentral.app/Contents/Info.plist CFBundleShortVersionString  | cut -c-7 }
     type="pkg"
     if [[ $(arch) != "i386" ]]; then
         downloadURL="https://app.ringcentral.com/download/RingCentral-arm64.pkg"
@@ -8506,15 +8507,12 @@ ringcentralapp)
         downloadURL="https://app.ringcentral.com/download/RingCentral.pkg"
     fi
     expectedTeamID="M932RC5J66"
-    blockingProcesses=( "RingCentral" )
     ;;
 ringcentralclassicapp)
     name="Glip"
     type="dmg"
     downloadURL="https://downloads.ringcentral.com/glip/rc/GlipForMac"
     expectedTeamID="M932RC5J66"
-    blockingProcesses=( "Glip" )
-    #blockingProcessesMaxCPU="5"
     ;;
 ringcentralmeetings)
     # credit: Isaac Ordonez, Mann consulting (@mannconsulting)
@@ -8664,7 +8662,7 @@ santa)
 keyaccess)
     name="KeyAccess"
     type="pkg"
-    downloadStore="$(curl -s "http://www.sassafras.com/client-download/" | tr '>' '\n')"
+    downloadStore="$(curl -sL "http://www.sassafras.com/client-download/" | tr '>' '\n')"
     downloadURL="$(echo "$downloadStore" | grep "https.*ksp-client.*pkg" | cut -d '"' -f 2)"
     appNewVersion="$(echo "$downloadStore" | grep "KeyAccess.*for Mac" | cut -d ' ' -f 2)"
     expectedTeamID="7Z2KSDFMVY"
@@ -9094,7 +9092,11 @@ soundly)
     # From: https://getsoundly.com
     # Cheat Sheet: https://getsoundly.com/cheatsheet/Soundly-Cheatsheet-Mac.pdf
     type="dmg"
+    if [[ $(arch) == i386 ]]; then
+    downloadURL="https://storage.googleapis.com/soundlyapp/Soundly.dmg"
+    elif [[ $(arch) == arm64 ]]; then
     downloadURL="https://storage.googleapis.com/soundlyapp/arm/Soundly.dmg"
+    fi
     #appNewVersion=""
     expectedTeamID="67Y6N7VTDG"
     ;;
@@ -9159,6 +9161,13 @@ spotify)
     appNewVersion=$(curl -fs https://www.spotify.com/us/opensource/ | sed 's/","/\n/g' | grep "clientVersion" | sed -e 's/clientVersion":"\(.*\)"}.*bz2/\1/' | head -1 | awk -F "." '{print$1"."$2"."$3"."$4}')
     expectedTeamID="2FNC3A47ZF"
     ;;
+sqldeveloper)
+    name="SQLDeveloper"
+    type="zip"
+    downloadURL="https://download.oracle.com/otn_software/java/sqldeveloper/sqldeveloper-24.3.1.347.1826-macos-aarch64.app.zip"
+    appNewVersion="$(plutil -p /Applications/SQLDeveloper.app/Contents/Info.plist | grep CFBundleShortVersionString | awk -F'"' '{print $4}')"
+    expectedTeamID="VB5E2TV963"
+    ;;
 sqlitebrowser)
     name="DB Browser for SQLite"
     type="dmg"
@@ -9171,14 +9180,12 @@ sqlpropostgres)
     type="zip"
     downloadURL="https://macpostgresclient.com/download.php"
     expectedTeamID="LKJB72232C"
-    blockingProcesses=( "SQLPro for Postgres" )
     ;;
 sqlprostudio)
     name="SQLPro Studio"
     type="zip"
     downloadURL="https://www.sqlprostudio.com/download.php"
     expectedTeamID="LKJB72232C"
-    blockingProcesses=( "SQLPro Studio" )
     ;;
 starface72x)
     name="STARFACE"
@@ -9754,14 +9761,44 @@ tom4aconverter)
      appNewVersion=$(curl -sf "https://amvidia.com/to-m4a-converter" | grep -o -E '"softwareVersion":.'"{8}" | sed 's/\"//g' | awk -F ': ' '{print $2}')
      expectedTeamID="F2TH9XX9CJ"
      ;;
+toonboomharmonypremium2024)
+    name="Harmony 24 Premium"
+    type="dmg"
+    # appNewVersion=$(curl -s https://docs.toonboom.com/help/harmony-24/premium/release-notes/harmony/harmony-24-release-notes.html | grep -oE 'build [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | awk '{print $2}')
+    appNewVersion=$(release_notes_url=$(curl -s "https://docs.toonboom.com/help/harmony-24/premium/book/index.html" | \
+    grep -o 'href="[^"]*release-notes/harmony/harmony-24[^"]*"' | \
+    head -n 1 | sed -E 's/href="([^"]*)"/\1/')
+    curl -s "https://docs.toonboom.com/help/harmony-24/premium/book/$release_notes_url" | \
+    grep -oE 'Harmony [0-9]+\.[0-9]+\.[0-9]+, build [0-9]+' | \
+    sed 's/,//g' | awk '{print $2 "." $4}')
+    version=$(echo "$appNewVersion" | awk -F'.' '{print $1"."$2"."$3}')
+    build=$(echo "$appNewVersion" | awk -F'.' '{print $4}')
+    downloadURL="https://fileshare.toonboom.com/wl/?id=idRIztLvVCq0EZ00x01BJa6R2EqKp01R&path=${version}%2FHAR24-PRM-mac-${build}.dmg&mode=list&download=1"
+    folderName="Toon Boom Harmony 24 Premium"
+    appName="${folderName}/Harmony 24 Premium.app"
+    versionKey="CFBundleVersion"
+    expectedTeamID="U5LPYJSPQ3"
+    ;;
+    
+toonboomstoryboardpro2024)
+    name="Storyboard Pro 24"
+    type="dmg"
+    downloadURL=$(curl -s "https://updates.toonboom.com/updates.php?p=sboardPro&v=24.0.0&b=00000" | sed -n 's/.*<package platform="macos" open_in_browser="false">\([^<]*\).*/\1/p')
+    folderName="Toon Boom Storyboard Pro 24"
+    appName="${folderName}/Storyboard Pro 24.app"
+    appNewVersion=$(curl -s "https://updates.toonboom.com/updates.php?p=sboardPro&v=24.0.0&b=00000" | xmllint --xpath 'string(//update/@version)' -)
+    versionKey="CFBundleVersion"
+    expectedTeamID="U5LPYJSPQ3"
+    ;;
+    
 topazgigapixel|\
 topazgigapixelai)
     # credit: Tully Jagoe
     name="Topaz Gigapixel AI"
     type="pkg"
-    appNewVersion=$(curl -fsL https://community.topazlabs.com/c/gigapixel-ai/gigapixel-ai/66 | grep -o "raw-topic-link'>.*<" | grep -o "v.*<" | sed -E 's/[v|<]//g' | head -1)
+    appNewVersion=$(curl -fs https://www.topazlabs.com/downloads | grep  -o 'gigaVersion = "v.*"' | grep -o ' "v.*"' | sed -E 's/[v|"| ]//g')
     versionKey="CFBundleShortVersionString"
-    downloadURL="https://downloads.topazlabs.com/deploy/TopazGigapixelAI/${appNewVersion}/TopazGigapixelAI-${appNewVersion}.pkg"
+    downloadURL="https://topazlabs.com/d/gigapixel/latest/mac/full"
     archiveName="TopazGigapixelAI-${appNewVersion}.pkg"
     expectedTeamID="3G3JE37ZHF"
     ;;
@@ -10199,9 +10236,8 @@ vpntracker365)
 	name="VPN Tracker 365"
 	type="zip"
 	downloadURL="https://www.vpntracker.com/goto/HPdownload/VPNT365Latest"
-	appNewVersion="$(curl -fsIL ${downloadURL}  | grep -i ^location | grep -i ".zip" | tail -1 | sed 's/.*VPN Tracker 365 - //g'| awk '{print $1}')"
+	appNewVersion="$(curl -fsIL ${downloadURL}  | grep -i ^location | grep -i ".zip" | sed 's/.*VPN Tracker 365 - //g' | sed 's/.zip//g')"
 	expectedTeamID="MJMRT6WJ8S"
-	blockingProcesses=( "VPN Tracker 365" )
 	;;
 vscodium)
     name="VSCodium"
