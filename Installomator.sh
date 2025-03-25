@@ -26,7 +26,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=0
+DEBUG=1
 
 # notify behavior
 NOTIFY=success
@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-03-20"
+VERSIONDATE="2025-03-25"
 
 # MARK: Functions
 
@@ -2480,6 +2480,14 @@ awscli2)
     packageID="com.amazon.aws.cli2"
     downloadURL="https://awscli.amazonaws.com/AWSCLIV2.pkg"
     appNewVersion=$( curl -fs "https://raw.githubusercontent.com/aws/aws-cli/v2/CHANGELOG.rst" | grep -i "CHANGELOG" -a4 | grep "[0-9.]" )
+    expectedTeamID="94KV3E626L"
+    ;;
+awssessionmanager)
+    name="session-manager-plugin"
+    type="pkg"
+    packageID="session-manager-plugin"
+    downloadURL="https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac_arm64/session-manager-plugin.pkg"
+    appNewVersion="curl -s "https://docs.aws.amazon.com/systems-manager/latest/userguide/aws-systems-manager-user-guide-updates.rss" | grep -oE 'aws-systemsmanager-plugins/macos/amd64/[^"]+\.pkg' | grep -oE '1\.2\.7'"
     expectedTeamID="94KV3E626L"
     ;;
 awsvpnclient)
