@@ -3,6 +3,4 @@ ringcentralclassicapp)
     type="dmg"
     downloadURL="https://downloads.ringcentral.com/glip/rc/GlipForMac"
     expectedTeamID="M932RC5J66"
-    blockingProcesses=( "Glip" )
-    #blockingProcessesMaxCPU="5"
     ;;
