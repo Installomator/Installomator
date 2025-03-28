@@ -7841,7 +7841,7 @@ overflow)
     expectedTeamID="7TK7YSGJFF"
     versionKey="CFBundleShortVersionString"
     ;;
-    owncloud)
+owncloud)
     name="ownCloud"
     type="pkg"
     downloadPage="https://download.owncloud.com/desktop/ownCloud/stable/latest/mac/"
