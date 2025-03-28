@@ -1,4 +1,4 @@
-    owncloud)
+owncloud)
     name="ownCloud"
     type="pkg"
     downloadPage="https://download.owncloud.com/desktop/ownCloud/stable/latest/mac/"

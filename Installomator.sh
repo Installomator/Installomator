@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.8beta"
-VERSIONDATE="2025-03-24"
+VERSIONDATE="2025-03-28"
 
 # MARK: Functions
 
@@ -7841,6 +7841,18 @@ overflow)
     expectedTeamID="7TK7YSGJFF"
     versionKey="CFBundleShortVersionString"
     ;;
+    owncloud)
+    name="ownCloud"
+    type="pkg"
+    downloadPage="https://download.owncloud.com/desktop/ownCloud/stable/latest/mac/"
+    appNewVersion=$(curl -fsL "$downloadPage" | grep -oE 'ownCloud-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-(arm64|x86_64)\.pkg' | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+    if [[ "$(arch)" == "arm64" ]]; then
+        downloadURL="${downloadPage}ownCloud-${appNewVersion}-arm64.pkg"
+    else
+        downloadURL="${downloadPage}ownCloud-${appNewVersion}-x86_64.pkg"
+    fi
+    expectedTeamID="4AP2STM4H5"
+    ;;
 pacifist)
     name="Pacifist"
     type="dmg"
@@ -9671,7 +9683,6 @@ theunarchiver)
     downloadURL="https://dl.devmate.com/com.macpaw.site.theunarchiver/TheUnarchiver.dmg"
     appNewVersion="$(curl -fs "https://theunarchiver.com" | grep -i "Latest version" | head -1 | sed -E 's/.*> ([0-9.]*) .*/\1/g')"
     expectedTeamID="S8EX82NJP6"
-    appName="The Unarchiver.app"
     ;;
 things)
     name="Things"
