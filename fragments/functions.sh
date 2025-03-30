@@ -259,7 +259,8 @@ getAppVersion() {
 
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
-        appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
+        #appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
+        appversion=$(/usr/libexec/PlistBuddy -c 'Print :pkg-version' /dev/stdin <<< "$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null)" 2>/dev/null) # Retrive "pkg-version" using "PlistBuddy" for simplicity and to properly retrieve versions that don't only contain numbers and dots.
         if [[ $appversion != "" ]]; then
             printlog "found packageID $packageID installed, version $appversion"
             updateDetected="YES"
