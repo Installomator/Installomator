@@ -1,4 +1,5 @@
 opera)
+	# A fast and secure web browser known for its built-in ad blocker, free VPN, and innovative features like sidebar extensions
     name="Opera"
     type="dmg"
     downloadURL="$(curl -fsIL $(curl -fsL $(curl -fsI "https://download.opera.com/download/get/?partner=www&opsys=MacOS" | grep -i "^location" | awk '{print $2}' | tr -d '\r') | grep -oE "https:\/\/download\.opera\.com\/[^\"]*" | sed 's/\&amp\;/\&/g') | grep -i "^location" | awk '{print $2}' | tr -d '\r')"
