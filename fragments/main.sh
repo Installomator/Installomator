@@ -33,7 +33,8 @@
                 if [[ "$labelLine" == *")" ]]; then
                     ignoreLine=false
                 fi
-            elif [[ "$labelLine" != "    ;;" ]] && [[ ! "$labelLine" =~ "    #.*" ]] ; then
+            elif [[ "$labelLine" != "    ;;" ]] && [[ ! "$labelLine" =~ "    #.*" ]]; then
+                # Also ignoring comment lines and the last line.
                 labelLines+="$labelLine ; "
             fi
         done
