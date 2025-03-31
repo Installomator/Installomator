@@ -151,31 +151,74 @@ deduplicatelogs() {
     done <<< "$loginput"
 }
 
+checkRATEfromGit() {
+    # Credit: Richard Smith (@wakco)
+    githubrate="$(curl -sI ${githubAUTH} "https://api.github.com/" | tr -d "\r" )"
+    # check permissions
+    if [[ "$(echo "$githubrate" | grep 'HTTP/2 200' )" = "" ]]; then
+        return 1
+    elif [[ "$( echo "$githubrate" | grep "x-oauth-scopes:" | grep "public_repo" | grep "read:packages" )" = "" ]]; then
+        return 2
+    else
+        githubremaining="$( echo "$githubrate" | awk '/x-ratelimit-remaining:/ { print $NF }' )"
+        githubreset=$( echo "$githubrate" | awk '/x-ratelimit-reset:/ { print $NF }' )
+        githublimit=$( echo "$githubrate" | awk '/x-ratelimit-limit:/ { print $NF }' )
+        if [ $githubremaining = 0 ]; then
+            cleanupAndExit 14 "can not download from Github because hits remaining is 0, with the limit at $githublimit per hour, it will reset at $( date -jr $githubreset )" ERROR
+        fi
+        if [ "$1" = "API" ]; then
+            if [ $githubremaining -lt 100 ]; then
+                printlog "Using Github API, remaining API hits available for Github is $githubremaining out of $githublimit per hour, and is below a recommended 100 API hits remaining. The count will reset at $( date -jr $githubreset )" WARN
+            else
+                printlog "Using Github API, remaining API hits available for Github is $githubremaining out of $githublimit per hour, and is above a recommended 100 API hits available. The count will reset at $( date -jr $githubreset )" INFO
+            fi
+        fi
+    fi
+    return 0
+}
+
 # will get the latest release download from a github repo
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
-    if [[ $type == "pkgInDmg" ]]; then
-        filetype="dmg"
+    # For grep to work, the dot must be set this way, however awk doesn't care.
+    filetype="\."
+    # Doing it this way means no need to double up on how the downloadURL is set.
+    if [ -n "$archiveName" ]; then
+        filetype="$archiveName"
+    elif [[ $type == "pkgInDmg" ]]; then
+        filetype+="dmg"
     elif [[ $type == "pkgInZip" ]]; then
-        filetype="zip"
+        filetype+="zip"
     else
-        filetype=$type
+        filetype+=$type
     fi
 
-    if [ -n "$archiveName" ]; then
-        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
-        if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName")" == "" ]]; then
-            #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
-            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)"
+    if [[ "${githubAUTH}" = "" ]]; then
+        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        if [[ "$(echo $downloadURL | grep -ioE "https.*$filetype")" == "" ]]; then
+            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$filetype" | head -1)"
+        fi
+        if [[ "$(echo $downloadURL | grep -ioE "https.*$filetype")" != "" ]]; then
+            archiveName="$( echo $downloadURL | awk -F '/' '{ print $NF }' )"
+            # remove any pattern matching that might screw up the downloaded filename
         fi
     else
-        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
-        if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
-            #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
-            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
-        fi
+        checkRATEfromGit
+        # find "asset" download link
+        gitassetcount=0
+        gitlatest="$(curl -sfL ${githubAUTH} "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest")"
+        gitassets="$(getJSONValue "$gitlatest" ".assets")"
+        until [ "$(getJSONValue "$gitassets" "[$gitassetcount].id")" = "" ]; do
+            if [[ "$(echo "$(getJSONValue "$gitassets" "[$gitassetcount].name")" | grep -ioE ".*$filetype")" != "" ]]; then
+                downloadURL="$(getJSONValue "$gitassets" "[$gitassetcount].url")"
+                archiveName="$(getJSONValue "$gitassets" "[$gitassetcount].name")"
+                # remove any pattern matching that might screw up the downloaded filename
+                break
+            fi
+            ((gitassetcount++))
+        done
     fi
     if [ -z "$downloadURL" ]; then
         cleanupAndExit 14 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
@@ -187,12 +230,21 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
 versionFromGit() {
     # credit: Søren Theilgaard (@theilgaard)
+    # githubAUTH: Richard Smith (@wakco)
     # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
-    #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
-    appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
+    if [[ "${githubAUTH}" = "" ]]; then
+        appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
+    else
+        if [[ "$gitlatest" = "" ]]; then
+            checkRATEfromGit
+            appNewVersion=$(curl -L --silent --fail ${githubAUTH} "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
+        else
+            appNewVersion=$(getJSONValue "$gitlatest" "tag_name" | sed 's/[^0-9\.]//g' )
+        fi
+    fi
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
         appNewVersion=""
@@ -201,7 +253,6 @@ versionFromGit() {
         return 0
     fi
 }
-
 
 # Handling of differences in xpath between Catalina and Big Sur
 xpath() {
@@ -1056,3 +1107,78 @@ updateDialog() {
     fi
 }
 
+processCommandLineArguments() {
+    for CLArg in $commandLineArguments ; do
+        unrecognisedOption=""
+        case "$CLArg" in
+            DEBUG=*|\
+            NOTIFY=*|\
+            PROMPT_TIMEOUT=*|\
+            BLOCKING_PROCESS_ACTION=*|\
+            LOGO=*|\
+            IGNORE_APP_STORE_APPS=*|\
+            SYSTEMOWNER=*|\
+            INSTALL=*|\
+            REOPEN=*|\
+            INTERRUPT_DND=*|\
+            IGNORE_DND_APPS=*|\
+            DIALOG_CMD_FILE=*|\
+            DIALOG_LIST_ITEM_NAME=*|\
+            NOTIFY_DIALOG=*|\
+            LOGGING=*|\
+            log_location=*|\
+            MDMProfileName=*|\
+            datadogAPI=*|\
+            LogDateFormat=*|\
+            GITHUBAPI=*)
+                unrecognisedOption=false
+                if [ "$1" = "after" ]; then
+                    CLArgVar="$CLArg"
+                else
+                    CLArgVar="$(echo "$CLArg" | cut -d ';' -f 1)"
+                fi
+                eval "$(echo "$CLArgVar" | cut -d "=" -f 1)=$(echo "$CLArgVar" | cut -d "=" -f 2-)"
+            ;;
+            name=*|\
+            type=*|\
+            packageID=*|\
+            downloadURL=*|\
+            curlOptions=*|\
+            appNewVersion=*|\
+            versionKey=*|\
+            appCustomVersion*|\
+            expectedTeamID=*|\
+            archiveName=*|\
+            appName=*|\
+            targetDir=*|\
+            blockingProcess=*|\
+            pkgName=*|\
+            updateTool=*|\
+            updateToolArguments=*|\
+            updateToolRunAsCurrentUser=*|\
+            CLIInstaller=*|\
+            CLIArguments=*|\
+            installerTool=*)
+                unrecognisedOption=false
+            ;&
+            *)
+                if [ "$1" = "after" ]; then
+                    eval "$CLArg"
+                fi
+                if [ "$unrecognisedOption" = "" ]; then
+                    unrecognisedOption=true
+                fi
+            ;;
+        esac
+        if [ "$1" = "after" ]; then
+            # only log it when setting after.
+            if [[ "$CLArg" =~ *\;* ]]; then
+                printlog "Processed multiple command line options as a mini script: $CLArg" WARN
+            elif $unrecognisedOption; then
+                printlog "Processed unrecognised command line option: $CLArg" WARN
+            else
+                printlog "Processed command line option: $CLArg" INFO
+            fi
+        fi
+    done
+}
