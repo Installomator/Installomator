@@ -231,6 +231,8 @@ NOTIFY_DIALOG=0
 #     - CFBundleVersion
 #   Not all software titles uses fields the same.
 #   See Opera label.
+#   This is the default setting:
+versionKey="CFBundleShortVersionString"
 #
 # - appCustomVersion(){}: (optional function)
 #   This function can be added to your label, if a specific custom
