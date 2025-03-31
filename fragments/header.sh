@@ -319,6 +319,19 @@ LOGGING="INFO"
 #   - WARN      only warning
 #   - ERROR     only errors
 #   - REQ       ????
+# Log location
+log_location="/private/var/log/Installomator.log"
+# Log Date format used when parsing logs for debugging, this is the default used by
+# install.log, override this in the case statements if you need something custom per
+# application (See adobeillustrator).  Using stadard GNU Date formatting.
+LogDateFormat="%Y-%m-%d %H:%M:%S"
+# Get the start time for parsing install.log if we fail.
+starttime=$(date "+$LogDateFormat")
+# Associate logging levels with a numerical value so that we are able to identify what
+# should be removed. For example if the LOGGING=ERROR only printlog statements with the
+# level REQ and ERROR will be displayed. LOGGING=DEBUG will show all printlog statements.
+# If a printlog statement has no level set it's automatically assigned INFO.
+declare -A levels=(DEBUG 0 INFO 1 WARN 2 ERROR 3 REQ 4)
 
 # MDM profile name
 MDMProfileName=""
@@ -333,13 +346,11 @@ datadogAPI=""
 # Simply add your own API key for this in order to have logs sent to Datadog
 # See more here: https://www.datadoghq.com/product/log-management/
 
-# Log Date format used when parsing logs for debugging, this is the default used by
-# install.log, override this in the case statements if you need something custom per
-# application (See adobeillustrator).  Using stadard GNU Date formatting.
-LogDateFormat="%Y-%m-%d %H:%M:%S"
-
-# Get the start time for parsing install.log if we fail.
-starttime=$(date "+$LogDateFormat")
+# Github API key for managing Githubs rate limits, intended for use in Labs sharing
+# a single NAT'd IP address.
+# Create and use an API key limited to read only access, the following permissions are
+# required: public_repo, read:packages
+GITHUBAPI=""
 
 # Check if we have rosetta installed
 if [[ $(/usr/bin/arch) == "arm64" ]]; then
@@ -347,3 +358,6 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
+
+# Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
+SESSION=$RANDOM
