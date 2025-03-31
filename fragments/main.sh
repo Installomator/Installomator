@@ -36,12 +36,12 @@
                     ignoreLine=false
                 fi
             elif [[ "$labelLine" != "    ;;" ]]; then
-                labelLines+="$labelLine\n"
-                # And process the line
-                eval $labelLine
+                labelLines+="$labelLine ; "
             fi
         done
-        printlog "Loaded $label.sh:\n$labelLines" INFO
+        eval "$labelLines"
+        printlog "Loaded $label.sh:\n$labelContents" INFO
+        printlog "Processed as: $labelLines" DEBUG
         ;;
     esac
     ;;
