@@ -139,6 +139,7 @@ camtasia2021
 camtasia2022
 camtasia2023
 camtasia2024
+camtasia2025
 camunda
 canva
 carboncopycloner
@@ -219,6 +220,7 @@ crashplansmb
 cricutdesignspace
 cryptomator
 crystalfetch
+cursorai
 cyberduck
 cycling74max
 cytoscape
@@ -232,6 +234,8 @@ dedoose
 deepl
 deezer
 defaultfolderx
+deon-cloud
+deon-onprem
 depnotify
 desktoppr
 detectxswift
@@ -278,6 +282,7 @@ elgatocamerahub
 elgatostreamdeck
 emacs
 enteauth
+epicgameslauncher
 eposconnect
 escrowbuddy
 eshareosx
@@ -334,6 +339,7 @@ gephi
 gfxcardstatus
 gimp
 gimpdev
+githubcopilotforxcode
 githubdesktop
 gitkraken
 glpiagent
@@ -449,6 +455,7 @@ jumpdesktop
 jupyterlab
 kap
 karabinerelements
+kdrive
 keepassxc
 keeperpasswordmanager
 keepingyouawake
@@ -482,6 +489,7 @@ lifesize
 lightburn
 linear
 linearmouse
+livereplayer
 logioptions
 logitechoptions
 logitechoptionsplus
@@ -622,11 +630,13 @@ nordlayer
 nordvpn
 notion
 nova
+nps-santa
 nudge
 nudgesuite
 nvivo
 nvivo13
 nvivo14
+nvivo15
 nweasecuretestingbrowser
 obs
 obsbotcenter
@@ -663,6 +673,7 @@ outputarcade
 outputhub
 outset
 overflow
+owncloud
 pacifist
 packages
 pandoc
@@ -728,7 +739,9 @@ realvncviewer
 reaper
 rectangle
 redcanarymacmonitor
+redgiant
 redshift
+redshiftlite
 reflector4
 relatel
 remotedesktopmanagerenterprise
@@ -823,6 +836,7 @@ splashtopsos
 splashtopstreamer
 splice
 spotify
+sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
@@ -893,8 +907,14 @@ tidal
 todoist
 toggltrack
 tom4aconverter
+toonboomharmonypremium2024
+toonboomstoryboardpro2024
 topazgigapixel
 topazgigapixelai
+topazphoto
+topazphotoai
+topazvideo
+topazvideoai
 torbrowser
 tower
 transfer
@@ -904,6 +924,7 @@ trex
 tunnelbear
 tunnelblick
 tuple
+twingate
 typeface
 typinator
 typora
