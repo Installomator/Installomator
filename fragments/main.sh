@@ -35,7 +35,11 @@
                 fi
             elif [[ "$labelLine" != "    ;;" ]] && [[ ! "$labelLine" =~ "    #.*" ]]; then
                 # Also ignoring comment lines and the last line.
-                labelLines+="$labelLine ; "
+                if [ "$( echo "$labelLine" | grep -c '.*\\$' )" -gt 0 ]; then
+                    labelLines+="${labelLine::-1} "
+                else
+                    labelLines+="$labelLine ; "
+                fi
             fi
         done
         eval "$labelLines"
