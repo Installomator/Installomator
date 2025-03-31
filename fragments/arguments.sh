@@ -53,7 +53,6 @@ longversion)
         # shift to next argument
         shift 1
     done
-
     printlog "Total items in argumentsArray: ${#argumentsArray[@]}" INFO
     printlog "argumentsArray: ${argumentsArray[*]}" INFO
 
