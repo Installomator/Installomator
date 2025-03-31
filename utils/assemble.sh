@@ -13,7 +13,7 @@ dev_keychain_label="notary-scriptingosx"
 
 # parse arguments
 
-zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -labels+:=label_args l+:=label_args
+zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -labels+:=label_args l+:=label_args -nolabels
 
 if (( ${opts[(I)(-h|--help)]} )); then
   echo "usage: assemble.sh [--script|--pkg|--notarize] [-labels path/to/labels ...] [arguments...]"
