@@ -28,7 +28,6 @@ label=$1
 label=${label:l}
 
 # MARK: Case statement to filter (long) version checks
-skipLabelLookup=false
 case $label in
 version)
     echo "$VERSION"
