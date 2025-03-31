@@ -28,7 +28,7 @@ label=$1
 # MARK: reading rest of the arguments
 argumentsArray=()
 while [[ -n $1 ]]; do
-    if [[ $1 =~ ".*\=.*" ]]; then
+    if [[ $1 =~ ".*\=.*" ]] || [[ $1 =~ "appCustomVersion.*" ]]; then
         # if an argument contains an = character, send it to eval
         printlog "setting variable from argument $1" INFO
         argumentsArray+=( $1 )
