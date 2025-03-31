@@ -25,8 +25,6 @@
             ;;
         esac
         
-        printlog "Downloaded Label $label.sh:\n$labelContents" DEBUG
-
         # Strip encapsulating case statement lines required for embedding
         ignoreLine=true
         labelLines=""
@@ -40,7 +38,7 @@
             fi
         done
         eval "$labelLines"
-        printlog "Loaded $label.sh:\n$labelContents" INFO
+        printlog "Loaded $label.sh: $labelContents" INFO
         printlog "Processed as: $labelLines" DEBUG
         ;;
     esac
