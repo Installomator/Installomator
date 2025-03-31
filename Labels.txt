@@ -86,7 +86,6 @@ autopkgr
 avertouch
 aviatrix
 awscli2
-awssessionmanager
 awsvpnclient
 axurerp10
 azuredatastudio
