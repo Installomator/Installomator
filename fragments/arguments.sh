@@ -7,7 +7,6 @@ if ! is-at-least 10.14 $installedOSversion; then
     exit 98
 fi
 
-
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
     if [[ -z $label ]]; then # check if label is set inside script
