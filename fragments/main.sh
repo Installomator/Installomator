@@ -36,7 +36,7 @@
                     ignoreLine=false
                 fi
             elif [[ "$labelLine" != "    ;;" ]]; then
-                $labelLines+="$labelLine\n"
+                labelLines+="$labelLine\n"
             fi
         done
         # And process label
