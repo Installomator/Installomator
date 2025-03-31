@@ -25,21 +25,6 @@ fi
 # first argument is the label
 label=$1
 
-# MARK: reading rest of the arguments
-argumentsArray=()
-while [[ -n $1 ]]; do
-    if [[ $1 =~ ".*\=.*" ]] || [[ $1 =~ "appCustomVersion.*" ]]; then
-        # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" INFO
-        argumentsArray+=( $1 )
-        eval $1
-    fi
-    # shift to next argument
-    shift 1
-done
-printlog "Total items in argumentsArray: ${#argumentsArray[@]}" INFO
-printlog "argumentsArray: ${argumentsArray[*]}" INFO
-
 # lowercase the label
 label=${label:l}
 
@@ -56,6 +41,22 @@ longversion)
     exit 0
     ;;
 *)
+
+    # MARK: reading rest of the arguments
+    argumentsArray=()
+    while [[ -n $1 ]]; do
+        if [[ $1 =~ ".*\=.*" ]] || [[ $1 =~ "appCustomVersion.*" ]]; then
+            # if an argument contains an = character, send it to eval
+            printlog "setting variable from argument $1" INFO
+            argumentsArray+=( $1 )
+            eval $1
+        fi
+        # shift to next argument
+        shift 1
+    done
+
+    printlog "Total items in argumentsArray: ${#argumentsArray[@]}" INFO
+    printlog "argumentsArray: ${argumentsArray[*]}" INFO
 
     # Check if we're in debug mode, if so then set logging to DEBUG, otherwise default to INFO
     # if no log level is specified.
