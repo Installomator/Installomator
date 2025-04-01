@@ -20,8 +20,7 @@
     *)
         # some other download attempt error not worth identifying
         # (most likely unable to connect or broken connection)
-        printlog "undefined error while attempting to download label $label" ERROR
-        exit 1
+        cleanupAndExit 1 "undefined error while attempting to download label $label" ERROR
         ;;
     esac
         
