@@ -1,52 +1,50 @@
-    *)
-        # Lookup Label
-        labelContents="$( curl -sfL ${githubAUTH} --header "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/Installomator/Installomator/contents/fragments/labels/$label.sh" )"
+*)
+    # Lookup Label
+    labelContents="$( curl -sfL ${githubAUTH} --header "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/Installomator/Installomator/contents/fragments/labels/$label.sh" )"
+    labelStatus=$?
+    if [[ "$labelContents" = "" ]] && [[ "${githubAUTH}" = "" ]]; then
+        labelContents="$( curl -sfL "https://raw.githubusercontent.com/Installomator/Installomator/refs/heads/main/fragments/labels/$label.sh" )"
         labelStatus=$?
-        if [[ "$labelContents" = "" ]] && [[ "${githubAUTH}" = "" ]]; then
-            labelContents="$( curl -sfL "https://raw.githubusercontent.com/Installomator/Installomator/refs/heads/main/fragments/labels/$label.sh" )"
-            labelStatus=$?
+    fi
+    case $labelStatus in
+    0)
+        if [[ "$labelContents" = "" ]] ; then
+            # successful download of nothing ?!?
+            cleanupAndExit 1 "nothing downloaded for $label" ERROR
         fi
-        case $labelStatus in
-        0)
-            if [[ "$labelContents" = "" ]] ; then
-                # successful download of nothing ?!?
-                cleanupAndExit 1 "nothing downloaded for $label" ERROR
-            fi
-            ;;
-        56)
-            # unknown label
-            cleanupAndExit 1 "unknown label $label" ERROR
-            ;&
-        *)
-            # some other download attempt error not worth identifying
-            # (most likely unable to connect or broken connection)
-            printlog "undefined error while attempting to download label $label" ERROR
-            exit 1
-            ;;
-        esac
-        
-        # Strip encapsulating case statement lines required for embedding
-        ignoreLine=true
-        labelLines=""
-        for labelLine in ${(f)labelContents}; do
-            if $ignoreLine; then
-                if [[ "$labelLine" == *")" ]]; then
-                    ignoreLine=false
-                fi
-            elif [[ "$labelLine" != "    ;;" ]] && [[ ! "$labelLine" =~ "    #.*" ]]; then
-                # Also ignoring comment lines and the last line.
-                if [ "$( echo "$labelLine" | grep -c '.*\\$' )" -gt 0 ]; then
-                    labelLines+="${labelLine::-1} "
-                else
-                    labelLines+="$labelLine ; "
-                fi
-            fi
-        done
-        eval "$labelLines"
-        printlog "Loaded $label.sh: $labelContents" INFO
-        printlog "Processed as: $labelLines" DEBUG
+        ;;
+    56)
+        # unknown label
+        printlog "unknown label $label" ERROR
+        ;&
+    *)
+        # some other download attempt error not worth identifying
+        # (most likely unable to connect or broken connection)
+        printlog "undefined error while attempting to download label $label" ERROR
+        exit 1
         ;;
     esac
+        
+    # Strip encapsulating case statement lines required for embedding
+    ignoreLine=true
+    labelLines=""
+    for labelLine in ${(f)labelContents}; do
+        if $ignoreLine; then
+            if [[ "$labelLine" == *")" ]]; then
+                ignoreLine=false
+            fi
+        elif [[ "$labelLine" != "    ;;" ]] && [[ ! "$labelLine" =~ "    #.*" ]]; then
+            # Also ignoring comment lines and the last line.
+            if [ "$( echo "$labelLine" | grep -c '.*\\$' )" -gt 0 ]; then
+                labelLines+="${labelLine::-1} "
+            else
+                labelLines+="$labelLine ; "
+            fi
+        fi
+    done
+    eval "$labelLines"
+    printlog "Loaded $label.sh: $labelContents" INFO
+    printlog "Processed as: $labelLines" DEBUG
     ;;
 esac
 
