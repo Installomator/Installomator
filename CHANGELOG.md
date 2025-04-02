@@ -1,3 +1,215 @@
+## v10.8
+
+
+- Reorganized MDM Scripts #2152
+- Arguments now load before and after the labels are loaded #1648
+- improvements and fixes #2028 #2053
+
+- new labels
+	- 4kvideodownloaderplus #1998
+	- airflow #2067
+	- amazoncorretto21jdk #2023
+	- amazoncorretto22jdk #2024
+	- amazoncorretto23jdk #2025
+	- ApE #2065
+	- basictex #1584
+	- busycontacts #1707
+	- camtasia2024 #1693 #2183
+	- camtasia2025 #2231
+	- chatgpt #1724 #2010
+	- chemdoodle3d #2088
+	- cursorai #2227
+	- cycling74max #1697
+	- DCP-o-matic #2061
+	- deon-cloud #2218
+	- deon-onprem #2218
+	- eastwestinstallationcenter #1878
+	- eastwestopus #1879
+	- eastwestplay #1880
+	- enteauth #2092
+	- epicgameslauncher #2224
+	- gimpdev #1920
+	- githubcopilotforxcode #2107
+	- glyphs3 #1654
+	- gotowebinar #1985
+	- graphicconverter10 #1712
+	- HudlSportscode #2059
+	- HudlStudio #2058
+	- inmusicsoftwarecenter #1809
+	- installomatormate #1783
+	- jamfconnectlaunchagent #2036
+	- jumpcloudpasswordmanager #2155
+	- kdrive #2258
+	- korgsoftwarepass #1808
+	- livereplayer #2145
+	- loopcloud #1875
+	- lunadisplay #2157
+	- mamp #1757
+	- mestrenova #1918
+	- microsoftonedrivesuinsiders #2069
+	- microsoftonedrivesuprod #2069
+	- midimonitor #1887
+	- mural #1890
+	- nps-santa #2219
+	- nvivo15 #1986
+	- oktaverify #2073
+	- ollama #1935
+	- openeid #1978
+	- openrefine #2015
+	- osquery #1941
+	- outputarcade #1877
+	- outputhub #1876
+	- owncloud #2229
+	- realvncviewer #2087
+	- reaper #1968
+	- redgiant #2216
+	- redshiftlite #2213
+	- sawgrassprintutility #1960
+	- softubecentral #1807
+	- sqldeveloper #2255
+	- starface90x #2004
+	- steinbergactivationmanager #1894
+	- steinberglibrarymanager #1895
+	- steinbergmediabay #1896
+	- symantecvipaccess #1656
+	- SynergyBaseball #2060
+	- SynergyBasketball #2062
+	- SynergyEditorBasketball #2063
+	- SynergyVideoExpress #2064
+	- sysexlibrarian #1888
+	- teamwire #2168
+	- texshop-alternative #1584
+	- thunderbirdesr #1944
+	- toonboomharmony2024
+	- toonboomstoryboardpro2024 #2260
+	- topazgigapixel #1892
+	- topazphoto #2178
+	- topazvideo #2179
+	- twingate #2206
+	- ultracompare #2098
+	- ultraedit #2097
+	- unityhub #2121
+	- virtualboxbeta #1885
+	- virtualboxlatest #1885
+	- virtualboxstable #1885
+	- zulujdk23 #2017
+
+
+- updated labels
+	- 1password8 #2144 #2009
+	- acroniscyberprotectconnectagent #2079
+	- aftermath #2077
+	- aircall #2129
+	- amazoncorretto11jdk #2022
+	- amazoncorretto17jdk #2021
+	- amazoncorretto8jdk #2020
+	- anydesk #2078
+	- axurerp10 #2233
+	- basecamp3 #2239
+	- bitrix24 #2259
+	- caffeine #1846
+	- camtasia2023 #1649
+	- catoclient #1984
+	- chemdoodle #2088
+	- citrixworkspace #2181
+	- clickshare #2184
+	- cloudflarewarp #2220
+	- coconutbattery #2143
+	- codemeter #2048
+	- crashplan #2242
+	- cryptomator #2234
+	- deepl #2185
+	- defaultfolderx #2185
+	- depnotify #2084
+	- displaylinkmanagergraphicsconnectivity #1917
+	- docker #1679
+	- duodesktop #2243
+	- dymoconnectdesktop #2170
+	- evernote #2244
+	- flexoptixapp #2050
+	- flux #2135
+	- fsmonitor #2128
+	- garminexpress #2005
+	- gimp #1920 #1680
+	- googlechrome #1979
+	- googlechromepkg #2173
+	- gosign #2246
+	- gpgsuite #2076
+	- grandperspective #2019
+	- icons #1980
+	- igv #2110
+	- iriunwebcam #2261
+	- iterm2 #1847
+	- jamfconnectconfiguration #2123
+	- jetbrainspycharm #2074
+	- jetbrainspycharmce #2074
+	- keepingyouawake #2262
+	- keybase #2094
+	- lastpass #1923
+	- launchcontrol #2175
+	- lcadvancedvpnclient #2049
+	- mactex #1584
+	- malwarebytes #2248
+	- masv #2136
+	- microsoftazuredatastudio #2237
+	- microsoftcompanyportal #1997 #2228
+	- microsoftvisualstudiocode #1964 #2247
+	- mmhmm-studio #2252
+	- monitorcontrol #2006
+	- namiral #2253
+	- nodejs #2041
+	- nomad #2083
+	- nvivo14 #1986
+	- onscreencontrol #1974
+	- origin #2139
+	- orion #2271
+	- pacifist #2124
+	- packages #1927
+	- plexmediaserver #1930
+	- plisteditpro #1912
+	- r #2188
+	- rancherdesktop #2254
+	- rapidapi #1848
+	- redshift #2213
+	- remotedesktopmanagerenterprise #2226
+	- ringcentralapp #2272
+	- ringcentralclassicapp #2273
+	- rocket #2137
+	- rodecentral #2164
+	- sassafraskeyaccess #2249
+	- screamingfrogseospider #1900
+	- shottr #1973
+	- snagit #2182
+	- soundly #2263
+	- sourcetree #1928
+	- spotify #2040
+	- sqlpropostgres #2274
+	- sqlprostudio #2275
+	- surfdrive #2230
+	- suspiciouspackage #2034
+	- synologyassistant #2051
+	- tableaureader #2167
+	- telegram #1914
+	- texshop #2180 #1584
+	- theunarchiver #2257
+	- thunderbird #2217
+	- tunnelblick #2141
+	- universaltypeclient #2126
+	- vonagebusiness #2238
+	- vpntracker365 #2276
+	- wacomdrivers #2149
+	- wechat #2138
+	- zoomrooms #2122
+	- zulujdk21 #2016
+	- zulujdk8 #2013
+
+- moved, renamed, and deleted labels
+    - mmhmm-desktop (from mmhmm)
+    - harmonysase (from perimeter81)
+    - snapgene (from snapgeneviewer)
+    - keyshot2024 (from keyshot12_2024)
+
+
 ## v10.7
 
 - GitHub automation for testing (#2118)
