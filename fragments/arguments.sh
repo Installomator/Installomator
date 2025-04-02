@@ -40,6 +40,12 @@ longversion)
     ;;
 esac
 
+# MARK: START
+printlog "################## Start Installomator v. $VERSION, date $VERSIONDATE" REQ
+printlog "################## Version: $VERSION" INFO
+printlog "################## Date: $VERSIONDATE" INFO
+printlog "################## $label" INFO
+
 # MARK: reading rest of the arguments
 argumentsArray=()
 while [[ -n $1 ]]; do
@@ -87,12 +93,6 @@ elif [[ -n "$MDMProfileName" ]]; then
 else
     mdmURL="Unknown"
 fi
-
-# MARK: START
-printlog "################## Start Installomator v. $VERSION, date $VERSIONDATE" REQ
-printlog "################## Version: $VERSION" INFO
-printlog "################## Date: $VERSIONDATE" INFO
-printlog "################## $label" INFO
 
 # Check for DEBUG mode
 if [[ $DEBUG -gt 0 ]]; then
