@@ -364,3 +364,4 @@ fi
 
 # Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
 SESSION=$RANDOM
+
