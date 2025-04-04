@@ -32,12 +32,13 @@
             if [[ "$labelLine" == *")" ]]; then
                 ignoreLine=false
             fi
-        elif [[ "$labelLine" != "    ;;" ]] && [[ ! "$labelLine" =~ "(    #|#).*" ]]; then
+        elif [[ "$labelLine" != "    ;;" ]] && [[ "$( echo "$labelLine" | grep -v -E "^(\t#| *#|#)" )" != "" ]]; then
             # Also ignoring comment lines and the last line.
             if [ "$( echo "$labelLine" | grep -c '.*\\$' )" -gt 0 ]; then
                 labelLines+="${labelLine::-1} "
             else
-                labelLines+="$labelLine ; "
+                labelLines+="$( echo "$labelLine" | awk -F ' # ' '{ print $1 }' ) ; "
+                # And filter any comments on the end of the line
             fi
         fi
     done
