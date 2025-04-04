@@ -32,7 +32,7 @@
             if [[ "$labelLine" == *")" ]]; then
                 ignoreLine=false
             fi
-        elif [[ "$labelLine" != "    ;;" ]] && [[ ! "$labelLine" =~ "    #.*" ]]; then
+        elif [[ "$labelLine" != "    ;;" ]] && [[ ! "$labelLine" =~ "(    #|#).*" ]]; then
             # Also ignoring comment lines and the last line.
             if [ "$( echo "$labelLine" | grep -c '.*\\$' )" -gt 0 ]; then
                 labelLines+="${labelLine::-1} "
