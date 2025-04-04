@@ -1,7 +1,50 @@
 *)
-    # unknown label
-    #printlog "unknown label $label"
-    cleanupAndExit 1 "unknown label $label" ERROR
+    # Lookup Label
+    labelContents="$( curl -sfL ${githubAUTH} --header "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/Installomator/Installomator/contents/fragments/labels/$label.sh" )"
+    labelStatus=$?
+    if [[ "$labelContents" = "" ]] && [[ "${githubAUTH}" = "" ]]; then
+        labelContents="$( curl -sfL "https://raw.githubusercontent.com/Installomator/Installomator/refs/heads/main/fragments/labels/$label.sh" )"
+        labelStatus=$?
+    fi
+    case $labelStatus in
+    0)
+        if [[ "$labelContents" = "" ]] ; then
+            # successful download of nothing ?!?
+            cleanupAndExit 1 "nothing downloaded for $label" ERROR
+        fi
+        ;;
+    56)
+        # unknown label
+        printlog "unknown label $label" ERROR
+        ;&
+    *)
+        # some other download attempt error not worth identifying
+        # (most likely unable to connect or broken connection)
+        cleanupAndExit 1 "undefined error while attempting to download label $label" ERROR
+        ;;
+    esac
+        
+    # Strip encapsulating case statement lines required for embedding
+    ignoreLine=true
+    labelLines=""
+    for labelLine in ${(f)labelContents}; do
+        if $ignoreLine; then
+            if [[ "$labelLine" == *")" ]]; then
+                ignoreLine=false
+            fi
+        elif [[ "$labelLine" != "    ;;" ]] && [[ "$( echo "$labelLine" | grep -v -E "^(\t#| *#|#)" )" != "" ]]; then
+            # Also ignoring comment lines and the last line.
+            if [ "$( echo "$labelLine" | grep -c '.*\\$' )" -gt 0 ]; then
+                labelLines+="${labelLine::-1} "
+            else
+                labelLines+="$( echo "$labelLine" | awk -F ' # ' '{ print $1 }' ) ; "
+                # And filter any comments on the end of the line
+            fi
+        fi
+    done
+    eval "$labelLines"
+    printlog "Loaded $label.sh: $labelContents" INFO
+    printlog "Processed as: $labelLines" DEBUG
     ;;
 esac
 
@@ -269,6 +312,15 @@ else
         fi
     fi
 
+    if [[ "${githubAUTH}" != "" ]]; then
+        if [[ "$downloadURL" =~ "https://api.github.com/"* ]]; then
+            checkRATEfromGit API
+            githubAUTH+=( --header "Accept: application/octet-stream" )
+            curlOptions+=( ${githubAUTH} )
+        else
+            printlog "ignoring GITHUBAPI as $downloadURL is not a Github API URL" WARN
+        fi
+    fi
     if [[ $DIALOG_CMD_FILE != "" ]]; then
         # pipe
         pipe="$tmpDir/downloadpipe"
