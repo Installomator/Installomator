@@ -43,7 +43,8 @@
         fi
     done
     eval "$labelLines"
-    printlog "Loaded $label.sh: $labelContents" INFO
+    printlog "Loaded $label.sh:" INFO
+    printlog "$labelContents" INFO
     printlog "Processed as: $labelLines" DEBUG
     ;;
 esac
