@@ -50,11 +50,14 @@
 esac
 
 # MARK: reading arguments again
-printlog "Reading arguments again: ${argumentsArray[*]}" INFO
-for argument in "${argumentsArray[@]}"; do
-    printlog "argument: $argument" DEBUG
-    eval $argument
-done
+# we don't need to do this again for valuesfromarguments
+if [ "$label" != "valuesfromarguments" ]; then
+    printlog "Reading arguments again: ${argumentsArray[*]}" INFO
+    for argument in "${argumentsArray[@]}"; do
+        printlog "argument: $argument" DEBUG
+        eval $argument
+    done
+fi
 
 # verify we have everything we need
 if [[ -z $name ]]; then
