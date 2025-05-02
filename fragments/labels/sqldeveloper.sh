@@ -15,9 +15,7 @@ oraclesqldeveloper)
     versionKey="CFBundleVersion"
     appCustomVersion() {
         sql_version_file="/Applications/SQLDeveloper.app/Contents/Resources/sqldeveloper/sqldeveloper/bin/version.properties"
-        if [[ -f "${sql_version_file}" ]]; then
-            /usr/bin/grep VER_FULL "${sql_version_file}" | /usr/bin/cut -d = -f 2
-        fi
+        [[ -f "${sql_version_file}" ]] && /usr/bin/grep VER_FULL "${sql_version_file}" | /usr/bin/cut -d = -f 2
     }
     expectedTeamID="VB5E2TV963"
     ;;
