@@ -1,7 +1,14 @@
 lunadisplay)
     name="Luna Display"
     type="dmg"
-    downloadURL=$(curl -fsLI "https://downloads.astropad.com/luna/mac/latest" | grep -i '^location:' | tail -n 1 | cut -d ' ' -f 2 | tr -d '\r' | sed 's|^/|https://downloads.astropad.com/|')
-    appNewVersion=$(echo $downloadURL | sed -E 's/.*LunaDisplay-([0-9.]+).dmg/\1/')
+    downloadURL="https://downloads.astropad.com/luna/mac/latest"
+    appNewVersion=$(curl -sI "${downloadURL}" | grep -o -E 'location:.*$' | grep -o -E '\d+\.\d+\.\d+\.\d+')
+    appCustomVersion(){
+        if [ -f "/Applications/Luna Display.app/Contents/Info.plist" ]; then
+            firstPart=$(/usr/bin/defaults read "/Applications/Luna Display.app/Contents/Info.plist" "CFBundleShortVersionString")
+            secondPart=$(/usr/bin/defaults read "/Applications/Luna Display.app/Contents/Info.plist" "CFBundleVersion")
+            echo "$firstPart.$secondPart"
+        fi
+    }
     expectedTeamID="8356ZZ8Y5K"
     ;;

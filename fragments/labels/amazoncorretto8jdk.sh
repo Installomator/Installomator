@@ -17,4 +17,5 @@ amazoncorretto8jdk)
             | awk '{ print $NF}'
     )"
     expectedTeamID="94KV3E626L"
+    appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Info.plist" "CFBundleVersion" ; fi }
     ;;

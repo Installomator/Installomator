@@ -1,9 +1,7 @@
 chatgpt)
     name="ChatGPT"
-    # Downloads the latest 8.1.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
     type="dmg"
-    downloadURL="https://persistent.oaistatic.com/sidekick/public/ChatGPT.dmg"
-    # appNewVersion= not available
+    downloadURL="https://persistent.oaistatic.com/sidekick/public/ChatGPT_Desktop_public_latest.dmg"
+    appNewVersion="$(curl -fs "https://persistent.oaistatic.com/sidekick/public/sparkle_public_appcast.xml" | xpath '(//rss/channel/item/title)[1]/text()' 2>/dev/null)"
     expectedTeamID="2DC432GLL2"
-    versionKey="CFBundleVersion"
     ;;
