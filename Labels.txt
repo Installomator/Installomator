@@ -194,6 +194,7 @@ cinema4d2024
 cinema4d2025
 cisdem-documentreader
 citrixworkspace
+cleartouchcollage
 clevershare2
 clickshare
 clickup
@@ -281,12 +282,9 @@ element
 elgatocamerahub
 elgatostreamdeck
 emacs
-<<<<<<< HEAD
 enpass
-=======
 enteauth
 epicgameslauncher
->>>>>>> upstream/main
 eposconnect
 escrowbuddy
 eshareosx
@@ -355,6 +353,7 @@ googleadseditor
 googlechrome
 googlechromeenterprise
 googlechromepkg
+googledrive
 googledrivebackupandsync
 googledrivefilestream
 googleearth
@@ -851,10 +850,7 @@ starface72x
 starface73x
 starface81x
 starface90x
-<<<<<<< HEAD
-=======
 starfaceuccclient
->>>>>>> upstream/main
 stats
 steelseriesengine
 steinbergactivationmanager
