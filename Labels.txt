@@ -303,6 +303,7 @@ fantastical
 fastscripts
 favro
 fellow
+fierycommandworkstation
 figma
 filemakerpro
 filezilla
