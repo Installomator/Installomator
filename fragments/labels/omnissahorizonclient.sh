@@ -7,5 +7,5 @@ omnissahorizonclient)
     done
     downloadURL=$(curl -fsL "https://customerconnect.omnissa.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=$code&productId=$productId&rPId=$releasePackageId" | grep -oE 'https://[^"]*' )
     appNewVersion=$(<<< $downloadURL | grep -oE '\d+\.[0-9.]*\d')
-    expectedTeamID="EG7KH642X6"
+    expectedTeamID="S2ZMFGQM93"
     ;;
