@@ -678,9 +678,44 @@ installFromPKG() {
         printlog "Checking package version."
         baseArchiveName=$(basename $archiveName)
         expandedPkg="$tmpDir/${baseArchiveName}_pkg"
-        pkgutil --expand "$archiveName" "$expandedPkg"
-        appNewVersion=$(cat "$expandedPkg"/Distribution | xpath "string(//installer-gui-script/pkg-ref[@id='$packageID'][@version]/@version)" 2>/dev/null )
-        rm -r "$expandedPkg"
+        rm -rf "$expandedPkg"
+
+        # NOTE: ".pkg" files are "xar" archives, and the "xar" command can be used for more efficient extraction of only the "Distribution" file instead of needing to use "pkgutil --expand" to extract ALL files including possibly large "Payload" files.
+        appNewVersion='UNKNOWN PKG VERSION (NOT A DISTRIBUTION PACKAGE)'
+        pkgContentNames=$(xar -tf $archiveName 2>/dev/null)
+        if [[ $'\n'$pkgContentNames$'\n' == *$'\nDistribution\n'* ]]; then
+            # Not every package is guaranteed to be a "distribution package" which are the only kind that will contain a "Distribution" XML file, so use "xar -t" to list the package archive contents and check if a line matches exactly the "Distribution" filename before attempting any extraction.
+            # If the package is a "distribution package" and does contain a "Distribution" file, we can use "xar -x" with the "--exclude" option to ONLY extact the "Distribution" file very quickly and efficiently without also extracting possibly large "Payload" files, etc.
+
+            printlog 'Extracting only "Distribution" XML file from package archive using "xar".' DEBUG
+            mkdir -p $expandedPkg # Must create the temp folder manually since "xar -C" will not do that for us like "pkgutil --expand" does.
+            xar -x --exclude '[ABCEFGHIJKLMNOPQRSTUVWXYZacdefghjklmpqvwxyz0123456789_.-]' -C $expandedPkg -f $archiveName
+            # The value passed to the "--exclude" option is interpreted as a POSIX regular expression, so pass a character class containing every letter OTHER than the letters contained in the word "Distribution" as well as all digits and a few other common symbols in filenames to exclude every other possible file other than "Distibution" file.
+            # While it could theoretically be possible that some filename may not be excluded using this character class, even if something other than just the "Distribution" XML file is extracted, this is still more efficient than extracting everything since at least the large "Payload" file will have been excluded.
+        elif [[ -z $pkgContentNames ]]; then
+            # BUT, in regards to using "xar", "man xar" states:
+            # DEPRECATION WARNING: xar is no longer under active development by Apple. Clients of xar should pursue alternative archive formats.
+            # Regardless, ".pkg" files are still "xar" archives and the "xar" command is the way to work with those archive contents directly.
+            # But, to be extra safe and future-proof, lets assume that "xar -t" would return NOTHING if it ever stopped working or was removed.
+            # If "xar -t" returned nothing, fallback on just using "pkgutil --expand" which will expand the entire package contents including any large "Payload" files which is less efficient, but still effective.
+
+            printlog 'Falling back on extracting entire package contents using "pkgutil --expand" to check for "Distribution" XML file within package because "xar" returned nothing.' DEBUG
+            pkgutil --expand "$archiveName" "$expandedPkg" # Must NOT manually create "expandedPkg" since "pkgutil" will do that and would error if it already exists.
+        else
+            printlog 'Package does not appear to be a "distribution package" so the version cannot be checked.' DEBUG
+        fi
+
+        if [[ -d "$expandedPkg" ]]; then
+            if [[ -f "$expandedPkg/Distribution" ]]; then # If a "Distribution" file doesn't exist, that means "pkgutil --expand" was used on a "component package" (rather than a "distribution package") and we don't want to set "appNewVersion" to keep the intial error value which is set above.
+                appNewVersion=$(cat "$expandedPkg/Distribution" | xpath 'string(//installer-gui-script/pkg-ref[@id][@version]/@version)' 2>/dev/null)
+                if [[ -z $appNewVersion ]]; then
+                    appNewVersion='UNKNOWN PKG VERSION (NO VERSION FROM DISTRIBUTION XML)'
+                fi
+            fi
+
+            rm -r "$expandedPkg"
+        fi
+        
         printlog "Downloaded package $packageID version $appNewVersion"
         if [[ $appversion == $appNewVersion ]]; then
             printlog "Downloaded version of $name is the same as installed."
