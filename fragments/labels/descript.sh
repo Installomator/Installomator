@@ -5,3 +5,4 @@ descript)
     appNewVersion=$(echo "$downloadURL" | sed -nE 's/.*Descript-([0-9.]+-release\.[0-9.]+)\.dmg/\1/p')
     expectedTeamID="D4CJQGP2T7"
     ;;
+    
