@@ -15,7 +15,7 @@ overlayicon=""
 
 # dockutil variables
 addToDock="0" # with dockutil after installation (0 if not)
-appPath="/Applications/Cyberduck.app"
+dockutilAppPath="/Applications/Cyberduck.app"
 
 # Other variables
 dialog_command_file="/var/tmp/dialog.log"
@@ -266,7 +266,7 @@ if [[ $addToDock -eq 1 ]]; then
         checkCmdOutput "${cmdOutput}"
     fi
     echo "Adding to Dock"
-    $dockutil  --add "${appPath}" "${userHome}/Library/Preferences/com.apple.dock.plist" || true
+    $dockutil  --add "${dockutilAppPath}" "${userHome}/Library/Preferences/com.apple.dock.plist" || true
     sleep 1
 else
     echo "Not adding to Dock."
