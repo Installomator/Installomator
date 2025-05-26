@@ -1,7 +1,16 @@
 *)
     # Lookup Label
-    labelContents="$( curl -sfL ${githubAUTH} --header "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/Installomator/Installomator/contents/fragments/labels/$label.sh" )"
-    labelStatus=$?
+    # - from local file
+    if [ -e "/usr/local/Installomator/labels/$label.sh" ]; then
+        labelContents="$( cat "/usr/local/Installomator/labels/$label.sh" )"
+        labelStatus=0
+    fi
+    # - from Github via API
+    if [[ "$labelContents" = "" ]]; then
+        labelContents="$( curl -sfL ${githubAUTH} --header "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/Installomator/Installomator/contents/fragments/labels/$label.sh" )"
+        labelStatus=$?
+    fi
+    # - from Github directly
     if [[ "$labelContents" = "" ]] && [[ "${githubAUTH}" = "" ]]; then
         labelContents="$( curl -sfL "https://raw.githubusercontent.com/Installomator/Installomator/refs/heads/main/fragments/labels/$label.sh" )"
         labelStatus=$?
