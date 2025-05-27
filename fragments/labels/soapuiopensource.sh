@@ -15,5 +15,6 @@ soapuiopensource)
     installerTool="SoapUI ${appNewVersion} Installer.app"
     CLIInstaller="${installerTool}/Contents/MacOS/JavaApplicationStub"
     CLIArguments=(-q)
+    CLIArguments+=(-dir /Applications)
     expectedTeamID="HVA5GNL2LF"
     ;;
