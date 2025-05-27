@@ -52,7 +52,7 @@
         fi
     done
     if [ "$( echo "$labelLines" | wc -l )" -gt 1 ]; then
-        # attempting to fix new line escapes that may have converted early
+        # Restoring new line escapes that may have converted early
         labelLines="$( echo "$labelLines" | sed -E 's/$/\\n/g' | tr -d '\n' | sed -E 's/\\n$/\n/g' )"
     fi
 
