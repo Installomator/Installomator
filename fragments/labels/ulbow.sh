@@ -1,6 +1,6 @@
 ulbow)
     # Ulbow log browser designed for ease of use without sacrificing power
-    name="ulbow"
+    name="Ulbow"
     type="zip"
     folderName="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'ulbow[0-9]*\.zip' | sort -V | tail -n 1 | sed -E 's/ulbow([0-9]+)\.zip/ulbow\1/')"
     appName="${folderName}/Ulbow.app"
