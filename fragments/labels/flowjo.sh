@@ -1,7 +1,11 @@
 flowjo)
-    name="FlowJo"
+    name="FlowJo 11"
     type="dmg"
-    downloadURL="$(curl -fs "https://www.flowjo.com/flowjo/download" | grep -i -o -E "https.*\.dmg")"
-    appNewVersion=$(echo "${downloadURL}" | tr "-" "\n" | grep dmg | sed -E 's/([0-9.]*)\.dmg/\1/g')
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="$(curl -fs "https://www.flowjo.com/flowjo/download" | grep -i -o -E "https.*\.dmg" | grep -m 1 'arm64')"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="$(curl -fs "https://www.flowjo.com/flowjo/download" | grep -i -o -E "https.*\.dmg" | grep -m 1 'x64')"
+    fi
+    appNewVersion=$(echo "${downloadURL}" | cut -d "-" -f2 )
     expectedTeamID="C79HU5AD9V"
     ;;
