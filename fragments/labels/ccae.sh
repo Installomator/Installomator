@@ -1,5 +1,5 @@
 ccae)
-    name="ccae"
+    name="Colour Contrast Analyser"
     type="dmg"
     packageID="com.electron.ccae"
     downloadURL=$(downloadURLFromGit "thepaciellogroup" "ccae")
