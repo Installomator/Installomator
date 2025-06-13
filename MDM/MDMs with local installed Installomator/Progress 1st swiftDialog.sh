@@ -189,11 +189,11 @@ case $LOGO in
         ;;
     kandji)
         # Kandji
-        LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
+        LOGO_PATH="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
         ;;
     filewave)
         # FileWave
-        LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
+        LOGO_PATH="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
         ;;
 esac
 if [[ ! -a "${LOGO_PATH}" ]]; then
