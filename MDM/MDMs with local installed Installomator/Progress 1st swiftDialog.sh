@@ -319,7 +319,7 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
     # Handle installation errors
     if [[ $exitCode != 0 ]]; then
         printlog "ERROR. Installation of $name failed. Aborting."
-        caffexit $exitCode
+        exit $exitCode
     else
         printlog "$name version $appNewVersion installed!"
     fi
