@@ -13,7 +13,7 @@ dev_keychain_label="notary-scriptingosx"
 
 # parse arguments
 
-zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -labels+:=label_args l+:=label_args
+zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -labels+:=label_args l+:=label_args -nolabels
 
 if (( ${opts[(I)(-h|--help)]} )); then
   echo "usage: assemble.sh [--script|--pkg|--notarize] [-labels path/to/labels ...] [arguments...]"
@@ -25,6 +25,7 @@ fi
 
 # default setting
 runScript=1
+includeLabels=1
 
 if (( ${opts[(I)(-s|--script)]} )); then
     runScript=0
@@ -42,6 +43,10 @@ if (( ${opts[(I)(-n|--notarize)]} )); then
     buildScript=1
     buildPkg=1
     notarizePkg=1
+fi
+
+if (( ${opts[(I)(--nolabels)]} )); then
+    includeLabels=0
 fi
 
 # -r/--run option overrides default setting
@@ -103,13 +108,15 @@ cat "$fragments_dir/functions.sh" >> $destination_file
 cat "$fragments_dir/arguments.sh" >> $destination_file
 
 # all the labels
-for lpath in $label_paths; do
-    if [[ -d $lpath ]]; then
-        cat "$lpath"/*.sh >> $destination_file
-    else
-        echo "# $lpath not a directory, skipping..."
-    fi
-done
+if [[ $includeLabels -eq 1 ]]; then
+    for lpath in $label_paths; do
+        if [[ -d $lpath ]]; then
+            cat "$lpath"/*.sh >> $destination_file
+        else
+            echo "# $lpath not a directory, skipping..."
+        fi
+    done
+fi
 
 # add the footer
 cat "$fragments_dir/main.sh" >> $destination_file
