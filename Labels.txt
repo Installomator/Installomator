@@ -58,6 +58,7 @@ ape
 apparency
 appcleaner
 applenyfonts
+appleprovideoformats
 applesfarabic
 applesfcompact
 applesfmono
@@ -247,7 +248,6 @@ discord
 diskdrill
 diskspace
 displaylinkmanager
-displaylinkmanagergraphicsconnectivity
 docker
 dockutil
 dragonframe5
@@ -967,6 +967,7 @@ vscodium
 vysor
 wacomdrivers
 wallyezflash
+warp
 wavescentral
 weasis
 webex
