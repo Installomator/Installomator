@@ -259,7 +259,7 @@ checkCmdOutput "${cmdOutput}"
 # Mark: dockutil stuff
 if [[ $addToDock -eq 1 ]]; then
     dialogUpdate "progresstext: Adding to Dock"
-    if [[ ! -d $dockutil ]]; then
+    if [[ ! -x $dockutil ]]; then
         echo "Cannot find dockutil at $dockutil, trying installation"
         # Install using Installlomator
         cmdOutput="$(${destFile} dockutil LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
