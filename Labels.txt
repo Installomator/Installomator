@@ -959,7 +959,6 @@ vivaldi
 vivi
 vlc
 vmwarefusion
-vmwarehorizonclient
 vncconnect
 vonagebusiness
 vpntracker365
