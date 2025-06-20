@@ -235,6 +235,15 @@ function displayDialog(){
     fi
 }
 
+# No sleeping
+/usr/bin/caffeinate -d -i -m -u &
+caffeinatepid=$!
+caffexit () {
+    kill "$caffeinatepid" || true
+    printlog "[LOG-END] Status $1"
+    exit $1
+}
+
 # Mark: Code
 name="Dialog"
 printlog "$name check for installation"
@@ -319,7 +328,7 @@ if [[ ! -e "${destFile}" || "$currentInstalledVersion" != "$appNewVersion" ]]; t
     # Handle installation errors
     if [[ $exitCode != 0 ]]; then
         printlog "ERROR. Installation of $name failed. Aborting."
-        exit $exitCode
+        caffexit $exitCode
     else
         printlog "$name version $appNewVersion installed!"
     fi
