@@ -107,6 +107,7 @@ betterdisplay
 bettertouchtool
 beyondcomparepro
 bibdesk
+bimcollabzoom
 bitrix24
 bitwarden
 bitwigstudio
@@ -281,6 +282,7 @@ element
 elgatocamerahub
 elgatostreamdeck
 emacs
+enpass
 enteauth
 epicgameslauncher
 eposconnect
@@ -301,6 +303,7 @@ fantastical
 fastscripts
 favro
 fellow
+fierycommandworkstation
 figma
 filemakerpro
 filezilla
@@ -325,6 +328,8 @@ flycut
 fontbase
 fontexplorer
 fork
+foxitpdfeditor
+foxitpdfreader
 franz
 freeplane
 front
@@ -507,6 +512,8 @@ lunadisplay
 macadminspython
 maccyapp
 macfuse
+macgiro13
+macgiro14
 macoslaps
 macpass
 macports
@@ -801,6 +808,7 @@ sipgateclinq
 sirimote
 sizeup
 sketch
+sketchup2024
 sketchupviewer
 skim
 skype
@@ -858,6 +866,7 @@ suitestudio
 supercollider
 superhuman
 supportapp
+supportapphelper
 surfdrive
 suspiciouspackage
 swiftdialog
@@ -942,6 +951,18 @@ uviportal
 uviworkstation
 vagrant
 vanilla
+vectorworks2021sp5
+vectorworks2022sp6
+vectorworks2023sp1
+vectorworks2023sp2
+vectorworks2023sp3
+vectorworks2023sp4
+vectorworks2023sp5
+vectorworks2023sp6
+vectorworks2023sp7
+vectorworks2023sp8
+vectorworks2024update3
+vectorworks2024update4
 venturablocker
 veracrypt
 vfx
@@ -973,6 +994,7 @@ webex
 webexmeetings
 webexteams
 webextoolsremoval
+webexvdiplugin
 wechat
 weprint
 whatroute

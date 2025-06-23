@@ -915,6 +915,11 @@ finishing() {
             displaynotification "$message" "$name installation complete!"
         fi
     fi
+
+    # Do Jamf Recon
+    printlog "Running jamf recon"
+    /usr/local/bin/jamf recon
+    
 }
 
 # Detect if there is an app actively making a display sleep assertion, e.g.

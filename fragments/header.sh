@@ -27,10 +27,10 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=1
+DEBUG=0
 
 # notify behavior
-NOTIFY=success
+NOTIFY=silent
 # options:
 #   - success      notify the user on success
 #   - silent       no notifications
@@ -47,7 +47,7 @@ PROMPT_TIMEOUT=86400
 
 # behavior when blocking processes are found
 # BLOCKING_PROCESS_ACTION is ignored if app label uses updateTool
-BLOCKING_PROCESS_ACTION=tell_user
+BLOCKING_PROCESS_ACTION=silent_fail
 # options:
 #   - ignore       continue even when blocking processes are found
 #   - quit         app will be told to quit nicely if running
