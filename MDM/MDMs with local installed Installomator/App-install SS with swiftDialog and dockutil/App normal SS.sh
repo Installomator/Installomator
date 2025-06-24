@@ -6,6 +6,7 @@ LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewav
 
 item="" # enter the software to install
 # Examples: adobecreativeclouddesktop, canva, cyberduck, handbrake, inkscape, textmate, vlc
+# https://github.com/Installomator/Installomator/blob/main/Labels.txt
 
 # Dialog icon and overlay icon
 icon=""
@@ -61,6 +62,8 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 echo "$(date +%F\ %T) [LOG-BEGIN] $item, v$scriptVersion"
 
+[[ -z "$item" ]] && echo "ERROR: No item specified. Please set the 'item' variable with the software to install." && exit 1
+
 dialogUpdate() {
     # $1: dialog command
     local dcommand="$1"
@@ -111,6 +114,7 @@ fi
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
+    dialogUpdate "quit:"
     # Kill dialog if it's still running
     [[ -n "$dialogPID" ]] && kill -0 "$dialogPID" 2>/dev/null && kill "$dialogPID" 2>/dev/null || true
     exit $1
@@ -256,8 +260,17 @@ else
     sleep 0.1
 fi
 
+# If $LOGO is set, include it in installomatorOptions
+[[ -n "$LOGO" ]] && installomatorOptions="LOGO=$LOGO ${installomatorOptions}"
+
 # Install software using Installomator
-cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installomatorNotify} || true)"
+# Run in subshell to prevent exit commands from terminating this script
+(
+    exec "${destFile}" "${item}" ${installomatorOptions} ${installomatorNotify}
+) > /tmp/installomator_output.txt 2>&1
+installomatorExitCode=$?
+cmdOutput="$(cat /tmp/installomator_output.txt; echo "exit code $installomatorExitCode")"
+rm -f /tmp/installomator_output.txt
 checkCmdOutput "${cmdOutput}"
 
 # Mark: dockutil stuff
@@ -266,7 +279,7 @@ if [[ $addToDock -eq 1 ]]; then
     if [[ ! -x $dockutil ]]; then
         echo "Cannot find dockutil at $dockutil, trying installation"
         # Install using Installlomator
-        cmdOutput="$(${destFile} dockutil LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
+        cmdOutput="$(${destFile} dockutil BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
         checkCmdOutput "${cmdOutput}"
     fi
     echo "Adding to Dock"
@@ -277,7 +290,7 @@ else
 fi
 
 # Mark: Ending
-if [[ $installomatorVersion -ge 10 && $(sw_vers -buildVersion | cut -c1-2) -ge 20 ]]; then
+if [[ $(echo "$installomatorVersion < 10" | bc -l) -eq 1 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     # close and quit dialog
     dialogUpdate "progress: complete"
     dialogUpdate "progresstext: Done"
