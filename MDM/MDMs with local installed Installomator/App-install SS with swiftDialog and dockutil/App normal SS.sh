@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh --no-rcs
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
 
@@ -114,7 +114,7 @@ caffexit () {
 }
 
 # Mark: Installation begins
-installomatorVersion="$(${destFile} version | cut -d "." -f1 || true)"
+installomatorVersion="$(${destFile} version | grep -Eo '[0-9]+\.[0-9]+' | head -1)"
 
 if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     echo "Skipping swiftDialog UI, using notifications."
