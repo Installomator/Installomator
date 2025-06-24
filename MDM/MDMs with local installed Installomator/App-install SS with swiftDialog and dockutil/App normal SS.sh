@@ -19,7 +19,7 @@ addToDock="0" # with dockutil after installation (0 if not)
 dockutilAppPath="/Applications/Cyberduck.app"
 
 # Other variables
-dialog_command_file="/var/tmp/dialog.log"
+dialog_command_file="$(mktemp -d)/dialog.log"
 dialogBinary="/usr/local/bin/dialog"
 dockutil="/usr/local/bin/dockutil"
 dialogPID=""
