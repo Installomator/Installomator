@@ -21,6 +21,7 @@ dockutilAppPath="/Applications/Cyberduck.app"
 dialog_command_file="/var/tmp/dialog.log"
 dialogBinary="/usr/local/bin/dialog"
 dockutil="/usr/local/bin/dockutil"
+dialogPID=""
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
 
@@ -110,13 +111,15 @@ fi
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
+    # Kill dialog if it's still running
+    [[ -n "$dialogPID" ]] && kill -0 "$dialogPID" 2>/dev/null && kill "$dialogPID" 2>/dev/null || true
     exit $1
 }
 
 # Mark: Installation begins
 installomatorVersion="$(${destFile} version | grep -Eo '[0-9]+\.[0-9]+' | head -1)"
 
-if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
+if [[ $(echo "$installomatorVersion < 10" | bc -l) -eq 1 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     echo "Skipping swiftDialog UI, using notifications."
     #echo "Installomator should be at least version 10 to support swiftDialog. Installed version $installomatorVersion."
     #echo "And macOS 11 Big Sur (build 20A) is required for swiftDialog. Installed build $(sw_vers -buildVersion)."
@@ -127,7 +130,7 @@ else
     if [[ ! -x $dialogBinary ]]; then
         echo "Cannot find dialog at $dialogBinary"
         # Install using Installlomator
-        cmdOutput="$(${destFile} dialog LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
+        cmdOutput="$(${destFile} dialog BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
         checkCmdOutput "${cmdOutput}"
     fi
 
@@ -245,8 +248,9 @@ else
     echo "dialogCMD: ${dialogCMD[*]}"
 
     "${dialogCMD[@]}" &
+    dialogPID=$!
 
-    echo "$(date +%F\ %T) : SwiftDialog started!"
+    echo "$(date +%F\ %T) : SwiftDialog started with PID $dialogPID!"
 
     # give everything a moment to catch up
     sleep 0.1
