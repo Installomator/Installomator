@@ -265,12 +265,12 @@ fi
 
 # Install software using Installomator
 # Run in subshell to prevent exit commands from terminating this script
+temp_dir=$(mktemp -d)
 (
     exec "${destFile}" "${item}" ${installomatorOptions} ${installomatorNotify}
-) > /tmp/installomator_output.txt 2>&1
+) > "${temp_dir}/install_${item}_output.log" 2>&1
 installomatorExitCode=$?
-cmdOutput="$(cat /tmp/installomator_output.txt; echo "exit code $installomatorExitCode")"
-rm -f /tmp/installomator_output.txt
+cmdOutput="$(cat ${temp_dir}/install_${item}_output.log; echo "exit code $installomatorExitCode")"
 checkCmdOutput "${cmdOutput}"
 
 # Mark: dockutil stuff
