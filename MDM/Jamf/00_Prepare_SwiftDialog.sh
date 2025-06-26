@@ -19,6 +19,9 @@ icon=${6:-"/System/Applications/App Store.app/Contents/Resources/AppIcon.icns"}
 # Parameter 7: Overlayicon as Path or URL in swiftDialog (like a company logo) (if not configured, custom Dialog icon will be used, or Jamf Self Service icon)
 overlayicon=${7}
 
+# Parameter 8: Display mode. 0 (default) for Foreground Mode, where the dialog window appears on top of other windows, this can be disruptive while the user is typing. 1 for Background Mode, where the dialog window appears behind other windows.
+mode=${8:-"0"}
+
 
 # MARK: Constants
 
@@ -79,8 +82,9 @@ echo "message: $message"
 echo "icon: $icon"
 echo "overlayicon: $overlayicon"
 
-# display first screen
-dialogCMD=("$dialogBinary"
+# Background or Foreground Mode
+if [[ $mode = 1 ]]; then
+    dialogCMD=(open -g -a "$dialogBinary" --args
            --title none
            --icon "$icon"
            --overlayicon "$overlayicon"
@@ -90,7 +94,20 @@ dialogCMD=("$dialogBinary"
            --position bottomright
            --moveable
            --commandfile "$dialog_command_file"
-)
+	)
+else 
+	dialogCMD=("$dialogBinary"
+           --title none
+           --icon "$icon"
+           --overlayicon "$overlayicon"
+           --message "$message"
+           --mini
+           --progress 100
+           --position bottomright
+           --moveable
+           --commandfile "$dialog_command_file"
+	)
+fi
 
 echo "dialogCMD: ${dialogCMD[@]}"
 
