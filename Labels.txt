@@ -240,6 +240,7 @@ deon-onprem
 depnotify
 desktoppr
 detectxswift
+determinate
 devonthink
 dialog
 dialpad
