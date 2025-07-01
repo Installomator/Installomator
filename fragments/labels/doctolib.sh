@@ -1,8 +1,14 @@
 doctolib)
     name="Doctolib"
     type="dmg"
-    downloadURL="$(curl -fs https://info.doctolib.de/desktop/ | grep -o '"title":"Mac","url":"[^"]*' | sed -E 's/.*"url":"(.*)/\1/' | sed 's/\\//g')"
-    appNewVersion="$(curl -sf "https://luti.tranquil.it/listfolder/2c4c5f8a-a556-41ba-b2af-903697c0f974" | grep -A5 "tis-doctolib-client/macos/arm" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)"
+    versionKey="CFBundleVersion"
+    if [[ $(arch) == "arm64" ]]; then
+    	downloadURL="$(curl -fs https://info.doctolib.de/desktop/ | sed -n '/macOS/,$p' | grep -o '"title":"Mac","url":"[^"]*' | sed -E 's/.*"url":"(.*)/\1/' | sed 's/\\//g' | sed -n '1p')"
+    	appNewVersion=""
+    elif [[ $(arch) == "i386" ]]; then
+    	downloadURL="$(curl -fs https://info.doctolib.de/desktop/ | sed -n '/macOS/,$p' | grep -o '"title":"Mac","url":"[^"]*' | sed -E 's/.*"url":"(.*)/\1/' | sed 's/\\//g' | sed -n '2p')"
+    	appNewVersion=""
+    fi
     expectedTeamID="84K7XVJ72Q"
     # blockingProcesses=( Doctolib )
     ;;
