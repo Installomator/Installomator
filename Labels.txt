@@ -655,6 +655,7 @@ omnioutliner5
 omniplan3
 omniplan4
 omnipresence
+omnissahorizonclient
 onionshare
 onlyofficedesktop
 onscreencontrol
@@ -818,6 +819,8 @@ snagit2021
 snagit2022
 snagit2023
 snagit2024
+snapgene
+snapgeneviewer
 soapuiopensource
 sococo
 softubecentral
@@ -960,6 +963,7 @@ vivaldi
 vivi
 vlc
 vmwarefusion
+vmwarehorizonclient
 vncconnect
 vonagebusiness
 vpntracker365
