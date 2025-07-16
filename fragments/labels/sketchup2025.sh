@@ -7,7 +7,5 @@ sketchup2025)
     appNewVersion="$(echo "${downloadURL}" | grep -oE 'SketchUp-[0-9]+-[0-9]+-[0-9]+' | sed -E 's/SketchUp-([0-9]+)-([0-9]+)-([0-9]+)/\1.\2.\3/' | sed 's/^2025/25/')"
     versionKey="CFBundleVersion"
     expectedTeamID="J8PVMCY7KL"
-    #comment out below line if you don't want LayOut.app installed
-    cp -R -f "/Volumes/SketchUp 2025/SketchUp 2025/LayOut.app" "/Applications/SketchUp 2025/"
     ;;
 
