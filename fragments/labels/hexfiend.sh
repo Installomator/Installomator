@@ -5,6 +5,3 @@ hexfiend)
     appNewVersion="$(versionFromGit HexFiend HexFiend)"
     expectedTeamID="QK92QP33YN"
     ;;
-
-
-
