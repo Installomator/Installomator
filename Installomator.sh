@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-07-16"
+VERSIONDATE="2025-07-19"
 
 # MARK: Functions
 
@@ -8211,7 +8211,7 @@ propresenter7)
 protonvpn)
     name="ProtonVPN"
     type="dmg"
-    downloadURL=$(curl -s "https://protonvpn.com/download/macos-update3.xml" | xmllint --xpath 'string(//enclosure/@url)' -)
+    downloadURL=$(curl -s "https://protonvpn.com/download/macos-update4.xml" | xmllint --xpath 'string(//enclosure/@url)' -)
     appNewVersion=$(echo $downloadURL | sed -e 's/^.*\/Proton.*_v\([0-9.]*\)\.dmg/\1/g')
     expectedTeamID="J6S6Q257EK"
     ;;
