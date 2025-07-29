@@ -339,13 +339,13 @@ EOF
                         else
                             pr_comment+=$(echo "  └ 🟡 Download Size: could not determine download size")$'\n'
                         fi
-                    elif [[ $http_code -eq 403 ]]; then
+                    elif [[ $http_code =~ "40[3|5-6]" ]]; then
                         # try getting the URL again with a user agent
                         urlEffective=$(curl -sSL --range 0-0 -H "User-Agent: Mozilla/5.0" -w '%{url_effective}' -o /dev/null "$downloadURL")
                         if [[ $? -eq 0 ]] && [[ -n $urlEffective ]]; then
                             pr_comment+=$(echo "  ├ 🟢 URL is reachable")$'\n'
                             # get download size in megabytes
-                            downloadSize=$(curl -sIL -w '%header{content-length}\n' -o /dev/null "$urlEffective" | awk '{printf "%.1f", $1 / (1024 * 1024)}')
+                            downloadSize=$(curl -sIL -H "User-Agent: Mozilla/5.0" -w '%header{content-length}\n' -o /dev/null "$urlEffective" | awk '{printf "%.1f", $1 / (1024 * 1024)}')
                             if [[ $downloadSize -gt 0 ]]; then
                                 pr_comment+=$(echo "  └ 🟢 Download Size: ${downloadSize} MB")$'\n'
                             else
@@ -356,9 +356,6 @@ EOF
                             pr_comment+="  └ 🟡 Download Size: could not determine download size"$'\n'
                             checks_failed=$((checks_failed+1))
                         fi
-                    elif [[ $http_code -eq 405 ]]; then
-                        pr_comment+="  ├ 🟡 URL appears to be reachable but does not support HEAD requests"$'\n'
-                        pr_comment+="  └ 🟡 Download Size: could not determine download size"$'\n'
                     elif [[ $http_code -eq 418 ]]; then
                         pr_comment+="  ├ 🫖 Remote server is a teapot"$'\n'
                     else
