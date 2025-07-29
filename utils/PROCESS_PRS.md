@@ -37,12 +37,25 @@ Given no prompts or arguments, the script will do the following:
 
 As-is, the script will not make any changes or apply labels or comments. The following arguments can be used to change this behavior:
 
- - `LIVE_RUN=1` - This will apply labels and comments to the PR's
- - `MAX_PR_COUNT=<number>` - This will change the number of PR's to process. Default is `5`.
- - `SORT_ORDER=<string>` - This will change the sort order of the PR's. Default is `created-asc` to get the oldest PR's first.
- - `SEARCH_STRING="<string>"` - This will change the search string used to find PR's. Default is `no:label sort:${SORT_ORDER}`.
- - `FROM_PR_NUM=<number>` - This will change the starting PR number. Default is `0`. Any PR's fetched that are lower than this number will be skipped.
- - `PR_NUM=<number>` - Process a single PR number. If this is populated, no search is done and only this PR is processed.
+```
+--live-run                    - will apply changes to PR's.
+-t, --test-pr                 - perform a full test of PR's instead of validating it. default is to validate only
+                                  testing will imply a search for PR's with the label 'application' and 'validated'
+                                 if testing is successful, the option to merge the PR will be presented
+-d, --max-download-size <num> - max download size in MB when in TEST_PR mode. default is 50
+-i, --ignore-missing-download-size - ignore missing download size in TEST_PR mode
+-c, --max-pr-count <num>      - max number of PR's to process. default is 5
+-s, --search-string <string>  - search string to use for PR's. default is 'no:label sort:created-asc'
+                                 if test-pr is set, this will be overridden to:
+                                  'is:pr is:open label:application label:validated -label:\"waiting for response\"
+                                     -label:invalid -label:attention-required -label:incomplete sort:${SORT_ORDER}'
+                                 uses github search syntax
+-o, --sort-order <order>      - sort order for PR's. default is 'created-asc' (oldest first)
+                                options are 'created-asc' or 'created-desc'
+-f, --from-pr-num <num>       - start processing PR's from this number. default is 0
+-p, --pr-num <num>            - process a single PR number
+-h, --help                    - display this help
+```
 
 When running in live mode, if a PR is successfully validated, the `application` and `validated` labels are applied. If the PR fails validation, the `invalid` label is applied. The report is then added to the PR as a comment.
 
@@ -68,13 +81,13 @@ File fragments/labels/aftermath.sh
 
  To run in the second mode, you can use the following arguments in addition to the above:
 
-  - `TEST_PR=1` - This will run the test-pr process on the PR's. This will check out the PR and run the test-pr process on it.
-  - `MAX_DL_SIZE=<number>` - This will change the maximum download size allowed. Default is `50` (50MB).
+  - `--test-pr` - This will run the test-pr process on the PR's. This will check out the PR and run the test-pr process on it.
+  - `--max-download-size <number>` - This will change the maximum download size allowed. Default is `50` (50MB).
    - This is used to determine if the download size is reasonable. If the download size is larger than this, it will generate a warning and skip the test process.
 
 When mode 2 is running the default search is changed to the following:
 
-`SEARCH_STRING="is:pr is:open label:application label:validated -label:\"waiting for response\" -label:invalid -label:attention-required -label:incomplete sort:${SORT_ORDER}"`
+`--search-string "is:pr is:open label:application label:validated -label:\"waiting for response\" -label:invalid -label:attention-required -label:incomplete sort:${SORT_ORDER}"`
 
 This will search for PR's that are open, have the application and validated labels, but do not have any of the labels that may indicate we are waiting on a response or requires some manual intervention.
 
@@ -93,13 +106,13 @@ If the test fails, the PR is left open and the report is added as a comment. The
 ### Triage full run on the oldest 5 PR's with no labels
 
 ```bash
-./utils/process_prs.sh LIVE_RUN=1
+./utils/process_prs.sh --live-run
 ```
 
 ### Run in live test mode on the oldest 20 PR's with a max download size of 300MB
 
 ```bash
-./utils/process_prs.sh LIVE_RUN=1 TEST_PR=1 MAX_DL_SIZE=300 MAX_PR_COUNT=20
+./utils/process_prs.sh --live-run --test-pr --max-download-size 300 --max-pr-count 20
 ```
 
 ### Re-processing a previously failed PR
@@ -108,16 +121,16 @@ A suggested workflow for re-processing a PR that failed a previous validation an
 
 ```bash
 # re-validate PR non-live mode. Visually validate the results
-./utils/process_prs.sh LIVE_RUN=0 PR_NUM=123
+./utils/process_prs.sh --pr-num 123
 # re-test PR non-live mode. Visually validate the results
-./utils/process_prs.sh LIVE_RUN=0 TEST_PR=1 PR_NUM=123
+./utils/process_prs.sh --test-pr --pr-num 123
 # re-test PR live mode. If the test passes, the PR can be merged
-./utils/process_prs.sh LIVE_RUN=1 TEST_PR=1 PR_NUM=123
+./utils/process_prs.sh --live-run --test-pr --pr-num 123
 
 ```
 
 You could also process previous PR's in bulk. For example use the SEARCH_STRING to find all PR's that have the `application` and `invalid` label updated in the last two days and re-process them.
 
 ```bash
-./utils/process_prs.sh TEST_PR=0 LIVE_RUN=0 SEARCH_STRING="is:open is:pr label:application label:incomplete updated:$(date -v-2d "+%Y-%m-%d")"
+./utils/process_prs.sh --search-string "is:open is:pr label:application label:incomplete updated:$(date -v-2d "+%Y-%m-%d")"
 ```
