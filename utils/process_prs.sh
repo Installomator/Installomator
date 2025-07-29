@@ -254,7 +254,7 @@ for pr_num in $open_prs; do
     echo "Files: \n ${changed_files[@]}"
     # check if there is only one file changed
     if [[ ${#changed_files[@]} -gt 5 ]]; then
-        echo "🟡 PR $pr_num has more than 5 files changed - skipping"
+        echo "⚠️ PR $pr_num has more than 5 files changed - skipping"
         ((skip_count++))
         continue
     fi
@@ -311,7 +311,7 @@ EOF
             # check if the file ends with an LF control character
             last_char=$(tail -c 1 "$filename" | od -An -t uC | tr -d '[:space:]')
             if [ "$last_char" != "10" ]; then
-                pr_comment+="├ 🔴 The file '$filename' does not end with an LF control character. We recommend installing/using an EditorConfig plugin for your editor."$'\n'
+                pr_comment+="├ ⛔️ The file '$filename' does not end with an LF control character. We recommend installing/using an EditorConfig plugin for your editor."$'\n'
                 checks_failed=$((checks_failed+1))
             else
                 pr_comment+="├ 🟢 correct line ending"$'\n'
@@ -321,9 +321,9 @@ EOF
             # process label info
             if [[ -n $name ]]; then
                 pr_comment+=$(echo "├ 🟢 Name: $name")$'\n'; ((checks_passed++))
-                pr_comment+="├ "; [[ -z $type ]] && { pr_comment+="🔴 "; ((checks_failed++)); } || { pr_comment+="🟢 "; ((checks_passed++)); }; pr_comment+="Type: ${type:-Missing}"$'\n' 
-                pr_comment+="├ "; [[ -z $expectedTeamID ]] && { pr_comment+="🔴 "; ((checks_failed++)); } || { pr_comment+="🟢 "; ((checks_passed++)); }; pr_comment+="Expected Team: ${expectedTeamID:-Missing}"$'\n' 
-                pr_comment+="├ "; [[ -z $appNewVersion ]] && { pr_comment+="🟡 "; } || { pr_comment+="🟢 "; ((checks_passed++)); }; pr_comment+="App New Version: ${appNewVersion:-Missing}"$'\n' 
+                pr_comment+="├ "; [[ -z $type ]] && { pr_comment+="⛔️ "; ((checks_failed++)); } || { pr_comment+="🟢 "; ((checks_passed++)); }; pr_comment+="Type: ${type:-Missing}"$'\n' 
+                pr_comment+="├ "; [[ -z $expectedTeamID ]] && { pr_comment+="⛔️ "; ((checks_failed++)); } || { pr_comment+="🟢 "; ((checks_passed++)); }; pr_comment+="Expected Team: ${expectedTeamID:-Missing}"$'\n' 
+                pr_comment+="├ "; [[ -z $appNewVersion ]] && { pr_comment+="⚠️ "; } || { pr_comment+="🟢 "; ((checks_passed++)); }; pr_comment+="App New Version: ${appNewVersion:-Missing}"$'\n' 
                     
                 if [[ -n $downloadURL ]]; then
                     pr_comment+=$(echo "└ Download URL: $downloadURL")$'\n'
@@ -337,7 +337,7 @@ EOF
                         if [[ $downloadSize -gt 0 ]]; then
                             pr_comment+=$(echo "  └ 🟢 Download Size: ${downloadSize} MB")$'\n'
                         else
-                            pr_comment+=$(echo "  └ 🟡 Download Size: could not determine download size")$'\n'
+                            pr_comment+=$(echo "  └ ⚠️ Download Size: could not determine download size")$'\n'
                         fi
                     elif [[ $http_code =~ "40[3|5-6]" ]]; then
                         # try getting the URL again with a user agent
@@ -349,27 +349,27 @@ EOF
                             if [[ $downloadSize -gt 0 ]]; then
                                 pr_comment+=$(echo "  └ 🟢 Download Size: ${downloadSize} MB")$'\n'
                             else
-                                pr_comment+=$(echo "  └ 🟡 Download Size: could not determine download size")$'\n'
+                                pr_comment+=$(echo "  └ ⚠️ Download Size: could not determine download size")$'\n'
                             fi
                         else
-                            pr_comment+="  ├ 🔴 URL is not reachable - error $http_code"$'\n'
-                            pr_comment+="  └ 🟡 Download Size: could not determine download size"$'\n'
+                            pr_comment+="  ├ ⛔️ URL is not reachable - error $http_code"$'\n'
+                            pr_comment+="  └ ⚠️ Download Size: could not determine download size"$'\n'
                             checks_failed=$((checks_failed+1))
                         fi
                     elif [[ $http_code -eq 418 ]]; then
                         pr_comment+="  ├ 🫖 Remote server is a teapot"$'\n'
                     else
-                        pr_comment+=$(echo "  └ 🔴 URL is not reachable - error $http_code")$'\n'
+                        pr_comment+=$(echo "  └ ⛔️ URL is not reachable - error $http_code")$'\n'
                         pr_comment+=$(echo "   ├ This could be becaue the server has blocked header requests or some other issue. Human validation is required")$'\n'
                         pr_comment+=$(echo "   ├ Check [RFC status codes](https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes) for more details")$'\n'
                         checks_failed=$((checks_failed+1))
                     fi
                 else
-                    pr_comment+=$(echo "└ Download URL: 🔴 no download URL")$'\n'
+                    pr_comment+=$(echo "└ Download URL: ⛔️ no download URL")$'\n'
                     checks_failed=$((checks_failed+1))
                 fi
             else
-                pr_comment+=$(echo "🔴 Error fetching label info")$'\n'
+                pr_comment+=$(echo "⛔️ Error fetching label info")$'\n'
                 checks_failed=$((checks_failed+1))
             fi
             # unset variables so they are not carried over to the next iteration
@@ -388,7 +388,7 @@ EOF
                 pr_comment+=$(echo "** WARNING: Some checks failed")$'\n'
                 pr_comment+=$(echo "😃 $checks_passed checks passed")$'\n'
                 pr_comment+=$(echo "🙁 $checks_failed checks failed")$'\n'
-                pr_comment+=$(echo "🟡 Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request.")$'\n'
+                pr_comment+=$(echo "⚠️ Please review [Contributing to Installomator](https://github.com/Installomator/Installomator/wiki/Contributing-to-Installomator) and update your pull request.")$'\n'
                 pr_comment+=$(echo "**This is an automated check and response and does not cover all edge cases.**")$'\n'
                 pr_comment+=$(echo "Failed checks just mean that some automations could not complete to validation. This PR may still be validated after manual review by the installomator team")$'\n'
                 assign_gh_label $pr_num "attention-required"
@@ -396,7 +396,7 @@ EOF
             fi
             pr_comment+=$(echo "****")$'\n'
         else
-            echo "🟡 File $filename in PR $pr_num does not look like a label - skipping"
+            echo "⚠️ File $filename in PR $pr_num does not look like a label - skipping"
             has_non_app_component=1
             # assign_gh_label $pr_num "not a label"
         fi
@@ -413,14 +413,14 @@ EOF
             echo "ℹ️  add comment to PR $pr_num with processing information"
         fi
         if [[ $has_non_app_component -eq 1 ]]; then
-            echo "🟡 PR $pr_num has non-label components"
-            pr_comment+=$(echo "🟡 PR has a new/updated label but also includes non-label components - These will need to be verified and cleaned up before PR can be merged")$'\n'
+            echo "⚠️ PR $pr_num has non-label components"
+            pr_comment+=$(echo "⚠️ PR has a new/updated label but also includes non-label components - These will need to be verified and cleaned up before PR can be merged")$'\n'
         fi
         if [[ $TEST_PR -eq 1 ]]; then
             echo "ℹ️  Testing PR $pr_num"
             echo "${pr_comment}"
             if [[ $PR_NUM -gt 0 ]] && [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
-                echo "🟡 Download size of $downloadSize MB is greater than max size $MAX_DL_SIZE MB"
+                echo "⚠️ Download size of $downloadSize MB is greater than max size $MAX_DL_SIZE MB"
                 read -q override"?Override? (y/n)"
                 if [[ $override == 'y' ]]; then
                     echo "🟢 Override"
@@ -428,21 +428,21 @@ EOF
                 fi
             fi
             if [[ $IGNORE_MISSING_DOWNLOAD_SIZE -eq 0  ]] && { [[ ! $downloadSize -gt 0 ]] || [[ $downloadSize -gt $MAX_DL_SIZE ]] }; then
-                echo "🟡 Download size is not available or greater than $MAX_DL_SIZE MB - skipping"
+                echo "⚠️ Download size is not available or greater than $MAX_DL_SIZE MB - skipping"
                 ((skip_count++))
             elif [[ $checks_failed -gt 0 ]]; then
-                echo "🟡 PR $pr_num has failed checks - skipping"
+                echo "⚠️ PR $pr_num has failed checks - skipping"
                 ((skip_count++))
             else
                 echo "🟢 PR $pr_num has passed checks - performing test before merge"
                 if perform_pr_test $pr_num $label; then
                     echo "🟢 PR $pr_num has been tested"
                 else
-                    echo "🔴 PR $pr_num test failed for some reason 🙁"
+                    echo "⛔️ PR $pr_num test failed for some reason 🙁"
                     # add attention-required label
                     assign_gh_label $pr_num "attention-required"
                     # add a comment to the PR that the test failed
-                    add_gh_comment $pr_num "🤖 Testing Robot Says - 🟡 PR test failed for some reason 🙁. Manual intervention by the Installomator team is required for this one"
+                    add_gh_comment $pr_num "🤖 Testing Robot Says - ⚠️ PR test failed for some reason 🙁. Manual intervention by the Installomator team is required for this one"
                     ((skip_count++))
                 fi
             fi
