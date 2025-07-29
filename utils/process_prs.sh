@@ -254,7 +254,7 @@ for pr_num in $open_prs; do
     echo "Files: \n ${changed_files[@]}"
     # check if there is only one file changed
     if [[ ${#changed_files[@]} -gt 5 ]]; then
-        echo "🟡PR $pr_num has more than 5 files changed - skipping"
+        echo "🟡 PR $pr_num has more than 5 files changed - skipping"
         ((skip_count++))
         continue
     fi
@@ -416,14 +416,14 @@ EOF
             echo "ℹ️  add comment to PR $pr_num with processing information"
         fi
         if [[ $has_non_app_component -eq 1 ]]; then
-            echo "🟡PR $pr_num has non-label components"
-            pr_comment+=$(echo "🟡PR has a new/updated label but also includes non-label components - These will need to be verified and cleaned up before PR can be merged")$'\n'
+            echo "🟡 PR $pr_num has non-label components"
+            pr_comment+=$(echo "🟡 PR has a new/updated label but also includes non-label components - These will need to be verified and cleaned up before PR can be merged")$'\n'
         fi
         if [[ $TEST_PR -eq 1 ]]; then
             echo "ℹ️  Testing PR $pr_num"
             echo "${pr_comment}"
             if [[ $PR_NUM -gt 0 ]] && [[ $downloadSize -gt $MAX_DL_SIZE ]]; then
-                echo "🟡Download size of $downloadSize MB is greater than max size $MAX_DL_SIZE MB"
+                echo "🟡 Download size of $downloadSize MB is greater than max size $MAX_DL_SIZE MB"
                 read -q override"?Override? (y/n)"
                 if [[ $override == 'y' ]]; then
                     echo "🟢 Override"
@@ -431,10 +431,10 @@ EOF
                 fi
             fi
             if [[ $IGNORE_MISSING_DOWNLOAD_SIZE -eq 0  ]] && { [[ ! $downloadSize -gt 0 ]] || [[ $downloadSize -gt $MAX_DL_SIZE ]] }; then
-                echo "🟡Download size is not available or greater than $MAX_DL_SIZE MB - skipping"
+                echo "🟡 Download size is not available or greater than $MAX_DL_SIZE MB - skipping"
                 ((skip_count++))
             elif [[ $checks_failed -gt 0 ]]; then
-                echo "🟡PR $pr_num has failed checks - skipping"
+                echo "🟡 PR $pr_num has failed checks - skipping"
                 ((skip_count++))
             else
                 echo "🟢 PR $pr_num has passed checks - performing test before merge"
@@ -445,7 +445,7 @@ EOF
                     # add attention-required label
                     assign_gh_label $pr_num "attention-required"
                     # add a comment to the PR that the test failed
-                    add_gh_comment $pr_num "🤖 Testing Robot Says - 🟡PR test failed for some reason 🙁. Manual intervention by the Installomator team is required for this one"
+                    add_gh_comment $pr_num "🤖 Testing Robot Says - 🟡 PR test failed for some reason 🙁. Manual intervention by the Installomator team is required for this one"
                     ((skip_count++))
                 fi
             fi
