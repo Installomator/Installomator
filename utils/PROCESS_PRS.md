@@ -65,15 +65,15 @@ An example report will look like:
 🤖 Validation robot 🤖
 File fragments/labels/aftermath.sh
 ** Label info:
-├ ✅ correct line ending
-├ ✅ Name: Aftermath
-├  ✅ Type: pkg
-├  ✅ Expected Team: C793NB2B2B
-├  ✅ App New Version: 2.2.1
+├ 🟢 correct line ending
+├ 🟢 Name: Aftermath
+├  🟢 Type: pkg
+├  🟢 Expected Team: C793NB2B2B
+├  🟢 App New Version: 2.2.1
 └ Download URL: https://github.com
-  ├ ✅ URL is reachable
-  └ ⚠️  Download Size: could not determine download size
-✅ All checks passed
+  ├ 🟢 URL is reachable
+  └ 🟡 Download Size: could not determine download size
+🟢 All checks passed
 ****
 ```
 
