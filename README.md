@@ -50,3 +50,4 @@ The Installomator team:
 - [Bart Reardon - @bartreardon](https://github.com/bartreardon)
 
  And with numerous contributions from many others. Thank you all, very much!
+add PR
