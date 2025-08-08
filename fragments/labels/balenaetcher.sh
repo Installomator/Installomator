@@ -1,13 +1,12 @@
 balenaetcher)
     name="balenaEtcher"
     type="dmg"
-    version=$(versionFromGit balena-io etcher)
-    arch=$(uname -m)
-    if [[ "$arch" == "arm64" ]]; then
-        downloadURL="https://github.com/balena-io/etcher/releases/download/v${version}/balenaEtcher-${version}-arm64.dmg"
-    else
-        downloadURL="https://github.com/balena-io/etcher/releases/download/v${version}/balenaEtcher-${version}-x64.dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="balenaEtcher-[0-9.]*-arm64.dmg"
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="balenaEtcher-[0-9.]*-x64.dmg"
     fi
-    appNewVersion="$version"
+    downloadURL="$(downloadURLFromGit balena-io etcher)"
+    appNewVersion="$(versionFromGit balena-io etcher)"
     expectedTeamID="66H43P8FRG"
     ;;
