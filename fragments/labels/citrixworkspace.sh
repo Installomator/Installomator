@@ -14,7 +14,7 @@ citrixworkspace)
         htmlDocument=$(curl -fs $urlToParse $curlOptions)
         xmllint --html --xpath 'string(//p[contains(., "Version")])' 2> /dev/null <(print $htmlDocument)
     }
-    appNewVersion=$(newVersionString | cut -d ' ' -f2 | cut -d '(' -f1)
+    appNewVersion=$(newVersionString | cut -d ' ' -f3)
     versionKey="CitrixVersionString"
     expectedTeamID="S272Y5R93J"
     ;;
