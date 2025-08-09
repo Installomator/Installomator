@@ -211,6 +211,9 @@ for fixedArch in i386 arm64; do
                 *InZip)
                     expectedExtension="zip"
                     ;;
+                *InTBZ|*InBZ2)
+                    expectedExtension="tbz"
+                    ;;
                 *)
                     echo "Cannot handle type $type"
                     ;;
