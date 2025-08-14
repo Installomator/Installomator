@@ -9593,6 +9593,20 @@ telegram)
     appNewVersion="$(curl -s "https://osx.telegram.org/updates/versions.xml" | xpath 'string(//rss/channel/item[1]/enclosure/@sparkle:shortVersionString)' 2>/dev/null)"
     expectedTeamID="6N38VWS5BX"
     ;;
+teleport)
+    name="Teleport"
+    type="pkg"
+    appNewVersion="$(versionFromGit gravitational teleport)"
+    downloadURL="https://cdn.teleport.dev/teleport-${appNewVersion}.pkg"
+    expectedTeamID="QH8AA5B8UP"
+    ;;
+teleportconnect)
+    name="Teleport Connect"
+    type="dmg"
+    appNewVersion="$(versionFromGit gravitational teleport)"
+    downloadURL="https://cdn.teleport.dev/Teleport%20Connect-${appNewVersion}.dmg"
+    expectedTeamID="QH8AA5B8UP"
+    ;;
 tembo)
     name="Tembo"
     type="zip"
