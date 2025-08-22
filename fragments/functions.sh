@@ -628,7 +628,7 @@ installFromPKG() {
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
 
-    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+    teamID=$(echo $spctlOut | awk -F '[()]' '/origin=/ {print $(NF-1)}' )
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
         teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
