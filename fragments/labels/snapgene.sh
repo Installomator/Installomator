@@ -1,4 +1,5 @@
-snapgene|snapgeneviewer)
+snapgene|\
+snapgeneviewer)
     name="SnapGene"
     type="dmg"
     downloadURL="https://www.snapgene.com/local/targets/download.php?os=mac&majorRelease=latest&minorRelease=latest"
