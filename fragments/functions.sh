@@ -156,6 +156,15 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
+    # Get the tag for the git release
+    gitReleaseTag=$(validateGithubTag "$gitusername" "$gitreponame" "${GIT_TAG}")
+    result=$?
+
+    if [[ $result -ne 0 ]]; then
+        printlog "Something went wrong validating the release tag for $gitusername/$gitreponame" WARN
+        return 1
+    fi
+
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
@@ -164,17 +173,19 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
         filetype=$type
     fi
 
+    gitURL="$gitusername/$gitreponame/releases/tags/$gitReleaseTag"
+
     if [ -n "$archiveName" ]; then
-        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitURL" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
         if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName")" == "" ]]; then
             #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
-            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)"
+            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/tag/$gitReleaseTag" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)"
         fi
     else
-        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitURL" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
         if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
             #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
-            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
+            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/tag/$gitReleaseTag" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
         fi
     fi
     if [ -z "$downloadURL" ]; then
@@ -191,8 +202,17 @@ versionFromGit() {
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
+    # Get the tag for the git release
+    gitReleaseTag=$(validateGithubTag "$gitusername" "$gitreponame" "${GIT_TAG}")
+    result=$?
+    if [[ $result != 0 ]]; then
+        printlog "Something went wrong validating the release tag for $gitusername/$gitreponame" WARN
+        return 1
+    fi
+
     #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
-    appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
+    #appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
+    appNewVersion=$(echo $gitReleaseTag | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
         appNewVersion=""
@@ -202,6 +222,30 @@ versionFromGit() {
     fi
 }
 
+# Checks github repos for tags and validates against the selected tag
+# defaults to latest if no tag is passed in
+validateGithubTag() {
+    # $1 git user name, $2 git repo name
+    gitusername=${1?:"no git user name"}
+    gitreponame=${2?:"no git repo name"}
+
+    # Get all the tags
+    allTags=($(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/git/refs/tags" | grep -i "\"ref\":" | sed 's/.*": "\(.*\)".*/\1/' | tr -d "refs/tags/" | sort))
+
+    # Get the latest tag
+    #latestReleaseTag=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep -i "tag_name" | sed 's/.*": "\(.*\)".*/\1/')
+    latestReleaseTag=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1)
+
+    # $3 git tag to validate (default to latest)
+    selectedReleaseTag=${3:-$latestReleaseTag}
+
+    if (($allTags[(I)$selectedReleaseTag])); then
+        echo "$selectedReleaseTag"
+        return 0
+    fi
+    printlog "could not validate tag $selectedReleaseTag for $gitusername/$gitreponame" WARN
+    return 1
+}
 
 # Handling of differences in xpath between Catalina and Big Sur
 xpath() {
