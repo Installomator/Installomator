@@ -79,7 +79,6 @@ atext
 atextlegacy
 atlassiancompanion
 audacity
-authydesktop
 autodeskfusion360admininstall
 autodmg
 automounter
@@ -111,8 +110,6 @@ bitrix24
 bitwarden
 bitwigstudio
 blender
-bluejeans
-bluejeanswithaudiodriver
 boop
 boxdrive
 boxsync
@@ -214,7 +211,6 @@ coderunner
 colourcontrastanalyser
 connectfonts
 cormorant
-craftmanager
 craftmanagerforsketch
 crashplan
 crashplansmb
@@ -304,7 +300,6 @@ favro
 fellow
 figma
 filemakerpro
-filezilla
 finaldraft11
 finaldraft12
 finaldraft13
