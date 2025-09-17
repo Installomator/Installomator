@@ -189,7 +189,6 @@ cinema4d
 cinema4d2023
 cinema4d2024
 cinema4d2025
-cinema4d2026
 cisdem-documentreader
 citrixworkspace
 cleartouchcollage
