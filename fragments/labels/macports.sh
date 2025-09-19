@@ -3,6 +3,9 @@ macports)
     type="pkg"
     #buildVersion=$(uname -r | cut -d '.' -f 1)
     case $(uname -r | cut -d '.' -f 1) in
+        25)
+            archiveName="Tahoe.pkg"
+            ;;
 	    24)
 	        archiveName="Sequoia.pkg"
 	        ;;
