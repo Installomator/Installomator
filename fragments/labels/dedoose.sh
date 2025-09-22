@@ -1,8 +1,7 @@
 dedoose)
     name="Dedoose"
     type="dmg"
-    downloadURL=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep "Dedoose-.*[0-9.].*[0-9.].*[0-9.]dmg" | cut -d'/' -f3- | cut -f1 -d'"' | cut -c2-)
-    appNewVersion=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep -o "Dedoose-.*[0-9.].*[0-9.].*[0-9.]" | cut -d'>' -f2- | tail -1)
+    appNewVersion=$(curl https://www.dedoose.com/download-the-app | grep -o "Dedoose [0-9.].*[0-9.].*[0-9.] (DMG)" | awk '{print $2}')
+    downloadURL="https://downloads.ctfassets.net/hk7rjv5qs0cy/L9ciKTARWP9o6ZTKtDPl6/252c2aadce210fbc21cce40162053c1b/Dedoose-$appNewVersion.dmg"
     expectedTeamID="9U74Q6K62X"
     ;;
-
