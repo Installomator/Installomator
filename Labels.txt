@@ -28,6 +28,7 @@ affinityphoto2
 affinitypublisher2
 aftermath
 aircall
+airflow
 airserver
 airtable
 airtame
@@ -57,6 +58,7 @@ ape
 apparency
 appcleaner
 applenyfonts
+appleprovideoformats
 applesfarabic
 applesfcompact
 applesfmono
@@ -77,7 +79,6 @@ atext
 atextlegacy
 atlassiancompanion
 audacity
-authydesktop
 autodeskfusion360admininstall
 autodmg
 automounter
@@ -109,8 +110,6 @@ bitrix24
 bitwarden
 bitwigstudio
 blender
-bluejeans
-bluejeanswithaudiodriver
 boop
 boxdrive
 boxsync
@@ -138,6 +137,7 @@ camtasia2021
 camtasia2022
 camtasia2023
 camtasia2024
+camtasia2025
 camunda
 canva
 carboncopycloner
@@ -189,6 +189,7 @@ cinema4d
 cinema4d2023
 cinema4d2024
 cinema4d2025
+cinema4d2026
 cisdem-documentreader
 citrixworkspace
 cleartouchcollage
@@ -211,13 +212,13 @@ coderunner
 colourcontrastanalyser
 connectfonts
 cormorant
-craftmanager
 craftmanagerforsketch
 crashplan
 crashplansmb
 cricutdesignspace
 cryptomator
 crystalfetch
+cursorai
 cyberduck
 cycling74max
 cytoscape
@@ -231,9 +232,12 @@ dedoose
 deepl
 deezer
 defaultfolderx
+deon-cloud
+deon-onprem
 depnotify
 desktoppr
 detectxswift
+determinate
 devonthink
 dialog
 dialpad
@@ -242,7 +246,6 @@ discord
 diskdrill
 diskspace
 displaylinkmanager
-displaylinkmanagergraphicsconnectivity
 docker
 dockutil
 dragonframe5
@@ -260,6 +263,7 @@ dymoconnectdesktop
 dynalist
 easeusdatarecoverywizard
 eastwestinstallationcenter
+eastwestopus
 eastwestplay
 easyfind
 eclipsetemurin11
@@ -276,6 +280,7 @@ elgatocamerahub
 elgatostreamdeck
 emacs
 enteauth
+epicgameslauncher
 eposconnect
 escrowbuddy
 eshareosx
@@ -296,7 +301,6 @@ favro
 fellow
 figma
 filemakerpro
-filezilla
 finaldraft11
 finaldraft12
 finaldraft13
@@ -332,6 +336,7 @@ gephi
 gfxcardstatus
 gimp
 gimpdev
+githubcopilotforxcode
 githubdesktop
 gitkraken
 glpiagent
@@ -397,6 +402,7 @@ inmusicsoftwarecenter
 insomnia
 installomator
 installomator_theile
+installomatormate
 intellijideace
 ipswupdater
 ipvisionconnect
@@ -446,6 +452,7 @@ jumpdesktop
 jupyterlab
 kap
 karabinerelements
+kdrive
 keepassxc
 keeperpasswordmanager
 keepingyouawake
@@ -453,8 +460,9 @@ keka
 keyaccess
 keybase
 keyboardmaestro
+keyshot
 keyshot12
-keyshot12_2024
+keyshot2024
 keystoreexplorer
 kimplusclientmodul
 klokki
@@ -478,6 +486,7 @@ lifesize
 lightburn
 linear
 linearmouse
+livereplayer
 logioptions
 logitechoptions
 logitechoptionsplus
@@ -518,6 +527,7 @@ meistertask
 mendeleyreferencemanager
 menumeters
 merlinproject
+mestrenova
 microsoftautoupdate
 microsoftazuredatastudio
 microsoftazurestorageexplorer
@@ -617,11 +627,13 @@ nordlayer
 nordvpn
 notion
 nova
+nps-santa
 nudge
 nudgesuite
 nvivo
 nvivo13
 nvivo14
+nvivo15
 nweasecuretestingbrowser
 obs
 obsbotcenter
@@ -639,6 +651,7 @@ omnioutliner5
 omniplan3
 omniplan4
 omnipresence
+omnissahorizonclient
 onionshare
 onlyofficedesktop
 onscreencontrol
@@ -658,6 +671,7 @@ outputarcade
 outputhub
 outset
 overflow
+owncloud
 pacifist
 packages
 pandoc
@@ -723,7 +737,9 @@ realvncviewer
 reaper
 rectangle
 redcanarymacmonitor
+redgiant
 redshift
+redshiftlite
 reflector4
 relatel
 remotedesktopmanagerenterprise
@@ -756,6 +772,7 @@ rustdesk
 safeexambrowser
 salesforcecli
 santa
+sawgrassprintutility
 scaleft
 scapple
 scenebuilder
@@ -798,6 +815,8 @@ snagit2021
 snagit2022
 snagit2023
 snagit2024
+snapgene
+snapgeneviewer
 soapuiopensource
 sococo
 softubecentral
@@ -816,6 +835,7 @@ splashtopsos
 splashtopstreamer
 splice
 spotify
+sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
@@ -886,8 +906,14 @@ tidal
 todoist
 toggltrack
 tom4aconverter
+toonboomharmonypremium2024
+toonboomstoryboardpro2024
 topazgigapixel
 topazgigapixelai
+topazphoto
+topazphotoai
+topazvideo
+topazvideoai
 torbrowser
 tower
 transfer
@@ -897,6 +923,7 @@ trex
 tunnelbear
 tunnelblick
 tuple
+twingate
 typeface
 typinator
 typora
@@ -940,6 +967,7 @@ vscodium
 vysor
 wacomdrivers
 wallyezflash
+warp
 wavescentral
 weasis
 webex
