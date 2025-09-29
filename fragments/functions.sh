@@ -566,7 +566,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         fi
 
         # set ownership to current user
-        if [[ "$currentUser" != "loginwindow" && $SYSTEMOWNER -ne 1 ]]; then
+        if [[ "$currentUser" != "loginwindow" && "$currentUser" != "_mbsetupuser" && $SYSTEMOWNER -ne 1 ]]; then
             printlog "Changing owner to $currentUser" WARN
             chown -R "$currentUser" "$targetDir/$appName"
         else
