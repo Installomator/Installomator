@@ -1,8 +1,8 @@
-firefoxesr_intl)
+firefoxesrpkg_intl)
     # This label will try to figure out the selected language of the user,
-    # and install corrosponding version of Firefox ESR
+    # and install corrosponding version of Firefox ESR PKG
     name="Firefox"
-    type="dmg"
+    type="pkg"
     userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLocale | tr '_' '-')
     printlog "Found language $userLanguage to be used for $name."
     releaseURL="https://ftp.mozilla.org/pub/firefox/releases/latest-esr/README.txt"
@@ -14,15 +14,14 @@ firefoxesr_intl)
         userLanguage=${userLanguage:0:2}
     done
     printlog "Using language '$userLanguage' for download."
-    downloadURL="https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=osx&lang=$userLanguage"
+    downloadURL="https://download.mozilla.org/?product=firefox-esr-pkg-latest-ssl&os=osx&lang=$userLanguage"
     if ! curl -sfL --output /dev/null -r 0-0 $downloadURL; then
         printlog "Download not found for '$userLanguage', using default ('en-US')."
-        downloadURL="https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=osx"
+        downloadURL="https://download.mozilla.org/?product=firefox-esr-pkg-latest-ssl&os=osx"
     fi
     firefoxVersions=$(curl -fs "https://product-details.mozilla.org/1.0/firefox_versions.json")
     appNewVersion=$(getJSONValue "$firefoxVersions" "FIREFOX_ESR")
     appNewVersion=${appNewVersion:0:-3}
     expectedTeamID="43AQ936H96"
     blockingProcesses=( firefox )
-    printlog "WARNING for ERROR: Label firefox and firefox_intl should not be used. Instead use firefoxpkg and firefoxpkg_intl as per recommendations from Firefox. It's not fully certain that the app actually gets updated here. firefoxpkg and firefoxpkg_intl will have built in updates and make sure the client is updated in the future." REQ
     ;;
