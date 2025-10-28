@@ -79,7 +79,6 @@ atext
 atextlegacy
 atlassiancompanion
 audacity
-authydesktop
 autodeskfusion360admininstall
 autodmg
 automounter
@@ -111,8 +110,6 @@ bitrix24
 bitwarden
 bitwigstudio
 blender
-bluejeans
-bluejeanswithaudiodriver
 boop
 boxdrive
 boxsync
@@ -192,6 +189,7 @@ cinema4d
 cinema4d2023
 cinema4d2024
 cinema4d2025
+cinema4d2026
 cisdem-documentreader
 citrixworkspace
 cleartouchcollage
@@ -214,7 +212,6 @@ coderunner
 colourcontrastanalyser
 connectfonts
 cormorant
-craftmanager
 craftmanagerforsketch
 crashplan
 crashplansmb
@@ -304,7 +301,6 @@ favro
 fellow
 figma
 filemakerpro
-filezilla
 finaldraft11
 finaldraft12
 finaldraft13
@@ -655,6 +651,7 @@ omnioutliner5
 omniplan3
 omniplan4
 omnipresence
+omnissahorizonclient
 onionshare
 onlyofficedesktop
 onscreencontrol
@@ -818,6 +815,8 @@ snagit2021
 snagit2022
 snagit2023
 snagit2024
+snapgene
+snapgeneviewer
 soapuiopensource
 sococo
 softubecentral
@@ -960,6 +959,7 @@ vivaldi
 vivi
 vlc
 vmwarefusion
+vmwarehorizonclient
 vncconnect
 vonagebusiness
 vpntracker365
