@@ -1,7 +1,7 @@
 fellow)
     name="Fellow"
     type="dmg"
-    downloadURL="https://cdn.fellow.app/desktop/1.3.11/darwin/stable/universal/Fellow-1.3.11-universal.dmg"
-    appNewVersion=""
+    downloadURL="https://fellow.app/desktop/download/darwin/latest/"
+    appNewVersion="$(curl -fsIL "${downloadURL}" | grep -i ^location | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' | head -1)"
     expectedTeamID="2NF46HY8D8"
     ;;

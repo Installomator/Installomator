@@ -3,5 +3,4 @@ sqlpropostgres)
     type="zip"
     downloadURL="https://macpostgresclient.com/download.php"
     expectedTeamID="LKJB72232C"
-    blockingProcesses=( "SQLPro for Postgres" )
     ;;
