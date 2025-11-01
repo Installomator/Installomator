@@ -1,7 +1,12 @@
 apachenetbeans)
     name="Apache NetBeans"
     type="pkg"
-    appNewVersion=$( curl -fs "https://netbeans.apache.org/front/main/download/index.html" | grep -o 'Apache NetBeans [0-9]\+' | sed 's/Apache NetBeans //' | head -n 1 )
-    downloadURL="https://dlcdn.apache.org/netbeans/netbeans-installers/"${appNewVersion}"/Apache-NetBeans-"${appNewVersion}".pkg"
-    expectedTeamID="2GLGAFWEQD"
+    if [[ $(arch) = "arm64" ]]; then
+        archiveName="Apache-NetBeans-[0-9]*-arm64.pkg"
+    else
+        archiveName="Apache-NetBeans-[0-9]*-x86_64.pkg"
+    fi
+    downloadURL="$(downloadURLFromGit Friends-of-Apache-NetBeans netbeans-installers)"
+    appNewVersion="$(versionFromGit Friends-of-Apache-NetBeans netbeans-installers)"
+    expectedTeamID="3KH8VFSK7Q"
     ;;
