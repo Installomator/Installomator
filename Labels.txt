@@ -784,6 +784,7 @@ retrobatch
 rhino7
 rhino8
 ricohpsprinters
+ricohtheta
 ringcentralapp
 ringcentralclassicapp
 ringcentralmeetings

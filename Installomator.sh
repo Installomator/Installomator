@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-10-28"
+VERSIONDATE="2025-11-03"
 
 # MARK: Functions
 
@@ -8736,6 +8736,14 @@ ricohpsprinters)
     type="pkgInDmg"
     packageID="com.RICOH.print.PS_Printers_Vol4_EXP.ppds.pkg"
     downloadURL=$(curl -fs https://support.ricoh.com//bb/html/dr_ut_e/rc3/model/mpc3004ex/mpc3004exen.htm | xmllint --html --format - 2>/dev/null | grep -m 1 -o "https://.*.dmg" | cut -d '"' -f 1)
+    expectedTeamID="5KACUT3YX8"
+    ;;
+ricohtheta)
+    name="RICOH THETA"
+    type="dmg"
+    versionKey="CFBundleShortVersionString"
+    downloadURL="https://theta360.com/intl/support/download/pcapp/macosx"
+    appNewVersion=$(curl -fsL "https://support.ricoh360.com/system-information?news-tags=support" | xmllint --html --xpath "string((//a[contains(normalize-space(), 'RICOH THETA PC App Version')])[1])" - 2>/dev/null | grep -Eom1 '[vV]?[0-9]+(\.[0-9]+)+' | sed 's/^[vV]//')
     expectedTeamID="5KACUT3YX8"
     ;;
 ringcentralapp)
