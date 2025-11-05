@@ -857,6 +857,20 @@ installAppInDmgInZip() {
     installFromDMG
 }
 
+installZipInTBZ() {
+    # unzip the archive
+    printlog "Unzipping $archiveName"
+    tar -xf "$archiveName"
+
+    findfiles=$(find "$tmpDir" -iname "*.zip" -maxdepth 1)
+    filearray=( ${(f)findfiles} )
+    if [[ ${#filearray} -eq 0 ]]; then
+        cleanupAndExit 22 "couldn't find zip in tbz $archiveName" ERROR
+    fi
+    archiveName=$(basename ${filearray[1]})
+    installFromZIP
+}
+
 runUpdateTool() {
     printlog "Function called: runUpdateTool"
     if [[ -x $updateTool ]]; then
