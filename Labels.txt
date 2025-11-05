@@ -4,7 +4,9 @@
 4kvideodownloader
 4kvideodownloaderplus
 8x8
+abetterfinderattributes7
 abetterfinderrename11
+abetterfinderrename12
 abletonlive12intro
 abletonlive12lite
 abletonlive12standard

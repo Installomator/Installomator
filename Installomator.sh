@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-11-03"
+VERSIONDATE="2025-11-05"
 
 # MARK: Functions
 
@@ -1609,6 +1609,15 @@ valuesfromarguments)
     appNewVersion=$(curl -fs -L https://support.8x8.com/cloud-phone-service/voice/work-desktop/download-8x8-work-for-desktop | grep -m 1 -o "https.*dmg" | sed 's/\"//' | awk '{print $1}' | sed -E 's/.*-v([0-9\.]*)[-\.]*.*/\1/' )
     expectedTeamID="FC967L3QRG"
     ;;
+abetterfinderattributes7)
+    name="A Better Finder Attributes 7"
+    type="dmg"
+    downloadURL="https://www.publicspace.net/download/ABFAX.dmg"
+    versionKey="CFBundleVersion"
+    appNewVersion=$(curl -s https://www.publicspace.net/ABetterFinderAttributes/download.html | grep -Eo 'Download A Better Finder Attributes [0-9.]+' | awk '{print $NF}' | sort -V | tail -n1)
+    expectedTeamID="7Y9KW4ND8W"
+    ;;
+
 abetterfinderrename11)
     name="A Better Finder Rename 11"
     type="dmg"
@@ -1616,6 +1625,15 @@ abetterfinderrename11)
     appNewVersion=$(curl -fs "https://www.publicspace.net/app/signed_abfr11.xml" | xpath '(//rss/channel/item/enclosure/@sparkle:version)' 2>/dev/null | cut -d '"' -f 2)
     expectedTeamID="7Y9KW4ND8W"
     ;;
+abetterfinderrename12)
+    name="A Better Finder Rename 12"
+    type="dmg"
+    downloadURL="https://www.publicspace.net/download/ABFRX12.dmg"
+    versionKey="CFBundleVersion"
+    appNewVersion=$(curl -s https://www.publicspace.net/ABetterFinderRename/download.html | grep -Eo 'Download A Better Finder Rename [0-9.]+' | awk '{print $NF}' | sort -V | tail -n1)
+    expectedTeamID="7Y9KW4ND8W"
+    ;;
+
 abletonlive12intro)
     name="Ableton Live 12 Intro"
     type="dmg"
@@ -1750,7 +1768,7 @@ adobecreativeclouddesktop)
 adobedigitaleditions)
     name="Adobe Digital Editions"
     type="pkgInDmg"
-    downloadURL=$(curl -fs https://www.adobe.com/solutions/ebook/digital-editions/download.html | grep dmg | sed -n 's/.*href="\([^"]*\)".*/\1/p')
+    downloadURL=$(curl -fs https://www.adobe.com/solutions/ebook/digital-editions/download.html | grep -oE 'https[^"]+\.dmg')
     appNewVersion=$(curl -fs https://www.adobe.com/solutions/ebook/digital-editions/download.html | grep -o 'Adobe Digital Editions.*Installers' | awk -F' ' '{ print $4 }')
     expectedTeamID="JQ525L2MZD"
     ;;
@@ -2122,14 +2140,23 @@ androidstudio)
     name="Android Studio"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
-	 downloadURL=$(curl -fsL "https://developer.android.com/studio#downloads" | grep -i arm.dmg | head -2 | grep -o -i -E "https.*" | cut -d '"' -f1)
-	 appNewVersion=$( echo "${downloadURL}" | head -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )
+        downloadURL=$(curl -fsL "https://developer.android.com/studio#downloads" | grep -i arm.dmg | head -2 | grep -o -i -E "https.*" | cut -d '"' -f1)
+        appNewVersion=$( echo "${downloadURL}" | head -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )
     elif [[ $(arch) == i386 ]]; then
-     downloadURL=$(curl -fsL "https://developer.android.com/studio#downloads" | grep -i mac.dmg | head -2 | grep -o -i -E "https.*" | cut -d '"' -f1)
-	 appNewVersion=$( echo "${downloadURL}" | head -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )
-	fi
+        downloadURL=$(curl -fsL "https://developer.android.com/studio#downloads" | grep -i mac.dmg | head -2 | grep -o -i -E "https.*" | cut -d '"' -f1)
+        appNewVersion=$( echo "${downloadURL}" | head -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )
+    fi
     expectedTeamID="EQHXZ8M8AV"
     blockingProcesses=( androidstudio )
+
+    appCustomVersion() {
+        customVersionFile="/Users/Shared/.AndroidStudioInstalledVersion"
+        if [ -f "${customVersionFile}" ]; then
+            result=$(cat "${customVersionFile}")
+        fi
+        echo $appNewVersion > "${customVersionFile}"
+        echo $result
+    }
     ;;
 anotherredisdesktopmanager)
     name="Another Redis Desktop Manager"
@@ -3352,22 +3379,11 @@ cisdem-documentreader)
     appName="Cisdem Document Reader.app"
     ;;
 citrixworkspace)
-    #credit: Erik Stam (@erikstam) and #Philipp on MacAdmins Slack
     name="Citrix Workspace"
-    type="pkgInDmg"
-    curlOptions=( --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
-    parseURL() {
-        urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html#ctx-dl-eula-external'
-        htmlDocument=$(curl -s -L $urlToParse $curlOptions)
-        xmllint --html --xpath "string(//a[contains(@rel, 'downloads.citrix.com')]/@rel)" 2> /dev/null <(print $htmlDocument)
-    }
-    downloadURL="https:$(parseURL)"
-    newVersionString() {
-        urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html'
-        htmlDocument=$(curl -fs $urlToParse $curlOptions)
-        xmllint --html --xpath 'string(//p[contains(., "Version")])' 2> /dev/null <(print $htmlDocument)
-    }
-    appNewVersion=$(newVersionString | cut -d ' ' -f2 | cut -d '(' -f1)
+    type="pkg"
+    parseURL=$(curl -fs "https://downloadplugins.citrix.com/ReceiverUpdates/Prod/catalog_macos.xml" | xmllint --xpath 'string(//Installer/DownloadURL)' -)
+    downloadURL=https://downloadplugins.citrix.com/ReceiverUpdates/Prod/$parseURL
+    appNewVersion=$(curl -fs "https://downloadplugins.citrix.com/ReceiverUpdates/Prod/catalog_macos.xml" | xmllint --xpath 'string(//Installer/Version)' -)
     versionKey="CitrixVersionString"
     expectedTeamID="S272Y5R93J"
     ;;
@@ -6160,13 +6176,13 @@ libericajdk8ltsfull)
 libreoffice)
     name="LibreOffice"
     type="dmg"
-    appMajorVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
+    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
     if [[ $(arch) == "arm64" ]]; then
-    	downloadURL="https://download.documentfoundation.org/libreoffice/stable/"$appMajorVersion"/mac/aarch64/LibreOffice_"$appMajorVersion"_MacOS_aarch64.dmg"
+    	downloadURL="https://download.documentfoundation.org/libreoffice/stable/${appNewVersion}/mac/aarch64/LibreOffice_${appNewVersion}_MacOS_aarch64.dmg"
     elif [[ $(arch) == "i386" ]]; then
-    	downloadURL="https://download.documentfoundation.org/libreoffice/stable/"$appMajorVersion"/mac/x86_64/LibreOffice_"$appMajorVersion"_MacOS_x86-64.dmg"
+    	downloadURL="https://download.documentfoundation.org/libreoffice/stable/${appNewVersion}/mac/x86_64/LibreOffice_${appNewVersion}_MacOS_x86-64.dmg"
     fi
-    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep -m 1 ".tar.xz" | sed "s|.*libreoffice-\(.*\).tar.xz?.*|\\1|")"
+    appCustomVersion(){ defaults read "/Applications/LibreOffice.app/Contents/Info.plist" CFBundleVersion | cut -d '.' -f 1-3 }
     expectedTeamID="7P5S3ZLCN7"
     blockingProcesses=( soffice )
     ;;
@@ -8199,6 +8215,7 @@ pitch)
     name="Pitch"
     type="dmg"
     downloadURL="https://desktop.pitch.com/mac/Pitch.dmg"
+    curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" )
     expectedTeamID="KUCN8NUU6Z"
     ;;
 plantronicshub)
@@ -9151,8 +9168,8 @@ sizeup)
 sketch)
     name="Sketch"
     type="zip"
-    downloadURL=$(curl -sf https://www.sketch.com/downloads/mac/ | grep 'href="https://download.sketch.com' | tr '"' "\n" | grep -E "https.*.zip")
-    appNewVersion=$( grep -oE '\d+\.\d+' <<< $downloadURL)
+    downloadURL=$(curl -sf https://www.sketch.com/downloads/mac/ | grep -m 1 'href="https://download.sketch.com' | tr '"' "\n" | grep -E "https.*.zip")
+    appNewVersion=$(echo "$downloadURL" | awk -F'-' '{ print $2 }')
     expectedTeamID="WUGMZZ5K46"
     ;;
 sketchup2024)
@@ -10067,7 +10084,7 @@ theunarchiver)
     expectedTeamID="S8EX82NJP6"
     ;;
 things)
-    name="Things"
+    name="Things3"
     type="zip"
     downloadURL="https://culturedcode.com/things/download/"
     expectedTeamID="JLMPQHK86H"
