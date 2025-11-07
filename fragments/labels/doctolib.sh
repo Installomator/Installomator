@@ -7,8 +7,6 @@ doctolib)
         appNewVersion=""
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://ddv-install.doctolib.fr/DoctolibProDesktop-latest.dmg"
-        appNewVersion=""
     fi
     expectedTeamID="84K7XVJ72Q"
-    # blockingProcesses=( Doctolib )
     ;;
