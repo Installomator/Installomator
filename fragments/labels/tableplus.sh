@@ -6,3 +6,4 @@ tableplus)
     versionKey="CFBundleVersion"
     expectedTeamID="3X57WP8E8V"
     ;;
+    
