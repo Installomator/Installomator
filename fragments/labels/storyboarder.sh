@@ -6,4 +6,3 @@ storyboarder)
     appNewVersion=$(versionFromGit wonderunit storyboarder)
     expectedTeamID="UVHK77PMAM"
     ;;
-    
