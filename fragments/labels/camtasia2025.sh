@@ -2,8 +2,11 @@ camtasia|\
 camtasia2025)
     name="Camtasia"
     type="dmg"
-    apiResult="$(curl -fsL "https://www.techsmith.com/api/v/1/products/getversioninfo/3265")"
-    downloadURL="https://download.techsmith.com$(getJSONValue "$apiResult" "PrimaryDownloadInformation.RelativePath")$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Name")"
-    appNewVersion="20$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Major").$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Minor").$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Maintenance")"
+    cdnData=$(curl -fsL "https://www.techsmith.com/api/v/1/products/getallversions/9" | jq '[.[] | select(.Major == 25)]')
+    appNewVersion=$(echo "${cdnData}" | jq '.[] | "20" + (.Major|tostring) + "." + (.Minor|tostring) + "." + (.Maintenance|tostring)' | tr -d '"')
+    versionID=$(echo "${cdnData}" | jq '.[].VersionID')
+    packageData=$(curl -fsl "https://www.techsmith.com/api/v/1/products/getversioninfo/${versionID}")
+    relativePath=$(echo "${packageData}" | jq '.PrimaryDownloadInformation.RelativePath' | tr -d '"')
+    downloadURL="https://download.techsmith.com${relativePath}camtasia.dmg"
     expectedTeamID="7TQL462TU8"
     ;;
