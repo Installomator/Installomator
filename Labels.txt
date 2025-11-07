@@ -116,6 +116,9 @@ bibdesk
 bitrix24
 bitwarden
 bitwigstudio
+blackhole16ch
+blackhole2ch
+blackhole64ch
 blender
 boop
 boxdrive
@@ -150,6 +153,7 @@ camtasia2025
 camunda
 canva
 carboncopycloner
+cardpresso
 catoclient
 charles
 chatgpt
@@ -269,6 +273,7 @@ drift
 dropbox
 dropboxenterprise
 droplr
+drracket
 druvainsync
 dstny
 duckduckgo
@@ -287,7 +292,7 @@ eclipsetemurin17
 eclipsetemurin21
 eclipsetemurin8
 ecosiabrowser
-egnyte
+editshare-connect
 egnytecore
 egnytewebedit
 elasticvue
@@ -310,6 +315,7 @@ eul
 evercast
 evernote
 everweb
+examplify
 exelbanstats
 exifrenamer
 expressvpn
@@ -323,6 +329,7 @@ fierycommandworkstation
 figma
 filemakerpro
 filmlab
+finalcutprocontent
 finaldraft11
 finaldraft12
 finaldraft13
@@ -1011,6 +1018,8 @@ vagrant
 vanilla
 venturablocker
 veracrypt
+veracrypt-fuse-t
+veracrypt-macfuse
 vernierspectralanalysis
 vfx
 viennaassistant

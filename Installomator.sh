@@ -1601,12 +1601,15 @@ valuesfromarguments)
     expectedTeamID="GHQ37VJF83"
     ;;
 8x8)
-    # credit: #D-A-James from MacAdmins Slack and Isaac Ordonez, Mann consulting (@mannconsulting)
     name="8x8 Work"
     type="dmg"
-    downloadURL=$(curl -fs -L https://support.8x8.com/cloud-phone-service/voice/work-desktop/download-8x8-work-for-desktop | grep -m 1 -o "https.*dmg" | sed 's/\"//' | awk '{print $1}')
-    # As for appNewVersion, it needs to be checked for newer version than 7.2.4
-    appNewVersion=$(curl -fs -L https://support.8x8.com/cloud-phone-service/voice/work-desktop/download-8x8-work-for-desktop | grep -m 1 -o "https.*dmg" | sed 's/\"//' | awk '{print $1}' | sed -E 's/.*-v([0-9\.]*)[-\.]*.*/\1/' )
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=$(curl -fs -L 'https://support-portal.8x8.com/helpcenter/viewArticle.html?d=8bff4970-6fbf-4daf-842d-8ae9b533153d' | grep -o "https.*arm64-dmg-v[0-9.-]*.dmg" | head -n 1 | sed 's/\"//' | awk '{print $1}')
+    else
+        downloadURL=$(curl -fs -L 'https://support-portal.8x8.com/helpcenter/viewArticle.html?d=8bff4970-6fbf-4daf-842d-8ae9b533153d' | grep -m 1 -o "https.*dmg" | sed 's/\"//' | awk '{print $1}')
+    fi
+    # Check newer version than 7.2.4
+    appNewVersion=$(curl -fs -L 'https://support-portal.8x8.com/helpcenter/viewArticle.html?d=8bff4970-6fbf-4daf-842d-8ae9b533153d' | grep -m 1 -o "https.*dmg" | sed 's/\"//' | awk '{print $1}' | sed -E 's/.*-v([0-9\.]*)[-\.]*.*/\1/' )
     expectedTeamID="FC967L3QRG"
     ;;
 abetterfinderattributes7)
@@ -2202,9 +2205,14 @@ apachedirectorystudio)
 apachenetbeans)
     name="Apache NetBeans"
     type="pkg"
-    appNewVersion=$( curl -fs "https://netbeans.apache.org/front/main/download/index.html" | grep -o 'Apache NetBeans [0-9]\+' | sed 's/Apache NetBeans //' | head -n 1 )
-    downloadURL="https://dlcdn.apache.org/netbeans/netbeans-installers/"${appNewVersion}"/Apache-NetBeans-"${appNewVersion}".pkg"
-    expectedTeamID="2GLGAFWEQD"
+    if [[ $(arch) = "arm64" ]]; then
+        archiveName="Apache-NetBeans-[0-9]*-arm64.pkg"
+    else
+        archiveName="Apache-NetBeans-[0-9]*-x86_64.pkg"
+    fi
+    downloadURL="$(downloadURLFromGit Friends-of-Apache-NetBeans netbeans-installers)"
+    appNewVersion="$(versionFromGit Friends-of-Apache-NetBeans netbeans-installers)"
+    expectedTeamID="3KH8VFSK7Q"
     ;;
 ape)
     name="ApE"
@@ -2671,6 +2679,7 @@ bitrix24)
      type="dmg"
      archiveName="bitrix24_desktop.dmg"
      downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop.dmg"
+     appNewVersion="$(curl -fs "https://www.bitrix24.com/osx_version.php" | xpath 'string(//rss/channel/item/title)' 2>/dev/null)"
      expectedTeamID="5B3T3A994N"
      ;;
 bitwarden)
@@ -2686,6 +2695,39 @@ bitwigstudio)
     appNewVersion="$(curl -fs "https://www.bitwig.com/download/" | grep 'changelog' | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')"
     downloadURL="https://www.bitwig.com/dl/Bitwig%20Studio/${appNewVersion}/installer_mac/"
     expectedTeamID="2B6K987585"
+    ;;
+blackhole16ch)
+    name="BlackHole"
+    appName="BlackHole16ch.driver"
+    type="pkg"
+    packageID="audio.existential.BlackHole16ch"
+    targetDir="/Library/Audio/Plug-Ins/HAL"
+    downloadURL=$(getJSONValue "$(curl -fsL https://formulae.brew.sh/api/cask/blackhole-16ch.json)" "url")
+    appNewVersion=$($(getJSONValue "$(curl -fsL https://formulae.brew.sh/api/cask/blackhole-16ch.json)" "version"))
+    expectedTeamID="Q5C99V536K"
+    blockingProcesses=( "coreaudiod" )
+    ;;
+blackhole2ch)
+    name="BlackHole"
+    appName="BlackHole2ch.driver"
+    type="pkg"
+    packageID="audio.existential.BlackHole2ch"
+    targetDir="/Library/Audio/Plug-Ins/HAL"
+    downloadURL=$(getJSONValue "$(curl -fsL https://formulae.brew.sh/api/cask/blackhole-2ch.json)" "url")
+    appNewVersion=$($(getJSONValue "$(curl -fsL https://formulae.brew.sh/api/cask/blackhole-2ch.json)" "version"))
+    expectedTeamID="Q5C99V536K"
+    blockingProcesses=( "coreaudiod" )
+    ;;
+blackhole64ch)
+    name="BlackHole"
+    appName="BlackHole64ch.driver"
+    type="pkg"
+    packageID="audio.existential.BlackHole64ch"
+    targetDir="/Library/Audio/Plug-Ins/HAL"
+    downloadURL=$(getJSONValue "$(curl -fsL https://formulae.brew.sh/api/cask/blackhole-64ch.json)" "url")
+    appNewVersion=$($(getJSONValue "$(curl -fsL https://formulae.brew.sh/api/cask/blackhole-64ch.json)" "version"))
+    expectedTeamID="Q5C99V536K"
+    blockingProcesses=( "coreaudiod" )
     ;;
 blender)
     name="Blender"
@@ -2984,6 +3026,13 @@ carboncopycloner)
     downloadURL=$(curl -fsIL "https://api.bombich.com/download/ccc?v=latest" | grep -i ^location | sed -E 's/.*(https.*\.zip).*/\1/g')
     appNewVersion=$(sed -E 's/.*-([0-9.]*)\.zip/\1/g' <<< $downloadURL | sed 's/\.[^.]*$//')
     expectedTeamID="L4F2DED5Q7"
+    ;;
+cardpresso)
+    name="cardpresso"
+    type="dmg"
+    appNewVersion=$(curl -is "https://formulae.brew.sh/cask/cardpresso" | grep 'Current version:' | grep -oie "[0-9\.]*\.dmg" | awk -F ".dmg" '{print $1}')
+    downloadURL="https://www.cardpresso.com/downloads/cardpresso_releases/for_mac_osx/cardPresso${appNewVersion}.dmg"
+    expectedTeamID="QH48YJ244W"
     ;;
 catoclient)
     name="CatoClient"
@@ -3441,10 +3490,9 @@ cleartouchcollage)
 clevershare2)
     name="Clevershare"
     type="dmg"
-    printlog "Label for $name broken in test" ERROR
-    downloadURL=$(curl -fs https://www.clevertouch.com/eu/clevershare2g | grep -i -o -E "https.*notarized.*\.dmg")
+    downloadURL=$(curl -fs https://www.clevertouch.com/uk/clevershare2g | grep -i -o -E "https.*validated.*\.dmg")
     appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/([0-9.]*)\/[0-9]*\/.*\.dmg$/\1/')
-    expectedTeamID="P76M9BE8DQ"
+    expectedTeamID="LHZP4ZQ39M"
     ;;
 clickshare)
     name="ClickShare"
@@ -3715,7 +3763,7 @@ dangerzone)
     type="dmg"
     downloadURL="$(downloadURLFromGit freedomofpress dangerzone)"
     appNewVersion="$(versionFromGit freedomofpress dangerzone)"
-    expectedTeamID="N9B95FDWH4"
+    expectedTeamID="94ZZGGGJ3W"
     ;;
 darktable)
     # credit: Søren Theilgaard (@theilgaard)
@@ -4060,6 +4108,20 @@ droplr)
     appNewVersion="$(versionFromGit Droplr droplr-desktop-releases)"
     expectedTeamID="MZ25PHMY7Y"
     ;;
+drracket)
+    name="DrRacket"
+    type="dmg"
+	appNewVersion=$(curl -fs https://racket-lang.org/download/ | grep -o 'racket-[0-9.]*-aarch64-macosx-cs\.dmg' | head -n 1 | sed 's/racket-\(.*\)-aarch64-macosx-cs\.dmg/\1/')
+    if [[ "$(arch)" == "arm64" ]]; then
+        downloadURL=$(echo "https://download.racket-lang.org/installers/${appNewVersion}/"$(curl -fs https://racket-lang.org/download/ | grep -o 'racket-[0-9.]*-aarch64-macosx-cs\.dmg' | head -n 1))
+    else
+        downloadURL=$(echo "https://download.racket-lang.org/installers/${appNewVersion}/"$(curl -fs https://racket-lang.org/download/ | grep -o 'racket-[0-9.]*-x86_64-macosx-cs\.dmg' | head -n 1))
+    fi
+    folderName="Racket v${appNewVersion}"
+    appName="${folderName}/DrRacket.app"
+    expectedTeamID="MHDH6AFHDR"
+    ;;
+    
 druvainsync)
     name="Druva inSync"
     type="pkgInDmg"
@@ -4214,7 +4276,27 @@ ecosiabrowser)
     appNewVersion=$(getJSONValue "$(curl -fsL 'https://ams.ecosia-browser.net/api/getLatest/144548e4-670e-46ef-be30-8d14ad305f19/mac/?update=false&channelprofilename=PROD&arch=x64')" '.Version')
     expectedTeamID="33YMRSYD2L"
     ;;
-egnyte)
+editshare-connect)
+    name="EditShare Connect"
+    type="pkg"
+    packageID="com.editshare.connect
+com.editshare.permsui"
+    editshareInstanceURL="" # https://editshare.example.com
+    appname="EditShare Connect"
+    archiveName="Install EditShare Connect vLatest.pkg"
+    downloadURL=$(curl -s ${editshareInstanceURL}/software.html | grep -o 'href="[^"]*Install EditShare Connect.*\.pkg"' | grep -o '".*"' | sed 's/"//g; s/ /%20/g')
+    appNewVersion=$(curl -s ${editshareInstanceURL}/software.html | grep -o '<span class="highlight">[^<]*' | sed 's/<span class="highlight">//')
+    expectedTeamID="URJUZJ3GCG"
+    ;;editshare-flowstory)
+    name="FLOW Story"
+    type="dmg"
+    editshareInstanceURL="" # https://editshare.example.com
+    appname="FLOW Story"
+    archiveName="FLOWStory-Latest.dmg"
+    downloadURL=$(curl -s ${editshareInstanceURL}/software.html | grep -o 'href="[^"]*FLOWStory-Latest.dmg"' | grep -o '".*"' | sed 's/"//g')
+    appNewVersion=$(curl -s ${editshareInstanceURL}/software.html | grep -o '<span class="highlight">[^<]*' | sed 's/<span class="highlight">//; s/\.[^.]*$//')
+    expectedTeamID="URJUZJ3GCG"
+    ;;egnyte)
     # credit: #MoeMunyoki from MacAdmins Slack
     name="Egnyte Connect"
     type="pkg"
@@ -4401,6 +4483,20 @@ everweb)
     appNewVersion=$(curl -fs https://www.everwebapp.com/change-log/index.html | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -n 1)
     expectedTeamID="A95T4TFRZ2"
     ;;
+examplify)
+    name="Examplify"
+    type="pkgInDmg"
+    appNewVersion=$(curl -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" -fsL "https://support.examsoft.com/hc/en-us/articles/11146797283469-Examplify-Direct-Download-Links-for-Windows-and-Mac-Installers" | grep -o 'releases\.examsoft\.com/Examplify/[0-9.]*/' | head -1 | sed 's|releases\.examsoft\.com/Examplify/||; s|/||')
+    if [[ $(arch) == "arm64" ]]; then
+        # Apple Silicon (ARM64) version
+        downloadURL=$(curl -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" -fsL "https://support.examsoft.com/hc/en-us/articles/11146797283469-Examplify-Direct-Download-Links-for-Windows-and-Mac-Installers" | grep -o 'https://releases\.examsoft\.com/Examplify/[^"]*-arm64\.dmg' | head -1)
+    else
+        # Intel version (without -arm64 suffix)
+        downloadURL=$(curl -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" -fsL "https://support.examsoft.com/hc/en-us/articles/11146797283469-Examplify-Direct-Download-Links-for-Windows-and-Mac-Installers" | grep -o 'https://releases\.examsoft\.com/Examplify/[^"]*\.dmg' | grep -v 'arm64' | head -1)
+    fi
+    expectedTeamID="5P9D4ESR3W"
+    blockingProcesses=("Examplify")
+    ;;
 exelbanstats)
     # credit: Søren Theilgaard (@theilgaard)
     name="Stats"
@@ -4536,6 +4632,13 @@ filmlab)
     appNewVersion="$(curl -fsL "https://downloads.filmlabapp.com/desktop/latest-mac.yml" | grep -E 'version' | awk '{print $2}')"
     downloadURL="https://downloads.filmlabapp.com/desktop/FilmLab-$appNewVersion-universal.dmg"
     expectedTeamID="UAGC35XKV5"
+    ;;
+finalcutprocontent)
+    name="FCPContent"
+    type="pkgInDmg"
+    downloadURL=$(curl -s "https://support.apple.com/en-us/106574" | grep -Eo 'https://updates\.cdn-apple\.com[^"]+FCPContent\.dmg' | head -n 1)
+    packageID="com.apple.pkg.FCPContent"
+    expectedTeamID="Software Update"
     ;;
 finaldraft11)
     name="Final Draft 11"
@@ -10754,12 +10857,21 @@ venturablocker)
     appNewVersion=$(versionFromGit Theile venturablocker )
     expectedTeamID="FXW6QXBFW5"
     ;;
-veracrypt)
+veracrypt-fuse-t)
     name="VeraCrypt"
     type="pkgInDmg"
-    #downloadURL=$(curl -s -L "https://www.veracrypt.fr/en/Downloads.html" | grep -Eio 'href="https://launchpad.net/veracrypt/trunk/(.*)/&#43;download/VeraCrypt_([0-9].*).dmg"' | cut -c7- | sed -e 's/"$//' | sed "s/&#43;/+/g")
-    downloadURL=$(curl -fs "https://www.veracrypt.fr/en/Downloads.html" | grep "https.*\.dmg" | grep -vi "legacy" | tr '"' '\n' | grep "^https.*" | grep -vi ".sig" | sed "s/&#43;/+/g")
-    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*.*)\.dmg/\1/g' )
+    archiveName="VeraCrypt_FUSE-T_[0-9.].*\.dmg"
+    downloadURL=$(curl -sfL "https://api.github.com/repos/veracrypt/VeraCrypt/releases" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_FUSE-T_([0-9.]*.*)\.dmg/\1/g')
+    expectedTeamID="Z933746L2S"
+    ;;
+veracrypt|\
+veracrypt-macfuse)
+    name="VeraCrypt"
+    type="pkgInDmg"
+    archiveName="VeraCrypt_[0-9.].*\.dmg"
+    downloadURL=$(curl -sfL "https://api.github.com/repos/veracrypt/VeraCrypt/releases" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*.*)\.dmg/\1/g')
     expectedTeamID="Z933746L2S"
     ;;
 vernierspectralanalysis)
