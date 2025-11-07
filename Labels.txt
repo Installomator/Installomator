@@ -55,6 +55,7 @@ anastasiysextensionmanager
 androidfiletransfer
 androidstudio
 anotherredisdesktopmanager
+antconc
 anydesk
 apachedirectorystudio
 apachenetbeans
@@ -79,6 +80,7 @@ arq7
 arturiamcc
 arturiasoftwarecenter
 asana
+aspera
 asperaconnect
 atext
 atextlegacy
@@ -128,6 +130,7 @@ bruno
 bugdom
 burpsuitecommunityedition
 burpsuiteprofessional
+busycal
 busycontacts
 buttercup
 caffeine
@@ -256,6 +259,7 @@ diskspace
 displaylinkmanager
 docker
 dockutil
+doctolib
 dracoon
 dragonframe2024
 dragonframe2025
@@ -263,6 +267,7 @@ dragonframe5
 drawio
 drift
 dropbox
+dropboxenterprise
 droplr
 druvainsync
 dstny
@@ -308,11 +313,13 @@ everweb
 exelbanstats
 exifrenamer
 expressvpn
+extensisconnect
 facebookmessenger
 fantastical
 fastscripts
 favro
 fellow
+fierycommandworkstation
 figma
 filemakerpro
 filmlab
@@ -409,6 +416,7 @@ hype
 hyper
 i1profiler
 ibarcoder
+ibmaspera
 ibmnotifier
 ice
 icons
@@ -442,6 +450,7 @@ jamfcheck
 jamfconnect
 jamfconnectconfiguration
 jamfconnectlaunchagent
+jamfconnectlogin
 jamfcpr
 jamfmigrator
 jamfpppcutility
@@ -536,6 +545,7 @@ macpass
 macports
 mactex
 mactracker
+macvector
 magicbullet
 mailmate
 mailtooutlook
@@ -547,6 +557,7 @@ marathoninfinity
 masterfader
 masv
 mattermost
+maxcycling74
 maxonapp
 mdmwatchdog
 meetingbar
@@ -648,6 +659,7 @@ netnewswire
 netspot
 networksharemounter
 nextcloud
+nextcloudclassic
 nextcloudtalk
 nodejs
 nodejslts
@@ -670,6 +682,7 @@ obs
 obsbotcenter
 obsbotwebcam
 obsidian
+obsioscamera
 odrive
 oktaverify
 ollama
@@ -900,7 +913,7 @@ sublimetext
 suitestudio
 supercollider
 superhuman
-supportapp
+superwhisper
 surfdrive
 suspiciouspackage
 swiftdialog
@@ -919,6 +932,7 @@ tabby
 tableaudesktop
 tableaupublic
 tableaureader
+tableplus
 tageditor
 tailscale
 talkdeskcxcloud
