@@ -1,5 +1,4 @@
 sketchup2024)
-    # SketchUp 2024 is a comprehensive 3D modeling software designed for professionals and enthusiasts
     name="SketchUp 2024"
     type="dmg"
     downloadURL="$(curl -s https://www.sketchup.com/en/download/all | grep -o 'https://download.sketchup.com/SketchUp-2024[^"]*.dmg')"
