@@ -12,3 +12,4 @@ drracket)
     appName="${folderName}/DrRacket.app"
     expectedTeamID="MHDH6AFHDR"
     ;;
+    
