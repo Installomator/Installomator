@@ -1,5 +1,4 @@
 drracket)
-	# DrRacket (or racket) offers a versatile programming environment for various platforms
     name="DrRacket"
     type="dmg"
 	appNewVersion=$(curl -fs https://racket-lang.org/download/ | grep -o 'racket-[0-9.]*-aarch64-macosx-cs\.dmg' | head -n 1 | sed 's/racket-\(.*\)-aarch64-macosx-cs\.dmg/\1/')
