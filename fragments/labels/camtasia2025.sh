@@ -1,12 +1,14 @@
-camtasia|\
 camtasia2025)
     name="Camtasia"
     type="dmg"
-    cdnData=$(curl -fsL "https://www.techsmith.com/api/v/1/products/getallversions/9" | jq '[.[] | select(.Major == 25)]')
-    appNewVersion=$(echo "${cdnData}" | jq '.[] | "20" + (.Major|tostring) + "." + (.Minor|tostring) + "." + (.Maintenance|tostring)' | tr -d '"')
-    versionID=$(echo "${cdnData}" | jq '.[].VersionID')
-    packageData=$(curl -fsl "https://www.techsmith.com/api/v/1/products/getversioninfo/${versionID}")
-    relativePath=$(echo "${packageData}" | jq '.PrimaryDownloadInformation.RelativePath' | tr -d '"')
-    downloadURL="https://download.techsmith.com${relativePath}camtasia.dmg"
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2025.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2025.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
