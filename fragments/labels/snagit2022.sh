@@ -1,7 +1,7 @@
 snagit2022)
     name="Snagit 2022"
     type="dmg"
-    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2022.0.0 Sparkle/2.8.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2022.0.0&lang=enu&os=mac')
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2022.0.0 Sparkle/2.8.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2022.0.0&lang=enu&os=mac')
     appNewVersion=$(
         echo "$sparkleData" | \
         xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
