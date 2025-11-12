@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-11-07"
+VERSIONDATE="2025-11-12"
 
 # MARK: Functions
 
@@ -2528,7 +2528,12 @@ awsvpnclient)
     type="pkg"
     baseURL="https://d20adtppz83p9s.cloudfront.net/OSX"
     appNewVersion=$(curl -s "https://docs.aws.amazon.com/vpn/latest/clientvpn-user/client-vpn-user-guide.rss" | grep -o 'AWS provided client ([0-9]*\.[0-9]*\.[0-9]*) for macOS' | head -1 | grep -o '[0-9]*\.[0-9]*\.[0-9]*')
-    downloadURL="${baseURL}/${appNewVersion}/AWS_VPN_Client.pkg"
+    if [[ $(arch) == "arm64" ]]
+    then
+        downloadURL="${baseURL}_ARM64/${appNewVersion}/AWS_VPN_Client_ARM64.pkg"
+    else
+        downloadURL="${baseURL}/${appNewVersion}/AWS_VPN_Client.pkg"
+    fi
     expectedTeamID="94KV3E626L"
     ;;
 axurerp10)
@@ -2744,6 +2749,13 @@ blender)
         downloadURL="https://ftp.nluug.nl/pub/graphics/blender/release/Blender$baseVersion/$archiveName"
     fi
     expectedTeamID="68UA947AUU"
+    ;;
+blitzit)
+    name="Blitzit"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit blitzit-hq desktop-releases)"
+    appNewVersion="$(versionFromGit blitzit-hq desktop-releases)"
+    expectedTeamID="29VYWQJ9TL"
     ;;
 boop)
     name="Boop"
@@ -3773,6 +3785,14 @@ darktable)
     appNewVersion=$(versionFromGit darktable-org darktable)
     expectedTeamID="85Q3K4KQRY"
     ;;
+daruma)
+	name="Daruma"
+	type="dmg"
+	bundleID="app.kadomaru.daruma"
+	downloadURL="https://delivery.kadomaru.app/daruma/Daruma.dmg"
+	appNewVersion="$(curl -fs https://delivery.kadomaru.app/daruma/appcast.xml | xpath 'string(//item[1]/sparkle:shortVersionString')"
+	expectedTeamID="TRLMQKJQ97"
+	;;
 daylite)
     name="Daylite"
     type="zip"
@@ -6520,6 +6540,21 @@ lmstudio)
     downloadURL="https://installers.lmstudio.ai/darwin/arm64/${appNewVersion}-${appBuild}/LM-Studio-${appNewVersion}-${appBuild}-arm64.dmg"
     expectedTeamID="D65G88RHWN"
     ;;
+logitechghub|\
+logighub)
+    name="Logi G-HUB"
+    appName="lghub.app"
+    archiveName="lghub_installer.zip"
+    installerTool="lghub_installer.app"
+    type="zip"
+    versionKey="CFBundleVersion"
+    onlineHTMLinfo=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs https://support.logi.com/api/v2/help_center/en-us/articles.json\?label_names\=webcontent\=productdownload,webproduct\=b972df0c-7db0-11e9-b911-fb4b2d0df96c,webos\=mac-macos-x-15.0 | jq -r '.articles.[0].body')
+    downloadURL=$(echo ${onlineHTMLinfo} | xmllint --html --xpath 'string(//div/div/ul/div/a/@href)' -)
+    appNewVersion=$(echo ${onlineHTMLinfo} | xmllint --html --xpath 'string(//li[b/span= "Software Version: "])' - | tail -1 | awk '{print$3}' -)
+    CLIInstaller="lghub_installer.app/Contents/MacOS/lghub_installer"
+    CLIArguments=(--silent)
+    expectedTeamID="QED4VVPZWA"
+    ;;
 logioptions|\
 logitechoptions)
     name="Logi Options"
@@ -8617,6 +8652,14 @@ powermonitor)
     appNewVersion=$(versionFromGit sap power-monitoring-tool-for-macos )
     expectedTeamID="7R5ZEU67FQ"
     ;;
+praat)
+    name="Praat"
+    type="dmg"
+    praatVersion="$(curl -fs https://www.fon.hum.uva.nl/praat/download_mac.html | grep "for Intel and Apple Silicon):" | cut -d '_' -f2 | cut -c15-)" 
+    downloadURL="https://www.fon.hum.uva.nl/praat/praat${praatVersion}_mac.dmg"
+    appNewVersion="${praatVersion:0:1}.${praatVersion:1:1}.${praatVersion:2:2}"
+    expectedTeamID="J9C6R9XA5W"
+    ;;
 prism10)
     name="Prism 10"
     type="dmg"
@@ -8711,6 +8754,13 @@ propresenter7)
     downloadURL=$(curl -s "https://api.renewedvision.com/v1/pro/upgrade?platform=macos&osVersion=12&appVersion=771&buildNumber=117899527&includeNotes=false" | grep -Eo '"downloadUrl":.*?[^\]",' | head -n 1 | cut -d \" -f 4 | sed -e 's/\\//g')
     appNewVersion=$(curl -s "https://api.renewedvision.com/v1/pro/upgrade?platform=macos&osVersion=12&appVersion=771&buildNumber=117899527&includeNotes=false" | grep -Eo '"version":.*?[^\]",' | head -n 1 | cut -d \" -f 4)
     expectedTeamID="97GAAZ6CPX"
+    ;;
+protondrive)
+    name="Proton Drive"
+    type="dmg"
+    appNewVersion=$(curl -fs "https://proton.me/download/drive/macos/appcast.xml" | sed -n 's/.*<sparkle:shortVersionString>\(.*\)<\/sparkle:shortVersionString>.*/\1/p')
+    downloadURL="https://proton.me/download/drive/macos/$appNewVersion/ProtonDrive-$appNewVersion.dmg"
+    expectedTeamID="2SB5Z68H26"
     ;;
 protonvpn)
     name="ProtonVPN"
@@ -9362,7 +9412,7 @@ shotcut)
     type="dmg"
     appNewVersion=$(curl -fsL https://www.shotcut.org/download/releasenotes | grep 'release-' | head -n 1 | cut -d '"' -f 2 | cut -d '-' -f 2)
     appCustomVersion() { echo "$(/usr/bin/defaults read "/Applications/shotcut.app/Contents/Info.plist" "CFBundleVersion" | sed -r 's/[.]//g')" }
-    archiveName="shotcut-macos-$appNewVersion.dmg"
+    archiveName="shotcut-macos-${appNewVersion:0:2}.${appNewVersion:2:2}.${appNewVersion:4:2}.dmg"
     downloadURL=$(downloadURLFromGit mltframework shotcut)
     expectedTeamID="Y6RX44QG2G"
     ;;
@@ -11209,6 +11259,14 @@ whimsical)
     blockingProcesses=( "Whimsical" )
     ;;
     
+whiterabbit)
+	name="White Rabbit"
+	type="dmg"
+	bundleID="app.kadomaru.white-rabbit"
+	downloadURL="https://delivery.kadomaru.app/white-rabbit/White%20Rabbit.dmg"
+	appNewVersion="$(curl -fs https://delivery.kadomaru.app/white-rabbit/appcast.xml | xpath 'string(//item[1]/sparkle:shortVersionString')"
+	expectedTeamID="TRLMQKJQ97"
+	;;
 windsurf)
     name="Windsurf"
     type="zip"

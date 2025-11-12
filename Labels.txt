@@ -120,6 +120,7 @@ blackhole16ch
 blackhole2ch
 blackhole64ch
 blender
+blitzit
 boop
 boxdrive
 boxsync
@@ -239,6 +240,7 @@ cytoscape
 daisydisk
 dangerzone
 darktable
+daruma
 daylite
 dbeaverce
 dbvisualizer
@@ -529,7 +531,9 @@ linear
 linearmouse
 livereplayer
 lmstudio
+logighub
 logioptions
+logitechghub
 logitechoptions
 logitechoptionsplus
 logitechoptionsplusoffline
@@ -755,6 +759,7 @@ portingkit
 postgresapp
 postman
 powermonitor
+praat
 prism10
 prism9
 pritunl
@@ -768,6 +773,7 @@ promiseutility
 promiseutilityr
 proofpointautoupdater
 propresenter7
+protondrive
 protonvpn
 proxyman
 prune
@@ -1059,6 +1065,7 @@ weprint
 whatroute
 whatsapp
 whimsical
+whiterabbit
 windsurf
 wireshark
 wordservice
