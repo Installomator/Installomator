@@ -1,7 +1,14 @@
 camtasia2022)
     name="Camtasia 2022"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2022" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2022.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2022.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
