@@ -8,8 +8,8 @@ appsanywhere)
       | /usr/bin/head -n 1
     )"
     if [[ -z "$latestVersion" ]]; then
-        echo "ERROR: Could not determine latest AppsAnywhere macOS client version from $aaClientReleasePage"
-        exit 9
+        printlog "ERROR: Could not determine latest AppsAnywhere macOS client version from $aaClientReleasePage"
+        cleanupAndExit 99
     fi
     downloadURL="https://files.appsanywhere.com/clients/appsanywhere/mac/${latestVersion}/apps-anywhere-setup-InstitutionId-${latestVersion}.pkg"
     pkgName="apps-anywhere-setup-InstitutionId-${latestVersion}.pkg"
@@ -17,8 +17,6 @@ appsanywhere)
     appCustomVersion(){
         /usr/bin/defaults read "/Applications/AppsAnywhere/AppsAnywhere.app/Contents/Info" CFBundleShortVersionString 2>/dev/null || echo "0"
     }
-    appCustomVersionComparison="ver"
     appNewVersion="$latestVersion"
     updateTool="/Applications/AppsAnywhere/AppsAnywhere Updater.app/Contents/MacOS/AppsAnywhere Updater"
-    blockingProcesses=( "AppsAnywhere" "AppsAnywhere Updater" "Cloudpaging Player" )
     ;;
