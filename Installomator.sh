@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-11-12"
+VERSIONDATE="2025-11-19"
 
 # MARK: Functions
 
@@ -2951,57 +2951,102 @@ camostudio)
 camtasia2019)
     name="Camtasia 2019"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2019" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2019" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2019.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2019.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/title/text())' - | \
+        awk '{ print $2 }'
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/enclosure[@xml:lang="en"]/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 camtasia2020)
     name="Camtasia 2020"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2020" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2020" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2020.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2020.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/title/text())' - | \
+        awk '{ print $2 }'
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/enclosure[@xml:lang="en"]/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 camtasia2021)
     name="Camtasia 2021"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2021" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2021" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2021.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2021.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/title/text())' - | \
+        awk '{ print $2 }'
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 camtasia2022)
     name="Camtasia 2022"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Camtasia (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Camtasia (Mac) 2022" | sed -e 's/.*Camtasia (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2022.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2022.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 camtasia2023)
     name="Camtasia 2023"
     type="dmg"
-    apiResult="$(curl -fsL "https://www.techsmith.com/api/v/1/products/getversioninfo/2080")"
-    downloadURL="https://download.techsmith.com$(getJSONValue "$apiResult" "PrimaryDownloadInformation.RelativePath")$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Name")"
-    appNewVersion="20$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Major").$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Minor").$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Maintenance")"
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2023.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2023.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 camtasia2024)
-    name="Camtasia 2024"
+    name="Camtasia"
     type="dmg"
-    apiResult="$(curl -fsL "https://www.techsmith.com/api/v/1/products/getversioninfo/2200")"
-    downloadURL="https://download.techsmith.com$(getJSONValue "$apiResult" "PrimaryDownloadInformation.RelativePath")$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Name")"
-    appNewVersion="20$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Major").$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Minor").$(getJSONValue "$apiResult" "PrimaryDownloadInformation.Maintenance")"
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2024.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2024.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
-camtasia|\
 camtasia2025)
     name="Camtasia"
     type="dmg"
-    cdnData=$(curl -fsL "https://www.techsmith.com/api/v/1/products/getallversions/9" | jq '[.[] | select(.Major == 25)]')
-    appNewVersion=$(echo "${cdnData}" | jq '.[] | "20" + (.Major|tostring) + "." + (.Minor|tostring) + "." + (.Maintenance|tostring)' | tr -d '"')
-    versionID=$(echo "${cdnData}" | jq '.[].VersionID')
-    packageData=$(curl -fsl "https://www.techsmith.com/api/v/1/products/getversioninfo/${versionID}")
-    relativePath=$(echo "${packageData}" | jq '.PrimaryDownloadInformation.RelativePath' | tr -d '"')
-    downloadURL="https://download.techsmith.com${relativePath}camtasia.dmg"
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2025.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2025.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 camunda)
@@ -9604,48 +9649,105 @@ smartsvn)
     appNewVersion=$(curl -fsL "https://www.smartsvn.com/download/" | grep -B 1 "changelog.txt" | grep "Version " | awk -F' ' '{ print $2 }')
     expectedTeamID="PHMY45PTNW"
     ;;
-snagit|\
-snagit2024)
-    name="Snagit 2024"
-    type="dmg"
-    sparkleData=$(curl -fsL 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2024.0.0&lang=enu&os=mac')
-    appNewVersion=$( <<<"$sparkleData" xpath 'string(//item[last()]/sparkle:shortVersionString)' )
-    downloadURL=$( <<<"$sparkleData" xpath 'string(//item[last()]/enclosure/@url)' )
-    expectedTeamID="7TQL462TU8"
-    ;;
 snagit2019)
     name="Snagit 2019"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2019" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2019" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2019.0.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2019.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/title/text())' - | \
+        awk '{ print $2 }'
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/enclosure[@xml:lang="en"]/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 snagit2020)
     name="Snagit 2020"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2020" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2020" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2020.0.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2020.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/title/text())' - | \
+        awk '{ print $2 }'
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/enclosure[@xml:lang="en"]/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 snagit2021)
     name="Snagit 2021"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2021" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2021" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2021.0.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2021.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/title/text())' - | \
+        awk '{ print $2 }'
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][1]/enclosure[@xml:lang="en"]/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 snagit2022)
     name="Snagit 2022"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2022" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2022" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2022.0.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2022.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 snagit2023)
     name="Snagit 2023"
     type="dmg"
-    downloadURL=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links" | grep -A 3 "Snagit (Mac) 2023" | sed 's/.*href="//' | sed 's/".*//' | grep .dmg)
-    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2023" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
+    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2023.0.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2023.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
+    expectedTeamID="7TQL462TU8"
+    ;;
+snagit2024)
+    name="Snagit"
+    type="dmg"
+    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2024.0.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2024.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
+    expectedTeamID="7TQL462TU8"
+    ;;
+snagit2025)
+    name="Snagit"
+    type="dmg"
+    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2025.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=snagitmac&ver=2025.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
 snapgene|\
