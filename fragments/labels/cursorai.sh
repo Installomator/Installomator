@@ -1,7 +1,9 @@
 cursorai)
     name="Cursor"
     type="dmg"
-    downloadURL="https://api2.cursor.sh/updates/download/golden/darwin-universal/cursor/"
+    updateFeed=$(curl -fsL  "https://www.cursor.com/api/download?platform=darwin-universal&releaseTrack=stable")
+    appNewVersion=$(getJSONValue "${updateFeed}" "version")
+    downloadURL=$(getJSONValue "${updateFeed}" "downloadUrl")
     expectedTeamID="VDXQ22DGB9"
     blockingProcesses=( "Cursor" )
     versionKey="CFBundleVersion"
