@@ -334,6 +334,16 @@ datadogAPI=""
 # Simply add your own API key for this in order to have logs sent to Datadog
 # See more here: https://www.datadoghq.com/product/log-management/
 
+# Advanced version comparison
+ADVANCED_VERSION_COMPARISON=""
+# options:
+#   - yes   Use more advanced version comparison.
+# By default Installomator will allways attempt to update an application if the installed
+# version is different from the version found online, even if the installed version is 
+# higher. This option will not perform an update if the installed version is higher.
+# Note: Version comparison only works for version formats containing numbers and dots.
+# If any other character is found, it will use the default version comparison.
+
 # Log Date format used when parsing logs for debugging, this is the default used by
 # install.log, override this in the case statements if you need something custom per
 # application (See adobeillustrator).  Using stadard GNU Date formatting.
