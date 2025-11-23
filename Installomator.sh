@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-11-19"
+VERSIONDATE="2025-11-23"
 
 # MARK: Functions
 
@@ -1839,6 +1839,13 @@ adobereaderdc-update)
     blockingProcesses=( "Acrobat Pro DC" "AdobeAcrobat" "AdobeReader" "Distiller" )
     Company="Adobe"
     ;;
+affinityapp)
+    name="Affinity"
+    type="dmg"
+    appName="Affinity.app"
+    downloadURL="https://downloads.affinity.studio/Affinity.dmg"
+    expectedTeamID="5HD2ARTBFS"
+    ;;
 affinitydesigner2)
     name="Affinity Designer 2"
     type="dmg"
@@ -2291,6 +2298,28 @@ sfsymbols)
     fi
     appNewVersion=$ver
     expectedTeamID="Software Update"
+    ;;
+appsanywhere)
+    name="AppsAnywhere Client (macOS)"
+    type="pkg"
+    aaClientReleasePage="https://docs.appsanywhere.com/appsanywhere/3.2/appsanywhere-client-macos"
+    latestVersion="$(
+      /usr/bin/curl -fsSL "$aaClientReleasePage" \
+      | /usr/bin/sed -nE 's/.*id="AppsAnywhereClient\(macOS\)-Version([0-9]+\.[0-9]+\.[0-9]+)\(CurrentVersion\)".*/\1/p' \
+      | /usr/bin/head -n 1
+    )"
+    if [[ -z "$latestVersion" ]]; then
+        printlog "ERROR: Could not determine latest AppsAnywhere macOS client version from $aaClientReleasePage"
+        cleanupAndExit 99
+    fi
+    downloadURL="https://files.appsanywhere.com/clients/appsanywhere/mac/${latestVersion}/apps-anywhere-setup-InstitutionId-${latestVersion}.pkg"
+    pkgName="apps-anywhere-setup-InstitutionId-${latestVersion}.pkg"
+    expectedTeamID="9ZNX23CMVD"
+    appCustomVersion(){
+        /usr/bin/defaults read "/Applications/AppsAnywhere/AppsAnywhere.app/Contents/Info" CFBundleShortVersionString 2>/dev/null || echo "0"
+    }
+    appNewVersion="$latestVersion"
+    updateTool="/Applications/AppsAnywhere/AppsAnywhere Updater.app/Contents/MacOS/AppsAnywhere Updater"
     ;;
 aquamacs)
     name="Aquamacs"
@@ -4998,12 +5027,12 @@ fsmonitor)
     expectedTeamID="V85GBYB7B9"
     ;;
 fujifilmwebcam)
-     name="FUJIFILM X Webcam 2"
-     type="pkg"
-     downloadURL=$(curl -fs "https://fujifilm-x.com/en-us/support/download/software/x-webcam/" | grep "https.*pkg" | sed -E 's/.*(https:\/\/dl.fujifilm-x\.com\/support\/software\/.*\.pkg[^\<]).*/\1/g' | sed -e 's/^"//' -e 's/"$//')
-     appNewVersion=$( echo “${downloadURL}” | sed -E 's/.*XWebcamIns([0-9]*).*/\1/g' | sed -E 's/([0-9])([0-9]).*/\1\.\2/g')
-     expectedTeamID="34LRP8AV2M"
-     ;;
+    name="FUJIFILM X Webcam 2"
+    type="pkg"
+    downloadURL=$(curl -fsL "https://www.fujifilm-x.com/en-us/support/download/software/x-webcam/" | grep "https.*pkg" | sed -E 's/.*(https:\/\/dl.fujifilm-x\.com\/support\/software\/.*\.pkg[^\<]).*/\1/g' | sed -e 's/^"//' -e 's/"$//')
+    appNewVersion=$( echo “${downloadURL}” | sed -E 's/.*XWebcamIns([0-9]*).*/\1/g' | sed -E 's/([0-9])([0-9]).*/\1\.\2/g')
+    expectedTeamID="34LRP8AV2M"
+    ;;
 garminbasecamp)
     name="Garmin BaseCamp"
     type="pkgInDmg"

@@ -25,6 +25,7 @@ adobedigitaleditions
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
+affinityapp
 affinitydesigner2
 affinityphoto2
 affinitypublisher2
@@ -69,6 +70,7 @@ applesfcompact
 applesfmono
 applesfpro
 applesfsymbols
+appsanywhere
 aquamacs
 aquaskk
 arcbrowser
