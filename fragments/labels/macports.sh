@@ -25,7 +25,7 @@ macports)
             archiveName="Catalina.pkg"
             ;;
         *)
-            cleanupAndExit 98 "macOS 10.14 or earlier not supported by Installomator."
+            cleanupAndExit 98 "Mac Ports label does not support this version of darwin."
             ;;
     esac
     downloadURL=$(downloadURLFromGit macports macports-base)
