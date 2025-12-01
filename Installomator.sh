@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-11-23"
+VERSIONDATE="2025-12-01"
 
 # MARK: Functions
 
@@ -9493,8 +9493,8 @@ shotcut)
 shottr)
     name="Shottr"
     type="dmg"
-    downloadURL="https://shottr.cc$(curl -fs "https://shottr.cc/newversion.html" | grep -o '\/dl\/Shottr-[0-9].[0-9].[0-9]\.dmg' | head -1 | xargs)"
-    appNewVersion=$(echo $downloadURL | grep -o '[0-9].[0-9].[0-9]' | xargs)
+    downloadURL="https://shottr.cc$(curl -fs "https://shottr.cc/newversion.html" | grep -o '\/dl\/Shottr-[0-9.]*\.dmg' | head -1 | xargs)"
+    appNewVersion=$(echo $downloadURL | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 | xargs)
     expectedTeamID="2Y683PRQWN"
     ;;
 sidekick)
