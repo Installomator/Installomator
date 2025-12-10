@@ -1,6 +1,7 @@
 appsanywhere)
     name="AppsAnywhere Client (macOS)"
     type="pkg"
+    appName="AppsAnywhere.app"
     aaClientReleasePage="https://docs.appsanywhere.com/client/-/macos-client-release-notes"
     seriesPath="$(
       /usr/bin/curl -fsSL "$aaClientReleasePage" 2>/dev/null \
@@ -33,5 +34,5 @@ appsanywhere)
         /usr/bin/defaults read "/Applications/AppsAnywhere/AppsAnywhere.app/Contents/Info" CFBundleShortVersionString 2>/dev/null || echo "0"
     }
     appNewVersion="$latestVersion"
-    updateTool="/Applications/AppsAnywhere/AppsAnywhere Updater.app/Contents/MacOS/AppsAnywhere Updater"
+    blockingProcesses=( AppsAnywhere )
     ;;
