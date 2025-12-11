@@ -43,7 +43,7 @@ hpclick)
             downloadURL=$(echo "$api_response" | grep -o '"fileUrl":"[^"]*"' | head -1 | sed 's/"fileUrl":"//;s/"//')
 
             # Extract version field value
-            appNewVersion=$(echo "$api_response" | grep -o '"version":"[^"]*"' | head -1 | sed 's/"version":"//;s/"//')
+        	appNewVersion=$(echo "$api_response" | grep -o '"version":"[^"]*"' | head -1 | sed 's/"version":"//;s/"//')
 
             if [[ -n "$downloadURL" ]] && [[ -n "$appNewVersion" ]]; then
                 printlog "Found HP Click version: $appNewVersion"
@@ -61,5 +61,5 @@ hpclick)
     fi
 
     expectedTeamID="6HB5Y2QTA3"
-    blockingProcesses=( "HP Click" )
+	blockingProcesses=( "HP Click" )
     ;;
