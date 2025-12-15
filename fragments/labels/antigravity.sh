@@ -4,7 +4,7 @@ antigravity)
     indexFilePath=$(curl -fsL --compressed "https://antigravity.google/download" \
         | grep -Eo 'main-[0-9A-Za-z]+\.js' | head -1)
     mainJS=$(curl -fsL --compressed "https://antigravity.google/${indexFilePath}")
-    if [[ "$(arch)" == "arm64" ]]; then
+    if [[ $(arch) == "arm64" ]]; then
         downloadURL=$(echo "$mainJS" \
             | grep -Eo 'https://edgedl\.me\.gvt1\.com/edgedl/release2/[^"]+/antigravity/stable/[^"]+/darwin-arm/Antigravity\.dmg' \
             | head -1)
