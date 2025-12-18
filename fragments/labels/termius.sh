@@ -5,4 +5,3 @@ termius)
     appNewVersion=""
     expectedTeamID="6KN952WR85"
     ;;
-    
