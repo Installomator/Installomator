@@ -152,6 +152,9 @@ if [ -z "$archiveName" ]; then
         *InZip)
             archiveName="${name}.zip"
             ;;
+        *InTBZ|*InBZ2)
+            archiveName="${name}.tbz"
+            ;;
         updateronly)
             ;;
         *)
@@ -372,6 +375,9 @@ case $type in
         ;;
     appInDmgInZip)
         installAppInDmgInZip
+        ;;
+    zipInTBZ|zipInBZ2)
+        installZipInTBZ
         ;;
     *)
         cleanupAndExit 99 "Cannot handle type $type" ERROR
