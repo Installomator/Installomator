@@ -1,7 +1,10 @@
 asperaconnect)
     name="Aspera Connect"
     type="pkg"
-    downloadURL="https://d3gcli72yxqn2z.cloudfront.net/downloads/connect/latest/bin/$(curl -fs 'https://www.ibm.com/support/fixcentral/swg/selectFixes?parent=ibm~Other%20software&product=ibm/Other+software/IBM+Aspera+Connect' --data-raw 'showStatus=false' | egrep -o "ibm-aspera-connect_[0-9.]+_macOS" | head -n1)_x86_64.pkg"
-    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*ibm-aspera-connect_([0-9]+(\.[0-9]+)*)_macOS.*\.pkg/\1/')
+    indexFilePath=$(curl -fsL https://ibmaspera.com/help/downloads/desktop | grep 'script type="module"' | grep -o "/.*.js")
+    downloadBaseUrl="https:$(curl -fsL https://ibmaspera.com${indexFilePath} | grep versions.js | grep -o "var i=\"//.*downloads/connect" | sed -E 's/var i="//g')"
+    appInfo=$(curl -fs ${downloadBaseUrl}/latest/versions.js | grep -o "{.*}")
+    appNewVersion=$(echo ${appInfo} | jq -r '.entries.[] | select(.title == "Aspera Connect for macOS") | .version' | awk -F "." '{print$1"."$2"."$3}')
+    downloadURL="${downloadBaseUrl}/latest/$(echo ${appInfo} | jq -r '.entries.[] | select(.title == "Aspera Connect for macOS").links.[] | select(.rel == "enclosure-one-click").href')"
     expectedTeamID="PETKK2G752"
     ;;

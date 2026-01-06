@@ -1,11 +1,15 @@
 gimp)
     name="GIMP"
     type="dmg"
+    gimpDetails="$(curl -fs "https://www.gimp.org/gimp_versions.json")"
+    appNewVersion="$(getJSONValue "$gimpDetails" "STABLE[0].version")"
+    dlVersion="$(echo "${appNewVersion}" | cut -d'.' -f1-2)"
+    [[ "$(getJSONValue "$gimpDetails" "STABLE[0].macos[0].filename")" == *"x86_64"* ]] && gimpDmgx86_64="$(getJSONValue "$gimpDetails" "STABLE[0].macos[0].filename")" && gimpDmgArm64="$(getJSONValue "$gimpDetails" "STABLE[0].macos[1].filename")"
+    [[ "$(getJSONValue "$gimpDetails" "STABLE[0].macos[0].filename")" == *"arm64"* ]] && gimpDmgArm64="$(getJSONValue "$gimpDetails" "STABLE[0].macos[0].filename")" && gimpDmgx86_64="$(getJSONValue "$gimpDetails" "STABLE[0].macos[1].filename")"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL=https://$(curl -fs https://www.gimp.org/downloads/ | grep -m 1 -o "download.*gimp-.*-arm64.dmg")
+        downloadURL="https://download.gimp.org/gimp/v${dlVersion}/macos/${gimpDmgArm64}"
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL=https://$(curl -fs https://www.gimp.org/downloads/ | grep -m 1 -o "download.*gimp-.*-x86_64.dmg")
+        downloadURL="https://download.gimp.org/gimp/v${dlVersion}/macos/${gimpDmgx86_64}"
     fi
-    appNewVersion=$(echo $downloadURL | cut -d "-" -f 2)
     expectedTeamID="T25BQ8HSJF"
     ;;
