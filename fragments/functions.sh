@@ -320,14 +320,39 @@ checkRunningProcesses() {
     for i in {1..4}; do
         countedProcesses=0
         for x in ${blockingProcesses}; do
-            if pgrep -xq "$x"; then
+            if pgrep -xq "$x" || [[ $(lsappinfo info "$x") ]]; then
                 printlog "found blocking process $x"
                 appClosed=1
 
+                # Find the correct process name to use
+                if pgrep -xq "$x" && [[ $(lsappinfo info "$x") ]]; then
+                    # Process names are matching between pgrep and lsappinfo
+                    processKillName=$x
+                    processQuitName=$x
+                elif pgrep -xq "$x"; then
+                    # Process was found via pgrep. Determine the quit name
+                    processKillName=$x
+
+                    # Get the PID that pgrep found
+                    processID=$(pgrep -x "$x")
+
+                    # Find the app using the PID in lsappinfo
+                    foundApp=$(lsappinfo find pid=$processID)
+
+                    # Get the process name
+                    processQuitName=$(lsappinfo info $foundApp -only name | cut -d= -f2 | tr -d '"')
+                else
+                    # Process was found via lsappinfo. Determine the kill name
+                    processQuitName=$x
+
+                    # Get the executable name
+                    processKillName=$(lsappinfo info "Code" -only executablepath | cut -d= -f2 | tr -d '"' | grep -o "[^/]*$")
+                fi
+
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
-                        printlog "telling app $x to quit"
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        printlog "telling app $processQuitName to quit"
+                        runAsUser osascript -e "tell app \"$processQuitName\" to quit"
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
@@ -338,12 +363,12 @@ checkRunningProcesses() {
                         fi
                         ;;
                     kill)
-                      printlog "killing process $x"
-                      pkill $x
+                      printlog "killing process $processQuitName"
+                      pkill $processKillName
                       sleep 5
                       ;;
                     prompt_user|prompt_user_then_kill)
-                      button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$processQuitName” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$processQuitName” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         appClosed=0
                         cleanupAndExit 10 "user aborted update" ERROR
@@ -361,8 +386,8 @@ checkRunningProcesses() {
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
                         else
-                          printlog "telling app $x to quit"
-                          runAsUser osascript -e "tell app \"$x\" to quit"
+                          printlog "telling app $processQuitName to quit"
+                          runAsUser osascript -e "tell app \"$processQuitName\" to quit"
                           # give the user a bit of time to quit apps
                           printlog "waiting 30 seconds for processes to quit"
                           sleep 30
@@ -370,7 +395,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     prompt_user_loop)
-                      button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
+                      button=$(displaydialog "Quit “$x” to continue updating? (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         if [[ $i < 2 ]]; then
                           printlog "user wants to wait an hour"
@@ -380,17 +405,17 @@ checkRunningProcesses() {
                           BLOCKING_PROCESS_ACTION=tell_user
                         fi
                       else
-                        printlog "telling app $x to quit"
-                        runAsUser osascript -e "tell app \"$x\" to quit"
+                        printlog "telling app $processQuitName to quit"
+                        runAsUser osascript -e "tell app \"$processQuitName\" to quit"
                         # give the user a bit of time to quit apps
                         printlog "waiting 30 seconds for processes to quit"
                         sleep 30
                       fi
                       ;;
                     tell_user|tell_user_then_kill)
-                      button=$(displaydialogContinue "Quit “$x” to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
-                      printlog "telling app $x to quit"
-                      runAsUser osascript -e "tell app \"$x\" to quit"
+                      button=$(displaydialogContinue "Quit “$processQuitName to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$processQuitName” needs to be updated.")
+                      printlog "telling app $processQuitName to quit"
+                      runAsUser osascript -e "tell app \"$processQuitName\" to quit"
                       # give the user a bit of time to quit apps
                       printlog "waiting 30 seconds for processes to quit"
                       sleep 30
