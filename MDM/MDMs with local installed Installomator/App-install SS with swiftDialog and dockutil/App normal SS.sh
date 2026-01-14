@@ -114,7 +114,7 @@ caffexit () {
 }
 
 # Mark: Installation begins
-installomatorVersion="$(${destFile} version | cut -d "." -f1 || true)"
+installomatorVersion="$(${destFile} version | grep -Eo '[0-9]+\.[0-9]+' | head -1 | cut -d '.' -f1)"
 
 if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     echo "Skipping swiftDialog UI, using notifications."
