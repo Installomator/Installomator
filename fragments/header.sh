@@ -35,6 +35,9 @@ NOTIFY=success
 #   - success      notify the user on success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
+#   - success_if_open  notify user on success if the application was open, but silent if the application was closed.
+#   - all_if_open  send user all notifications if the application was open, but silent if the application was closed.
+
 
 # time in seconds to wait for a prompt to be answered before exiting the script
 PROMPT_TIMEOUT=86400
