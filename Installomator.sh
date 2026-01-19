@@ -438,7 +438,7 @@ printlog(){
 
     # Check to make sure that the log isn't the same as the last, if it is then don't log and increment a timer.
     if [[ ${log_message} == ${previous_log_message} ]]; then
-        let logrepeat=$logrepeat+1
+        ((logrepeat++))
         return
     fi
     previous_log_message=$log_message
@@ -490,7 +490,7 @@ deduplicatelogs() {
     # If it matches increment logrepeate then skip to the next line.
     while read log; do
         if [[ $log == $previous_log ]];then
-            let logrepeat=$logrepeat+1
+            ((logrepeat++))
             continue
         fi
 
