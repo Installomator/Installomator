@@ -389,7 +389,7 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
 runAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
-        launchctl asuser $uid sudo -u $currentUser "$@"
+        launchctl asuser "$uid" sudo -u "$currentUser" "$@"
     fi
 }
 
