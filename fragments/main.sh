@@ -287,7 +287,7 @@ else
     else
         printlog "No Dialog connection, just download" DEBUG
         curlDownload=$(curl -v -fsL --show-error ${curlOptions} "$downloadURL" -o "$archiveName" 2>&1)
-        curlDownloadStatus=$(echo $?)
+        curlDownloadStatus=$?
     fi
 
     # Trying to detect proxy or web filter on downloaded file
