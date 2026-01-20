@@ -316,6 +316,14 @@ checkRunningProcesses() {
         return
     fi
 
+    if [[ $BLOCKING_PROCESS_ACTION == "ignore" \
+       || $currentUser == "loginwindow" \
+       || ${#blockingProcesses} -eq 0 \
+       || ${blockingProcesses[1]} == "NONE" ]]; then
+        printlog "ignoring blocking processes"
+        return
+    fi
+
     # try at most 3 times
     for i in {1..4}; do
         countedProcesses=0
@@ -536,6 +544,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         cleanupAndExit 0
     fi
 
+    checkRunningProcesses
+
     # Test if variable CLIInstaller is set
     if [[ -z $CLIInstaller ]]; then
 
@@ -690,6 +700,8 @@ installFromPKG() {
     if [ "$DEBUG" -eq 2 ]; then
         cleanupAndExit 0 "DEBUG mode 2 enabled, exiting" DEBUG
     fi
+
+    checkRunningProcesses
 
     # install pkg
     printlog "Installing $archiveName to $targetDir"
