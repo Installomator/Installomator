@@ -32,9 +32,10 @@ DEBUG=1
 # notify behavior
 NOTIFY=success
 # options:
-#   - success      notify the user on success
-#   - silent       no notifications
-#   - all          all notifications (great for Self Service installation)
+#   - success              notify the user on success
+#   - silent               no notifications
+#   - all                  all notifications (great for Self Service installation)
+#   - all_if_available     all notifications if there is a new version is available - otherwise, no notifications
 
 # time in seconds to wait for a prompt to be answered before exiting the script
 PROMPT_TIMEOUT=86400
