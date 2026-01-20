@@ -1056,3 +1056,62 @@ updateDialog() {
     fi
 }
 
+versionCompare() {
+    # Compare 2 versions.
+    # The first argument needs to be the currently installed version.
+    # The second argument is the version to check against.
+    # Return true if the second arugment is a higher version than the first.
+    # Otherwise return false.
+
+    # If versions are the same no update is necessary
+    if [ "$1" = "$2" ]; then
+        echo false
+        return
+    fi
+
+    # Version comparison only supports digits and dots. We should perform an update if the version contains other characters.
+    version1check=$(echo $1 | grep -o "[0-9\.]*")
+    version2check=$(echo $2 | grep -o "[0-9\.]*")
+    if [ "$1" != "$version1check" ] || [ "$2" != "$version2check" ]; then
+        echo true
+        return
+    fi
+
+    # Get the length of the longest version
+    version1length=$(echo $1 | tr -cd . | wc -c | tr -d " ")
+    version2length=$(echo $2 | tr -cd . | wc -c | tr -d " ")
+    if [ $version1length -gt $version2length ]; then
+        length=$version1length
+    else
+        length=$version2length
+    fi
+    length=$(($length + 1))
+
+    # Compare each segment of the versions
+    for ((i=1; i<=$length; i++)); do
+        # Cut the version strings up and get the ith part.
+        # Added a . to handle versions without one. The cut command would always return the full version otherwise.
+        part1=$(echo "$1." | cut -d "." -f $i)
+        part2=$(echo "$2." | cut -d "." -f $i)
+
+        # Make it 0 if the segment is empty.
+        if [[ -z $part1 ]]; then
+            part1=0
+        fi
+        if [[ -z $part2 ]]; then
+            part2=0
+        fi
+
+        if [ $part1 -gt $part2 ]; then
+            echo false
+            return
+        elif [ $part1 -lt $part2 ]; then
+            echo true
+            return
+        fi
+    done
+
+    echo true
+    return
+}
+
