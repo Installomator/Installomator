@@ -5,3 +5,4 @@ passwordutility)
     appNewVersion=$(curl -fsL "https://data.twocanoes.com/api/version_info" | sed -n 's/.*"com.twocanoes.PasswordUtility".*"version":"\([^"]*\)".*/\1/p')
     expectedTeamID="UXP6YEHSPW"
     ;;
+
