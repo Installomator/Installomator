@@ -9,3 +9,4 @@ omnissahorizonclient)
     appNewVersion=$(<<< "$downloadURL" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
     expectedTeamID="S2ZMFGQM93"
     ;;
+
