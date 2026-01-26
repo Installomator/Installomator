@@ -1,5 +1,5 @@
 firecutforpremierepro)
-    name="Firecut for Premiere Pro"
+    name="FireCut for Premiere Pro"
     type="pkg"
     downloadURL="$(curl -fsL https://firecut.ai/downloads | grep "FireCut_PP_Dist.*pkg" | grep -o "https://.*pkg")"
     appNewVersion=$(echo $downloadURL | grep -o "[0-9].*[0-9]")
