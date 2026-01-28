@@ -342,6 +342,18 @@ LogDateFormat="%Y-%m-%d %H:%M:%S"
 # Get the start time for parsing install.log if we fail.
 starttime=$(date "+$LogDateFormat")
 
+# Check if Var.txt file exists in same directory as Installomator 
+# Will load any variables defined in Var.txt and overwrite the above variables
+Launch_Dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+echo "launch dir is $Launch_Dir"
+Var_File="$Launch_Dir/Var.txt"
+if [ -f "$Var_File" ]; then
+	source "$Var_File"
+	echo "Config Loaded from $Var_File"
+else 
+	echo "no config found, staying with defaults"
+fi
+
 # Check if we have rosetta installed
 if [[ $(/usr/bin/arch) == "arm64" ]]; then
     if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then # pgrep oahd >/dev/null 2>&1
