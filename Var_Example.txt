@@ -1,5 +1,5 @@
-#To use the var file rename to Var.txt 
-
+# To use this var file rename to Var.txt 
+# Uncomment any variables you don't want read from the txt file 
 # NOTE: adjust these variables:
 # set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
@@ -320,4 +320,3 @@ LogDateFormat="%Y-%m-%d %H:%M:%S"
 
 # Get the start time for parsing install.log if we fail.
 starttime=$(date "+$LogDateFormat")
-
