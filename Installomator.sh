@@ -22,7 +22,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 #Check if var.txt file exists in same directory as Installomator 
 Launch_Dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 echo "launch dir is $Launch_Dir"
-Var_File="$Launch_Dir/var.txt"
+Var_File="$Launch_Dir/Var.txt"
 if [ -f "$Var_File" ]; then
     source $Var_File
     # Example: Load the variables from the file
