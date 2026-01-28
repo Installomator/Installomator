@@ -1,33 +1,12 @@
-#!/bin/zsh --no-rcs
-label="" # if no label is sent to the script, this will be used
-
-# Installomator
-#
-# Downloads and installs Applications
-# 2020-2024 Installomator
-#
-# inspired by the download scripts from William Smith and Sander Schram
-#
-# Contributors:
-#    Armin Briegel - @scriptingosx
-#    Isaac Ordonez - @issacatmann
-#    Søren Theilgaard - @Theile
-#    Adam Codega - @acodega
-#    Trevor Sysock - @BigMacAdmin
-#    Bart Reardon - @bartreardon
-#
-# with contributions from many others
-
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin
-
+# To use this var file rename to Var.txt 
+# Uncomment any variables you don't want read from the txt file 
 # NOTE: adjust these variables:
-
 # set to 0 for production, 1 or 2 for debugging
 # while debugging, items will be downloaded to the parent directory of this script
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=1
+DEBUG=0
 
 # notify behavior
 NOTIFY=success
@@ -341,22 +320,3 @@ LogDateFormat="%Y-%m-%d %H:%M:%S"
 
 # Get the start time for parsing install.log if we fail.
 starttime=$(date "+$LogDateFormat")
-
-# Check if Var.txt file exists in same directory as Installomator 
-# Will load any variables defined in Var.txt and overwrite the above variables
-Launch_Dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-echo "launch dir is $Launch_Dir"
-Var_File="$Launch_Dir/Var.txt"
-if [ -f "$Var_File" ]; then
-	source "$Var_File"
-	echo "Config Loaded from $Var_File"
-else 
-	echo "no config found, staying with defaults"
-fi
-
-# Check if we have rosetta installed
-if [[ $(/usr/bin/arch) == "arm64" ]]; then
-    if ! arch -x86_64 /usr/bin/true >/dev/null 2>&1; then # pgrep oahd >/dev/null 2>&1
-        rosetta2=no
-    fi
-fi
