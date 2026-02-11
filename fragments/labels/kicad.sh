@@ -7,4 +7,5 @@ kicad)
     appName="${folderName}/KiCad.app"
     versionKey="CFBundleShortVersionString"
     expectedTeamID="9FQDHNY6U2"
+    blockingProcesses=("GerbView" "bitmap2component" "KiCad" "pl_editor" "pcb_calculator" "pcbnew" "eeschema")
     ;;
