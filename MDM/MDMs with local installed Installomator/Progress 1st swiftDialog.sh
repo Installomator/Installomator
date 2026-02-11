@@ -189,11 +189,11 @@ case $LOGO in
         ;;
     kandji)
         # Kandji
-        LOGO="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
+        LOGO_PATH="/Applications/Kandji Self Service.app/Contents/Resources/AppIcon.icns"
         ;;
     filewave)
         # FileWave
-        LOGO="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
+        LOGO_PATH="/usr/local/sbin/FileWave.app/Contents/Resources/fwGUI.app/Contents/Resources/kiosk.icns"
         ;;
 esac
 if [[ ! -a "${LOGO_PATH}" ]]; then
@@ -233,6 +233,15 @@ function displayDialog(){
     if [[ "$currentUser" != "" ]]; then
         launchctl asuser $currentUserID sudo -u $currentUser osascript -e "button returned of (display dialog \"$message\" buttons {\"OK\"} default button \"OK\" with icon POSIX file \"$LOGO_PATH\")" || true
     fi
+}
+
+# No sleeping
+/usr/bin/caffeinate -d -i -m -u &
+caffeinatepid=$!
+caffexit () {
+    kill "$caffeinatepid" || true
+    printlog "[LOG-END] Status $1"
+    exit $1
 }
 
 # Mark: Code
