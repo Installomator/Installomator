@@ -634,6 +634,7 @@ minisim
 miro
 mist
 mist-cli
+mixxx
 mkuser
 mmhmm
 mmhmm-desktop
