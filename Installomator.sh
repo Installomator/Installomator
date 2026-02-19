@@ -351,6 +351,12 @@ fi
 VERSION="10.9beta"
 VERSIONDATE="2025-12-23"
 
+# Optional GitHub API token
+GITHUB_API_TOKEN="${GITHUB_API_TOKEN:-}"
+
+# Enable GitHub debug logging (set to 1 to enable)
+GITHUB_API_DEBUG="${GITHUB_API_DEBUG:-0}"
+
 # MARK: Functions
 
 cleanupAndExit() { # $1 = exit code, $2 message, $3 level
@@ -509,6 +515,14 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
+    if [[ -n "$GITHUB_API_TOKEN" ]]; then
+        auth_header=(-H "Authorization: Bearer $GITHUB_API_TOKEN")
+        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && echo "GITHUB DEBUG: Using GitHub API token (length: ${#GITHUB_API_TOKEN})" >&2
+    else
+        auth_header=()
+        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && echo "GITHUB DEBUG: No GitHub API token set." >&2
+    fi
+
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
@@ -517,16 +531,38 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
         filetype=$type
     fi
 
+    if [[ "$GITHUB_API_DEBUG" -eq 1 ]]; then
+        api_debug=$(curl -sSL -D - "${auth_header[@]}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest")
+
+        http_status=$(printf "%s" "$api_debug" | awk '/^HTTP/{code=$2} END{print code}')
+        rate_limit=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-limit:" {print $2}')
+        rate_remaining=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-remaining:" {print $2}')
+        rate_used=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-used:" {print $2}')
+        rate_reset=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-reset:" {print $2}')
+
+        echo "GITHUB DEBUG: HTTP Status: ${http_status}" >&2
+        echo "GITHUB DEBUG: RateLimit-Limit: ${rate_limit:-unknown}" >&2
+        echo "GITHUB DEBUG: RateLimit-Remaining: ${rate_remaining:-unknown}" >&2
+        echo "GITHUB DEBUG: RateLimit-Used: ${rate_used:-unknown}" >&2
+        echo "GITHUB DEBUG: RateLimit-Reset (epoch): ${rate_reset:-unknown}" >&2
+
+        if [[ "$http_status" == "401" ]]; then
+            echo "GITHUB DEBUG: Authentication failed (401 Unauthorized)." >&2
+        elif [[ "$http_status" == "403" && "$rate_remaining" == "0" ]]; then
+            echo "GITHUB DEBUG: Rate limit exceeded." >&2
+        fi
+    fi
+
     if [ -n "$archiveName" ]; then
-        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+        downloadURL=$(curl -sfL "${auth_header[@]}" "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
         if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName")" == "" ]]; then
-            #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
             downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)"
         fi
     else
-        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        downloadURL=$(curl -sfL "${auth_header[@]}" "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
         if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
-            #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
             downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
         fi
     fi
@@ -544,7 +580,38 @@ versionFromGit() {
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
-    #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
+    if [[ -n "$GITHUB_API_TOKEN" ]]; then
+        auth_header=(-H "Authorization: Bearer $GITHUB_API_TOKEN")
+        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && echo "GITHUB DEBUG: Using GitHub API token (length: ${#GITHUB_API_TOKEN})" >&2
+    else
+        auth_header=()
+        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && echo "GITHUB DEBUG: No GitHub API token set." >&2
+    fi
+    # --- API debug request parsing ---
+    if [[ "$GITHUB_API_DEBUG" -eq 1 ]]; then
+        api_debug=$(curl -sSL -D - "${auth_header[@]}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest")
+
+        http_status=$(printf "%s" "$api_debug" | awk '/^HTTP/{code=$2} END{print code}')
+        rate_limit=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-limit:" {print $2}')
+        rate_remaining=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-remaining:" {print $2}')
+        rate_used=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-used:" {print $2}')
+        rate_reset=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-reset:" {print $2}')
+
+        echo "GITHUB DEBUG: HTTP Status: ${http_status}" >&2
+        echo "GITHUB DEBUG: RateLimit-Limit: ${rate_limit:-unknown}" >&2
+        echo "GITHUB DEBUG: RateLimit-Remaining: ${rate_remaining:-unknown}" >&2
+        echo "GITHUB DEBUG: RateLimit-Used: ${rate_used:-unknown}" >&2
+        echo "GITHUB DEBUG: RateLimit-Reset (epoch): ${rate_reset:-unknown}" >&2
+
+        if [[ "$http_status" == "401" ]]; then
+            echo "GITHUB DEBUG: Authentication failed (401 Unauthorized)." >&2
+        elif [[ "$http_status" == "403" && "$rate_remaining" == "0" ]]; then
+            echo "GITHUB DEBUG: Rate limit exceeded." >&2
+        fi
+    fi
+
     appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
