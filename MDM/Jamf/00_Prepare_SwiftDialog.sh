@@ -92,7 +92,7 @@ dialogCMD=(
            --commandfile "$dialog_command_file"
 )
 
-echo "dialogCMD: ${dialogCMD[@]}"
+echo Executing: $dialogBinary "${dialogCMD[@]}"
 
 
 $dialogBinary \
