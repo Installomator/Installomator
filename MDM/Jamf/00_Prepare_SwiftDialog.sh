@@ -80,7 +80,7 @@ echo "icon: $icon"
 echo "overlayicon: $overlayicon"
 
 # display first screen
-dialogCMD=("$dialogBinary"
+dialogCMD=(
            --title none
            --icon "$icon"
            --overlayicon "$overlayicon"
@@ -94,7 +94,10 @@ dialogCMD=("$dialogBinary"
 
 echo "dialogCMD: ${dialogCMD[@]}"
 
-"${dialogCMD[@]}" &
+
+$dialogBinary \
+${dialogCMD[@]} \
+&
 
 echo "$(date +%F\ %T) : SwiftDialog started!"
 
