@@ -1,3 +1,4 @@
 microsoftvisualstudiocode
 slack
 visualstudiocode
+zoom
