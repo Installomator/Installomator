@@ -156,10 +156,10 @@ setupAuthHeader() {
     # credit github auth and debug: Stefan Kloepping (@northalpha)
     if [[ -n "$GITHUB_API_TOKEN" ]]; then
         auth_header=(-H "Authorization: Bearer $GITHUB_API_TOKEN")
-        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && echo "GITHUB DEBUG: Using GitHub API token (length: ${#GITHUB_API_TOKEN})" >&2
+        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && printlog "GITHUB DEBUG: Using GitHub API token (length: ${#GITHUB_API_TOKEN})" >&2
     else
         auth_header=()
-        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && echo "GITHUB DEBUG: No GitHub API token set." >&2
+        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && printlog "GITHUB DEBUG: No GitHub API token set." >&2
     fi
 }
 
@@ -184,16 +184,16 @@ githubApiDebug() {
     rate_used=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-used:" {print $2}')
     rate_reset=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-reset:" {print $2}')
 
-    echo "GITHUB DEBUG: HTTP Status: ${http_status}" >&2
-    echo "GITHUB DEBUG: RateLimit-Limit: ${rate_limit:-unknown}" >&2
-    echo "GITHUB DEBUG: RateLimit-Remaining: ${rate_remaining:-unknown}" >&2
-    echo "GITHUB DEBUG: RateLimit-Used: ${rate_used:-unknown}" >&2
-    echo "GITHUB DEBUG: RateLimit-Reset (epoch): ${rate_reset:-unknown}" >&2
+    printlog "GITHUB DEBUG: HTTP Status: ${http_status}" >&2
+    printlog "GITHUB DEBUG: RateLimit-Limit: ${rate_limit:-unknown}" >&2
+    printlog "GITHUB DEBUG: RateLimit-Remaining: ${rate_remaining:-unknown}" >&2
+    printlog "GITHUB DEBUG: RateLimit-Used: ${rate_used:-unknown}" >&2
+    printlog "GITHUB DEBUG: RateLimit-Reset (epoch): ${rate_reset:-unknown}" >&2
 
     if [[ "$http_status" == "401" ]]; then
-        echo "GITHUB DEBUG: Authentication failed (401 Unauthorized)." >&2
+        printlog "GITHUB DEBUG: Authentication failed (401 Unauthorized)." >&2
     elif [[ "$http_status" == "403" && "$rate_remaining" == "0" ]]; then
-        echo "GITHUB DEBUG: Rate limit exceeded." >&2
+        printlog "GITHUB DEBUG: Rate limit exceeded." >&2
     fi
 }
 
