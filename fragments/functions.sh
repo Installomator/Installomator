@@ -270,12 +270,12 @@ versionFromGit() {
     release_json=$(curl -sfL "${auth_header[@]}" "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest")
 
     # Extract version (tag_name)
-    version=$(echo "$release_json" | awk -F '"' '/"tag_name"/ {print $4; exit }')
+    appNewVersion=$(echo "$release_json" | awk -F '"' '/"tag_name"/ {print $4; exit }')
 
-    if [ -z "$version" ]; then
-        cleanupAndExit 15 "could not retrieve version for $gitusername/$gitreponame" ERROR
+    if [ -z "$appNewVersion" ]; then
+        printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
     else
-        echo "$version"
+        echo "$appNewVersion"
         return 0
     fi
 }
