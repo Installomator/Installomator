@@ -274,6 +274,7 @@ versionFromGit() {
 
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
+        appNewVersion=""
     else
         echo "$appNewVersion"
         return 0
