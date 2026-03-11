@@ -8,8 +8,8 @@ handy)
         appNewVersion=$(versionFromGit "cjpais" "Handy")
     else
         # Handy is only available for Apple Silicon (arm64) Macs
-        downloadURL=""
-        appNewVersion=""
+        printlog "Handy is only compatible with Apple Silicon (arm64) Macs." ERROR
+        cleanupAndExit 1 "Handy requires Apple Silicon" ERROR
     fi
     expectedTeamID="UWFLB4GC25"
     ;;
