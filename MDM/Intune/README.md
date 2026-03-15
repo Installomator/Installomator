@@ -53,7 +53,7 @@ Optionally adjust the icons and Installomator options:
 appIcon="/Applications/Company Portal.app/Contents/Resources/AppIcon.icns"
 overlayIcon="/System/Library/CoreServices/Installer.app/Contents/Resources/package.icns"
 
-installomatorOptions="DEBUG=0 BLOCKING_PROCESS_ACTION=prompt_user_then_kill REOPEN=yes NOTIFY_DIALOG=1 DIALOG_CMD_FILE=${dialogCommandFile}"
+installomatorOptions="DEBUG=0 BLOCKING_PROCESS_ACTION=prompt_user_then_kill REOPEN=yes NOTIFY_DIALOG=1 NOTIFY=silent DIALOG_CMD_FILE=${dialogCommandFile}"
 ```
 
 All available Installomator labels can be found in the [Installomator repository](https://github.com/Installomator/Installomator/blob/main/Installomator.sh).
