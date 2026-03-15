@@ -127,7 +127,7 @@ defaults read /Applications/YourApp.app/Contents/Info CFBundleIdentifier
 ```
 
 > [!IMPORTANT]
-> Since we will always be installing the latest version of the given app with Installomator, we have no real way of knowing what the real version number will be. Hence ignoring the app version, and setting the detection App version to some value that is equal or lower that what you might actually install.
+> Since we will always be installing the latest version of the given app with Installomator, we have no real way of knowing what the real version number will be. Hence ignoring the app version, and setting the detection App version to some value that is equal or lower than what you might actually install.
 
 ---
 
