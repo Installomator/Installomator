@@ -32,7 +32,7 @@ dialogApp="/Library/Application Support/Dialog/Dialog.app"
 dialogCommandFile="/var/tmp/dialog.log"
 
 # Note: Using quotes inside the string would break the variable assignment.
-installomatorOptions="DEBUG=0 BLOCKING_PROCESS_ACTION=prompt_user_then_kill REOPEN=yes NOTIFY_DIALOG=1 DIALOG_CMD_FILE=${dialogCommandFile}"
+installomatorOptions="DEBUG=0 BLOCKING_PROCESS_ACTION=prompt_user_then_kill REOPEN=yes NOTIFY_DIALOG=1 NOTIFY=silent DIALOG_CMD_FILE=${dialogCommandFile}"
 
 logDir="/Library/Logs/Microsoft/IntuneScripts/${installomatorLabel}"
 log="${logDir}/${installomatorLabel}.log"
