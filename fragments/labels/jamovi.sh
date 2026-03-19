@@ -1,14 +1,27 @@
 jamovi)
     name="jamovi"
     type="dmg"
-    downloadURL="http://www.jamovi.org"
-    if [[ -n $jamoviLatest ]]; then
-        downloadURL="${downloadURL}$(curl -s "$downloadURL/download.html" | grep macos | grep "download-button" | head -1 | cut -d '"' -f 4)"
+    baseURL="https://www.jamovi.org"
+
+    # Detect architecture for separate arm64/x64 DMGs
+    if [[ "$(arch)" == "arm64" ]]; then
+        archSuffix="arm64"
     else
-        downloadURL="${downloadURL}$(curl -s "$downloadURL/download.html" | grep macos | grep "download-button" | tail -1 | cut -d '"' -f 4)"
+        archSuffix="x64"
     fi
-    # The above is a cheat, they list both the "Latest" version and the "Solid" version twice on the page, but in opposing order.
-    #     I'm also assuming they mean Latest = beta, and Solid = Stable.
-    appNewVersion="$(echo $downloadPATH | cut -d '-' -f 2)"
+
+    # solid (stable) is listed first, current (latest) is listed second
+    if [[ -n $jamoviLatest ]]; then
+        downloadPath=$(curl -sf "${baseURL}/download.html" \
+            | grep -o "/downloads/jamovi-[^\"]*-macos-${archSuffix}\.dmg" \
+            | tail -1)
+    else
+        downloadPath=$(curl -sf "${baseURL}/download.html" \
+            | grep -o "/downloads/jamovi-[^\"]*-macos-${archSuffix}\.dmg" \
+            | head -1)
+    fi
+
+    downloadURL="${baseURL}${downloadPath}"
+    appNewVersion="$(echo "$downloadPath" | cut -d '-' -f 2)"
     expectedTeamID="9NCBP559AB"
     ;;
