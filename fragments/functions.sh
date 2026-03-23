@@ -921,8 +921,8 @@ finishing() {
 # KeyNote, PowerPoint, Zoom, or Webex.
 # See: https://developer.apple.com/documentation/iokit/iopmlib_h/iopmassertiontypes
 hasDisplaySleepAssertion() {
-    # Get the names of all apps with active display sleep assertions
-    local apps="$(/usr/bin/pmset -g assertions | /usr/bin/awk '/NoDisplaySleepAssertion | PreventUserIdleDisplaySleep/ && match($0,/\(.+\)/) && ! /coreaudiod/ {gsub(/^.*\(/,"",$0); gsub(/\).*$/,"",$0); print};')"
+    # Get the names of all apps with active display sleep assertions (removing non-ASCII characters before awk)
+    local apps="$(/usr/bin/pmset -g assertions | perl -C -Mutf8 -pe 's/[^\x00-\x7F]//g' | /usr/bin/awk '/NoDisplaySleepAssertion | PreventUserIdleDisplaySleep/ && match($0,/\(.+\)/) && ! /coreaudiod/ {gsub(/^.*\(/,"",$0); gsub(/\).*$/,"",$0); print};')"
 
     if [[ ! "${apps}" ]]; then
         # No display sleep assertions detected
