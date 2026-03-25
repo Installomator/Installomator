@@ -1,0 +1,6 @@
+# =========================================================
+# CODEOWNERS — INSTALLOMATOR
+# =========================================================
+
+# Default: all files require core maintainer approval
+* @installomator/core-maintainers
