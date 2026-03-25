@@ -122,7 +122,7 @@ if [[ -f "$fragments_dir/install Installomator zip 1.sh" && -f "$fragments_dir/i
     destination_installer_file="$build_dir/Install Installomator ${version} ${versiondate}.sh"
 
     # add the install Installomator zip 1.sh
-    cat "$fragments_dir/install Installomator zip 1.sh" > $destination_installer_file
+    cat "$fragments_dir/install Installomator zip 1.sh" | sed -e 's/^# Installomator version$/# Installomator version '"${version} ${versiondate}"'/' > $destination_installer_file
 
     # Dump -> zip -> base64
     cat "$destination_file" | gzip -9 | base64 -i - -o - >> $destination_installer_file

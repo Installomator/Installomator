@@ -6,7 +6,8 @@
 
 #########################################################################################
 # install Installomator zip direct
-# userSetup v. 3.2, Installer v. 2.7
+# Source: https://github.com/Installomator/Installomator
+# Installomator version
 #########################################################################################
 
 
