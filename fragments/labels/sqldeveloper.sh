@@ -4,12 +4,10 @@ oraclesqldeveloper)
     # The name of the process that needs to be killed is 'java'. Killing that may have unintended consequences.
     name="SQLDeveloper"
     type="zip"
+    downloadURL=$(curl -fs https://www.oracle.com/database/sqldeveloper/technologies/download/ | grep -o 'https://download\.oracle\.com[^"]*macos-x64\.app\.zip')
     if [[ "$(arch)" == "arm64" ]]; then
-        downloadURL=$(curl -fs https://www.oracle.com/database/sqldeveloper/technologies/download/ | grep -oE "download.oracle.com.*macos-aarch64.app.zip")
-    else
-        downloadURL=$(curl -fs https://www.oracle.com/database/sqldeveloper/technologies/download/ | grep -oE "download.oracle.com.*macos-x64.app.zip")
+        downloadURL=$(echo "$downloadURL" | sed 's/x64/aarch64/')
     fi
-    downloadURL="https://${downloadURL}"
     # CFBundleShortVersionString does not exist. CFBundleVersion gives 4 dot-separated numbers. The custom version gives 5 numbers and matches the version in downloadURL.
     appNewVersion=$(echo "$downloadURL" | awk -F - '{print $2}')
     versionKey="CFBundleVersion"
