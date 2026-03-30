@@ -76,7 +76,7 @@ pkgbuild --nopayload --identifier my.fake.pkg intune_dummy_package.pkg
 
 ### Create the PKG app in Intune
 
-In the Intune admin center, go to **Apps > macOS** > click **Create**  
+In the Intune admin center, go to **Apps > macOS** > click **Create**
 Choose **macOS app (PKG)**, and click **Select**
 Click **Select app package file** and then upload `intune_dummy_package.pkg`.
 
@@ -176,7 +176,8 @@ Locate the application in Company Portal and click the **Install** button to sta
 
 ### Installation Process
 
-After clicking the **Install** button in company portal, you should very shortly see a dialog shown in the bottom right corner of the screen. The time for this to appear will depend on the installation status of Swift Dialog. If the script needs to install it, there will first be a short delay while Swift Dialog is downloaded, verified and installed. Devices with Swift Dialog already installed should see the dialog happen veery quickly.
+After clicking the **Install** button in company portal, you should very shortly see a dialog shown in the bottom right corner of the screen. The time for this to appear will depend on the installation status of Swift Dialog. If the script needs to install it, there will first be a short delay while Swift Dialog is downloaded, verified and installed. Devices with Swift Dialog already installed should see the dialog happen very quickly.
+
 ![Swift Dialog — app installation](images/swift-dialog-downloading.png)
 ![Swift Dialog — app verification](images/swift-dialog-verifying.png)
 ![Swift Dialog — app verification](images/swift-dialog-finishing.png)
@@ -198,7 +199,7 @@ Going forward Company Portal will show the button as **Re-install**. The end-use
 ## Troubleshooting
 
 **Dialog does not appear**
-Verify Swift Dialog installed correctly:  
+Verify Swift Dialog installed correctly:
 ```bash
 ls "/Library/Application Support/Dialog/Dialog.app"
 ```
