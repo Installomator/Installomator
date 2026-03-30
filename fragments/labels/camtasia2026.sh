@@ -1,15 +1,15 @@
-camtasia2025)
+camtasia|\
+camtasia2026)
     name="Camtasia"
     type="dmg"
-    sparkleData=$(curl -H 'user-agent: Camtasia/2025.2.6 Sparkle/2.8.0' \
-        -fsL 'https://sparkle.cloud.techsmith.com/api/v1/AppcastManifest/?version=25.0.0&utm_source=product&utm_medium=cmac&utm_campaign=cm25&ipc_item_name=cmac&ipc_platform=macos')
+    sparkleData=$(curl -H 'user-agent: Camtasia/2026.0.7 Sparkle/2.8.0' \
+        -fsL 'https://sparkle.cloud.techsmith.com/api/v1/AppcastManifest/?version=26.0.0&utm_source=product&utm_medium=cmac&utm_campaign=cm26&ipc_item_name=cmac&ipc_platform=macos')
     appNewVersion=$( <<<"$sparkleData" xpath \
         '//*[local-name()="shortVersionString"]
-            [starts-with(.,"2025.")]
+            [starts-with(.,"2026.")]
             /text()' \
         | tr ' ' '\n' | sort -V | tail -n1
     )
-
     downloadURL=$( <<<"$sparkleData" xpath \
         'string(
             //*[local-name()="item"]
