@@ -1,7 +1,8 @@
-snagit2025)
+snagit|\
+snagit2026)
     name="Snagit"
     type="dmg"
-    cdnData=$(curl -fsL "https://www.techsmith.com/api/v/1/products/getallversions/100" | jq '[.[] | select(.Major == 25)]')
+    cdnData=$(curl -fsL "https://www.techsmith.com/api/v/1/products/getallversions/100" | jq '[.[] | select(.Major == 26)]')
     appNewVersion=$(echo "${cdnData}" | jq '.[] | "20" + (.Major|tostring) + "." + (.Minor|tostring) + "." + (.Maintenance|tostring)' | tr -d '"')
     echo $appNewVersion
     versionID=$(echo "${cdnData}" | jq '.[].VersionID')
