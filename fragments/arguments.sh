@@ -1,3 +1,4 @@
+yelp "arguments.sh file content"
 # NOTE: check minimal macOS requirement
 autoload is-at-least
 
@@ -130,6 +131,7 @@ if [[ ! -x $DIALOG_CMD ]]; then
 fi
 
 # MARK: labels in case statement
+yelp "Processing label: $label"
 case $label in
 longversion)
     # print the script version

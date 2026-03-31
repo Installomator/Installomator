@@ -112,7 +112,7 @@ printlog(){
     # then post to Datadog's HTTPs endpoint.
     if [[ -n $datadogAPI && ${levels[$log_priority]} -ge ${levels[$datadogLoggingLevel]} ]]; then
         while IFS= read -r logmessage; do
-            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : ${logmessage}" > /dev/null
+            curl -s -X POST https://http-intake.logs.datadoghq.com/v1/input -H "Content-Type: text/plain" -H "DD-API-KEY: $datadogAPI" -d "${log_priority} : $mdmURL : Installomator-${label} : ${VERSIONDATE//-/} : $SESSION : [${funcstack[2]}] ${logmessage}" > /dev/null
         done <<< "$log_message"
     fi
 
@@ -120,12 +120,25 @@ printlog(){
     if [[ ${levels[$log_priority]} -ge ${levels[$LOGGING]} ]]; then
         while IFS= read -r logmessage; do
             if [[ "$(whoami)" == "root" ]]; then
-                echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}" | tee -a $log_location
+                echo "$timestamp" : "${log_priority}${space_char} : $label : [${funcstack[2]}] ${logmessage}" | tee -a $log_location
             else
-                echo "$timestamp" : "${log_priority}${space_char} : $label : ${logmessage}"
+                echo "$timestamp" : "${log_priority}${space_char} : $label : [${funcstack[2]}] ${logmessage}"
             fi
         done <<< "$log_message"
     fi
+}
+
+# yelp is a helper function to print function and line numbers to the DEBUG log
+# Example: yelp # prints function name and line no.
+# Example: yelp "Some text" # to tell where script is
+yelp () {
+	# $funcfiletrace has format:  file:line
+	# funcstack[1] current function name [2] caller function
+	if [[ -n ${1} ]]; then
+		printlog "Here: [${funcstack[2]}]:${funcfiletrace[1]##*:} – $*" DEBUG
+	else
+		printlog "Here: [${funcstack[2]}]:${funcfiletrace[1]##*:}" DEBUG
+	fi
 }
 
 # Used to remove dupplicate lines in large log output,
@@ -153,6 +166,7 @@ deduplicatelogs() {
 
 # will get the latest release download from a github repo
 downloadURLFromGit() { # $1 git user name, $2 git repo name
+    printlog "Arguments: $*" DEBUG # print function name and arguments
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
@@ -187,6 +201,7 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
 versionFromGit() {
     # credit: Søren Theilgaard (@theilgaard)
+    printlog "Arguments: $*" DEBUG # print function name and arguments
     # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
@@ -228,6 +243,7 @@ getJSONValue() {
 
 getAppVersion() {
     # modified by: Søren Theilgaard (@theilgaard) and Isaac Ordonez
+    yelp "Arguments not needed"
 
     # If label contain function appCustomVersion, we use that and return
     if type 'appCustomVersion' 2>/dev/null | grep -q 'function'; then
@@ -310,6 +326,8 @@ getAppVersion() {
 }
 
 checkRunningProcesses() {
+    yelp "Arguments: $*"
+
     # don't check in DEBUG mode 1
     if [[ $DEBUG -eq 1 ]]; then
         printlog "DEBUG mode 1, not checking for blocking processes" DEBUG
@@ -326,6 +344,7 @@ checkRunningProcesses() {
 
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
+                        yelp "quit|quit_kill"
                         printlog "telling app $x to quit"
                         runAsUser osascript -e "tell app \"$x\" to quit"
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
@@ -338,11 +357,13 @@ checkRunningProcesses() {
                         fi
                         ;;
                     kill)
+                      yelp "kill"
                       printlog "killing process $x"
                       pkill $x
                       sleep 5
                       ;;
                     prompt_user|prompt_user_then_kill)
+                      yelp "prompt_user|prompt_user_then_kill"
                       button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         appClosed=0
@@ -370,6 +391,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     prompt_user_loop)
+                      yelp "prompt_user_loop"
                       button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         if [[ $i < 2 ]]; then
@@ -388,6 +410,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     tell_user|tell_user_then_kill)
+                      yelp "tell_user|tell_user_then_kill"
                       button=$(displaydialogContinue "Quit “$x” to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
                       printlog "telling app $x to quit"
                       runAsUser osascript -e "tell app \"$x\" to quit"
@@ -400,6 +423,7 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
+                      yelp "silent_fail"
                       appClosed=0
                       cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
@@ -419,6 +443,7 @@ checkRunningProcesses() {
 }
 
 reopenClosedProcess() {
+    yelp "Arguments not needed"
     # If Installomator closed any processes, let's get the app opened again
     # credit: Søren Theilgaard (@theilgaard)
 
@@ -448,6 +473,8 @@ reopenClosedProcess() {
 }
 
 installAppWithPath() { # $1: path to app to install in $targetDir $2: path to folder (with app inside) to copy to $targetDir
+    yelp "Arguments: $*"
+
     # modified by: Søren Theilgaard (@theilgaard)
     appPath=${1?:"no path to app"}
     # If $2 ends in "/" then a folderName has not been specified so don't set it.
@@ -593,6 +620,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
 }
 
 mountDMG() {
+    yelp "Arguments not needed"
+
     # mount the dmg
     printlog "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
@@ -614,11 +643,13 @@ mountDMG() {
 }
 
 installFromDMG() {
+    yelp "Arguments not needed"
     mountDMG
     installAppWithPath "$dmgmount/$appName" "$dmgmount/$folderName"
 }
 
 installFromPKG() {
+    yelp "Arguments not needed"
     # verify with spctl
     printlog "Verifying: $archiveName"
     updateDialog "wait" "Verifying..."
@@ -738,6 +769,7 @@ installFromPKG() {
 }
 
 installFromZIP() {
+    yelp "Arguments not needed"
     # unzip the archive
     printlog "Unzipping $archiveName"
 
@@ -756,6 +788,7 @@ installFromZIP() {
 }
 
 installFromTBZ() {
+    yelp "Arguments not needed"
     # unzip the archive
     printlog "Unzipping $archiveName"
     tar -xf "$archiveName"
@@ -763,6 +796,8 @@ installFromTBZ() {
 }
 
 installPkgInDmg() {
+    yelp "Arguments not needed"
+
     mountDMG
     # locate pkg in dmg
     if [[ -z $pkgName ]]; then
@@ -796,6 +831,8 @@ installPkgInDmg() {
 }
 
 installPkgInZip() {
+    yelp "Arguments not needed"
+
     # unzip the archive
     printlog "Unzipping $archiveName"
     tar -xf "$archiveName"
@@ -833,6 +870,8 @@ installPkgInZip() {
 }
 
 installAppInDmgInZip() {
+    yelp "Arguments not needed"
+
     # unzip the archive
     printlog "Unzipping $archiveName"
     tar -xf "$archiveName"
@@ -921,6 +960,8 @@ finishing() {
 # KeyNote, PowerPoint, Zoom, or Webex.
 # See: https://developer.apple.com/documentation/iokit/iopmlib_h/iopmassertiontypes
 hasDisplaySleepAssertion() {
+    yelp "Arguments not needed"
+
     # Get the names of all apps with active display sleep assertions
     local apps="$(/usr/bin/pmset -g assertions | /usr/bin/awk '/NoDisplaySleepAssertion | PreventUserIdleDisplaySleep/ && match($0,/\(.+\)/) && ! /coreaudiod/ {gsub(/^.*\(/,"",$0); gsub(/\).*$/,"",$0); print};')"
 
@@ -1014,11 +1055,14 @@ readPKGInstallPipe() {
 }
 
 killProcess() {
+    yelp "Arguments: $*"
     # will silently kill the specified PID
     builtin kill $1 2>/dev/null
 }
 
 updateDialog() {
+    yelp "Arguments: $*"
+
     local state=$1
     local message=$2
     local listitem=${3:-$DIALOG_LIST_ITEM_NAME}
