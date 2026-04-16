@@ -1,7 +1,8 @@
 rstudio)
     name="RStudio"
     type="dmg"
-    downloadURL=$(curl -s -L "https://posit.co/download/rstudio-desktop/" | grep -m 1 -Eio 'href="https://download1.rstudio.org/electron/macos/RStudio-(.*).dmg"' | cut -c7- | sed -e 's/"$//')
-    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.-]*)\..*/\1/g' | sed 's/-/+/' )
+    downloadPage=$(curl -s "https://docs.posit.co/supported-versions/rstudio.html" | grep -E "https.*Installers" | head -n 1 | grep -oE 'https?://[^"]+')
+    downloadURL=$(curl -s "$downloadPage" | grep -E "macos.*dmg" | head -1 | grep -oE 'https?://[^"]+')
+    appNewVersion=$(echo "$downloadPage" | grep -oE '[0-9]{4}\.[0-9]{2}\.[0-9]{1,2}\+[0-9]+')
     expectedTeamID="FYF2F5GFX4"
     ;;
