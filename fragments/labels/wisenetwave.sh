@@ -7,9 +7,10 @@ wisenetwave)
     name="Wisenet Wave"
     type="dmg"
     releaseData=$(curl -fs "https://sync.wavevms.com/api/utils/downloads-releases")
-    appNewVersion=$(echo "$releaseData" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['releases']['version'])")
-    buildNumber=$(echo "$releaseData" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['releases']['buildNumber'])")
-    fileName=$(echo "$releaseData" | python3 -c "import json,sys; d=json.load(sys.stdin); print(next(i['fileName'] for i in d['releases']['installers'] if i['platform']=='macos_arm64' and i['appType']=='client'))")
+    releasesChunk=$(echo "$releaseData" | grep -o '"releases":{.*')
+    appNewVersion=$(echo "$releasesChunk" | grep -o '"version":"[0-9.]*"' | head -1 | cut -d'"' -f4)
+    buildNumber=$(echo "$releasesChunk" | grep -o '"buildNumber":"[0-9]*"' | head -1 | cut -d'"' -f4)
+    fileName=$(echo "$releasesChunk" | grep -o '"fileName":"wave-client-[^"]*-macos_arm64\.dmg"' | head -1 | cut -d'"' -f4)
     downloadURL="https://updates.wavevms.com/hanwha/${buildNumber}/macos/${fileName}"
     appName="Wisenet WAVE.app"
     blockingProcesses=( "Wisenet WAVE" )
