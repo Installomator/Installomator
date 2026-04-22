@@ -1,13 +1,11 @@
 espanso)
     name="Espanso"
-    type="zip"
-    if [[ "$(arch)" == "arm64" ]]; then
-        archiveName="Espanso-Mac-M1.zip"
-    else
-        archiveName="Espanso-Mac-Intel.zip"
-    fi
+    type="appInDmgInZip"
+    appName="Espanso.app"
+    archiveName="Espanso-Mac-Universal.zip"
+    pkgName="espanso/Espanso.dmg"
     downloadURL="$(downloadURLFromGit espanso espanso)"
     appNewVersion="$(versionFromGit espanso espanso)"
     blockingProcesses=( "Espanso" "espanso" )
-    expectedTeamID="K839T4T5BY"
+    expectedTeamID="6424323YUH"
     ;;
