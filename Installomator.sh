@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-12-23"
+VERSIONDATE="2026-02-16"
 
 # MARK: Functions
 
@@ -7684,6 +7684,19 @@ mist)
     appNewVersion=$(versionFromGit "ninxsoft" "mist")
     expectedTeamID="7K3HVCLV7Z"
     blockingProcesses=( NONE )
+    ;;
+mixxx)
+    name="Mixxx"
+    type="dmg"
+    packageID="org.mixxx.mixxx"
+    appNewVersion=$(versionFromGit mixxxdj mixxx)
+    if [[ $(arch) == arm64 ]]; then
+        downloadURL="https://downloads.mixxx.org/releases/$appNewVersion/mixxx-$appNewVersion-macosarm.dmg"
+    elif [[ $(arch) == i386 ]]; then
+        downloadURL="https://downloads.mixxx.org/releases/$appNewVersion/mixxx-$appNewVersion-macosintel.dmg"
+    fi
+    versionKey="CFBundleShortVersionString"
+    expectedTeamID="JBLRSP95FC"
     ;;
 mkuser)
     name="mkuser"
