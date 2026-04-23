@@ -1,5 +1,4 @@
 orkadesktop)
-	# A simplifies macOS virtualization, enabling easy creation, management, and sharing of virtual machines locally or via the cloud
     name="Orka Desktop"
     type="dmg"
     downloadURL="$(downloadURLFromGit macstadium orka-desktop)"
