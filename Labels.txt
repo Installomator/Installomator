@@ -1052,7 +1052,6 @@ vscodium
 vysor
 wacomdrivers
 wallyezflash
-warp
 wavescentral
 weasis
 webcatalog
