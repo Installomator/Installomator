@@ -7,9 +7,9 @@ handy)
         downloadURL=$(downloadURLFromGit "cjpais" "Handy")
         appNewVersion=$(versionFromGit "cjpais" "Handy")
     else
-        # Handy is only available for Apple Silicon (arm64) Macs
-        printlog "Handy is only compatible with Apple Silicon (arm64) Macs." ERROR
-        cleanupAndExit 1 "Handy requires Apple Silicon" ERROR
+        archiveName="x64.dmg"
+        downloadURL=$(downloadURLFromGit "cjpais" "Handy")
+        appNewVersion=$(versionFromGit "cjpais" "Handy")
     fi
     expectedTeamID="UWFLB4GC25"
     ;;
