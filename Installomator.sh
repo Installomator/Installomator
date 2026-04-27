@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-12-23"
+VERSIONDATE="2026-04-27"
 
 # MARK: Functions
 
@@ -8407,6 +8407,13 @@ orion)
     downloadURL="https://cdn.kagi.com/downloads/OrionInstaller.dmg"
     expectedTeamID="TFVG979488"
     ;;
+orkadesktop)
+    name="Orka Desktop"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit macstadium orka-desktop)"
+    appNewVersion="$(versionFromGit macstadium orka-desktop)"
+    expectedTeamID="23KP83Z488"
+    ;;
 osquery)
     name="osquery-*"
     type="pkg"
@@ -11062,9 +11069,8 @@ veracrypt|\
 veracrypt-macfuse)
     name="VeraCrypt"
     type="pkgInDmg"
-    archiveName="VeraCrypt_[0-9.].*\.dmg"
-    downloadURL=$(curl -sfL "https://api.github.com/repos/veracrypt/VeraCrypt/releases" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
-    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*.*)\.dmg/\1/g')
+    downloadURL="$(downloadURLFromGit veracrypt VeraCrypt)"
+    appNewVersion="$(versionFromGit veracrypt VeraCrypt)"
     expectedTeamID="Z933746L2S"
     ;;
 vernierspectralanalysis)
