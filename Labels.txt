@@ -510,6 +510,8 @@ keystoreexplorer
 kimplusclientmodul
 klokki
 knockknock
+kommodo
+kommodoscreenrecorder
 korgsoftwarepass
 krisp
 krita
@@ -563,6 +565,7 @@ mailmate
 mailtooutlook
 malwarebytes
 mamp
+managedappschemabuilder
 marathon
 marathon2
 marathoninfinity

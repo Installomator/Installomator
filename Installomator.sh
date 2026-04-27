@@ -1844,6 +1844,7 @@ affinityapp)
     type="dmg"
     appName="Affinity.app"
     downloadURL="https://downloads.affinity.studio/Affinity.dmg"
+    appNewVersion=$(curl -fsL "https://affinity-update.s3.amazonaws.com/mac2/retail/studiopro.xml" | xpath '//rss/channel/item/sparkle:deltas/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2)
     expectedTeamID="5HD2ARTBFS"
     ;;
 affinitydesigner2)
@@ -4531,16 +4532,13 @@ eshareosx)
     ;;
 espanso)
     name="Espanso"
-    type="zip"
-    if [[ "$(arch)" == "arm64" ]]; then
-        archiveName="Espanso-Mac-M1.zip"
-    else
-        archiveName="Espanso-Mac-Intel.zip"
-    fi
+    type="appInDmgInZip"
+    appName="Espanso.app"
+    archiveName="Espanso-Mac-Universal.zip"
+    pkgName="espanso/Espanso.dmg"
     downloadURL="$(downloadURLFromGit espanso espanso)"
     appNewVersion="$(versionFromGit espanso espanso)"
-    blockingProcesses=( "Espanso" "espanso" )
-    expectedTeamID="K839T4T5BY"
+    expectedTeamID="6424323YUH"
     ;;
 etrecheck)
     # credit: @dvsjr macadmins slack
@@ -6371,6 +6369,20 @@ knockknock)
     appNewVersion="$(versionFromGit objective-see KnockKnock)"
     expectedTeamID="VBG97UB4TA"
     ;;
+kommodo|\
+kommodoscreenrecorder)
+    name="Kommodo Screen Recorder"
+    type="pkg"
+    archiveName="KommodoScreenRecorder.pkg"
+    if [[ $(arch) == "arm64" ]]; then
+        appNewVersion=$(curl -fs "https://api.prod.komododecks.com/api/v2/releases/arm64/latest-mac.yml" | awk '/^version:/ {print $2}')
+        downloadURL="https://releases.komododecks.com/prod/electron/${appNewVersion}/kommodo-screen-recorder-${appNewVersion}-arm.pkg"
+    elif [[ $(arch) == "i386" ]]; then
+        appNewVersion=$(curl -fs "https://api.prod.komododecks.com/api/v2/releases/x64/latest-mac.yml" | awk '/^version:/ {print $2}')
+        downloadURL="https://releases.komododecks.com/prod/electron/${appNewVersion}/kommodo-screen-recorder-${appNewVersion}-intel.pkg"
+    fi
+    expectedTeamID="3M6U87VP9P"
+    ;;
 korgsoftwarepass)
     name="Korg Software Pass"
     type="pkgInDmg"
@@ -6998,6 +7010,14 @@ mamp)
     downloadURL="$(curl -fsL 'https://www.mamp.info/en/downloads/' | grep -o 'https://downloads.mamp.info/MAMP-PRO/macOS/MAMP-PRO/MAMP-MAMP-PRO-[^"]*.pkg' | head -1)"
     appNewVersion="$(echo "${downloadURL}" | grep -o 'MAMP-MAMP-PRO-[0-9]*\.[0-9]*' | sed 's/MAMP-MAMP-PRO-//')"
     expectedTeamID="5KCB5KHK77"
+    ;;
+managedappschemabuilder)
+    name="Managed App Schema Builder"
+    type="zip"
+    appName="Managed App Schema Builder.app"
+    downloadURL="$(downloadURLFromGit BIG-RAT Managed-App-Schema-Builder)"
+    appNewVersion="$(versionFromGit BIG-RAT Managed-App-Schema-Builder)"
+    expectedTeamID="PS2F6S478M"
     ;;
 marathon)
     name="Classic Marathon"
@@ -9538,13 +9558,12 @@ signiantapp)
     expectedTeamID="U6ZZ4QLU4Q"
     ;;
 silentknight)
-    # SilentKnight automatic checking of security systems
     name="SilentKnight"
     type="zip"
-    folderName="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'silentknight[0-9]*\.zip' | sort -V | tail -n 1 | sed -E 's/silentknight([0-9]+)\.zip/silentknight\1/')"
+    folderName=$(curl -fs "https://eclecticlight.co/downloads/" | grep -o 'https://[^"]*silentknight[0-9]*.zip' | sort -V | tail -n 1 | sed 's|.*/\(silentknight[0-9]*\)\.zip|\1|')
     appName="${folderName}/SilentKnight.app"
-    downloadURL="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'href="[^"]*silentknight[0-9]*\.zip"' | sed 's/href="//;s/"//' | sort -V | tail -n 1)"
-    appNewVersion="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'SilentKnight [0-9]\+\(\.[0-9]\+\)\? (' | sed -E 's/SilentKnight ([0-9]+(\.[0-9]+)?).*/\1/' | sort -V | tail -n 1)"
+    downloadURL="https://eclecticlight.co/wp-content/uploads/$(curl -fs "https://eclecticlight.co/downloads/" | grep -o '[0-9]\{4\}/[0-9]\{2\}/silentknight[0-9]*.zip' | sort -V | tail -n 1)"
+    appNewVersion="${folderName//[^0-9.]/}"
     expectedTeamID="QWY4LRW926"
     ;;
 silnite)
