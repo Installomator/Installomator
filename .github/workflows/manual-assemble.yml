@@ -36,12 +36,19 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet Installomator.sh Labels.txt; then
+          tmp_current=$(mktemp)
+          tmp_head=$(mktemp)
+          trap 'rm -f "$tmp_current" "$tmp_head"' EXIT
+
+          sed '/^VERSIONDATE=/d' Installomator.sh > "$tmp_current"
+          git show HEAD:Installomator.sh | sed '/^VERSIONDATE=/d' > "$tmp_head"
+
+          if cmp -s "$tmp_current" "$tmp_head" && git diff --quiet -- Labels.txt; then
             echo "changed=false" >> $GITHUB_OUTPUT
-            echo "No changes detected"
+            echo "No substantive changes detected"
           else
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Changes detected in Installomator.sh and/or Labels.txt"
+            echo "Substantive changes detected in Installomator.sh and/or Labels.txt"
             git diff --stat Installomator.sh Labels.txt
           fi
 
@@ -64,7 +71,7 @@ jobs:
           branch: auto/assemble-${{ github.run_id }}
           delete-branch: false
           draft: ${{ inputs.create_draft }}
-          labels: "bot:auto-generated,type:maintenance"
+          labels: "labelomator"
           author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
           committer: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
 
