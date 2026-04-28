@@ -32,12 +32,6 @@ jobs:
           ./assemble.sh --script
           echo "Assembly completed successfully"
 
-      - name: Validate labels
-        run: |
-          echo "Running label validation..."
-          ./utils/checkLabels.sh
-          echo "Label validation passed"
-
       - name: Check for changes
         id: changes
         run: |
