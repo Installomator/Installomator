@@ -1,7 +1,6 @@
 1password8)
     name="1Password"
     type="pkg"
-    packageID="com.1password.1password"
     downloadURL="https://downloads.1password.com/mac/1Password.pkg"
     appNewVersion=$(curl -s https://releases.1password.com/mac/stable/index.xml | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | tail -n1)
     expectedTeamID="2BUA8C4S2C"
