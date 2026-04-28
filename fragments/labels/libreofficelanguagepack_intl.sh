@@ -13,7 +13,7 @@ libreofficelanguagepack_intl)
     if [[ "$userLanguage" == "en-US" ]]; then
         cleanupAndExit 0 "No installation of a language pack is necessary for the US-English language."
     fi
-    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
+    appNewVersion="$(curl -s https://download.documentfoundation.org/libreoffice/stable/ | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | tail -1)"
     releaseURL="https://download.documentfoundation.org/libreoffice/stable/"$appNewVersion"/mac/aarch64/"
     until curl -fs $releaseURL | grep -q "_$userLanguage.dmg"; do
         if [ ${#userLanguage} -eq 2 ]; then
