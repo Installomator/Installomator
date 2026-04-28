@@ -27,9 +27,16 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Ensure zsh is available
+        run: |
+          if ! command -v zsh >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y zsh
+          fi
+
       - name: Run assemble.sh
         run: |
-          ./assemble.sh --script
+          zsh ./assemble.sh --script
           echo "Assembly completed successfully"
 
       - name: Validate labels
