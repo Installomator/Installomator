@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-04-28"
+VERSIONDATE="2026-04-29"
 
 # MARK: Functions
 
@@ -1575,7 +1575,7 @@ valuesfromarguments)
     name="1Password CLI"
     type="pkg"
     #packageID="com.1password.op"
-    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI2 | grep -m 1 -i op_apple_universal | cut -d'"' -f 2)
+    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI2 | grep -i op_apple_universal | grep -v -i beta | head -1 | cut -d'"' -f 2)
     appNewVersion=$(echo $downloadURL | sed -E 's/.*\/[a-zA-Z_]*([0-9.]*)\..*/\1/g')
     appCustomVersion(){ /usr/local/bin/op -v }
     expectedTeamID="2BUA8C4S2C"
@@ -4109,6 +4109,14 @@ doctolib)
         downloadURL="https://ddv-install.doctolib.fr/DoctolibProDesktop-latest.dmg"
     fi
     expectedTeamID="84K7XVJ72Q"
+    ;;
+domzilla-caffeine)
+    name="Caffeine"
+    type="zip"
+    packageID="net.domzilla.caffeine"
+    downloadURL="$(downloadURLFromGit domzilla caffeine)"
+    appNewVersion="$(versionFromGit domzilla caffeine)"
+    expectedTeamID="568T6RKXH7"
     ;;
 dracoon)
     name="Dracoon"
@@ -8481,7 +8489,7 @@ outset)
 overflow)
     name="Overflow"
     type="dmg"
-    downloadURL="$(curl -sL 'https://overflow.io/download/' | awk -F '"' '/app-updates.overflow.io\/packages\/updates\/osx_64/ { print $8; exit }')"
+    downloadURL="$(curl -LsS https://overflow.io/download/ | grep -oE 'https://[^"]+\.dmg')"
     appNewVersion=$(echo "$downloadURL" | awk -F '-|[.]dmg' '{ print $(NF-1) }')
     expectedTeamID="7TK7YSGJFF"
     versionKey="CFBundleShortVersionString"
@@ -9335,8 +9343,8 @@ royaltsx)
 rstudio)
     name="RStudio"
     type="dmg"
-    downloadURL=$(curl -s -L "https://posit.co/download/rstudio-desktop/" | grep -m 1 -Eio 'href="https://download1.rstudio.org/electron/macos/RStudio-(.*).dmg"' | cut -c7- | sed -e 's/"$//')
-    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.-]*)\..*/\1/g' | sed 's/-/+/' )
+    downloadURL="https://rstudio.org/download/latest/stable/desktop/mac/RStudio-latest.dmg"
+    appNewVersion=$(curl -sfI "$downloadURL" | grep -i "^location" | grep -oE '[0-9]{4}\.[0-9]{2}\.[0-9]{1,2}\-[0-9]+' | sed 's/-/+/')
     expectedTeamID="FYF2F5GFX4"
     ;;
 rustdesk)

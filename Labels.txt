@@ -267,6 +267,7 @@ displaylinkmanager
 docker
 dockutil
 doctolib
+domzilla-caffeine
 dracoon
 dragonframe2024
 dragonframe2025
