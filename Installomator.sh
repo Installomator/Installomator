@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-04-29"
+VERSIONDATE="2026-04-30"
 
 # MARK: Functions
 
@@ -3573,6 +3573,14 @@ citrixworkspace)
     versionKey="CitrixVersionString"
     expectedTeamID="S272Y5R93J"
     ;;
+claudedesktop)
+    name="Claude"
+    type="zip"
+    appNewVersion=$(curl -fs "https://downloads.claude.ai/releases/darwin/universal/RELEASES.json" | grep -o '"currentRelease":"[^"]*"' | cut -d'"' -f4)
+    downloadURL=$(curl -fs "https://downloads.claude.ai/releases/darwin/universal/RELEASES.json" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
+    expectedTeamID="Q6L2SF6YDW"
+    blockingProcesses=( "Claude" "Claude Helper" )
+    ;;
 cleartouchcollage)
     name="Collage"
     type="pkgInZip"
@@ -3920,11 +3928,10 @@ debookee)
 dedoose)
     name="Dedoose"
     type="dmg"
-    downloadURL=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep "Dedoose-.*[0-9.].*[0-9.].*[0-9.]dmg" | cut -d'/' -f3- | cut -f1 -d'"' | cut -c2-)
-    appNewVersion=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep -o "Dedoose-.*[0-9.].*[0-9.].*[0-9.]" | cut -d'>' -f2- | tail -1)
+    downloadURL=$(curl -fsL "https://www.dedoose.com/download-the-app" | grep -oE 'https://[^"]+\.dmg' | head -1)
+    appNewVersion=$(echo "$downloadURL" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
     expectedTeamID="9U74Q6K62X"
     ;;
-
 deepl)
     name="DeepL"
     type="dmg"
@@ -4276,8 +4283,12 @@ dymoconnectdesktop)
     name="DYMO Connect"
     type="pkg"
     appNewVersion=$(curl -s https://formulae.brew.sh/cask/dymo-connect | grep -o 'Current version:.*[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | head -1)
-    archiveName="DCDMac${appNewVersion}.pkg"
-    downloadURL="https://download.dymo.com/dymo/Software/Mac/DCDMac${appNewVersion}.pkg"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="DCDMac${appNewVersion}-Arm64.pkg"
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="DCDMac${appNewVersion}-X64.pkg"
+    fi
+    downloadURL="https://dymoreleasecontent.blob.core.windows.net/dymo-release/DCDMAC/${archiveName}"
     expectedTeamID="N3S6676K3E"
     ;;
 dynalist)
@@ -4909,8 +4920,13 @@ firefoxpkg)
 flexoptixapp)
     name="FLEXOPTIX App"
     type="dmg"
-    downloadURL="https://flexbox.reconfigure.me/download/electron/mac/x64/current"
-    appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i ^location | sed -E 's/.*App-(.*)\.dmg/\1/g')
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://flexbox.reconfigure.me/download/electron/mac/arm64/current"
+        appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i ^location | sed -E 's/.*App-(.*)\-arm.*/\1/g')
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://flexbox.reconfigure.me/download/electron/mac/x64/current"
+        appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i ^location | sed -E 's/.*App-(.*)\.dmg/\1/g')
+    fi
     expectedTeamID="C5JETSFPHL"
     ;;
 flowjo)
@@ -6530,7 +6546,7 @@ libericajdk8ltsfull)
 libreoffice)
     name="LibreOffice"
     type="dmg"
-    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
+    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | xmllint --html --xpath 'string(//p[@class="version_heading"])' - 2>/dev/null | xargs)"
     if [[ $(arch) == "arm64" ]]; then
     	downloadURL="https://download.documentfoundation.org/libreoffice/stable/${appNewVersion}/mac/aarch64/LibreOffice_${appNewVersion}_MacOS_aarch64.dmg"
     elif [[ $(arch) == "i386" ]]; then
@@ -6648,9 +6664,9 @@ logighub)
     installerTool="lghub_installer.app"
     type="zip"
     versionKey="CFBundleVersion"
-    onlineHTMLinfo=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs https://support.logi.com/api/v2/help_center/en-us/articles.json\?label_names\=webcontent\=productdownload,webproduct\=b972df0c-7db0-11e9-b911-fb4b2d0df96c,webos\=mac-macos-x-15.0 | jq -r '.articles.[0].body')
+    onlineHTMLinfo=$(curl -fs https://support.logi.com/api/v2/help_center/en-us/articles.json\?label_names\=webcontent\=productdownload,webproduct\=b972df0c-7db0-11e9-b911-fb4b2d0df96c,webos\=mac-macos-x-15.0 | jq -r '.articles|sort_by(.id)|map(select(.name=="Logitech G HUB")).[].body')
     downloadURL=$(echo ${onlineHTMLinfo} | xmllint --html --xpath 'string(//div/div/ul/div/a/@href)' -)
-    appNewVersion=$(echo ${onlineHTMLinfo} | xmllint --html --xpath 'string(//li[b/span= "Software Version: "])' - | tail -1 | awk '{print$3}' -)
+    appNewVersion=$(echo ${onlineHTMLinfo} | grep "Software Version" | grep -o "[0-9].*[0-9]" | sort | tail -1)
     CLIInstaller="lghub_installer.app/Contents/MacOS/lghub_installer"
     CLIArguments=(--silent)
     expectedTeamID="QED4VVPZWA"
@@ -8291,6 +8307,13 @@ omnioutliner5)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
+omnioutliner6)
+    name="OmniOutliner"
+    type="dmg"
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniOutliner6" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    expectedTeamID="34YW5XSRB7"
+    ;;
 omniplan3)
     name="OmniPlan"
     type="dmg"
@@ -8912,6 +8935,13 @@ prusaslicer)
     downloadURL="$(downloadURLFromGit prusa3d PrusaSlicer)"
     appNewVersion="$(versionFromGit prusa3d PrusaSlicer)"
     expectedTeamID="DKPB65N43Z"
+    ;;
+psychopystudio)
+    name="PsychoPy Studio"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit psychopy psychopy)"
+    appNewVersion="$(versionFromGit psychopy psychopy)"
+    expectedTeamID="NM3SX67P2X"
     ;;
 pulsar)
     name="Pulsar"
@@ -9872,6 +9902,21 @@ solstice)
     type="dmg"
     downloadURL="https://www.mersive.com/files/41693/"
     expectedTeamID="63B5A5WDNG"
+    ;;
+sonicpi)
+    name="Sonic Pi"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://sonic-pi.net$(curl -sfL "https://sonic-pi.net/" | xmllint --html --format - 2>/dev/null | grep -o "\/files.*Sonic-Pi-for-Mac-arm64.*.dmg")"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://sonic-pi.net$(curl -sfL "https://sonic-pi.net/" | xmllint --html --format - 2>/dev/null | grep -o "\/files.*Sonic-Pi-for-Mac-x64.*.dmg")"
+    fi
+    if [[ $(arch) == "arm64" ]]; then
+        appNewVersion=$(curl -sfL "https://sonic-pi.net/" | xmllint --html --format - 2>/dev/null | grep -o "\/.*Sonic-Pi-for-Mac-arm64.*.dmg" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
+    elif [[ $(arch) == "i386" ]]; then
+        appNewVersion=$(curl -sfL "https://sonic-pi.net/" | xmllint --html --format - 2>/dev/null | grep -o "\/.*Sonic-Pi-for-Mac-x64.*.dmg" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
+    fi
+    expectedTeamID="MM65S3L4NG"
     ;;
 sonicvisualiser)
     name="Sonic Visualiser"
