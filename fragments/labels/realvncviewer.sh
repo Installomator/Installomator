@@ -1,5 +1,5 @@
 realvncviewer)
-        name="Real VNC Viewer"
+    name="Real VNC Viewer"
     appName="VNC Viewer.app"
     type="dmg"
     downloadURL="$(curl -sL https://www.realvnc.com/en/connect/download/viewer/ | grep -i 'download-link-path-macos' | sed -r 's/.*href="([^"]+).*/\1/g')"
