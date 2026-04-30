@@ -3,7 +3,6 @@ snagit2025)
     type="dmg"
     cdnData=$(curl -fsL "https://www.techsmith.com/api/v/1/products/getallversions/100" | jq '[.[] | select(.Major == 25)]')
     appNewVersion=$(echo "${cdnData}" | jq '.[] | "20" + (.Major|tostring) + "." + (.Minor|tostring) + "." + (.Maintenance|tostring)' | tr -d '"')
-    echo $appNewVersion
     versionID=$(echo "${cdnData}" | jq '.[].VersionID')
     packageData=$(curl -fsl "https://www.techsmith.com/api/v/1/products/getversioninfo/${versionID}")
     relativePath=$(echo "${packageData}" | jq '.PrimaryDownloadInformation.RelativePath' | tr -d '"')
