@@ -7,5 +7,4 @@ remotedesktopmanagerenterprise)
     downloadURL=$(printf '%s\n' "$productInfo" | awk -F= '/^RDMMacbin\.Url=/{print $2; exit}')
     appNewVersion=$(printf '%s\n' "$productInfo" | awk -F= '/^RDMMacbin\.Version=/{print $2; exit}')
     expectedTeamID="N592S9ASDB"
-    blockingProcesses=( $name )
     ;;
