@@ -1,10 +1,9 @@
-sketchup2024)
-    name="SketchUp 2024"
+snagit2024)
+    name="Snagit"
     type="dmg"
-    downloadURL="$(curl -s https://sketchup.trimble.com/en/download/all | grep -o 'https://download.sketchup.com/SketchUp-2024[^"]*.dmg')"
-    folderName="SketchUp 2024"
-    appName="${folderName}/SketchUp.app"
-    appNewVersion=$(echo "$downloadURL" | grep -o 'SketchUp-20[0-9][0-9]-[0-9]*-[0-9]*' | awk -F '-' '{year=substr($2, 3, 2); if (year >= 24) printf "%d.0.%s", year, $NF; else printf "%d.%s", year+2000, $NF}')
-    versionKey="CFBundleVersion"
-    expectedTeamID="J8PVMCY7KL"
+    appName="Snagit 2024.app"
+    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2024.0.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2024.0.0&lang=enu&os=mac')
+    appNewVersion=$(echo "$sparkleData" | xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -)
+    downloadURL=$(echo "$sparkleData" | xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -)
+    expectedTeamID="7TQL462TU8"
     ;;
