@@ -8,5 +8,4 @@ wisprflow)
     fi
     appNewVersion="$(curl -sIL "$downloadURL" | grep -i "^location:" | sed 's/.*Flow-v\([0-9.]*\).dmg.*/\1/')"
     expectedTeamID="C9VQZ78H85"
-    blockingProcesses=( "Wispr Flow" )
     ;;
