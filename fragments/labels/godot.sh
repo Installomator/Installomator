@@ -6,4 +6,3 @@ godot)
     expectedTeamID="6K46PWY5DM"
     versionKey="CFBundleVersion"
     ;;
-
