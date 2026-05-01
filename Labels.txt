@@ -74,6 +74,7 @@ appsanywhere
 aquamacs
 aquaskk
 arcbrowser
+archaeology
 archimate
 archiwareb2go
 archiwarepst
@@ -84,6 +85,7 @@ arturiasoftwarecenter
 asana
 aspera
 asperaconnect
+asymmetrickeygenerator
 atext
 atextlegacy
 atlassiancompanion
@@ -207,6 +209,7 @@ cinema4d2025
 cinema4d2026
 cisdem-documentreader
 citrixworkspace
+claudedesktop
 cleartouchcollage
 clevershare2
 clickshare
@@ -389,8 +392,10 @@ googledrive
 googledrivebackupandsync
 googledrivefilestream
 googleearth
+googlegemini
 googlejapaneseinput
 googlesoftwareupdate
+googlewebdesigner
 goose
 gosign
 gotiengviet
@@ -408,6 +413,7 @@ gyazo
 gyazogif
 hancock
 handbrake
+handy
 harmonysase
 hazel
 hexfiend
@@ -467,6 +473,7 @@ jamfmigrator
 jamfpppcutility
 jamfprintermanager
 jamfreenroller
+jamfsetupmanager
 jamovi
 jasp
 jcpswdmgr
@@ -708,6 +715,7 @@ omnifocus4
 omnigraffle6
 omnigraffle7
 omnioutliner5
+omnioutliner6
 omniplan3
 omniplan4
 omnipresence
@@ -749,6 +757,7 @@ perimeter81
 pgadmin4
 pika
 pingplotter
+pique
 pitch
 plantronicshub
 platypus
@@ -784,6 +793,7 @@ protonvpn
 proxyman
 prune
 prusaslicer
+psychopystudio
 pulsar
 pycharmce
 pymol
@@ -860,6 +870,7 @@ shield
 shotcut
 shottr
 sidekick
+sigil
 signal
 signiantapp
 silentknight
@@ -893,6 +904,7 @@ soapuiopensource
 sococo
 softubecentral
 solstice
+sonicpi
 sonicvisualiser
 sonobus
 sonos

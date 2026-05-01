@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-04-29"
+VERSIONDATE="2026-05-01"
 
 # MARK: Functions
 
@@ -2350,6 +2350,13 @@ downloadURL="https://releases.arc.net/release/Arc-latest.dmg"
 appNewVersion="$(curl -fsIL https://releases.arc.net/release/Arc-latest.dmg | grep -i ^location | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+-[0-9]+).*/\1/')"
 expectedTeamID="S6N382Y83G"
     ;;
+archaeology)
+    name="Archaeology"
+    type="dmg"
+    downloadURL="https://www.mothersruin.com/software/downloads/Archaeology.dmg"
+    appNewVersion=$(curl -fs https://mothersruin.com/software/Archaeology/data/ArchaeologyVersionInfo.plist | grep -A1 CFBundleShortVersionString | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')
+    expectedTeamID="936EB786NH"
+    ;;
 archimate)
     name="Archi"
     type="dmg"
@@ -2471,6 +2478,13 @@ asperaconnect)
     downloadURL="${downloadBaseUrl}/latest/$(echo ${appInfo} | jq -r '.entries.[] | select(.title == "Aspera Connect for macOS").links.[] | select(.rel == "enclosure-one-click").href')"
     expectedTeamID="PETKK2G752"
     ;;
+asymmetrickeygenerator)
+    name="AsymmetricKeyGenerator"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit binance asymmetric-key-generator)"
+    appNewVersion="$(versionFromGit binance asymmetric-key-generator)"
+    expectedTeamID="89H83DPVB8"
+    ;;
 atext)
     # credit: Gabe Marchan (gabemarchan.com - @darklink87)
     name="aText"
@@ -2576,11 +2590,11 @@ axurerp10)
     name="Axure RP 10"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL=$(curl -s https://www.axure.com/release-history/rp10 | grep dmg | sed -n 's/.*href="\([^"]*\)".*/\1/p' | sed 's/ *$//' | grep arm64)
+        downloadURL=$(curl -s https://www.axure.com/release-history/rp10 | grep -oE 'https://[^ ]+.dmg' | grep arm64 | head -n 1)
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL=$(curl -s https://www.axure.com/release-history/rp10 | grep dmg | sed -n 's/.*href="\([^"]*\)".*/\1/p' | sed 's/ *$//' | grep -v arm64)
+        downloadURL=$(curl -s https://www.axure.com/release-history/rp10 | grep -oE 'https://[^ ]+.dmg' | grep -v arm64 | head -n 1)
     fi
-    appNewVersion=$( curl -sL https://www.axure.com/release-history/rp10 | grep -Eo '[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}' -m 1 )
+    appNewVersion=$(curl -sL https://www.axure.com/release-history/rp10 | grep -oE '[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}' | head -n 1)
     expectedTeamID="HUMW6UU796"
     versionKey="CFBundleVersion"
     ;;
@@ -2716,12 +2730,16 @@ bibdesk)
     expectedTeamID="J33JTA7SY9"
     ;;
 bitrix24)
-     name="Bitrix24"
-     type="dmg"
-     archiveName="bitrix24_desktop.dmg"
-     downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop.dmg"
-     appNewVersion="$(curl -fs "https://www.bitrix24.com/osx_version.php" | xpath 'string(//rss/channel/item/title)' 2>/dev/null)"
-     expectedTeamID="5B3T3A994N"
+    name="Bitrix24"
+    type="dmg"
+    archiveName="bitrix24_desktop.dmg"
+    if [[ $(arch) == i386 ]]; then
+        downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop.dmg"
+    elif [[ $(arch) == arm64 ]]; then
+        downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop_arm.dmg"
+    fi
+    appNewVersion="$(curl -fs "https://www.bitrix24.com/osx_version.php" | xpath 'string(//rss/channel/item/title)' 2>/dev/null)"
+    expectedTeamID="5B3T3A994N"
      ;;
 bitwarden)
     name="Bitwarden"
@@ -3573,6 +3591,14 @@ citrixworkspace)
     versionKey="CitrixVersionString"
     expectedTeamID="S272Y5R93J"
     ;;
+claudedesktop)
+    name="Claude"
+    type="zip"
+    appNewVersion=$(curl -fs "https://downloads.claude.ai/releases/darwin/universal/RELEASES.json" | grep -o '"currentRelease":"[^"]*"' | cut -d'"' -f4)
+    downloadURL=$(curl -fs "https://downloads.claude.ai/releases/darwin/universal/RELEASES.json" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
+    expectedTeamID="Q6L2SF6YDW"
+    blockingProcesses=( "Claude" "Claude Helper" )
+    ;;
 cleartouchcollage)
     name="Collage"
     type="pkgInZip"
@@ -3920,11 +3946,10 @@ debookee)
 dedoose)
     name="Dedoose"
     type="dmg"
-    downloadURL=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep "Dedoose-.*[0-9.].*[0-9.].*[0-9.]dmg" | cut -d'/' -f3- | cut -f1 -d'"' | cut -c2-)
-    appNewVersion=$(curl https://www.dedoose.com/resources/articledetail/dedoose-desktop-app | grep -o "Dedoose-.*[0-9.].*[0-9.].*[0-9.]" | cut -d'>' -f2- | tail -1)
+    downloadURL=$(curl -fsL "https://www.dedoose.com/download-the-app" | grep -oE 'https://[^"]+\.dmg' | head -1)
+    appNewVersion=$(echo "$downloadURL" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
     expectedTeamID="9U74Q6K62X"
     ;;
-
 deepl)
     name="DeepL"
     type="dmg"
@@ -4276,8 +4301,12 @@ dymoconnectdesktop)
     name="DYMO Connect"
     type="pkg"
     appNewVersion=$(curl -s https://formulae.brew.sh/cask/dymo-connect | grep -o 'Current version:.*[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | head -1)
-    archiveName="DCDMac${appNewVersion}.pkg"
-    downloadURL="https://download.dymo.com/dymo/Software/Mac/DCDMac${appNewVersion}.pkg"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="DCDMac${appNewVersion}-Arm64.pkg"
+    elif [[ $(arch) == "i386" ]]; then
+        archiveName="DCDMac${appNewVersion}-X64.pkg"
+    fi
+    downloadURL="https://dymoreleasecontent.blob.core.windows.net/dymo-release/DCDMAC/${archiveName}"
     expectedTeamID="N3S6676K3E"
     ;;
 dynalist)
@@ -4909,8 +4938,13 @@ firefoxpkg)
 flexoptixapp)
     name="FLEXOPTIX App"
     type="dmg"
-    downloadURL="https://flexbox.reconfigure.me/download/electron/mac/x64/current"
-    appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i ^location | sed -E 's/.*App-(.*)\.dmg/\1/g')
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://flexbox.reconfigure.me/download/electron/mac/arm64/current"
+        appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i ^location | sed -E 's/.*App-(.*)\-arm.*/\1/g')
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://flexbox.reconfigure.me/download/electron/mac/x64/current"
+        appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i ^location | sed -E 's/.*App-(.*)\.dmg/\1/g')
+    fi
     expectedTeamID="C5JETSFPHL"
     ;;
 flowjo)
@@ -5089,6 +5123,19 @@ gdevelop)
     appNewVersion="$(versionFromGit 4ian GDevelop)"
     downloadURL="$(downloadURLFromGit 4ian GDevelop)"
     expectedTeamID="5CG65LEVUK"
+    ;;
+googlegemini)
+    name="Gemini"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://dl.google.com/release2/j33ro/release/Gemini.dmg"
+    else
+        printlog "Gemini is only compatible with Apple Silicon (arm64) Macs." ERROR
+        cleanupAndExit 95 "Gemini requires Apple Silicon" ERROR
+    fi
+    json=$(curl -Ssf 'https://update.googleapis.com/service/update2/json' -X POST --data-raw '{"request":{"@updater":"GoogleUpdater","domainjoined":true,"protocol":"4.0","dlpref":"cacheable","dedup":"cr","os":{"platform":"MacOSX","version":"26.0.0","arch":"arm64"},"@os":"mac","arch":"arm64","acceptformat":"crx3,download,puff,run,xz,zucc","apps":[{"ap":"m1-prod","enabled":true,"version":"1.00.0.000","updatecheck":{},"appid":"com.google.GeminiMacOS"}]}}' | /usr/bin/tail -c +6)
+    appNewVersion=$(echo "$json" | /usr/bin/plutil -extract response.apps.0.updatecheck.nextversion raw -o - -)
+    expectedTeamID="EQHXZ8M8AV"
     ;;
 geneiousprime)
     name="Geneious Prime"
@@ -5308,6 +5355,13 @@ googlesoftwareupdate)
     blockingProcesses=( NONE )
     expectedTeamID="EQHXZ8M8AV"
     ;;
+googlewebdesigner)
+    name="Google Web Designer"
+    type="dmg"
+    downloadURL="https://dl.google.com/webdesigner/mac/shell/googlewebdesigner_mac.dmg"
+    appNewVersion=$(curl -fs https://support.google.com/webdesigner/topic/6350071\?hl\=en | tr '<' '\n' |  grep -o "Shell Build.*$" | grep -o "[0-9].*[0-9]" | sort --version-sort | tail -1)
+    expectedTeamID="EQHXZ8M8AV"
+    ;;
 goose)
     name="Goose"
     type="zip"
@@ -5444,6 +5498,19 @@ handbrake)
     downloadURL=$(downloadURLFromGit HandBrake HandBrake )
     appNewVersion=$(versionFromGit HandBrake HandBrake )
     expectedTeamID="5X9DE89KYV"
+    ;;
+handy)
+    name="Handy"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=$(downloadURLFromGit "cjpais" "Handy")
+        appNewVersion=$(versionFromGit "cjpais" "Handy")
+    else
+        archiveName="x64.dmg"
+        downloadURL=$(downloadURLFromGit "cjpais" "Handy")
+        appNewVersion=$(versionFromGit "cjpais" "Handy")
+    fi
+    expectedTeamID="UWFLB4GC25"
     ;;
 perimeter81|\
 harmonysase)
@@ -5923,6 +5990,13 @@ jamfreenroller)
     downloadURL=$(downloadURLFromGit jamf ReEnroller)
     #appNewVersion=$(versionFromGit jamf ReEnroller)
     expectedTeamID="PS2F6S478M"
+    ;;
+jamfsetupmanager)
+    name="Setup Manager"
+    type="pkg"
+    downloadURL=$(downloadURLFromGit jamf Setup-Manager)
+    appNewVersion=$(versionFromGit jamf Setup-Manager)
+    expectedTeamID="483DWKW443"
     ;;
 jamovi)
     name="jamovi"
@@ -6530,7 +6604,7 @@ libericajdk8ltsfull)
 libreoffice)
     name="LibreOffice"
     type="dmg"
-    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
+    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | xmllint --html --xpath 'string(//p[@class="version_heading"])' - 2>/dev/null | xargs)"
     if [[ $(arch) == "arm64" ]]; then
     	downloadURL="https://download.documentfoundation.org/libreoffice/stable/${appNewVersion}/mac/aarch64/LibreOffice_${appNewVersion}_MacOS_aarch64.dmg"
     elif [[ $(arch) == "i386" ]]; then
@@ -6648,9 +6722,9 @@ logighub)
     installerTool="lghub_installer.app"
     type="zip"
     versionKey="CFBundleVersion"
-    onlineHTMLinfo=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs https://support.logi.com/api/v2/help_center/en-us/articles.json\?label_names\=webcontent\=productdownload,webproduct\=b972df0c-7db0-11e9-b911-fb4b2d0df96c,webos\=mac-macos-x-15.0 | jq -r '.articles.[0].body')
+    onlineHTMLinfo=$(curl -fs https://support.logi.com/api/v2/help_center/en-us/articles.json\?label_names\=webcontent\=productdownload,webproduct\=b972df0c-7db0-11e9-b911-fb4b2d0df96c,webos\=mac-macos-x-15.0 | jq -r '.articles|sort_by(.id)|map(select(.name=="Logitech G HUB")).[].body')
     downloadURL=$(echo ${onlineHTMLinfo} | xmllint --html --xpath 'string(//div/div/ul/div/a/@href)' -)
-    appNewVersion=$(echo ${onlineHTMLinfo} | xmllint --html --xpath 'string(//li[b/span= "Software Version: "])' - | tail -1 | awk '{print$3}' -)
+    appNewVersion=$(echo ${onlineHTMLinfo} | grep "Software Version" | grep -o "[0-9].*[0-9]" | sort | tail -1)
     CLIInstaller="lghub_installer.app/Contents/MacOS/lghub_installer"
     CLIArguments=(--silent)
     expectedTeamID="QED4VVPZWA"
@@ -6687,9 +6761,9 @@ logitechoptionsplusoffline)
     installerTool="logioptionsplus_installer_offline.app"
     type="zip"
     downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
-    # Latest version of Logi Options+ requires macOS 12+
+    # Latest version of Logi Options+ requires macOS 13+
     # If older macOS is specified in the url for appNewVersion, it will never correspond to the installed version
-    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-12.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
+    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-13.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
     CLIInstaller="logioptionsplus_installer_offline.app/Contents/MacOS/logioptionsplus_installer"
     CLIArguments=(--quiet)
     expectedTeamID="QED4VVPZWA"
@@ -8032,9 +8106,9 @@ networksharemounter)
     expectedTeamID="C8F68RFW4L"
     ;;
 nextcloud)
-    name="nextcloud"
+    name="Nextcloud"
     type="pkg"
-    archiveName="Nextcloud-[0-9.]*-macOS-vfs.pkg"
+    archiveName="Nextcloud-[0-9.]+\.pkg"
     downloadURL=$(downloadURLFromGit nextcloud-releases desktop)
     appNewVersion=$(versionFromGit nextcloud-releases desktop)
     expectedTeamID="NKUJUXUJ3B"
@@ -8288,6 +8362,13 @@ omnioutliner5)
     name="OmniOutliner"
     type="dmg"
     downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniOutliner5" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
+    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
+    expectedTeamID="34YW5XSRB7"
+    ;;
+omnioutliner6)
+    name="OmniOutliner"
+    type="dmg"
+    downloadURL=$(curl -fs "https://update.omnigroup.com/appcast/com.omnigroup.OmniOutliner6" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | head -1 | cut -d '"' -f 2)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
@@ -8638,6 +8719,14 @@ pingplotter)
     appNewVersion=""
     expectedTeamID="JXB6F3JSYT"
     ;;
+pique)
+    name="Pique"
+    type="pkg"
+    packageID="io.macadmins.Pique"
+    downloadURL=$(downloadURLFromGit macadmins pique )
+    appNewVersion=$(versionFromGit macadmins pique )
+    expectedTeamID="T4SK8ZXCXG"
+    ;;
 pitch)
     name="Pitch"
     type="dmg"
@@ -8913,6 +9002,13 @@ prusaslicer)
     appNewVersion="$(versionFromGit prusa3d PrusaSlicer)"
     expectedTeamID="DKPB65N43Z"
     ;;
+psychopystudio)
+    name="PsychoPy Studio"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit psychopy psychopy)"
+    appNewVersion="$(versionFromGit psychopy psychopy)"
+    expectedTeamID="NM3SX67P2X"
+    ;;
 pulsar)
     name="Pulsar"
     type="zip"
@@ -9050,8 +9146,8 @@ realvncviewer)
     name="Real VNC Viewer"
     appName="VNC Viewer.app"
     type="dmg"
-    downloadURL="$(curl -sL https://www.realvnc.com/en/connect/download/viewer/ | grep -i 'download-link-path-macos' | sed -r 's/.*href="([^"]+).*/\1/g')"
-    appNewVersion="$(echo $downloadURL | sed -n 's:.*VNC-Viewer-\(.*\)-MacOSX.*:\1:p')"
+    downloadURL="https://downloads.realvnc.com/download/file/viewer.files/VNC-Viewer-Latest-MacOSX-universal.dmg"
+    appNewVersion="$(curl -sL https://realvnc.zendesk.com/api/v2/help_center/en-us/articles/5835892358941.json | sed -n 's/.*VNC-Viewer-\([0-9.]*\)-MacOSX.*/\1/p')"
     expectedTeamID="ZNCQ8JEH7X"
     ;;
 reaper)
@@ -9551,6 +9647,18 @@ sidekick)
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/.*-x64-([0-9.]*)-.*/\1/g' )
     expectedTeamID="N975558CUS"
     ;;
+sigil)
+    name="Sigil"
+    type="tbz"
+    if [[ "$arch" == "arm64" ]]; then
+        archiveName="Mac-arm64.txz"
+    else
+        archiveName="Mac-x86_64.txz"
+    fi
+    downloadURL=$(downloadURLFromGit Sigil-Ebook Sigil)
+    appNewVersion=$(versionFromGit Sigil-Ebook Sigil)
+    expectedTeamID="2SMCVQU3CJ"
+    ;;
 signal)
     name="Signal"
     type="dmg"
@@ -9584,13 +9692,12 @@ silnite)
     blockingProcesses=( NONE )
     ;;
 sipgateclinq)
-    name="Sipgate CLINQ"
+    name="Sipgate"
     type="dmg"
     appNewVersion=$(curl -fs -L https://desktop.download.sipgate.com/latest-mac.yml | sed -n 's/version: \(.*\)/\1/p')
-    downloadURL="https://desktop.download.sipgate.com/sipgate%20CLINQ-${appNewVersion}.dmg"
+    downloadURL="https://desktop.download.sipgate.com/sipgate.dmg"
     expectedTeamID="K4L4M6DD76"
-;;
-
+    ;;
 sirimote)
     name="SiriMote"
     type="zip"
@@ -9872,6 +9979,21 @@ solstice)
     type="dmg"
     downloadURL="https://www.mersive.com/files/41693/"
     expectedTeamID="63B5A5WDNG"
+    ;;
+sonicpi)
+    name="Sonic Pi"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://sonic-pi.net$(curl -sfL "https://sonic-pi.net/" | xmllint --html --format - 2>/dev/null | grep -o "\/files.*Sonic-Pi-for-Mac-arm64.*.dmg")"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://sonic-pi.net$(curl -sfL "https://sonic-pi.net/" | xmllint --html --format - 2>/dev/null | grep -o "\/files.*Sonic-Pi-for-Mac-x64.*.dmg")"
+    fi
+    if [[ $(arch) == "arm64" ]]; then
+        appNewVersion=$(curl -sfL "https://sonic-pi.net/" | xmllint --html --format - 2>/dev/null | grep -o "\/.*Sonic-Pi-for-Mac-arm64.*.dmg" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
+    elif [[ $(arch) == "i386" ]]; then
+        appNewVersion=$(curl -sfL "https://sonic-pi.net/" | xmllint --html --format - 2>/dev/null | grep -o "\/.*Sonic-Pi-for-Mac-x64.*.dmg" | grep -Eo '[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{0,2}' | head -n1)
+    fi
+    expectedTeamID="MM65S3L4NG"
     ;;
 sonicvisualiser)
     name="Sonic Visualiser"
