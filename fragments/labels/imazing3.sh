@@ -6,4 +6,3 @@ imazing3)
     appNewVersion=$(curl -sL https://imazing.com/download | awk '/Version:/{getline; gsub(/[^0-9.]/,""); if($0!=""){print; exit}}')
     expectedTeamID="J5PR93692Y"
     ;;
-
