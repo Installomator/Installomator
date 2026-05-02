@@ -10,4 +10,3 @@ touchdesigner)
     versionKey="CFBundleShortVersionString"
     expectedTeamID="Z7MPGSMXH2"
     ;;
-
