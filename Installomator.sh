@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-12-23"
+VERSIONDATE="2026-04-29"
 
 # MARK: Functions
 
@@ -1575,7 +1575,7 @@ valuesfromarguments)
     name="1Password CLI"
     type="pkg"
     #packageID="com.1password.op"
-    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI2 | grep -m 1 -i op_apple_universal | cut -d'"' -f 2)
+    downloadURL=$(curl -fs https://app-updates.agilebits.com/product_history/CLI2 | grep -i op_apple_universal | grep -v -i beta | head -1 | cut -d'"' -f 2)
     appNewVersion=$(echo $downloadURL | sed -E 's/.*\/[a-zA-Z_]*([0-9.]*)\..*/\1/g')
     appCustomVersion(){ /usr/local/bin/op -v }
     expectedTeamID="2BUA8C4S2C"
@@ -1844,6 +1844,7 @@ affinityapp)
     type="dmg"
     appName="Affinity.app"
     downloadURL="https://downloads.affinity.studio/Affinity.dmg"
+    appNewVersion=$(curl -fsL "https://affinity-update.s3.amazonaws.com/mac2/retail/studiopro.xml" | xpath '//rss/channel/item/sparkle:deltas/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2)
     expectedTeamID="5HD2ARTBFS"
     ;;
 affinitydesigner2)
@@ -4109,6 +4110,14 @@ doctolib)
     fi
     expectedTeamID="84K7XVJ72Q"
     ;;
+domzilla-caffeine)
+    name="Caffeine"
+    type="zip"
+    packageID="net.domzilla.caffeine"
+    downloadURL="$(downloadURLFromGit domzilla caffeine)"
+    appNewVersion="$(versionFromGit domzilla caffeine)"
+    expectedTeamID="568T6RKXH7"
+    ;;
 dracoon)
     name="Dracoon"
     type="zip"
@@ -4531,16 +4540,13 @@ eshareosx)
     ;;
 espanso)
     name="Espanso"
-    type="zip"
-    if [[ "$(arch)" == "arm64" ]]; then
-        archiveName="Espanso-Mac-M1.zip"
-    else
-        archiveName="Espanso-Mac-Intel.zip"
-    fi
+    type="appInDmgInZip"
+    appName="Espanso.app"
+    archiveName="Espanso-Mac-Universal.zip"
+    pkgName="espanso/Espanso.dmg"
     downloadURL="$(downloadURLFromGit espanso espanso)"
     appNewVersion="$(versionFromGit espanso espanso)"
-    blockingProcesses=( "Espanso" "espanso" )
-    expectedTeamID="K839T4T5BY"
+    expectedTeamID="6424323YUH"
     ;;
 etrecheck)
     # credit: @dvsjr macadmins slack
@@ -6371,6 +6377,20 @@ knockknock)
     appNewVersion="$(versionFromGit objective-see KnockKnock)"
     expectedTeamID="VBG97UB4TA"
     ;;
+kommodo|\
+kommodoscreenrecorder)
+    name="Kommodo Screen Recorder"
+    type="pkg"
+    archiveName="KommodoScreenRecorder.pkg"
+    if [[ $(arch) == "arm64" ]]; then
+        appNewVersion=$(curl -fs "https://api.prod.komododecks.com/api/v2/releases/arm64/latest-mac.yml" | awk '/^version:/ {print $2}')
+        downloadURL="https://releases.komododecks.com/prod/electron/${appNewVersion}/kommodo-screen-recorder-${appNewVersion}-arm.pkg"
+    elif [[ $(arch) == "i386" ]]; then
+        appNewVersion=$(curl -fs "https://api.prod.komododecks.com/api/v2/releases/x64/latest-mac.yml" | awk '/^version:/ {print $2}')
+        downloadURL="https://releases.komododecks.com/prod/electron/${appNewVersion}/kommodo-screen-recorder-${appNewVersion}-intel.pkg"
+    fi
+    expectedTeamID="3M6U87VP9P"
+    ;;
 korgsoftwarepass)
     name="Korg Software Pass"
     type="pkgInDmg"
@@ -6999,6 +7019,14 @@ mamp)
     appNewVersion="$(echo "${downloadURL}" | grep -o 'MAMP-MAMP-PRO-[0-9]*\.[0-9]*' | sed 's/MAMP-MAMP-PRO-//')"
     expectedTeamID="5KCB5KHK77"
     ;;
+managedappschemabuilder)
+    name="Managed App Schema Builder"
+    type="zip"
+    appName="Managed App Schema Builder.app"
+    downloadURL="$(downloadURLFromGit BIG-RAT Managed-App-Schema-Builder)"
+    appNewVersion="$(versionFromGit BIG-RAT Managed-App-Schema-Builder)"
+    expectedTeamID="PS2F6S478M"
+    ;;
 marathon)
     name="Classic Marathon"
     type="dmg"
@@ -7573,8 +7601,8 @@ microsoftvisualstudiocode|\
 visualstudiocode)
     name="Visual Studio Code"
     type="zip"
-    appNewVersion=$(curl -fsL -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0.1 Safari/605.1.15' "https://code.visualstudio.com/Updates" | grep "/darwin" | grep -oiE ".com/([^>]+)([^<]+)/darwin" | cut -d "/" -f 2 | sed $'s/[^[:print:]	]//g' | head -1 )
-    downloadURL="https://update.code.visualstudio.com/${appNewVersion}/darwin-universal/stable" # Universal
+    appNewVersion=$(curl -fsL "https://update.code.visualstudio.com/api/releases/stable" | tr ',' '\n' | head -1 | tr -d '["')
+    downloadURL="https://update.code.visualstudio.com/latest/darwin-universal/stable"
     expectedTeamID="UBF8T346G9"
     appName="Visual Studio Code.app"
     blockingProcesses=( Code )
@@ -8407,6 +8435,13 @@ orion)
     downloadURL="https://cdn.kagi.com/downloads/OrionInstaller.dmg"
     expectedTeamID="TFVG979488"
     ;;
+orkadesktop)
+    name="Orka Desktop"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit macstadium orka-desktop)"
+    appNewVersion="$(versionFromGit macstadium orka-desktop)"
+    expectedTeamID="23KP83Z488"
+    ;;
 osquery)
     name="osquery-*"
     type="pkg"
@@ -8454,7 +8489,7 @@ outset)
 overflow)
     name="Overflow"
     type="dmg"
-    downloadURL="$(curl -sL 'https://overflow.io/download/' | awk -F '"' '/app-updates.overflow.io\/packages\/updates\/osx_64/ { print $8; exit }')"
+    downloadURL="$(curl -LsS https://overflow.io/download/ | grep -oE 'https://[^"]+\.dmg')"
     appNewVersion=$(echo "$downloadURL" | awk -F '-|[.]dmg' '{ print $(NF-1) }')
     expectedTeamID="7TK7YSGJFF"
     versionKey="CFBundleShortVersionString"
@@ -9308,8 +9343,8 @@ royaltsx)
 rstudio)
     name="RStudio"
     type="dmg"
-    downloadURL=$(curl -s -L "https://posit.co/download/rstudio-desktop/" | grep -m 1 -Eio 'href="https://download1.rstudio.org/electron/macos/RStudio-(.*).dmg"' | cut -c7- | sed -e 's/"$//')
-    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.-]*)\..*/\1/g' | sed 's/-/+/' )
+    downloadURL="https://rstudio.org/download/latest/stable/desktop/mac/RStudio-latest.dmg"
+    appNewVersion=$(curl -sfI "$downloadURL" | grep -i "^location" | grep -oE '[0-9]{4}\.[0-9]{2}\.[0-9]{1,2}\-[0-9]+' | sed 's/-/+/')
     expectedTeamID="FYF2F5GFX4"
     ;;
 rustdesk)
@@ -9531,13 +9566,12 @@ signiantapp)
     expectedTeamID="U6ZZ4QLU4Q"
     ;;
 silentknight)
-    # SilentKnight automatic checking of security systems
     name="SilentKnight"
     type="zip"
-    folderName="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'silentknight[0-9]*\.zip' | sort -V | tail -n 1 | sed -E 's/silentknight([0-9]+)\.zip/silentknight\1/')"
+    folderName=$(curl -fs "https://eclecticlight.co/downloads/" | grep -o 'https://[^"]*silentknight[0-9]*.zip' | sort -V | tail -n 1 | sed 's|.*/\(silentknight[0-9]*\)\.zip|\1|')
     appName="${folderName}/SilentKnight.app"
-    downloadURL="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'href="[^"]*silentknight[0-9]*\.zip"' | sed 's/href="//;s/"//' | sort -V | tail -n 1)"
-    appNewVersion="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'SilentKnight [0-9]\+\(\.[0-9]\+\)\? (' | sed -E 's/SilentKnight ([0-9]+(\.[0-9]+)?).*/\1/' | sort -V | tail -n 1)"
+    downloadURL="https://eclecticlight.co/wp-content/uploads/$(curl -fs "https://eclecticlight.co/downloads/" | grep -o '[0-9]\{4\}/[0-9]\{2\}/silentknight[0-9]*.zip' | sort -V | tail -n 1)"
+    appNewVersion="${folderName//[^0-9.]/}"
     expectedTeamID="QWY4LRW926"
     ;;
 silnite)
@@ -11062,9 +11096,8 @@ veracrypt|\
 veracrypt-macfuse)
     name="VeraCrypt"
     type="pkgInDmg"
-    archiveName="VeraCrypt_[0-9.].*\.dmg"
-    downloadURL=$(curl -sfL "https://api.github.com/repos/veracrypt/VeraCrypt/releases" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
-    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*_([0-9.]*.*)\.dmg/\1/g')
+    downloadURL="$(downloadURLFromGit veracrypt VeraCrypt)"
+    appNewVersion="$(versionFromGit veracrypt VeraCrypt)"
     expectedTeamID="Z933746L2S"
     ;;
 vernierspectralanalysis)
@@ -11480,13 +11513,12 @@ wwdc)
     expectedTeamID="8C7439RJLG"
     ;;
 xattred)
-    # xattred lets you inspect and edit all extended attributes
     name="xattred"
     type="zip"
-    folderName="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'xattred[0-9]*\.zip' | sort -V | tail -n 1 | sed -E 's/xattred([0-9]+)\.zip/xattred\1/')"
+    folderName=$(curl -fs "https://eclecticlight.co/downloads/" | grep -o 'xattred[0-9.]*.zip' | sort -V | tail -n 1 | sed 's/\.zip$//')
     appName="${folderName}/xattred.app"
-    downloadURL="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'href="[^"]*xattred[0-9]*\.zip"' | sed 's/href="//;s/"//' | sort -V | tail -n 1)"
-    appNewVersion="$(curl -fs https://eclecticlight.co/downloads/ | grep -o 'xattred [0-9]\+\(\.[0-9]\+\)\? (' | sed -E 's/xattred ([0-9]+(\.[0-9]+)?).*/\1/' | sort -V | tail -n 1)"
+    downloadURL="https://eclecticlight.co/wp-content/uploads/2025/12/${folderName}.zip"
+    appNewVersion="${folderName//[^0-9.]/}"
     expectedTeamID="QWY4LRW926"
     ;;
 xbar)

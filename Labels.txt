@@ -267,6 +267,7 @@ displaylinkmanager
 docker
 dockutil
 doctolib
+domzilla-caffeine
 dracoon
 dragonframe2024
 dragonframe2025
@@ -510,6 +511,8 @@ keystoreexplorer
 kimplusclientmodul
 klokki
 knockknock
+kommodo
+kommodoscreenrecorder
 korgsoftwarepass
 krisp
 krita
@@ -563,6 +566,7 @@ mailmate
 mailtooutlook
 malwarebytes
 mamp
+managedappschemabuilder
 marathon
 marathon2
 marathoninfinity
@@ -721,6 +725,7 @@ orbstack
 orcaslicer
 origin
 orion
+orkadesktop
 osquery
 ottomatic
 outputarcade
