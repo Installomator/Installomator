@@ -1,6 +1,5 @@
 topazgigapixel|\
 topazgigapixelai)
-    # credit: Tully Jagoe
     name="Topaz Gigapixel AI"
     type="pkg"
     versionKey="CFBundleShortVersionString"
