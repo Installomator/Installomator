@@ -1,7 +1,6 @@
 tableaudesktop)
     name="Tableau Desktop"
     type="pkgInDmg"
-    packageID="com.tableausoftware.tableaudesktop"
     if [[ $(/usr/bin/arch) == "arm64" ]]; then
         downloadURL="https://www.tableau.com/downloads/desktop/reg-mac-arm64"
     else
