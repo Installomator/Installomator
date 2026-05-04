@@ -115,6 +115,7 @@ bbeditpkg
 beamstudio
 betterdisplay
 bettertouchtool
+betterzip
 beyondcomparepro
 bibdesk
 bitrix24
@@ -147,6 +148,7 @@ calcservice
 calibre
 calibriteprofiler
 camostudio
+camtasia
 camtasia2019
 camtasia2020
 camtasia2021
@@ -154,6 +156,7 @@ camtasia2022
 camtasia2023
 camtasia2024
 camtasia2025
+camtasia2026
 camunda
 canva
 carboncopycloner
@@ -234,6 +237,10 @@ cormorant
 craftmanagerforsketch
 crashplan
 crashplansmb
+creativeforcehue
+creativeforcekelvin
+creativeforceluma
+creativeforcetriad
 cricutdesignspace
 cryptomator
 crystalfetch
@@ -297,11 +304,13 @@ easyfind
 eclipsetemurin11
 eclipsetemurin17
 eclipsetemurin21
+eclipsetemurin25
 eclipsetemurin8
 ecosiabrowser
 editshare-connect
 egnytecore
 egnytewebedit
+elan
 elasticvue
 element
 elevate24
@@ -335,6 +344,9 @@ fellow
 fierycommandworkstation
 figma
 filemakerpro
+filemakerpro20
+filemakerpro21
+filemakerpro22
 filmlab
 finalcutprocontent
 finaldraft11
@@ -383,6 +395,7 @@ gitkraken
 globusconnectpersonal
 glpiagent
 glyphs3
+gns3
 golang
 googleadseditor
 googlechrome
@@ -501,6 +514,7 @@ jre8
 jumpcloudpasswordmanager
 jumpdesktop
 jupyterlab
+kaleidoscope
 kap
 karabinerelements
 kdrive
@@ -516,6 +530,8 @@ keyshot12
 keyshot2024
 keystoreexplorer
 kimplusclientmodul
+kiro
+kirocli
 klokki
 knockknock
 kommodo
@@ -552,6 +568,7 @@ logitune
 logseq
 loom
 loopcloud
+losslesscut
 loupedeck
 lowprofile
 lsagent
@@ -682,7 +699,6 @@ netnewswire
 netspot
 networksharemounter
 nextcloud
-nextcloudclassic
 nextcloudtalk
 nodejs
 nodejslts
@@ -696,6 +712,7 @@ nova
 nps-santa
 nudge
 nudgesuite
+numi
 nvivo
 nvivo13
 nvivo14
@@ -817,6 +834,7 @@ redshift
 redshiftlite
 reflector4
 relatel
+remotedesktopmanager
 remotedesktopmanagerenterprise
 remotedesktopmanagerfree
 remotix
@@ -865,6 +883,7 @@ secretive
 selfcontrol
 sequelace
 sequelpro
+sessiondesktop
 sfsymbols
 shield
 shotcut
@@ -891,6 +910,7 @@ sloth
 smartgit
 smartsheet
 smartsvn
+snagit
 snagit2019
 snagit2020
 snagit2021
@@ -898,6 +918,7 @@ snagit2022
 snagit2023
 snagit2024
 snagit2025
+snagit2026
 snapgene
 snapgeneviewer
 soapuiopensource
@@ -1086,6 +1107,7 @@ whimsical
 whiterabbit
 windsurf
 wireshark
+wisprflow
 wordservice
 workbrew
 workplacechat
@@ -1100,6 +1122,7 @@ xeroxworkcentre7800
 xink
 xmenu
 xmind
+xmplify
 xquartz
 yed
 youleanloudnessmeter2
@@ -1113,6 +1136,7 @@ zen
 zenbrowser
 zeplin
 zerotier
+zettlr
 zipwhip
 zohoworkdrive
 zohoworkdrivegenie
