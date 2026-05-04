@@ -5,6 +5,5 @@ cursorai)
     appNewVersion=$(getJSONValue "${updateFeed}" "version")
     downloadURL=$(getJSONValue "${updateFeed}" "downloadUrl")
     expectedTeamID="VDXQ22DGB9"
-    blockingProcesses=( "Cursor" )
     versionKey="CFBundleVersion"
     ;;
