@@ -1,4 +1,5 @@
-gather2)
+gather2|\
+gathertown)
     name="GatherV2"
     type="dmg"
     appNewVersion=$(getJSONValue "$(curl -fsL 'https://api.v2.gather.town/api/v2/releases/desktop/latest')" "version")
