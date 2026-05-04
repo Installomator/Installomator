@@ -686,6 +686,7 @@ nomad
 nomadlogin
 nordlayer
 nordvpn
+notary
 notion
 nova
 nps-santa

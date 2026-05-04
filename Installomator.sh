@@ -348,8 +348,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.9.21"
-VERSIONDATE="2026-03-17"
+VERSION="10.9.22"
+VERSIONDATE="2026-05-04"
 
 # MARK: Functions
 
@@ -8107,6 +8107,14 @@ nordvpn)
     appNewVersion=$( curl -s https://downloads.nordcdn.com/apps/macos/generic/NordVPN-OpenVPN/latest/update_pkg.xml | xpath '(//sparkle:shortVersionString/text())[1]' 2>/dev/null )
     versionKey="CFBundleShortVersionString"
     expectedTeamID="W5W395V82Y"
+    ;;
+notary)
+    name="notary"
+    type="pkg"
+    packageID="de.twocent.notary"
+    downloadURL="$(downloadURLFromGit lawnmowerwoman notary)"
+    appNewVersion="$(versionFromGit lawnmowerwoman notary)"
+    expectedTeamID="KP5T66DWT2"
     ;;
 notion)
     name="Notion"
