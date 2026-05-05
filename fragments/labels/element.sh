@@ -1,7 +1,7 @@
 element)
     name="Element"
     type="dmg"
-    downloadURL="https://packages.riot.im/desktop/install/macos/Element.dmg"
-    appNewVersion=$(versionFromGit vector-im element-desktop)
+    downloadURL="https://packages.element.io/desktop/install/macos/Element.dmg"
+    appNewVersion=$(versionFromGit element-hq element-web)
     expectedTeamID="7J4U792NQT"
     ;;
