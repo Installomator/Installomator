@@ -117,6 +117,23 @@ cat "$fragments_dir/main.sh" >> $destination_file
 # set the executable bit
 chmod +x $destination_file
 
+# If Install Installomator zip scripts exist, then create that installer script
+if [[ -f "$fragments_dir/install Installomator zip 1.sh" && -f "$fragments_dir/install Installomator zip 2.sh" ]]; then
+    destination_installer_file="$build_dir/Install Installomator ${version} ${versiondate}.sh"
+
+    # add the install Installomator zip 1.sh
+    cat "$fragments_dir/install Installomator zip 1.sh" | sed -e 's/^# Installomator version$/# Installomator version '"${version} ${versiondate}"'/' > $destination_installer_file
+
+    # Dump -> zip -> base64
+    cat "$destination_file" | gzip -9 | base64 -i - -o - >> $destination_installer_file
+
+    # add the install Installomator zip 2.sh
+    cat "$fragments_dir/install Installomator zip 2.sh" >> $destination_installer_file
+
+    # set the executable bit
+    chmod +x $destination_installer_file
+fi
+
 # run script with remaining arguments
 if [[ $runScript -eq 1 ]]; then
     $destination_file "$@"
@@ -128,6 +145,8 @@ if [[ $buildScript -eq 1 ]]; then
     echo "# copying script to $repo_dir/Installomator.sh"
     cp $destination_file $repo_dir/Installomator.sh
     chmod 755 $repo_dir/Installomator.sh
+    cp ${destination_installer_file} "$repo_dir/Install Installomator ${version} ${versiondate}.sh"
+    chmod 755 "${repo_dir}/Install Installomator ${version} ${versiondate}.sh"
     # also update Labels.txt
     $repo_dir/Installomator.sh | tail -n +2 > $repo_dir/Labels.txt
 fi
