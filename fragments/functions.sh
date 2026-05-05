@@ -305,7 +305,8 @@ getAppVersion() {
         if [[ ${#filteredAppPaths} -eq 1 ]]; then
             installedAppPath=$filteredAppPaths[1]
             #appversion=$(mdls -name kMDItemVersion -raw $installedAppPath )
-            appversion=$(defaults read $installedAppPath/Contents/Info.plist $versionKey) #Not dependant on Spotlight indexing
+            #appversion=$(defaults read $installedAppPath/Contents/Info.plist $versionKey) #Not dependant on Spotlight indexing
+            appversion=$(/usr/libexec/PlistBuddy -c "Print :$versionKey" $installedAppPath/Contents/Info.plist) # "defaults" should only be used for reading preferences domains (documented as a warning in "man defaults").
             printlog "found app at $installedAppPath, version $appversion, on versionKey $versionKey"
             updateDetected="YES"
             # Is current app from App Store
@@ -507,7 +508,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
     fi
 
     # app versioncheck
-    appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
+    # appNewVersion=$(defaults read $appPath/Contents/Info.plist $versionKey)
+    appNewVersion=$(/usr/libexec/PlistBuddy -c "Print :$versionKey" $appPath/Contents/Info.plist) # "defaults" should only be used for reading preferences domains (documented as a warning in "man defaults").
     if [[ -n $appNewVersion && $appversion == $appNewVersion ]]; then
         printlog "Downloaded version of $name is $appNewVersion on versionKey $versionKey, same as installed."
         if [[ $INSTALL != "force" ]]; then
@@ -531,7 +533,8 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
     fi
 
     # macOS versioncheck
-    minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion 2>/dev/null )
+    #minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion 2>/dev/null )
+    minimumOSversion=$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' $appPath/Contents/Info.plist 2>/dev/null) # "defaults" should only be used for reading preferences domains (documented as a warning in "man defaults").
     if [[ -n $minimumOSversion && $minimumOSversion =~ '[0-9.]*' ]]; then
         printlog "App has LSMinimumSystemVersion: $minimumOSversion"
         if ! is-at-least $minimumOSversion $installedOSversion; then
