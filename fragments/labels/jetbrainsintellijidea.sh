@@ -1,4 +1,6 @@
-jetbrainsintellijidea)
+jetbrainsintellijidea|\
+jetbrainsintellijideace|\
+intellijideace)
     name="IntelliJ IDEA"
     type="dmg"
     jetbrainscode="II"
