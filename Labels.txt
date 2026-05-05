@@ -353,6 +353,8 @@ finaldraft11
 finaldraft12
 finaldraft13
 findanyfile
+firecutfordavinciresolve
+firecutforpremierepro
 firefox
 firefox_da
 firefox_intl
@@ -742,6 +744,7 @@ onlyofficedesktop
 onscreencontrol
 onyx
 openeid
+openlens
 openrefine
 openvpnconnect
 openvpnconnectv3
@@ -1068,7 +1071,6 @@ veracrypt-macfuse
 vernierspectralanalysis
 vfx
 viennaassistant
-vimac
 vimcal
 virtualbox
 virtualboxbeta
