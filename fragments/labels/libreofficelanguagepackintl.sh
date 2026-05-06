@@ -1,4 +1,4 @@
-libreofficelanguagepack_intl)
+libreofficelanguagepackintl)
     name="LibreOffice Language Pack"
     type="dmg"
     packageID="org.libreoffice.script.langpack"
