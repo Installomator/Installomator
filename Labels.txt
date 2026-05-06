@@ -263,6 +263,7 @@ defaultfolderx
 deon-cloud
 deon-onprem
 depnotify
+deskpad
 desktoppr
 detectxswift
 determinate
@@ -383,6 +384,7 @@ garminbasecamp
 garminexpress
 gary
 gather
+gather2
 gathertown
 gdevelop
 geneiousprime
@@ -695,6 +697,7 @@ mysqlworkbenchce
 namiral
 nanosaur
 nativeaccess
+nditools
 nessusagent
 netiquette
 netnewswire

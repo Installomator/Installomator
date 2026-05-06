@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-05-05"
+VERSIONDATE="2026-05-06"
 
 # MARK: Functions
 
@@ -4061,6 +4061,13 @@ depnotify)
     downloadURL="https://files.jamfconnect.com/DEPNotify.pkg"
     expectedTeamID="VRPY9KHGX6"
     ;;
+deskpad)
+    name="DeskPad"
+    type="zip"
+    downloadURL="$(downloadURLFromGit Stengo DeskPad)"
+    appNewVersion="$(versionFromGit Stengo DeskPad)"
+    expectedTeamID="TYPC962S4N"
+    ;;
 desktoppr)
     name="desktoppr"
     type="pkg"
@@ -4347,10 +4354,11 @@ duckduckgo)
     expectedTeamID="HKE973VLUW"
     ;;
 duet)
-    name="Duet"
-    type="zip"
-    downloadURL="https://updates.duetdisplay.com/AppleSilicon"
-    appNewVersion="$(curl -fsIL ${downloadURL} | grep -i ^location | cut -d "/" -f6 | sed 's/duet-//' | sed 's/.zip//' | sed 's/-/./g')"
+    name="duet"
+    type="dmg"
+    sparkleData=$(curl -fsL 'https://updater.duetdownload.com/dd/sparkle.xml?lang=en-US&appName=Duet')
+    appNewVersion=$( <<<"$sparkleData" xpath '//*[local-name()="enclosure"]/@*[local-name()="version"]' | sed 's/.*="//;s/"//' | sort -V | tail -n 1 )
+    downloadURL=$( <<<"$sparkleData" xpath 'string(//*[local-name()="enclosure"][@*[local-name()="version"] = "'"$appNewVersion"'"]/@url)' )
     expectedTeamID="J6L96W8A86"
     blockingProcesses=( "duet" "duet Networking" )
     ;;
@@ -5245,14 +5253,21 @@ gary)
     appNewVersion=$(versionFromGit m4gg13 gary )
     expectedTeamID="82DMLR8WGF"
     ;;
-gather|\
-gathertown)
+gather)
     name="Gather"
     type="dmg"
-    appNewVersion="$(versionFromGit gathertown gather-town-desktop-releases)"
-    downloadURL="$(downloadURLFromGit gathertown gather-town-desktop-releases)"
-    archiveName="Gather-${appNewVersion}-universal.dmg"
-    expectedTeamID="69MCJ5CRDW"
+    appNewVersion=$(getJSONValue "$(curl -fsL 'https://api.gather.town/api/v2/releases/desktop/latest')" "version")
+    downloadURL="https://api.v2.gather.town/api/v2/releases/latest/macos/v1"
+    expectedTeamID="W28UKP642P"
+    ;;
+
+gather2|\
+gathertown)
+    name="GatherV2"
+    type="dmg"
+    appNewVersion=$(getJSONValue "$(curl -fsL 'https://api.v2.gather.town/api/v2/releases/desktop/latest')" "version")
+    downloadURL="https://api.v2.gather.town/api/v2/releases/latest/macos/v2"
+    expectedTeamID="W28UKP642P"
     ;;
 
 gdevelop)
@@ -6292,7 +6307,9 @@ jetbrainsgoland)
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*-([0-9.]+)[-.].*/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
     ;;
-jetbrainsintellijidea)
+jetbrainsintellijidea|\
+jetbrainsintellijideace|\
+intellijideace)
     name="IntelliJ IDEA"
     type="dmg"
     jetbrainscode="II"
@@ -6301,20 +6318,7 @@ jetbrainsintellijidea)
     elif [[ $(arch) == arm64 ]]; then
         jetbrainsdistribution="macM1"
     fi
-    downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
-    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*-([0-9.]+)[-.].*/\1/g' )
-    expectedTeamID="2ZEFAR8TH3"
-    ;;
-jetbrainsintellijideace|\
-intellijideace)
-    name="IntelliJ IDEA CE"
-    type="dmg"
-    jetbrainscode="IIC"
-    if [[ $(arch) == i386 ]]; then
-        jetbrainsdistribution="mac"
-    elif [[ $(arch) == arm64 ]]; then
-        jetbrainsdistribution="macM1"
-    fi
+    blockingProcesses=( "idea" )
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
     appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*-([0-9.]+)[-.].*/\1/g' )
     expectedTeamID="2ZEFAR8TH3"
@@ -6782,13 +6786,13 @@ libericajdk8ltsfull)
 libreoffice)
     name="LibreOffice"
     type="dmg"
-    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | xmllint --html --xpath 'string(//p[@class="version_heading"])' - 2>/dev/null | xargs)"
+    appNewVersion="$(curl -s https://download.documentfoundation.org/libreoffice/stable/ | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | tail -1)"
     if [[ $(arch) == "arm64" ]]; then
     	downloadURL="https://download.documentfoundation.org/libreoffice/stable/${appNewVersion}/mac/aarch64/LibreOffice_${appNewVersion}_MacOS_aarch64.dmg"
     elif [[ $(arch) == "i386" ]]; then
     	downloadURL="https://download.documentfoundation.org/libreoffice/stable/${appNewVersion}/mac/x86_64/LibreOffice_${appNewVersion}_MacOS_x86-64.dmg"
     fi
-    appCustomVersion(){ defaults read "/Applications/LibreOffice.app/Contents/Info.plist" CFBundleVersion | cut -d '.' -f 1-3 }
+    versionKey="CFBundleVersion"
     expectedTeamID="7P5S3ZLCN7"
     blockingProcesses=( soffice )
     ;;
@@ -7136,6 +7140,7 @@ macfuse)
     pkgName="Install macFUSE.pkg"
     downloadURL=$(downloadURLFromGit osxfuse osxfuse)
     appNewVersion=$(versionFromGit osxfuse osxfuse)
+    appCustomVersion(){ if [ -f "/Library/Filesystems/macfuse.fs/Contents/Info.plist" ]; then defaults read /Library/Filesystems/macfuse.fs/Contents/Info.plist CFBundleShortVersionString; fi}
     expectedTeamID="3T5GSNBU6W"
     ;;
 masterfader)
@@ -7278,9 +7283,15 @@ malwarebytes)
     expectedTeamID="GVZRY6KDKR"
     ;;
 mamp)
-    name="MAMP"
+    name="MAMP PRO"
     type="pkg"
-    downloadURL="$(curl -fsL 'https://www.mamp.info/en/downloads/' | grep -o 'https://downloads.mamp.info/MAMP-PRO/macOS/MAMP-PRO/MAMP-MAMP-PRO-[^"]*.pkg' | head -1)"
+    if [[ $(arch) != "i386" ]]; then
+        printlog "Architecture: arm64 (not i386)"
+        downloadURL="$(curl -fsL 'https://www.mamp.info/en/downloads/' | grep -o 'https://downloads.mamp.info/MAMP-PRO/macOS/MAMP-PRO/MAMP-MAMP-PRO-[^"]*Apple-chip.pkg' | head -1)"
+    else
+        printlog "Architecture: i386"
+        downloadURL="$(curl -fsL 'https://www.mamp.info/en/downloads/' | grep -o 'https://downloads.mamp.info/MAMP-PRO/macOS/MAMP-PRO/MAMP-MAMP-PRO-[^"]*Intel-x86.pkg' | head -1)"
+    fi
     appNewVersion="$(echo "${downloadURL}" | grep -o 'MAMP-MAMP-PRO-[0-9]*\.[0-9]*' | sed 's/MAMP-MAMP-PRO-//')"
     expectedTeamID="5KCB5KHK77"
     ;;
@@ -7380,9 +7391,8 @@ mendeleyreferencemanager)
     name="Mendeley Reference Manager"
     type="dmg"
     downloadURL=$(curl -fs "https://www.mendeley.com/download-reference-manager/macOS" | grep -oE "https://static.mendeley.com/bin/desktop/.*?.dmg")
-    appNewVersion=$(curl -fs "https://www.mendeley.com/download-reference-manager/macOS" | grep -oE "https://static.mendeley.com/bin/desktop/.*?.dmg" | sed -n 's/.*mendeley-reference-manager-\([0-9.-]*\)-x64.dmg/\1/p')
+    appNewVersion=$(curl -fs "https://www.mendeley.com/download-reference-manager/macOS" | grep -oE "https://static.mendeley.com/bin/desktop/.*?.dmg" | sed -n 's/.*mendeley-reference-manager-\([0-9.-]*\)-universal.dmg/\1/p')
     expectedTeamID="45K89Y5X9B"
-    #Company="Elsevier Inc."
     ;;
 menumeters)
     name="MenuMeters"
@@ -8253,6 +8263,16 @@ nativeaccess)
     downloadURL="https://na-update.native-instruments.com/${naItem}"
     appNewVersion="$(echo "$naDetails" | grep "version" | awk '{print $2}' | xargs)"
     expectedTeamID="83K5EG6Z9V"
+    ;;
+nditools)
+    name="NDI Tools"
+    type="pkg"
+    appName="NDI Access Manager.app"
+    versionKey="CFBundleShortVersionString"
+    downloadURL=$(curl -sIkL $(curl -fsL https://ndi.video/tools/ | grep -E "get.ndi.video|MacOS" | grep -B 1 "MacOS" | grep -o '"https.*"' | sort | tail -1 | sed 's/"//g') | grep -o "https.*pkg")
+    appNewVersion=$(curl -fsL https://ndi.video/tools/ | grep -o "Version [0-9].*[0-9]" | grep -o "[0-9].*[0-9]" | sort | tail -1)
+    expectedTeamID="W8U66ET244"
+    blockingProcesses=( "NDI Access Manager" "NDI Discovery" "NDI Launcher" "NDI Router" "NDI Scan Converter" "NDI Test Patterns" "NDI Video Monitor" "NDI Virtual Input" )
     ;;
 nessusagent)
     name="Nessus Agent"
