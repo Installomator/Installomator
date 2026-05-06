@@ -1,4 +1,4 @@
-soundly-shapeit)
+soundlyshapeit)
     name="Shapeit"
     type="pkg"
     packageID="com.soundly.pkg.au.shapeit"
