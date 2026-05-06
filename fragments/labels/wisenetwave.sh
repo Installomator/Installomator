@@ -1,9 +1,7 @@
 wisenetwave)
-    # Wisenet Wave VMS Client (Hanwha Vision)
-    # Download page: https://sync.wavevms.com/download/macos
-    # Versions API: https://sync.wavevms.com/api/utils/downloads-releases
-    # Only targeting macos_arm64 client build; x86_64 exists but is not needed.
-
+    if [[ $(/usr/bin/arch) != "arm64" ]]; then
+        cleanupAndExit 76 "wisenetwave is only available for Apple Silicon (arm64)" ERROR
+    fi
     name="Wisenet Wave"
     type="dmg"
     releaseData=$(curl -fs "https://sync.wavevms.com/api/utils/downloads-releases")
