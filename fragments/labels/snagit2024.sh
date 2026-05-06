@@ -1,5 +1,5 @@
 snagit2024)
-    name="Snagit"
+    name="Snagit 2024"
     type="dmg"
     sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2024.0.0' 'https://www.techsmith.com/redirect.asp?target=sufeedurl&product=snagitmac&ver=2024.0.0&lang=enu&os=mac')
     appNewVersion=$(
