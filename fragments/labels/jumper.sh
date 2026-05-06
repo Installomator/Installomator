@@ -12,5 +12,4 @@ jumper)
     fi
     versionKey="CFBundleShortVersionString"
     expectedTeamID="PP557RNS84"
-    blockingProcess=( "Jumper" )
     ;;
