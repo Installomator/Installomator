@@ -394,7 +394,7 @@ checkRunningProcesses() {
                       # give the user a bit of time to quit apps
                       printlog "waiting 30 seconds for processes to quit"
                       sleep 30
-                      if [[ $i > 1 && $BLOCKING_PROCESS_ACTION = tell_user_then_kill ]]; then
+                      if [[ $BLOCKING_PROCESS_ACTION = tell_user_then_kill ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
                       fi
