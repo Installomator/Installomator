@@ -7,4 +7,3 @@ linear)
     versionKey="CFBundleShortVersionString"
     blockingProcesses=( "Linear" "Linear Helper" )
     ;;
-    
