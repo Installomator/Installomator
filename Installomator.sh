@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-05-06"
+VERSIONDATE="2026-05-07"
 
 # MARK: Functions
 
@@ -2606,7 +2606,7 @@ backgroundmusic)
     ;;
 backgrounds)
     name="Backgrounds"
-    type="zip"
+    type="pkg"
     downloadURL="$(downloadURLFromGit SAP backgrounds)"
     appNewVersion="$(versionFromGit SAP backgrounds)"
     expectedTeamID="7R5ZEU67FQ"
@@ -3568,14 +3568,11 @@ cinema4d2024)
 cinema4d2025)
     name="Cinema 4D"
     type="dmg"
-    appCustomVersion(){
-      defaults read "/Applications/Maxon Cinema 4D 2025/Cinema 4D.app/Contents/Info.plist" CFBundleGetInfoString | grep -Eo "2025+\.[0-9]+\.[0-9]+"
-    }
     productDownloadsPage=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*downloads/cinema-4d-2025[^"]*' | head -1)
     downloadURL=$(curl -fsL $productDownloadsPage | grep -oE 'https://[^"]*\.dmg' | head -1)
-    appNewVersion=$(sed -E 's/.*_([0-9.]*)_Mac\.dmg/\1/g' <<< $downloadURL)
+    appNewVersion=$(grep -Eo "/2025.([[0-9]+).([[0-9]+)/" <<< $downloadURL | sed 's|/||g')
     targetDir="/Applications/Maxon Cinema 4D 2025"
-    downloadURL="https://mx-app-blob-prod.maxon.net/mx-package-production/installer/macos/maxon/cinema4d/releases/${appNewVersion}/Cinema4D_2025_${appNewVersion}_Mac.dmg"
+    appCustomVersion(){defaults read "${targetDir}/Cinema 4D.app/Contents/Info.plist" CFBundleGetInfoString | grep -Eo "2025+\.[0-9]+\.[0-9]+"}
     installerTool="Maxon Cinema 4D Installer.app"
     CLIInstaller="Maxon Cinema 4D Installer.app/Contents/MacOS/installbuilder.sh"
     CLIArguments=(--mode unattended --unattendedmodeui none)
@@ -3687,8 +3684,8 @@ cloudflarewarp)
 cloudya)
     name="Cloudya"
     type="appInDmgInZip"
-    downloadURL="$(curl -fs https://www.nfon.com/de/service/downloads | grep -i -E -o "https://cdn.cloudya.com/Cloudya-[.0-9]+-mac.zip")"
-    appNewVersion="$(curl -fs https://www.nfon.com/de/service/downloads | grep -i -E -o "Cloudya Desktop App MAC [0-9.]*" | sed 's/^.*\ \([^ ]\{0,7\}\)$/\1/g')"
+    downloadURL="$(curl -fsL https://www.nfon.com/de/service/downloads | grep -i -E -o "https://cdn.cloudya.com/Cloudya-[.0-9]+-mac.zip")"
+    appNewVersion="$(curl -fsL https://www.nfon.com/de/service/downloads | grep -i -E -o "Cloudya Desktop App MAC [0-9.]*" | sed 's/^.*\ \([^ ]\{0,7\}\)$/\1/g' | head -n1)"
     expectedTeamID="X26F74J8TH"
     ;;
 clue)
@@ -3880,9 +3877,9 @@ cryptomator)
     name="Cryptomator"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="$(curl -fs "https://cryptomator.org/downloads/mac-arm64/thanks/" | grep -oE "href=https:\/\/github\.com\/cryptomator\/cryptomator\/releases\/download\/[0-9.]+\/.*?-arm64\.dmg " | awk -F '=' '{ print $2 }' | sed 's/[[:space:]]*$//')"
+        downloadURL="$(curl -fs "https://cryptomator.org/downloads/mac-arm64/thanks/" | grep -oE -m1 "https://github.com/cryptomator/cryptomator/releases/download/[0-9.]+/.*-arm64.dmg" | cut -d " " -f1)"
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL="$(curl -fs "https://cryptomator.org/downloads/mac/thanks/" | grep -oE "href=https:\/\/github.com\/cryptomator\/cryptomator\/releases\/download\/[0-9.]+/.*?-x64\.dmg " | awk -F '=' '{ print $2 }' | sed 's/[[:space:]]*$//')"
+        downloadURL="$(curl -fs "https://cryptomator.org/downloads/mac/thanks/" | grep -oE "https://github.com/cryptomator/cryptomator/releases/download/[0-9.]+/.*-x64.dmg" | head -1)"
     fi
     appNewVersion=$(echo "${downloadURL}" | awk -F'/' '{ print $(NF-1) }')
     expectedTeamID="YZQJQUHA3L"
@@ -5098,10 +5095,14 @@ flexoptixapp)
     expectedTeamID="C5JETSFPHL"
     ;;
 flowjo)
-    name="FlowJo"
+    name="FlowJo 11"
     type="dmg"
-    downloadURL="$(curl -fs "https://www.flowjo.com/solutions/flowjo/downloads" | grep -i -o -E "https.*\.dmg")"
-    appNewVersion=$(echo "${downloadURL}" | tr "-" "\n" | grep dmg | sed -E 's/([0-9.]*)\.dmg/\1/g')
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="$(curl -fs "https://www.flowjo.com/flowjo/download" | grep -i -o -E "https.*\.dmg" | grep -m 1 'arm64')"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="$(curl -fs "https://www.flowjo.com/flowjo/download" | grep -i -o -E "https.*\.dmg" | grep -m 1 'x64')"
+    fi
+    appNewVersion=$(echo "${downloadURL}" | cut -d "-" -f2 )
     expectedTeamID="C79HU5AD9V"
     ;;
 flstudiomac)
@@ -6458,6 +6459,21 @@ jumpdesktop)
     downloadURL=$(curl -fsL "https://mirror.jumpdesktop.com/downloads/jdm/jdmac-web-appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
     appNewVersion=$(curl -fs "https://mirror.jumpdesktop.com/downloads/jdm/jdmac-web-appcast.xml" | grep sparkle:shortVersionString | tr ',' '\n' | grep sparkle:shortVersionString | cut -d '"' -f 2)
     expectedTeamID="2HCKV38EEC"
+    ;;
+jumper)
+    name="Jumper"
+    type="dmg"
+    appcastXML="$(curl -fsL https://download.getjumper.io/appcast.xml)"
+    appNewVersion="$(echo "$appcastXML" | xmllint --xpath 'string(//*[local-name()="item"][1]/*[local-name()="shortVersionString"]/text())' -)"
+    buildVersion="$(echo "$appcastXML" | xmllint --xpath 'string(//*[local-name()="item"][1]/*[local-name()="version"]/text())' -)"
+    archiveName="jumper-${appNewVersion}-build-${buildVersion}.dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://download.getjumper.io/jumper-${appNewVersion}-build-${buildVersion}.dmg"
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://download.getjumper.io/intel/jumper-${appNewVersion}-build-${buildVersion}-intel.dmg"
+    fi
+    versionKey="CFBundleShortVersionString"
+    expectedTeamID="PP557RNS84"
     ;;
 jupyterlab)
     name="JupyterLab"
@@ -8916,6 +8932,18 @@ pgadmin4)
     fi
     expectedTeamID="TCHGL2R7C5"
     ;;
+phoenixcode)
+    name="Phoenix Code"
+    type="dmg"
+    if [[ $(arch) == i386 ]]; then
+      archiveName="x64.dmg"
+    elif [[ $(arch) == arm64 ]]; then
+      archiveName="aarch64.dmg"
+    fi
+    downloadURL="$(downloadURLFromGit phcode-dev phoenix-desktop)"
+    appNewVersion="$(versionFromGit phcode-dev phoenix-desktop)"
+    expectedTeamID="8F632A866K"
+    ;;
 pika)
     name="Pika"
     type="dmg"
@@ -9075,6 +9103,13 @@ powermonitor)
     downloadURL=$(downloadURLFromGit sap power-monitoring-tool-for-macos )
     appNewVersion=$(versionFromGit sap power-monitoring-tool-for-macos )
     expectedTeamID="7R5ZEU67FQ"
+    ;;
+pppcutility)
+    name="PPPC Utility"
+    type="zip"
+    downloadURL="$(downloadURLFromGit jamf PPPC-Utility)"
+    appNewVersion="$(versionFromGit jamf PPPC-Utility)"
+    expectedTeamID="483DWKW443"
     ;;
 praat)
     name="Praat"
@@ -10276,6 +10311,13 @@ soundly)
     #appNewVersion=""
     expectedTeamID="67Y6N7VTDG"
     ;;
+soundlyshapeit)
+    name="Shapeit"
+    type="pkg"
+    packageID="com.soundly.pkg.au.shapeit"
+    downloadURL="https://storage.googleapis.com/soundly-plugins/Shapeit.pkg"
+    expectedTeamID="67Y6N7VTDG"
+    ;;
 sourcetree)
     name="Sourcetree"
     type="zip"
@@ -10361,6 +10403,14 @@ sqlprostudio)
     type="zip"
     downloadURL="https://www.sqlprostudio.com/download.php"
     expectedTeamID="LKJB72232C"
+    ;;
+sshfs)
+    name="sshfs-3.7.3-ccb6821"
+    type="pkg"
+    packageID="io.macfuse.installer.components.sshfs"
+    downloadURL="$(downloadURLFromGit libfuse sshfs)"
+    appNewVersion="$(versionFromGit libfuse sshfs)"
+    expectedTeamID="3T5GSNBU6W"
     ;;
 starface72x)
     name="STARFACE"
@@ -11359,8 +11409,13 @@ uniconverter)
 unityhub)
     name="Unity Hub"
     type="dmg"
-    downloadURL="https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.dmg"
+    if [[ $(arch) == i386 ]]; then
+        downloadURL="https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup-x64.dmg"
+    elif [[ $(arch) == arm64 ]]; then
+        downloadURL="https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup-arm64.dmg"
+    fi
     appNewVersion=$(curl -s https://unity.com/unity-hub/release-notes | grep -oE '>[0-9]+\.[0-9]+\.[0-9]+<' | head -1 | tr -d '<>')
+    versionKey="CFBundleVersion"
     expectedTeamID="9QW8UQUTAA"
     ;;
 

@@ -517,6 +517,7 @@ joplin
 jre8
 jumpcloudpasswordmanager
 jumpdesktop
+jumper
 jupyterlab
 kaleidoscope
 kap
@@ -778,6 +779,7 @@ pdfexpert
 pdfsam
 perimeter81
 pgadmin4
+phoenixcode
 pika
 pingplotter
 pique
@@ -797,6 +799,7 @@ portingkit
 postgresapp
 postman
 powermonitor
+pppcutility
 praat
 prism10
 prism9
@@ -939,6 +942,7 @@ sonoss1
 sonoss2
 soundly
 soundly-placeit
+soundlyshapeit
 sourcetree
 spark
 splashtopbusiness
@@ -950,6 +954,7 @@ sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
+sshfs
 starface72x
 starface73x
 starface81x
