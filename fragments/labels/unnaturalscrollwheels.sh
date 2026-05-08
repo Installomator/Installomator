@@ -3,6 +3,6 @@ unnaturalscrollwheels)
     type="dmg"
     downloadURL="$(downloadURLFromGit ther0n UnnaturalScrollWheels)"
     appNewVersion="$(versionFromGit ther0n UnnaturalScrollWheels)"
-    expectedTeamID="D6H5W2T379"
+    expectedTeamID="VH8UL6UKQL"
     blockingProcesses=( UnnaturalScrollWheels )
     ;;
