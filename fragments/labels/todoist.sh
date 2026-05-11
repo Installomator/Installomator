@@ -2,7 +2,7 @@ todoist)
     name="Todoist"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
-	    downloadURL=$(curl -fsLI "https://todoist.com/mac_app?arch=arm" | grep -i ^location | sed -E 's/.*(https.*\.dmg).*/\1/g')
+    downloadURL=$(curl -fsLI "https://todoist.com/mac_app?arch=arm" | grep -i ^location | sed -E 's/.*(https.*\.dmg).*/\1/g')
     elif [[ $(arch) == i386 ]]; then
         downloadURL=$(curl -fsLI "https://todoist.com/mac_app?arch=x64" | grep -i ^location | sed -E 's/.*(https.*\.dmg).*/\1/g')
     fi
