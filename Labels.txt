@@ -555,7 +555,7 @@ libericajdk11ltsfull
 libericajdk17ltsfull
 libericajdk8ltsfull
 libreoffice
-libreofficelanguagepack_intl
+libreofficelanguagepackintl
 lifesize
 lightburn
 lightkey
@@ -753,6 +753,7 @@ openrefine
 openvpnconnect
 openvpnconnectv3
 opera
+oraclesqldeveloper
 orbstack
 orcaslicer
 origin

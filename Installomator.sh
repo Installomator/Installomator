@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-05-07"
+VERSIONDATE="2026-05-08"
 
 # MARK: Functions
 
@@ -1914,16 +1914,15 @@ airtable)
 airtame)
     name="Airtame"
     type="dmg"
-    downloadURL="$(curl -fs https://airtame.com/download/ | grep -i platform=mac | head -1 | grep -o -i -E "https.*" | cut -d '"' -f1)"
-    appNewVersion="$(curl -fsIL "${downloadURL}" | grep -i ^location | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')"
+    downloadURL="https://downloads-website.airtame.com/get.php?platform=mac"
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i "location" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
     expectedTeamID="4TPSP88HN2"
     ;;
 airtamepkg)
     name="Airtame"
     type="pkg"
-    packageID="com.airtame.airtame-application"
-    appNewVersion="$(curl -fs https://airtame.com/download/ | grep -i platform=mac | head -1 | grep -o -i -E "https.*" | cut -d '"' -f1 | xargs curl -fsIL | grep -i ^location | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')"
-    downloadURL="https://airtame-app.b-cdn.net/app/latest/mac/Airtame-${appNewVersion}.pkg"
+    downloadURL="https://downloads-website.airtame.com/get.php?platform=mac&pkg=true"
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i "location" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
     expectedTeamID="4TPSP88HN2"
     ;;
 aldente)
@@ -4343,11 +4342,9 @@ dstny)
 duckduckgo)
     name="DuckDuckGo"
     type="dmg"
-    #downloadURL="https://staticcdn.duckduckgo.com/macos-desktop-browser/duckduckgo.dmg"
-    downloadURL=$(curl -fs https://staticcdn.duckduckgo.com/macos-desktop-browser/appcast.xml | xpath '(//rss/channel/item/enclosure/@url)[last()]' 2>/dev/null | cut -d '"' -f2)
-    #downloadURL=$(curl -fs https://staticcdn.duckduckgo.com/macos-desktop-browser/appcast.xml | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | cut -d '"' -f2)
-    appNewVersion=$(curl -fs https://staticcdn.duckduckgo.com/macos-desktop-browser/appcast.xml | xpath '(//rss/channel/item/enclosure/@sparkle:version)[last()]' 2>/dev/null | cut -d '"' -f2)
-    #appNewVersion=$(curl -fs https://staticcdn.duckduckgo.com/macos-desktop-browser/appcast.xml | xpath '(//rss/channel/item/sparkle:shortVersionString)[1]' 2>/dev/null | cut -d ">" -f2 | cut -d "<" -f1)
+    ddgXML=$(curl -fsL "https://staticcdn.duckduckgo.com/macos-desktop-browser/appcast2.xml")
+    appNewVersion=$(echo "$ddgXML" | xpath '(//rss/channel/item/sparkle:shortVersionString/text())' | head -1)
+    downloadURL=$(echo "$ddgXML" | xpath '(//rss/channel/item/enclosure/@url' 2>/dev/null | cut -d '"' -f 2 | head -1)
     expectedTeamID="HKE973VLUW"
     ;;
 duet)
@@ -4588,9 +4585,10 @@ elevate24)
 elgatocamerahub)
     name="Elgato Camera Hub"
     type="pkg"
-    # packageID="com.elgato.CameraHub.Installer"
-    downloadURL="https://gc-updates.elgato.com/mac/echm-update/final/download-website.php"
-    appNewVersion=$(curl -fsI "https://gc-updates.elgato.com/mac/echm-update/final/download-website.php" | grep -i ^location | sed -E 's/.*Camera_Hub_([0-9.]*).pkg/\1/g' | sed 's/\.[^.]*//3')
+    elgatoJSON=$(curl -fsSL "https://gc-updates.elgato.com/mac/echm-update/final/app-version-check.json")
+    appNewVersion=$(getJSONValue "$elgatoJSON" "Automatic.Version")
+    downloadURL=$(getJSONValue "$elgatoJSON" "Automatic.fileURL")
+    appCustomVersion() { version=$(defaults read "/Applications/Camera Hub.app/Contents/Info.plist" CFBundleShortVersionString 2>/dev/null); build=$(defaults read "/Applications/Camera Hub.app/Contents/Info.plist" CFBundleVersion 2>/dev/null); echo "${version}.${build}"; }
     expectedTeamID="Y93VXCB8Q5"
     blockingProcesses=( "Camera Hub" )
     ;;
@@ -6052,7 +6050,7 @@ iterm2)
     downloadURL="https://iterm2.com/downloads/stable/latest"
     appNewVersion=$(curl -is https://iterm2.com/downloads/stable/latest | grep location: | grep -o "iTerm2.*zip" | cut -d "-" -f 2 | cut -d '.' -f1 | sed 's/_/./g')
     expectedTeamID="H7V7XYVQ7D"
-    blockingProcesses ( "iTerm" "iTerm2" )
+    blockingProcesses=( "iTerm" "iTerm2" )
     ;;
 itsycal|\
 mowgliiitsycal)
@@ -6739,10 +6737,10 @@ lexarrecoverytool)
 lgcalibrationstudio)
     name="LG Calibration Studio"
     type="pkgInZip"
-    packageID="LGSI.TrueColorPro"
-    releaseURL="https://www.lg.com/de/support/software-select-category-result?csSalesCode=34WK95U-W.AEU"
-    appNewVersion=$(curl -sf $releaseURL | grep -m 1 "Mac_LCS_" | sed -E 's/.*LCS_([0-9.]*).zip.*/\1/g')
-    downloadURL=$(curl -sf $releaseURL | grep -m 1 "Mac_LCS_" | sed "s|.*href=\"\(.*\)\" title.*|\\1|")
+    releaseURL="https://www.lg.com/us/support/product/lg-34WK95U-W.AUS"
+    appNewVersion=$(curl -sf "$releaseURL" | grep -m 1 "\[Mac\] LG Calibration Studio - version " | sed -E 's/.*\[Mac\] LG Calibration Studio - version ([^<]+)<\/p>.*/\1/')
+    fileID=$(curl -sf "$releaseURL" | grep "Mac_LCS_" | sed -n '2p' | grep -o '"originalFileName":"Mac_LCS_[^"]*\.zip","fileName":"[^"]*"' | head -n1 | sed -E 's/.*"fileName":"([^"]*)".*/\1/')
+    downloadURL="https://gscs-b2c.lge.com/downloadFile?fileId=$fileID"
     expectedTeamID="5SKT5H4CPQ"
     ;;
 libericajdk11ltsfull)
@@ -6812,22 +6810,15 @@ libreoffice)
     expectedTeamID="7P5S3ZLCN7"
     blockingProcesses=( soffice )
     ;;
-libreofficelanguagepack_intl)
+libreofficelanguagepackintl)
     name="LibreOffice Language Pack"
-    # appName="LibreOffice.app"
-    #
-    # Reads the primary language of the system and installs the appropriate language pack for the latest LibreOffice STABLE version
-    # There is no language pack for the US English language and no installation is required other than the LibreOffice software itself.
-    # Use in combination and after installing Libre Office (STABLE Version)
-    # This label requires user interaction to complete the installation
-    #
     type="dmg"
     packageID="org.libreoffice.script.langpack"
     userLanguage=$(runAsUser defaults read .GlobalPreferences AppleLanguages | head -2 | tail -1 | tr -dc "[:alnum:]\-")
     if [[ "$userLanguage" == "en-US" ]]; then
         cleanupAndExit 0 "No installation of a language pack is necessary for the US-English language."
     fi
-    appNewVersion="$(curl -Ls https://www.libreoffice.org/download/download-libreoffice/ | grep dl_version_number | head -n 1 | cut -d'>' -f3 | cut -d'<' -f1)"
+    appNewVersion="$(curl -s https://download.documentfoundation.org/libreoffice/stable/ | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | tail -1)"
     releaseURL="https://download.documentfoundation.org/libreoffice/stable/"$appNewVersion"/mac/aarch64/"
     until curl -fs $releaseURL | grep -q "_$userLanguage.dmg"; do
         if [ ${#userLanguage} -eq 2 ]; then
@@ -6837,12 +6828,6 @@ libreofficelanguagepack_intl)
         userLanguage=${userLanguage:0:2}
     done
     printlog "Using language '$userLanguage' for download."
-    # downloadURL="https://downloadarchive.documentfoundation.org/libreoffice/old/latest/mac/aarch64/"
-    # if ! curl -sfL --output /dev/null -r 0-0 $downloadURL; then
-    #     printlog "Download not found for '$userLanguage', exiting."
-    #     exit
-    # fi
-    # appNewVersion=$(curl -sf $releaseURL | grep -m 1 "_langpack_$userLanguage.dmg" | sed "s|.*LibreOffice_\(.*\)_MacOS.*|\\1|")
     if [[ $(arch) == "arm64" ]]; then
         downloadURL="https://download.documentfoundation.org/libreoffice/stable/"$appNewVersion"/mac/aarch64/LibreOffice_"$appNewVersion"_MacOS_aarch64_langpack_"$userLanguage".dmg"
     elif [[ $(arch) == "i386" ]]; then
@@ -6851,7 +6836,6 @@ libreofficelanguagepack_intl)
     installerTool="LibreOffice Language Pack.app"
     CLIInstaller="LibreOffice Language Pack.app/Contents/LibreOffice Language Pack"
     expectedTeamID="7P5S3ZLCN7"
-    # blockingProcesses=( soffice )
     ;;
 lifesize)
     name="Lifesize"
@@ -6863,9 +6847,10 @@ lifesize)
 lightburn)
     name="LightBurn"
     type="dmg"
-    downloadURL="$(downloadURLFromGit LightBurnSoftware deployment)"
-    appNewVersion="$(versionFromGit LightBurnSoftware deployment)"
+    appNewVersion=$(curl -s https://release.lightburnsoftware.com/LightBurn/Release/ | grep -o 'LightBurn-v[0-9]\+\.[0-9]\+\.[0-9]\+' | sed 's/LightBurn-v//g' | sort -V | tail -1)
+    downloadURL="https://files.release.lightburnsoftware.com/LightBurn/Release/LightBurn-v$appNewVersion/LightBurn.V$appNewVersion.dmg"
     expectedTeamID="UWZQ3LL82C"
+    versionKey="CFBundleShortVersionString"
     ;;
 lightkey)
     name="Lightkey"
@@ -9016,9 +9001,9 @@ plisteditpro)
 podman)
     name="Podman"
     type="pkg"
+    archiveName="podman-installer-macos-universal.pkg"
     downloadURL=$(downloadURLFromGit containers podman)
     appNewVersion=$(versionFromGit containers podman)
-    archiveName="podman-installer-macos-universal.pkg"
     expectedTeamID="HYSCB8KRL2"
     ;;
 podmandesktop)
@@ -9050,12 +9035,12 @@ polleverywhere)
     versionKey="CFBundleVersion"
     ;;
 polylens)
-    name="Poly Lens"
-    type="dmg"
+    name="Lens Desktop"
+    type="pkgInDmg"
     polyDetails="$(curl -fs 'https://api.silica-prod01.io.lens.poly.com/graphql' -X POST -H 'Content-Type: application/json' --data-raw '{"operationName":"LensSoftwareUpdateAvailable","variables":{"productId":"lens-desktop-mac","releaseChannel":null},"query":"query LensSoftwareUpdateAvailable($productId: ID!, $releaseChannel: String) {availableProductSoftwareByPid(pid: $productId, releaseChannel: $releaseChannel) {version productBuild {build archiveUrl __typename} __typename}}"}')"
     appNewVersion=$(getJSONValue "$polyDetails" "data.availableProductSoftwareByPid.version")
     downloadURL=$(getJSONValue "$polyDetails" "data.availableProductSoftwareByPid.productBuild.archiveUrl")
-    expectedTeamID="SKWK2Q7JJV"
+    expectedTeamID="WJCM3F7AQ4"
     ;;
 popsql)
      name="PopSQL"
@@ -9171,12 +9156,11 @@ processing3)
     ;;
 processing4)
     name="Processing"
-    type="zip"
-    archiveName="Processing-[0-9.]*-macOS-$( if [ "$( arch )" = "arm64" ]; then echo "aarch64" ; else echo "x64" ; fi ).zip"
+    type="dmg"
+    archiveName="Processing-[0-9.]*-macOS-$( if [ "$( arch )" = "arm64" ]; then echo "aarch64" ; else echo "x64" ; fi ).dmg"
     downloadURL=$(downloadURLFromGit processing processing4)
-    appNewVersion=$(versionFromGit processing processing4)
-    expectedTeamID="8SBRM6J77J"
-    appCustomVersion(){ echo "$(defaults read /Applications/Processing.app/Contents/Info.plist CFBundleVersion )$( defaults read /Applications/Processing.app/Contents/Info.plist CFBundleShortVersionString )" }
+    appNewVersion="$( echo "$downloadURL" | awk -F '-' '{ print $4 }' )"
+    expectedTeamID="6297K33652"
     ;;
 proctortrack)
     #credit: Jeff F. (@jefff on MacAdmins Slack)
@@ -9605,9 +9589,8 @@ rocketchat)
 rodecentral)
     name="RODE Central"
     type="pkgInZip"
-    #packageID="com.rodecentral.installer"
     downloadURL="https://update.rode.com/central/RODE_Central_MACOS.zip"
-    appNewVersion=$(curl -fs https://rode.com/en/release-notes/rode-central | xmllint --html --format - 2>/dev/null | tr '"' '\n' | sed 's/\&quot\;/\n/g' | grep -i -o "Version .*" | cut -w -f2 | tail -n +2 | head -1)
+    appNewVersion=$(curl -fLs https://rode.com/en/release-notes/rode-central | grep -oE "Version [0-9].[0-9].[0-9.]*" | awk '{print$2}' | sort --version-sort | tail -1)
     expectedTeamID="Z9T72PWTJA"
     ;;
 rodeconnect)
@@ -10378,11 +10361,23 @@ spotify)
     fi
     expectedTeamID="2FNC3A47ZF"
     ;;
-sqldeveloper)
+sqldeveloper|\
+oraclesqldeveloper)
+    # This label does not support killing blocking processes
+    # The name of the process that needs to be killed is 'java'. Killing that may have unintended consequences.
     name="SQLDeveloper"
     type="zip"
-    downloadURL="https://download.oracle.com/otn_software/java/sqldeveloper/sqldeveloper-24.3.1.347.1826-macos-aarch64.app.zip"
-    appNewVersion="$(plutil -p /Applications/SQLDeveloper.app/Contents/Info.plist | grep CFBundleShortVersionString | awk -F'"' '{print $4}')"
+    downloadURL=$(curl -fs https://www.oracle.com/database/sqldeveloper/technologies/download/ | grep -o 'https://download\.oracle\.com[^"]*macos-x64\.app\.zip')
+    if [[ "$(arch)" == "arm64" ]]; then
+        downloadURL=$(echo "$downloadURL" | sed 's/x64/aarch64/')
+    fi
+    # CFBundleShortVersionString does not exist. CFBundleVersion gives 4 dot-separated numbers. The custom version gives 5 numbers and matches the version in downloadURL.
+    appNewVersion=$(echo "$downloadURL" | awk -F - '{print $2}')
+    versionKey="CFBundleVersion"
+    appCustomVersion() {
+        sql_version_file="/Applications/SQLDeveloper.app/Contents/Resources/sqldeveloper/sqldeveloper/bin/version.properties"
+        [[ -f "${sql_version_file}" ]] && /usr/bin/grep VER_FULL "${sql_version_file}" | /usr/bin/cut -d = -f 2
+    }
     expectedTeamID="VB5E2TV963"
     ;;
 sqlitebrowser)
@@ -10752,11 +10747,10 @@ synologyassistant)
 synologydriveclient)
     name="Synology Drive Client"
     type="pkgInDmg"
-    # packageID="com.synology.CloudStation"
     versionKey="CFBundleVersion"
-    downloadURL=$(appVersion=`curl -sf https://archive.synology.com/download/Utility/SynologyDriveClient | grep -m 1 /download/Utility/SynologyDriveClient/ | sed "s|.*>\(.*\)<.*|\\1|"` && appShortVersion=`sed 's#.*-\(\)#\1#' <<< $appVersion` && echo https://global.download.synology.com/download/Utility/SynologyDriveClient/"$appVersion"/Mac/Installer/synology-drive-client-"${appShortVersion}".dmg)
-    # appNewVersion=$(appVersionP1=`curl -sf https://archive.synology.com/download/Utility/SynologyDriveClient | grep -m 1 /download/Utility/SynologyDriveClient/ | sed "s|.*>\(.*\)-.*|\\1|"` && sed 's/\(.\{0\}\)./\17/' <<< $appVersionP1)
-    appNewVersion=$(curl -sf https://archive.synology.com/download/Utility/SynologyDriveClient | grep -m 1 /download/Utility/SynologyDriveClient/ | sed "s|.*>\(.*\)<.*|\\1|" | sed "s#.*-\(\)#\1#")
+    appFullVersion="$( curl -sf "https://archive.synology.com/download/Utility/SynologyDriveClient" | grep -m 1 "/download/Utility/SynologyDriveClient/" | sed "s|.*>\(.*\)<.*|\\1|" )"
+    appNewVersion="$( echo $appFullVersion | sed "s|.*-\(\)|\\1|" )"
+    downloadURL="https://global.download.synology.com/download/Utility/SynologyDriveClient/$appFullVersion/Mac/Installer/synology-drive-client-$appNewVersion.dmg"
     expectedTeamID="X85BAK35Y4"
     ;;
 sysexlibrarian)
