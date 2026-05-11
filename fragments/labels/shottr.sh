@@ -6,4 +6,3 @@ shottr)
     [[ "$appNewVersion" =~ ^[0-9]+\.[0-9]+$ ]] && appNewVersion="${appNewVersion}.0"
     expectedTeamID="2Y683PRQWN"
     ;;
-    
