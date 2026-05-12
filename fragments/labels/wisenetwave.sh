@@ -1,15 +1,23 @@
 wisenetwave)
-    if [[ $(/usr/bin/arch) != "arm64" ]]; then
-        cleanupAndExit 76 "wisenetwave is only available for Apple Silicon (arm64)" ERROR
-    fi
     name="Wisenet Wave"
     type="dmg"
-    releaseData=$(curl -fs "https://sync.wavevms.com/api/utils/downloads-releases")
-    releasesChunk=$(echo "$releaseData" | grep -o '"releases":{.*')
-    appNewVersion=$(echo "$releasesChunk" | grep -o '"version":"[0-9.]*"' | head -1 | cut -d'"' -f4)
-    buildNumber=$(echo "$releasesChunk" | grep -o '"buildNumber":"[0-9]*"' | head -1 | cut -d'"' -f4)
-    fileName=$(echo "$releasesChunk" | grep -o '"fileName":"wave-client-[^"]*-macos_arm64\.dmg"' | head -1 | cut -d'"' -f4)
-    downloadURL="https://updates.wavevms.com/hanwha/${buildNumber}/macos/${fileName}"
+    releaseJSON=$(curl -fs "https://sync.wavevms.com/api/utils/downloads-releases")
+    appNewVersion=$(osascript -l JavaScript \
+        -e "const data = JSON.parse(\`${releaseJSON}\`)" \
+        -e "data.releases.version")
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=$(osascript -l JavaScript \
+            -e "const data = JSON.parse(\`${releaseJSON}\`)" \
+            -e "const r = data.releases" \
+            -e "const i = r.installers.find(i => i.platform === 'macos_arm64' && i.appType === 'client')" \
+            -e "data.updatesPrefix + '/' + r.buildNumber + '/' + i.path")
+    else
+        downloadURL=$(osascript -l JavaScript \
+            -e "const data = JSON.parse(\`${releaseJSON}\`)" \
+            -e "const r = data.releases" \
+            -e "const i = r.installers.find(i => i.platform === 'macos_x64' && i.appType === 'client')" \
+            -e "data.updatesPrefix + '/' + r.buildNumber + '/' + i.path")
+    fi
     appName="Wisenet WAVE.app"
     blockingProcesses=( "Wisenet WAVE" )
     expectedTeamID="L6FE34GJWM"
