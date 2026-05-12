@@ -12,7 +12,5 @@ wisenetwave)
         installerPath=$(echo "$releasesChunk" | grep -o '"path":"[^"]*macos_x64[^"]*\.dmg"' | head -1 | cut -d'"' -f4)
     fi
     downloadURL="${updatesPrefix}/${buildNumber}/${installerPath}"
-    appName="Wisenet WAVE.app"
-    blockingProcesses=( "Wisenet WAVE" )
     expectedTeamID="L6FE34GJWM"
     ;;
