@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-05-08"
+VERSIONDATE="2026-05-12"
 
 # MARK: Functions
 
@@ -2742,16 +2742,17 @@ bibdesk)
     expectedTeamID="J33JTA7SY9"
     ;;
 bitrix24)
-    name="Bitrix24"
-    type="dmg"
-    archiveName="bitrix24_desktop.dmg"
-    if [[ $(arch) == i386 ]]; then
-        downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop.dmg"
-    elif [[ $(arch) == arm64 ]]; then
+     name="Bitrix24"
+     type="dmg"
+     archiveName="bitrix24_desktop.dmg"
+     if [[ $(arch) == "arm64" ]]; then
         downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop_arm.dmg"
+        appNewVersion=""
+    elif [[ $(arch) == "i386" ]]; then
+        downloadURL="https://dl.bitrix24.com/b24/bitrix24_desktop.dmg"
     fi
-    appNewVersion="$(curl -fs "https://www.bitrix24.com/osx_version.php" | xpath 'string(//rss/channel/item/title)' 2>/dev/null)"
-    expectedTeamID="5B3T3A994N"
+     appNewVersion="$(curl -fs "https://www.bitrix24.com/osx_version.php" | xpath 'string(//rss/channel/item/title)' 2>/dev/null)"
+     expectedTeamID="5B3T3A994N"
      ;;
 bitwarden)
     name="Bitwarden"
@@ -3592,9 +3593,11 @@ cinema4d2026)
     CLIArguments=(--mode unattended --unattendedmodeui none)
     expectedTeamID="4ZY22YGXQG"
     ;;
-cisdem-documentreader)
+cisdemdocumentreader)
     name="cisdem-documentreader"
     type="dmg"
+    curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Safari/605.1.15" )
+    appNewVersion=$(curl -sf $curlOptons https://www.cisdem.com/document-reader-mac.html | grep -i "Latest Version:" | sed 's/[^0-9\.]//g')
     downloadURL="https://download.cisdem.com/cisdem-documentreader.dmg"
     expectedTeamID="5HGV8EX6BQ"
     appName="Cisdem Document Reader.app"
@@ -4008,8 +4011,8 @@ debookee)
 dedoose)
     name="Dedoose"
     type="dmg"
-    downloadURL=$(curl -fsL "https://www.dedoose.com/download-the-app" | grep -oE 'https://[^"]+\.dmg' | head -1)
-    appNewVersion=$(echo "$downloadURL" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    downloadURL="https://downloads.dedoose.com/dedoose-app-releases/Dedoose-Mac.dmg"
+    appNewVersion=$(curl -fsI https://downloads.dedoose.com/dedoose-app-releases/Dedoose-Mac.dmg | grep -i "^content-disposition:" | grep -o "v[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}" | sed 's/^v//')
     expectedTeamID="9U74Q6K62X"
     ;;
 deepl)
@@ -4707,8 +4710,8 @@ evercast)
 evernote)
     name="Evernote"
     type="dmg"
-    downloadURL="https://mac.desktop.evernote.com/builds/Evernote-latest.dmg"
-    appNewVersion=$(curl -s https://evernote.com/release-notes | grep Latest | awk -F '<!-- -->' '{print $2}')
+    downloadURL="$(curl -fs 'https://public.evernote.com/ddl-updater/updater/mac/public/latest-mac.yml' -H 'x-app-version: 11.00.0' -H 'x-os-release: 26.0.0' | awk -F'url:[[:space:]]*' '/url:[[:space:]]*.*\.dmg$/ { print $2 }')"
+    appNewVersion=$(curl -fs 'https://public.evernote.com/ddl-updater/updater/mac/public/latest-mac.yml' -H 'x-app-version: 11.00.0' -H 'x-os-release: 26.0.0' | awk -F': *' '/^version:/ { print $2 }')
     expectedTeamID="Q79WDW8YH9"
     ;;
 everweb)
@@ -5272,11 +5275,7 @@ gathertown)
 gdevelop)
     name="GDevelop 5"
     type="dmg"
-    if [[ $(arch) == arm64 ]]; then
-        archiveName="GDevelop-5-[0-9.]*-arm64.dmg"
-    elif [[ $(arch) == i386 ]]; then
-        archiveName="GDevelop-5-[0-9.]*.dmg" 
-    fi
+    archiveName="GDevelop-5-[0-9.]*-universal.dmg"
     appNewVersion="$(versionFromGit 4ian GDevelop)"
     downloadURL="$(downloadURLFromGit 4ian GDevelop)"
     expectedTeamID="5CG65LEVUK"
@@ -5719,6 +5718,13 @@ homebrew)
     expectedTeamID="927JGANW46"
     archiveName="Homebrew.pkg"
     ;;
+homerow)
+    name="Homerow"
+    type="dmg"
+    downloadURL="https://builds.homerow.app/latest/Homerow.dmg"
+    appNewVersion=$(curl -fsL "https://builds.homerow.app/appcast.xml" | xpath 'string(//rss/channel/item/sparkle:shortVersionString)')
+    expectedTeamID="XDP69BYUP9"
+    ;;
 hoppscotch)
     name="Hoppscotch"
     type="dmg"
@@ -5920,6 +5926,14 @@ imageoptim)
     expectedTeamID="59KZTZA4XR"
     blockingProcesses=( NONE )
     ;;
+imazing3)
+    name="iMazing"
+    type="dmg"
+    downloadURL="https://downloads.imazing.com/mac/iMazing/iMazing3forMac.dmg"
+    versionKey="CFBundleShortVersionString"
+    appNewVersion=$(curl -sL https://imazing.com/download | awk '/Version:/{getline; gsub(/[^0-9.]/,""); if($0!=""){print; exit}}')
+    expectedTeamID="J5PR93692Y"
+    ;;
 imazingprofileeditor)
     # Credit: Bilal Habib @Pro4TLZZ
     name="iMazing Profile Editor"
@@ -6036,12 +6050,11 @@ island)
     expectedTeamID="38ZC4T8AWY"
     ;;
 istatmenus)
-    # credit: AP Orlebeke (@apizz)
     name="iStat Menus"
     type="zip"
     downloadURL="https://download.bjango.com/istatmenus/"
     expectedTeamID="Y93TK974AT"
-    appNewVersion=$(curl -fs https://bjango.com/mac/istatmenus/versionhistory/ | grep "<h3>" | head -1 | sed -E 's/<h3>([0-9.]*)<\/h3>/\1/')
+    appNewVersion=$(curl -sL https://bjango.com/mac/istatmenus/ | grep -Eo 'iStat Menus [0-9]+(\.[0-9]+)+' | head -1 | grep -Eo '[0-9]+(\.[0-9]+)+')
     blockingProcesses=( "iStat Menus" "iStatMenusAgent" "iStat Menus Status" )
     ;;
 iterm2)
@@ -6682,12 +6695,12 @@ krisp)
     expectedTeamID="U5R26XM5Z2"
     ;;
 krita)
-    # credit: Søren Theilgaard (@theilgaard)
     name="krita"
     type="dmg"
-    downloadURL=$( curl -fs "https://krita.org/en/download/krita-desktop/" | grep ".*https.*stable.*dmg.*" | head -1 | sed -E 's/.*(https.*dmg).*/\1/g' )
-    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
-    expectedTeamID="5433B4KXM8"
+    kritaXML=$(curl -fsL "https://apps.kde.org/en-gb/krita/index.xml")
+    downloadURL=$(echo "$kritaXML" | xpath "string(//a[contains(@href, 'signed.dmg')]/@href")
+    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g')
+    expectedTeamID="DL93766A3G"
     ;;
 lastpass)
     name="LastPass"
@@ -6863,18 +6876,12 @@ lightkey)
 linear)
     name="Linear"
     type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://desktop.linear.app/mac/dmg/arm64"
-    elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://desktop.linear.app/mac/dmg"
-    fi
-    appNewVersion=$(curl -sIkL $downloadURL | sed -r '/filename=/!d;s/.*filename=(.*)$/\1/' | awk '{print $2}')
+    downloadURL="https://releases.linear.app/mac"
+    appNewVersion=$(curl -sIkL $downloadURL | sed -r '/filename=/!d;s/.*filename=(.*)$/\1/' | awk -F'-' '{print $2}')
     expectedTeamID="7VZ2S3V9RV"
     versionKey="CFBundleShortVersionString"
-    appName="Linear.app"
-    blockingProcesses=( "Linear" )
+    blockingProcesses=( "Linear" "Linear Helper" )
     ;;
-    
 linearmouse)
     name="LinearMouse"
     type="dmg"
@@ -8338,7 +8345,7 @@ nodejs)
 nodejslts)
     name="nodejs"
     type="pkg"
-    appNewVersion=$(curl -fsL https://nodejs.org/en | xmllint --html --xpath '//a[contains(text(),"LTS")]/@href' - 2>/dev/null | grep -oE 'v[0-9]+(\.[0-9]+)*' | head -1)
+    appNewVersion=$(getJSONValue "$(curl -fsL https://nodejs.org/dist/index.json)" "filter(x => x.lts)[0].version")
     downloadURL="https://nodejs.org/dist/$appNewVersion/node-$appNewVersion.pkg"
     appCustomVersion(){/usr/local/bin/node -v}
     expectedTeamID="HX7739G8FX"
@@ -9877,6 +9884,7 @@ shottr)
     type="dmg"
     downloadURL="https://shottr.cc$(curl -fs "https://shottr.cc/newversion.html" | grep -o '\/dl\/Shottr-[0-9.]*\.dmg' | head -1 | xargs)"
     appNewVersion=$(echo $downloadURL | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 | xargs)
+    [[ "$appNewVersion" =~ ^[0-9]+\.[0-9]+$ ]] && appNewVersion="${appNewVersion}.0"
     expectedTeamID="2Y683PRQWN"
     ;;
 sidekick)
@@ -10407,33 +10415,6 @@ sshfs)
     appNewVersion="$(versionFromGit libfuse sshfs)"
     expectedTeamID="3T5GSNBU6W"
     ;;
-starface72x)
-    name="STARFACE"
-    # Downloads the latest 7.2.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
-    type="zip"
-    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.2" | cut -d '"' -f 2)
-    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.2" | cut -d '"' -f 2 | cut -d '-' -f 4 | sed 's/\(.*\).zip/\1/')
-    expectedTeamID="Q965D3UXEW"
-    versionKey="CFBundleVersion"
-    ;;
-starface73x)
-    name="STARFACE"
-    # Downloads the latest 7.3.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
-    type="dmg"
-    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.3" | cut -d '"' -f 2)
-    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "7.3" | cut -d '"' -f 2 | cut -d '-' -f 4 | sed 's/\(.*\).dmg/\1/')
-    expectedTeamID="Q965D3UXEW"
-    versionKey="CFBundleVersion"
-    ;;
-starface81x)
-    name="STARFACE"
-    # Downloads the latest 8.1.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
-    type="dmg"
-    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure' | grep -m 1 "8.1" | sed 's/.*url\(.*\).dmg/\1/' | cut -d '"' -f 2)
-    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure' | grep -m 1 "8.1" | sed 's/.*sparkle:version\(.*\) type/\1/' | cut -d '"' -f 2)
-    expectedTeamID="Q965D3UXEW"
-    versionKey="CFBundleVersion"
-    ;;
 starface90x)
     name="STARFACE"
     # Downloads the latest 9.0.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
@@ -10450,15 +10431,6 @@ starface91x)
     downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure ' | grep -i 'url=' | grep -m 1 "9.1" | cut -d '"' -f 10)
     appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure ' | grep -i 'url=' | grep -m 1 "9.1" | cut -d '"' -f 4)
     expectedTeamID="Q965D3UXEW"
-    ;;
-starfaceuccclient)
-    name="STARFACE UCC Client"
-    # Downloads the latest 6.7.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
-    type="zip"
-    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "STARFACE_UCC_Client_6.7" | cut -d '"' -f 2)
-    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure url=' | grep -m 1 "STARFACE_UCC_Client_6.7" | cut -d '"' -f 2 | sed -e 's/.*-\(.*\).zip*/\1/')
-    expectedTeamID="Q965D3UXEW"
-    versionKey="CFBundleVersion"
     ;;
 stats)
     name="Stats"
@@ -10871,12 +10843,10 @@ teamviewerhostcustom)
     expectedTeamID="H7UGFBUGV6"
     ;;
 teamviewerqs)
-    # credit: Søren Theilgaard (@theilgaard)
     name="TeamViewerQS"
     type="dmg"
     downloadURL="https://download.teamviewer.com/download/TeamViewerQS.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
-    appName="TeamViewerQS.app"
+    appNewVersion=$(getJSONValue "$(curl -fsL https://www.teamviewer.com/en/solutions/use-cases/quicksupport/ | grep .dmg |  grep -o 'data-json="[^"]*"' | sed 's/data-json="//;s/"$//' | sed 's/&quot;/"/g' )" "data[0].versionNumber")
     expectedTeamID="H7UGFBUGV6"
     ;;
 teamviewerqscustom)
@@ -11069,8 +11039,12 @@ tidal)
 todoist)
     name="Todoist"
     type="dmg"
-    downloadURL="https://todoist.com/mac_app"
-    appNewVersion="$(curl -fsIL https://todoist.com/mac_app | grep -i ^location | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')"
+    if [[ $(arch) == arm64 ]]; then
+    downloadURL=$(curl -fsLI "https://todoist.com/mac_app?arch=arm" | grep -i ^location | sed -E 's/.*(https.*\.dmg).*/\1/g')
+    elif [[ $(arch) == i386 ]]; then
+        downloadURL=$(curl -fsLI "https://todoist.com/mac_app?arch=x64" | grep -i ^location | sed -E 's/.*(https.*\.dmg).*/\1/g')
+    fi
+    appNewVersion="$(curl -fsIL https://todoist.com/mac_app | grep -i ^location | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')"
     expectedTeamID="S3DD273774"
     ;;
 toggltrack)
@@ -11306,7 +11280,7 @@ twingate)
     name="Twingate"
     type="pkg"
     downloadURL="https://api.twingate.com/download/darwin?installer=pkg"
-    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i ^location | cut -d "/" -f6)
+    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i ^location | cut -d "/" -f6 | cut -d "." -f1 -f2)
     expectedTeamID="6GX8KVTR9H"
     ;;
 typeface)
@@ -11619,8 +11593,9 @@ visualz)
 vivaldi)
     name="Vivaldi"
     type="tbz"
-    downloadURL=$(curl -fsL "https://update.vivaldi.com/update/1.0/public/mac/appcast.xml" | xpath '//rss/channel/item[1]/enclosure/@url' 2>/dev/null  | cut -d '"' -f 2)
-    appNewVersion=$(curl -is "https://update.vivaldi.com/update/1.0/public/mac/appcast.xml" | grep sparkle:version | tr ',' '\n' | grep sparkle:version | cut -d '"' -f 4)
+    vivaldiXML=$(curl -fsL "https://update.vivaldi.com/update/1.0/public/mac/appcast.xml")
+    appNewVersion=$(echo "$vivaldiXML" | xpath 'string(//rss/channel/item/sparkle:shortVersionString)')
+    downloadURL=$(echo "$vivaldiXML" | xpath 'string(//rss/channel/item/enclosure/@url)')
     expectedTeamID="4XF3XNRN6Y"
     ;;
 vivi)

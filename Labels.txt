@@ -210,7 +210,7 @@ cinema4d2023
 cinema4d2024
 cinema4d2025
 cinema4d2026
-cisdem-documentreader
+cisdemdocumentreader
 citrixworkspace
 claudedesktop
 cleartouchcollage
@@ -436,6 +436,7 @@ hazel
 hexfiend
 hmavpn
 homebrew
+homerow
 hoppscotch
 horos
 hot
@@ -460,6 +461,7 @@ igv
 iina
 ikproductmanager
 imageoptim
+imazing3
 imazingprofileeditor
 inetclearreportsdesigner
 inkscape
@@ -956,12 +958,8 @@ sqlitebrowser
 sqlpropostgres
 sqlprostudio
 sshfs
-starface72x
-starface73x
-starface81x
 starface90x
 starface91x
-starfaceuccclient
 stats
 steelseriesengine
 steinbergactivationmanager
