@@ -1,5 +1,5 @@
 wisenetwave)
-    name="Wisenet Wave"
+    name="Wisenet WAVE"
     type="dmg"
     releaseJSON=$(curl -fs "https://sync.wavevms.com/api/utils/downloads-releases")
     releasesChunk=$(echo "$releaseJSON" | grep -o '"releases":{.*')
