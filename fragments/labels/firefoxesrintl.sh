@@ -1,5 +1,5 @@
-firefoxesr_intl|\
-firefoxesrpkg_intl)
+firefoxesrintl|\
+firefoxesrpkgintl)
     # This label will try to figure out the selected language of the user,
     # and install corrosponding version of Firefox ESR
     name="Firefox"
@@ -24,5 +24,4 @@ firefoxesrpkg_intl)
     appNewVersion=$(getJSONValue "$firefoxVersions" "FIREFOX_ESR")
     appNewVersion=${appNewVersion:0:-3}
     expectedTeamID="43AQ936H96"
-    blockingProcesses=( firefox )
     ;;
