@@ -4,5 +4,4 @@ unnaturalscrollwheels)
     downloadURL="$(downloadURLFromGit ther0n UnnaturalScrollWheels)"
     appNewVersion="$(versionFromGit ther0n UnnaturalScrollWheels)"
     expectedTeamID="VH8UL6UKQL"
-    blockingProcesses=( UnnaturalScrollWheels )
     ;;
