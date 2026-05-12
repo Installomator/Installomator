@@ -7,5 +7,4 @@ firefoxesrpkg)
     appNewVersion=$(getJSONValue "$firefoxVersions" "FIREFOX_ESR")
     appNewVersion=${appNewVersion:0:-3}
     expectedTeamID="43AQ936H96"
-    blockingProcesses=( firefox )
     ;;
