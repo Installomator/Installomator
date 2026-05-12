@@ -1,4 +1,4 @@
-nps-santa-full)
+npssantafull)
     name="Santa"
     type="pkg"
     packageID="com.northpolesec.santa"
