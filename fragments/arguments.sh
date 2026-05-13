@@ -25,6 +25,15 @@ fi
 # first argument is the label
 label=$1
 
+# lowercase the label
+label=${label:l}
+
+# separate check for 'version' in order to print plain version number without any other information
+if [[ $label == "version" ]]; then
+    echo "$VERSION"
+    exit 0
+fi
+
 # MARK: reading rest of the arguments
 argumentsArray=()
 while [[ -n $1 ]]; do
@@ -39,15 +48,6 @@ while [[ -n $1 ]]; do
 done
 printlog "Total items in argumentsArray: ${#argumentsArray[@]}" INFO
 printlog "argumentsArray: ${argumentsArray[*]}" INFO
-
-# lowercase the label
-label=${label:l}
-
-# separate check for 'version' in order to print plain version number without any other information
-if [[ $label == "version" ]]; then
-    echo "$VERSION"
-    exit 0
-fi
 
 # NOTE: Use proxy for network access if defined
 if [[ -n $PROXY ]]; then
