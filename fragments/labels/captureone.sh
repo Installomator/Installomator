@@ -1,9 +1,8 @@
 captureone|captureonepro)
     name="Capture One"
     type="dmg"
-    appName="Capture One.app"
-    blockingProcesses=("Capture One")
+    captureoneSparkle=$(curl -fsL "https://www.captureone.com/update/capture-one-mac.xml")
+    downloadURL=$(echo "${captureoneSparkle}" | xmllint --xpath "string(//item[1]/enclosure/@url)" - 2>/dev/null)
+    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*Mac\.([0-9.]+)\.dmg/\1/')
     expectedTeamID="5WTDB5F65L"
-    downloadURL=$(curl -fsL "https://www.captureone.com/en/account/download/trial-confirmation?intent=trial-pro" | grep -Eo 'https://downloads\.captureone\.pro/d/mac/[A-Za-z0-9]+/CaptureOne\.Mac\.[0-9\.]+\.dmg' | head -1)
-    appNewVersion=$(echo "$downloadURL" | sed -n 's/.*CaptureOne\.Mac\.\([0-9.]*\)\.dmg.*/\1/p')
     ;;
