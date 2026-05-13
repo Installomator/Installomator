@@ -1,5 +1,6 @@
-jetbrainspycharm)
-    # This is the Pro version of PyCharm. Do not confuse with PyCharm CE.
+jetbrainspycharm|\
+jetbrainspycharmce|\
+pycharmce)
     name="PyCharm"
     type="dmg"
     jetbrainscode="PCP"
