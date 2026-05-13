@@ -20,7 +20,7 @@ jobs:
     steps:
     # Checkout the repository
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v6
 
     # Configure git
     - name: Set up git
@@ -46,7 +46,7 @@ jobs:
 
     # Commit and push changes (if any)
     - name: Commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: "Runner compiled Installomator.sh and Labels.txt using assemble.sh"
         file_pattern:  'Installomator.sh Labels.txt'
