@@ -1,8 +1,14 @@
 camtasia2023)
     name="Camtasia 2023"
     type="dmg"
-    sparkleData=$(curl -fsL 'https://sparkle.cloud.techsmith.com/api/v1/AppcastManifest/?version=23.0.0&utm_source=product&utm_medium=cmac&utm_campaign=cm23&ipc_item_name=cmac&ipc_platform=macos')
-    appNewVersion=$( <<<"$sparkleData" xpath 'string(//item/sparkle:shortVersionString)' )
-    downloadURL=$( <<<"$sparkleData" xpath 'string(//item/enclosure/@url)' )
+    sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2023.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2023.0.0&lang=enu&os=mac')
+    appNewVersion=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
+    )
+    downloadURL=$(
+        echo "$sparkleData" | \
+        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
+    )
     expectedTeamID="7TQL462TU8"
     ;;
