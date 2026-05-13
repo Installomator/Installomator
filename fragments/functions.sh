@@ -505,6 +505,9 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         fi
     elif [[ -z $appversion ]]; then
         printlog "Installing $name version $appNewVersion on versionKey $versionKey."
+    elif [[ $(printf "$appversion\n$appNewVersion" | sort -V | tail -n 1) == "$appversion" ]]; then
+        printlog "Downloaded version of $name is $appNewVersion on versionKey $versionKey (will NOT replace version $appversion by a lower version)."
+        cleanupAndExit 0 "No new version to install" REG
     else
         printlog "Downloaded version of $name is $appNewVersion on versionKey $versionKey (replacing version $appversion)."
     fi
