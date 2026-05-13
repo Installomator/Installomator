@@ -210,7 +210,7 @@ cinema4d2023
 cinema4d2024
 cinema4d2025
 cinema4d2026
-cisdem-documentreader
+cisdemdocumentreader
 citrixworkspace
 claudedesktop
 cleartouchcollage
@@ -436,6 +436,7 @@ hazel
 hexfiend
 hmavpn
 homebrew
+homerow
 hoppscotch
 horos
 hot
@@ -460,6 +461,7 @@ igv
 iina
 ikproductmanager
 imageoptim
+imazing3
 imazingprofileeditor
 inetclearreportsdesigner
 inkscape
@@ -517,6 +519,7 @@ joplin
 jre8
 jumpcloudpasswordmanager
 jumpdesktop
+jumper
 jupyterlab
 kaleidoscope
 kap
@@ -554,7 +557,7 @@ libericajdk11ltsfull
 libericajdk17ltsfull
 libericajdk8ltsfull
 libreoffice
-libreofficelanguagepack_intl
+libreofficelanguagepackintl
 lifesize
 lightburn
 lightkey
@@ -752,6 +755,7 @@ openrefine
 openvpnconnect
 openvpnconnectv3
 opera
+oraclesqldeveloper
 orbstack
 orcaslicer
 origin
@@ -778,6 +782,7 @@ pdfexpert
 pdfsam
 perimeter81
 pgadmin4
+phoenixcode
 pika
 pingplotter
 pique
@@ -797,6 +802,7 @@ portingkit
 postgresapp
 postman
 powermonitor
+pppcutility
 praat
 prism10
 prism9
@@ -939,6 +945,7 @@ sonoss1
 sonoss2
 soundly
 soundly-placeit
+soundlyshapeit
 sourcetree
 spark
 splashtopbusiness
@@ -950,12 +957,9 @@ sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
-starface72x
-starface73x
-starface81x
+sshfs
 starface90x
 starface91x
-starfaceuccclient
 stats
 steelseriesengine
 steinbergactivationmanager
