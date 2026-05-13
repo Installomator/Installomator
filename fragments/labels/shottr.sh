@@ -1,7 +1,8 @@
 shottr)
     name="Shottr"
     type="dmg"
-    appNewVersion=$(curl -fs "https://shottr.cc/newversion.html" | xmllint --html --xpath 'substring-before(substring-after(string(//a[@id="downloadButton"]/small), "v"), ",")' - 2> /dev/null)
-    downloadURL="https://shottr.cc/dl/Shottr-${appNewVersion}.dmg"
+    downloadURL="https://shottr.cc$(curl -fs "https://shottr.cc/newversion.html" | grep -o '\/dl\/Shottr-[0-9.]*\.dmg' | head -1 | xargs)"
+    appNewVersion=$(echo $downloadURL | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 | xargs)
+    [[ "$appNewVersion" =~ ^[0-9]+\.[0-9]+$ ]] && appNewVersion="${appNewVersion}.0"
     expectedTeamID="2Y683PRQWN"
     ;;

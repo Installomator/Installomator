@@ -6,6 +6,6 @@ remotixagent)
     downloadURL="https://go.acronis.com/AcronisCyberProtectConnect_AgentForMac"
     versionKey="CFBundleVersion"
     appNewVersion=$(curl -fsIL "${downloadURL}" | grep -i "^location" | sed -E 's/.*\/[a-zA-Z]*-[0-9.]*-([0-9.]*)\.pkg/\1/g')
-    expectedTeamID="H629V387SY"
+    expectedTeamID="ZU2TV78AA6"
     blockingProcesses=( NONE )
     ;;

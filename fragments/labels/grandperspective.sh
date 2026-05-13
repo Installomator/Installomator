@@ -2,6 +2,6 @@ grandperspective)
     name="GrandPerspective"
     type="dmg"
     downloadURL="https://sourceforge.net/projects/grandperspectiv/files/latest/download"
-    appNewVersion=$(curl -s https://sourceforge.net/projects/grandperspectiv/files/grandperspective/ | grep -A1 'Click to enter' | head -1 | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
+    appNewVersion=$(curl -fs https://sourceforge.net/projects/grandperspectiv/files/grandperspective/ | grep -B 2 'Download Latest Version' | grep -oE '\/(\d|\.)+\/' | sed 's/\///g')
     expectedTeamID="3Z75QZGN66"
     ;;

@@ -1,5 +1,5 @@
 wacomdrivers)
-    name="Wacom Desktop Center"
+    name="Wacom Center"
     type="pkgInDmg"
     downloadURL="$(curl -fs https://www.wacom.com/en-us/support/product-support/drivers | grep -e "drivers/mac/professional.*dmg" | head -1 | tr '"' "\n" | grep -i http)"
     expectedTeamID="EG27766DY7"

@@ -1,7 +1,8 @@
 thunderbird)
     name="Thunderbird"
     type="dmg"
-    downloadURL="https://download.mozilla.org/?product=thunderbird-latest&os=osx&lang=en-US"
-    appNewVersion=$(curl -fsL "https://www.thunderbird.net/en-US/thunderbird/releases/" | xmllint --html --xpath 'string(//aside/a[last()]/text())' - 2> /dev/null)
+    versionKey="CFBundleShortVersionString"
+    appNewVersion=$(curl -s "https://www.thunderbird.net/en-US/thunderbird/releases/atom.xml" | xmllint --xpath "//*[local-name()='entry']/*[local-name()='title'][not(contains(text(), 'esr'))]/text()" - | head -1 | awk '{ print $2 }')
+    downloadURL="https://download.mozilla.org/?product=thunderbird-${appNewVersion}-SSL&os=osx&lang=en-US"
     expectedTeamID="43AQ936H96"
     ;;

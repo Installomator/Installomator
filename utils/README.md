@@ -59,7 +59,7 @@ Pull requests against the `Installomator.sh` script in the root of the repo will
 
 ### When you are familiar with git and GitHub
 
-- If you haven't already, create a fork of the Installomator repo. Clone the for to your local Mac.
+- If you haven't already, create a fork of the Installomator repo. Clone the fork to your local Mac.
 - Create a new branch in your local Installomator (fork) repo.
 - Copy the new or modified label file to `fragments/labels`. (replacing the original, when necessary)
 - Test (push the change to your fork on GitHub. You can check that out on testing devices or vms.)

@@ -1,8 +1,12 @@
 apachenetbeans)
     name="Apache NetBeans"
     type="pkg"
-    packageID="org.apache.netbeans"
-    appNewVersion=$(curl -sfL "https://netbeans.apache.org/" | xmllint --html --format - 2>/dev/null | grep -A 1 "<div class=\"annotation\">Latest release</div>" | sed '2p;d' | sed 's/<h1>Apache NetBeans //g' | sed 's/<\/h1>//g' | xargs)
-    downloadURL="https://archive.apache.org/dist/netbeans/netbeans-installers/${appNewVersion}/Apache-NetBeans-${appNewVersion}.pkg"
-    expectedTeamID="2GLGAFWEQD"
+    if [[ $(arch) = "arm64" ]]; then
+        archiveName="Apache-NetBeans-[0-9]*-arm64.pkg"
+    else
+        archiveName="Apache-NetBeans-[0-9]*-x86_64.pkg"
+    fi
+    downloadURL="$(downloadURLFromGit Friends-of-Apache-NetBeans netbeans-installers)"
+    appNewVersion="$(versionFromGit Friends-of-Apache-NetBeans netbeans-installers)"
+    expectedTeamID="3KH8VFSK7Q"
     ;;

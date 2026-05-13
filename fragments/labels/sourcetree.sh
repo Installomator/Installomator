@@ -1,7 +1,8 @@
 sourcetree)
     name="Sourcetree"
     type="zip"
-    downloadURL=$(curl -fs "https://www.sourcetreeapp.com" | grep -i "macURL" | tr '"' '\n' | grep -io "https://.*/Sourcetree.*\.zip" | tail -1)
-    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/Sourcetree_([0-9.]*)_[0-9]*\.zip/\1/g')
+    atlassianDetails="$(curl -fs "https://product-downloads.atlassian.com/software/sourcetree/Appcast/SparkleAppcast.xml")"
+    appNewVersion="$(echo "${atlassianDetails}"| xpath 'string(//rss/channel/item[last()]/enclosure/@sparkle:shortVersionString)' 2>/dev/null)"
+    downloadURL="$(echo "${atlassianDetails}"| xpath 'string(//rss/channel/item[last()]/enclosure/@url)' 2>/dev/null)"
     expectedTeamID="UPXU4CQZ5P"
     ;;
