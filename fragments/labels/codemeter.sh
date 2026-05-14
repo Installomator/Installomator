@@ -1,4 +1,4 @@
-ccodemeter)
+codemeter)
     name="CodeMeter"
     type="pkgInDmg"
     archiveName="CmInstall.pkg"
