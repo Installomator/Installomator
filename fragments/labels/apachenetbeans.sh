@@ -7,6 +7,6 @@ apachenetbeans)
         archiveName="Apache-NetBeans-[0-9]*-x86_64.pkg"
     fi
     downloadURL="$(downloadURLFromGit Friends-of-Apache-NetBeans netbeans-installers)"
-    appNewVersion="$(versionFromGit Friends-of-Apache-NetBeans netbeans-installers)"
-    expectedTeamID="3KH8VFSK7Q"
+    appNewVersion=$(curl -sLI "https://github.com/Friends-of-Apache-NetBeans/netbeans-installers/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed -E 's/v([0-9]+).*/\1/')
+    expectedTeamID="44YNN9Q525"
     ;;
