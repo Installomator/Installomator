@@ -4437,7 +4437,7 @@ eastwestopus)
     name="Opus"
     type="pkgInZip"
     packageID="com.eastwest.pkg.OpusInstaller"
-    downloadXML="$(curl -fs 'http://s3.amazonaws.com/ic-resources/products/OPUS.xml')"
+    downloadXML="$(curl -fs 'https://s3.amazonaws.com/ic-resources/products/OPUS.xml')"
     downloadURL="$(echo "${downloadXML}" | xpath '(//product/files/file[@platform="mac"]/url/text())' 2>/dev/null)"
     appNewVersion="$(echo "${downloadXML}" | xpath '(//product/version/text())' 2>/dev/null)"
     expectedTeamID="TWK4WE76V9"
@@ -7019,14 +7019,10 @@ logitechoptionsplusoffline)
     expectedTeamID="QED4VVPZWA"
     ;;
 logitune)
-    name="LogiTune"
-    archiveName="LogiTuneInstaller.dmg"
-    appName="LogiTuneInstaller.app"
-    type="dmg"
-    downloadURL="https://software.vc.logitech.com/downloads/tune/LogiTuneInstaller.dmg"
-    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-11.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
-    CLIInstaller="LogiTuneInstaller.app/Contents/MacOS/LogiTuneInstaller"
-    CLIArguments=(-silent)
+    name="Logi Tune"
+    type="pkg"
+    downloadURL="https://software.vc.logitech.com/downloads/tune/LogiTuneInstaller.pkg"
+    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-11.0" | tr '}' '\n' | grep "Logi Tune" | grep -o "Software Version: <\/span><\/b>[0-9.]*" | grep -oE "[0-9.]+" | head -1)
     expectedTeamID="QED4VVPZWA"
     ;;
 logseq)
@@ -8965,6 +8961,13 @@ particulars)
     expectedTeamID="2Z25XDNP2X"
     blockingProcesses=( NONE )
     ;;
+passwordutility)
+    name="Password Utility"
+    type="pkg"
+    downloadURL="https://twocanoes-software-updates.s3.amazonaws.com/Password_Utility.pkg"
+    appNewVersion=$( getJSONValue "$(curl -fsL https://data.twocanoes.com/api/version_info)" "[\"com.twocanoes.PasswordUtility\"].version" )
+    expectedTeamID="UXP6YEHSPW"
+    ;;
 patchomator)
     name="patchomator"
     type="pkg"
@@ -9516,12 +9519,17 @@ redgiant)
     ;;
 redshift)
     name="redshift"
+    appName="Maxon Redshift Installer.app"
     blockingProcesses=( "Cinema 4D" )
-    type="pkg"
+    type="dmg"
     packageID="com.redshift3d.redshift"
     expectedTeamID="4ZY22YGXQG"
-    downloadURL=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*redshift[^"]*\.pkg' | head -1)
+    downloadURL=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*redshift[^"]*macos\.dmg' | head -1)
     appNewVersion=$(sed -n 's/.*redshift_\([^_]*\).*/\1/p' <<< "${downloadURL}")
+    installerTool="Maxon Redshift Installer.app"
+    CLIInstaller="Maxon Redshift Installer.app/Contents/MacOS/installbuilder.sh"
+    # Customize --enable-components for other DCC integrations (Maya, Vectorworks, ZBrush)
+    CLIArguments=( --mode unattended --enable-components Cinema4DGroup,PluginC4D2023,PluginC4D2024,PluginC4D2025,PluginC4D2026 )
     ;;
 redshiftlite)
     name="redshift"
@@ -11815,10 +11823,12 @@ wallyezflash)
 warp)
     name="Warp"
     type="dmg"
-    downloadURL="https://app.warp.dev/download"
-    appNewVersion=$(curl -fs https://releases.warp.dev/channel_versions.json | grep -A 3 '"stable"' | grep '"version"' | head -n 1 | sed -E 's/.*"version": *"([^"]+)".*/\1/')
+    warpJSON=$(curl -fsL "https://releases.warp.dev/channel_versions.json")
+    appNewVersion=$(getJSONValue "$warpJSON" "stable.version")
+    downloadURL="https://releases.warp.dev/stable/${appNewVersion}/Warp.dmg"
+    appNewVersion="${appNewVersion#v}"
+    appNewVersion="${appNewVersion/.stable_/.}"
     expectedTeamID="2BBY89MBSN"
-    versionKey="WarpVersion"
     ;;
 wavescentral)
     name="Waves Central"
