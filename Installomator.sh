@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-05-14"
+VERSIONDATE="2026-05-15"
 
 # MARK: Functions
 
@@ -1771,8 +1771,10 @@ adobecreativeclouddesktop)
 adobedigitaleditions)
     name="Adobe Digital Editions"
     type="pkgInDmg"
-    downloadURL=$(curl -fs https://www.adobe.com/solutions/ebook/digital-editions/download.html | grep -oE 'https[^"]+\.dmg')
-    appNewVersion=$(curl -fs https://www.adobe.com/solutions/ebook/digital-editions/download.html | grep -o 'Adobe Digital Editions.*Installers' | awk -F' ' '{ print $4 }')
+    packageID="com.adobe.digitaleditions"
+    downloadPage=$(curl -fsL "https://www.adobe.com/solutions/ebook/digital-editions/download.html")
+    downloadURL=$(echo "$downloadPage" | grep -oE 'https://[^"'\''[:space:]]*\.dmg' | grep -v "\.exe" | head -1)
+    appNewVersion=$(echo "$downloadPage" | grep -o 'Adobe Digital Editions.*Installers' | awk -F' ' '{ print $4 }')
     expectedTeamID="JQ525L2MZD"
     ;;
 adobereaderdc|\
@@ -2708,6 +2710,18 @@ beamstudio)
     downloadURL="$( curl -s "https://id.flux3dp.com/api/check-update?key=beamstudio-stable" | tr '"' '\n' | grep -m1 dmg )"
     appNewVersion="$( echo "$downloadURL" | cut -d '+' -f 3 | cut -d '.' -f 1-3 )"
     ;;
+beekeeperstudio)
+    name="Beekeeper Studio"
+    type="dmg"
+    appNewVersion="$(versionFromGit beekeeper-studio beekeeper-studio)"
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="Beekeeper-Studio-${appNewVersion}-arm64.dmg"
+    else
+        archiveName="Beekeeper-Studio-${appNewVersion}.dmg"
+    fi
+    downloadURL="$(downloadURLFromGit beekeeper-studio beekeeper-studio)"
+    expectedTeamID="7KK583U8H2"
+    ;;
 betterdisplay)
     name="BetterDisplay"
     type="dmg"
@@ -2841,7 +2855,9 @@ boop)
 boxdrive)
     name="Box"
     type="pkg"
-    downloadURL="https://e3.boxcdn.net/desktop/releases/mac/BoxDrive.pkg"
+    packageID="com.box.desktop.installer.desktop"
+    appNewVersion=$(curl -fsL "https://formulae.brew.sh/api/cask/box-drive.json" | grep -o '"version":"[^"]*"' | head -1 | cut -d'"' -f4 | cut -d',' -f1)
+    downloadURL="https://e3.boxcdn.net/desktop/releases/mac/BoxDrive-${appNewVersion}.pkg"
     expectedTeamID="M683GB7CPW"
     ;;
 boxsync)
@@ -3753,10 +3769,10 @@ codemeter)
     archiveName="CmInstall.pkg"
     appCustomVersion(){ defaults read "/Applications/Codemeter.app/Contents/Info.plist" CFBundleVersion | cut -d '.' -f 1-2 }
     html_page_source="https://www.wibu.com/de/support/anwendersoftware/anwendersoftware.html"
-    macos_value=$(curl -fs $html_page_source | xmllint --html --format - 2>/dev/null | grep -Eo -m1 ' 12"> <option value=".*?"' | cut -d '"' -f3)
+    macos_value=$(curl -fs "$html_page_source" | xmllint --html --recover --nowarning --xpath 'string((//optgroup[starts-with(@label,"macOS")])[1]/option[1]/@value)' - 2>/dev/null;)
     downloadHTML="https://www.wibu.com/de/support/anwendersoftware/anwendersoftware/file/download/$macos_value.html"
     downloadURL="https://www.wibu.com"$(curl -fs $downloadHTML | xmllint --html --format - 2>/dev/null | grep -Eo 'rel="nofollow" href=".*?"' | cut -d '"' -f4)
-    appNewVersion=$(curl -fs $html_page_source | xmllint --html --format - 2>/dev/null | grep -Eo "option value=\"$macos_value\" style=\"\">Version .*?\"" | sed -E 's/.*Version (.*) \| 2.*/\1/g')
+    appNewVersion=$(curl -fs "$html_page_source" | xmllint --html --format - 2>/dev/null | grep -Eo "option value=\"$macos_value\" style=\"\">Version .*?\"" | sed -E 's/.*Version ([0-9]+\.[0-9]+).*/\1/')
     expectedTeamID="2SE7W37452"
     ;;
 coderunner)
@@ -4168,9 +4184,9 @@ diskspace)
 displaylinkmanager)
     name="DisplayLink Manager"
     type="pkg"
-    #packageID="com.displaylink.displaylinkmanagerapp"
-    downloadURL=https://www.synaptics.com$(redirect=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep -m 1 'class="download-link">Download' | sed 's/.*href="//' | sed 's/".*//') && curl -sfL "https://www.synaptics.com$redirect" | grep 'class="no-link"' | awk -F 'href="' '{print $2}' | awk -F '"' '{print $1}')
-    appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep -m 1 "Release:" | cut -d ' ' -f2)
+    appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep -o 'DisplayLink%20Manager%20Graphics%20Connectivity[0-9.]*-Release' | head -1 | sed 's/DisplayLink%20Manager%20Graphics%20Connectivity//' | sed 's/-Release//')
+    productPage=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep -o 'href="/products/displaylink-manager-graphics-connectivity-[^"]*?filetype=exe"' | head -1 | sed 's/href="//' | sed 's/"$//' | sed 's/?filetype=exe/?filetype=pkg/')
+    downloadURL="https://www.synaptics.com$(curl -sfL "https://www.synaptics.com${productPage}" | grep -o '/sites/default/files/exe_files/[^"]*\.pkg' | head -1)"
     expectedTeamID="73YQY62QM3"
     ;;
     displaynote)
@@ -5633,6 +5649,16 @@ grandperspective)
     downloadURL="https://sourceforge.net/projects/grandperspectiv/files/latest/download"
     appNewVersion=$(curl -fs https://sourceforge.net/projects/grandperspectiv/files/grandperspective/ | grep -B 2 'Download Latest Version' | grep -oE '\/(\d|\.)+\/' | sed 's/\///g')
     expectedTeamID="3Z75QZGN66"
+    ;;
+granola)
+    name="Granola"
+    type="dmg"
+    # Uses Homebrew Cask API (does not require Homebrew installation)
+    # Most reliable as it's community-maintained and always up-to-date
+    granolaJSON=$(curl -fsL "https://formulae.brew.sh/api/cask/granola.json")
+    appNewVersion=$(getJSONValue "$granolaJSON" "version")
+    downloadURL=$(getJSONValue "$granolaJSON" "url")
+    expectedTeamID="QZ7DHHLN25"
     ;;
 graphicconverter10)
     name="GraphicConverter 10"
@@ -8757,9 +8783,9 @@ openvpnconnectv3)
 opera)
     name="Opera"
     type="dmg"
-    downloadURL="$(curl -fsIL $(curl -fsL $(curl -fsI "https://download.opera.com/download/get/?partner=www&opsys=MacOS" | grep -i "^location" | awk '{print $2}' | tr -d '\r') | grep -oE "https:\/\/download\.opera\.com\/[^\"]*" | sed 's/\&amp\;/\&/g') | grep -i "^location" | awk '{print $2}' | tr -d '\r')"
-    appNewVersion="$(printf "$downloadURL" | sed -E 's/https.*\/([0-9.]*)\/mac\/.*/\1/')"
-	versionKey="CFBundleVersion"
+    appNewVersion=$(curl -fs "https://get.geo.opera.com/pub/opera/desktop/" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -1)
+    downloadURL="https://get.geo.opera.com/pub/opera/desktop/${appNewVersion}/mac/Opera_${appNewVersion}_Setup.dmg"
+    versionKey="CFBundleVersion"
     expectedTeamID="A2P9LX4JPN"
     ;;
 orbstack)

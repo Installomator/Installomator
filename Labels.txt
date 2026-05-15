@@ -114,6 +114,7 @@ basictex
 bbedit
 bbeditpkg
 beamstudio
+beekeeperstudio
 betterdisplay
 bettertouchtool
 betterzip
@@ -428,6 +429,7 @@ gpgsuite
 gpgsync
 grammarly
 grandperspective
+granola
 graphicconverter10
 grasshopper
 grooveomnidialerenterpriseedition
