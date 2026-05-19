@@ -1,6 +1,6 @@
 gifski)
     name="Gifski"
-    type="dmg"
+    type="zip"
     downloadURL="$(downloadURLFromGit sindresorhus Gifski)"
     appNewVersion="$(versionFromGit sindresorhus Gifski)"
     expectedTeamID="YG56YK5RN5"
