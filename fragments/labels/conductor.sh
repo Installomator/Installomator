@@ -2,10 +2,11 @@ conductor)
     name="Conductor"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://cdn.crabnebula.app/download/melty/conductor/latest/platform/dmg-aarch64"
+        cnArch="aarch64"
     else
-        downloadURL="https://cdn.crabnebula.app/download/melty/conductor/latest/platform/dmg-x86_64"
+        cnArch="x86_64"
     fi
-    appNewVersion=$(curl -fsIL "$downloadURL" | grep -i "^content-disposition" | sed 's/.*Conductor_\([0-9.]*\)_.*/\1/')
+    downloadURL="https://cdn.crabnebula.app/download/melty/conductor/latest/platform/dmg-${cnArch}"
+    appNewVersion=$(curl -fsL "https://cdn.crabnebula.app/update/melty/conductor/darwin-${cnArch}/0.0.0" | grep -o '"version":"[^"]*"' | cut -d'"' -f4)
     expectedTeamID="27XN666UJ7"
     ;;
