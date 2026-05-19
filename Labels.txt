@@ -55,6 +55,7 @@ anaconda
 anastasiysextensionmanager
 androidfiletransfer
 androidstudio
+anki
 anotherredisdesktopmanager
 antconc
 anydesk
@@ -113,6 +114,7 @@ basictex
 bbedit
 bbeditpkg
 beamstudio
+beekeeperstudio
 betterdisplay
 bettertouchtool
 betterzip
@@ -272,6 +274,7 @@ dialog
 dialpad
 digiexam
 discord
+discordcanary
 diskdrill
 diskspace
 displaylinkmanager
@@ -302,6 +305,7 @@ eastwestinstallationcenter
 eastwestopus
 eastwestplay
 easyfind
+eclipseideforjavadevelopers
 eclipsetemurin11
 eclipsetemurin17
 eclipsetemurin21
@@ -342,6 +346,7 @@ fantastical
 fastscripts
 favro
 fellow
+ffmpegmartinriedl
 fierycommandworkstation
 figma
 filemakerpro
@@ -361,8 +366,9 @@ firefox_da
 firefox_intl
 firefoxdeveloperedition
 firefoxesr
-firefoxesr_intl
+firefoxesrintl
 firefoxesrpkg
+firefoxesrpkgintl
 firefoxpkg
 firefoxpkg_intl
 flexoptixapp
@@ -400,6 +406,7 @@ globusconnectpersonal
 glpiagent
 glyphs3
 gns3
+goland
 golang
 googleadseditor
 googlechrome
@@ -422,6 +429,7 @@ gpgsuite
 gpgsync
 grammarly
 grandperspective
+granola
 graphicconverter10
 grasshopper
 grooveomnidialerenterpriseedition
@@ -536,6 +544,7 @@ keyshot
 keyshot12
 keyshot2024
 keystoreexplorer
+kicad
 kimplusclientmodul
 kiro
 kirocli
@@ -606,6 +615,7 @@ masv
 mattermost
 maxcycling74
 maxonapp
+maxqda24
 mdmwatchdog
 meetingbar
 meistertask
@@ -718,6 +728,7 @@ nordvpn
 notion
 nova
 nps-santa
+npssantafull
 nudge
 nudgesuite
 numi
@@ -744,6 +755,7 @@ omnioutliner6
 omniplan3
 omniplan4
 omnipresence
+omnissahorizonclient
 omnissahorizonclient
 onionshare
 onlyofficedesktop
@@ -776,6 +788,7 @@ parallelsrasclient
 paretosecurity
 parsec
 particulars
+passwordutility
 patchomator
 pcoipclient
 pdfexpert
@@ -1018,6 +1031,7 @@ textmate
 theunarchiver
 things
 thonny
+thoriumreader
 thunderbird
 thunderbird_intl
 thunderbirdesr
@@ -1040,6 +1054,7 @@ tophat
 torbrowser
 tortalk_en
 tortalk_se
+touchdesigner
 tower
 transfer
 transmit5
@@ -1065,6 +1080,7 @@ uniconverter
 unityhub
 universaltypeclient
 unnaturalscrollwheels
+upscayl
 utiluti
 utm
 uviportal
@@ -1096,6 +1112,8 @@ vncconnect
 vonagebusiness
 vpntracker365
 vscodium
+vuescanintel
+vuescanuni
 vysor
 wacomdrivers
 wallyezflash
@@ -1116,6 +1134,7 @@ whimsical
 whiterabbit
 windsurf
 wireshark
+wisenetwave
 wisprflow
 wordservice
 workbrew
@@ -1124,6 +1143,7 @@ wrikeformac
 wwdc
 xattred
 xbar
+xcodesapp
 xcreds
 xeroxphaser7800
 xeroxprintandscan
@@ -1166,5 +1186,6 @@ zulujdk17
 zulujdk18
 zulujdk21
 zulujdk23
+zulujdk25
 zulujdk8
 zulujdkfx17
