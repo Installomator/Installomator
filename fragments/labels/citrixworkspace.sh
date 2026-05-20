@@ -5,17 +5,13 @@ citrixworkspace)
     parseURL() {
         urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html'
         htmlDocument=$(curl -s -L "$urlToParse" $curlOptions)
-        xmllint --html --xpath \
-            "string(//a[contains(@class, 'ctx-dl-link')]/@rel)" \
-            2>/dev/null <(print "$htmlDocument")
+        xmllint --html --xpath "string(//a[contains(@class, 'ctx-dl-link')]/@rel)" 2>/dev/null <(print "$htmlDocument")
     }
     downloadURL="https:$(parseURL)"
     newVersionString() {
         urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html'
         htmlDocument=$(curl -fs "$urlToParse" $curlOptions)
-        xmllint --html --xpath \
-            "string(//div[@class='ctx-dl-content']/p[starts-with(., 'Version')])" \
-            2>/dev/null <(print "$htmlDocument")
+        xmllint --html --xpath "string(//div[@class='ctx-dl-content']/p[starts-with(., 'Version')])" 2>/dev/null <(print "$htmlDocument")
     }
     appNewVersion=$(newVersionString | sed -nE 's/.*Version ([0-9.]+).*/\1/p')
     versionKey="CitrixVersionString"
