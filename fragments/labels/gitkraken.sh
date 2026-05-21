@@ -8,5 +8,4 @@ gitkraken)
         downloadURL="https://release.gitkraken.com/darwin/installGitKraken.dmg"
     fi
     expectedTeamID="T7QVVUTZQ8"
-    blockingProcesses=( "GitKraken" )
     ;;
