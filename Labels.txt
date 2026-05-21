@@ -232,7 +232,9 @@ coconutbattery
 code42
 codemeter
 coderunner
+codex
 colourcontrastanalyser
+conductor
 connectfonts
 container
 cormorant
@@ -560,6 +562,7 @@ latexit
 launchbar
 launchcontrol
 lcadvancedvpnclient
+lens
 lexarrecoverytool
 lgcalibrationstudio
 libericajdk11ltsfull

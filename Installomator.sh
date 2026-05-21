@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-05-15"
+VERSIONDATE="2026-05-21"
 
 # MARK: Functions
 
@@ -3659,7 +3659,7 @@ clickshare)
     name="ClickShare"
     type="zip"
     json_feed=$(curl -fsL "https://assets.cloud.barco.com/clickshare/release/release.mac")
-    appNewVersion=$(getJSONValue "${json_feed}" 'version')
+    appNewVersion=$(getJSONValue "${json_feed}" 'version' | tr -d 'b' | tr "-" ".")
     file_name=$(getJSONValue "${json_feed}" 'name')
     downloadURL="https://assets.cloud.barco.com/clickshare/release/${file_name}"
     expectedTeamID="P6CDJZR997"
@@ -3782,6 +3782,18 @@ coderunner)
     appNewVersion=$(curl -fsIL ${downloadURL} | grep -i "^location" | cut -d " " -f2 | sed -E 's/.*CodeRunner-([0-9.]*).zip/\1/')
     expectedTeamID="R4GD98AJF9"
     ;;
+codex)
+    name="Codex"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="https://persistent.oaistatic.com/codex-app-prod/Codex.dmg"
+    else
+        printlog "Codex is only compatible with Apple Silicon (arm64) Macs." ERROR
+        cleanupAndExit 95 "Codex requires Apple Silicon" ERROR
+    fi
+    appNewVersion="$(curl -fs "https://persistent.oaistatic.com/codex-app-prod/appcast.xml" | grep -o '<sparkle:shortVersionString>[^<]*' | head -1 | cut -d '>' -f 2)"
+    expectedTeamID="2DC432GLL2"
+    ;;
 colourcontrastanalyser)
     name="Colour Contrast Analyser"
     type="dmg"
@@ -3789,6 +3801,18 @@ colourcontrastanalyser)
     appNewVersion=$(versionFromGit ThePacielloGroup CCAe)
     expectedTeamID="34RS4UC3M6"
     blockingProcesses=( NONE )
+    ;;
+conductor)
+    name="Conductor"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        cnArch="aarch64"
+    else
+        cnArch="x86_64"
+    fi
+    downloadURL="https://cdn.crabnebula.app/download/melty/conductor/latest/platform/dmg-${cnArch}"
+    appNewVersion=$(curl -fsL "https://cdn.crabnebula.app/update/melty/conductor/darwin-${cnArch}/0.0.0" | grep -o '"version":"[^"]*"' | cut -d'"' -f4)
+    expectedTeamID="27XN666UJ7"
     ;;
 connectfonts)
     name="Connect Fonts"
@@ -4187,6 +4211,7 @@ displaylinkmanager)
     appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep -o 'DisplayLink%20Manager%20Graphics%20Connectivity[0-9.]*-Release' | head -1 | sed 's/DisplayLink%20Manager%20Graphics%20Connectivity//' | sed 's/-Release//')
     productPage=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep -o 'href="/products/displaylink-manager-graphics-connectivity-[^"]*?filetype=exe"' | head -1 | sed 's/href="//' | sed 's/"$//' | sed 's/?filetype=exe/?filetype=pkg/')
     downloadURL="https://www.synaptics.com$(curl -sfL "https://www.synaptics.com${productPage}" | grep -o '/sites/default/files/exe_files/[^"]*\.pkg' | head -1)"
+    appCustomVersion(){defaults read /Applications/DisplayLink\ Manager.app/Contents/Info.plist CFBundleShortVersionString | awk -F "." '{print$1"."$2}'}
     expectedTeamID="73YQY62QM3"
     ;;
     displaynote)
@@ -5552,6 +5577,7 @@ googledrivebackupandsync)
 googleearth)
     name="Google Earth Pro"
     type="pkgInDmg"
+    appNewVersion=$(curl -fsL "https://www.google.com/earth/about/versions/\#download-pro" | grep -oi "<strong>version [0-9\.]*" | grep -o "[0-9\.]*")
     downloadURL="https://dl.google.com/earth/client/advanced/current/GoogleEarthProMac-Intel.dmg"
     expectedTeamID="EQHXZ8M8AV"
     ;;
@@ -6801,6 +6827,19 @@ lcadvancedvpnclient)
     blockingProcesses=( "LANCOM Advanced VPN Client" "ncprwsmac" )
     expectedTeamID="LL3KBL2M3A"
     ;;
+lens)
+    name="Lens"
+    type="dmg"
+    xmlContent=$(curl -ks https://api.k8slens.dev/binaries/latest-mac.json | plutil -convert xml1 - -o -)
+    if [[ $(arch) == "i386" ]]; then
+      downloadURL=$(printf "%s" "${xmlContent}" | xmllint --xpath '(//key[text()="url"]/following-sibling::string[1][not(contains(text(), "arm64")) and contains(text(), "dmg")])[1]/text()' -)
+    elif [[ $(arch) == "arm64" ]]; then
+      downloadURL=$(printf "%s" "${xmlContent}" | xmllint --xpath '(//key[text()="url"]/following-sibling::string[1][contains(text(), "arm64") and contains(text(), "dmg")])[1]/text()' -)
+    fi
+    downloadURL="https://downloads.k8slens.dev/ide/${downloadURL}"
+    appNewVersion=$(printf '%s' "${xmlContent}" | xmllint --xpath '//key[text()="version"]/following-sibling::string[1]/text()' -)
+    expectedTeamID="JJ22T2W355"
+    ;;
 lexarrecoverytool)
     name="Lexar Recovery Tool"
     type="appInDmgInZip"
@@ -6996,10 +7035,9 @@ logitechoptionsplus)
     archiveName="logioptionsplus_installer.zip"
     installerTool="logioptionsplus_installer.app"
     type="zip"
-    downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer.zip"
-    # Latest version of Logi Options+ requires macOS 13+
-    # If older macOS is specified in the url for appNewVersion, it will never correspond to the installed version
-    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-13.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
+    osMajorVersion=$(sw_vers -productVersion | awk -F "." '{print$1}')
+    downloadURL="$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-${osMajorVersion}.0" | tr "," "\n"  | grep  -o "https://.*logioptionsplus.*zip" | head -1)"
+    appNewVersion=$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-${osMajorVersion}.0" | tr "," "\n" | grep -A 10 "macOS" | grep -B 5 -ie "https.*/.*/optionsplus/.*\.zip" | grep "Software Version" | sed 's/\\u[0-9a-z][0-9a-z][0-9a-z][0-9a-z]//g' | grep -ioe "Software Version.*[0-9.]*" | tr "/" "\n" | grep -oe "[0-9.]*" | head -1)
     CLIInstaller="logioptionsplus_installer.app/Contents/MacOS/logioptionsplus_installer"
     CLIArguments=(--quiet)
     expectedTeamID="QED4VVPZWA"
@@ -10832,8 +10870,11 @@ tabby)
 tableaudesktop)
     name="Tableau Desktop"
     type="pkgInDmg"
-    packageID="com.tableausoftware.tableaudesktop"
-    downloadURL="https://www.tableau.com/downloads/desktop/mac"
+    if [[ $(/usr/bin/arch) == "arm64" ]]; then
+        downloadURL="https://www.tableau.com/downloads/desktop/reg-mac-arm64"
+    else
+        downloadURL="https://www.tableau.com/downloads/desktop/reg-mac"
+    fi
     appNewVersion=${$(curl -fsIL "$downloadURL" | sed -nE 's/.*Desktop-([0-9-]*).*/\1/p')//-/.}
     expectedTeamID="QJ4XPRK37C"
     ;;
