@@ -1,5 +1,5 @@
 microsoftpowershell)
-    name="Microsoft PowerShell"
+    name="PowerShell"
     type="pkg"
     if [[ $(arch) = "i386" ]]; then
         archiveName="powershell-[0-9.]*-osx-x64.pkg"
