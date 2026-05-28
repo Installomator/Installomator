@@ -429,6 +429,7 @@ gotomeeting
 gotowebinar
 gpgsuite
 gpgsync
+gram
 grammarly
 grandperspective
 granola
@@ -659,6 +660,7 @@ microsoftoutlookdataremoval
 microsoftoutlookreset
 microsoftpowerpoint
 microsoftpowerpointreset
+microsoftpowershell
 microsoftremotedesktop
 microsoftremotehelp
 microsoftsharepointplugin
