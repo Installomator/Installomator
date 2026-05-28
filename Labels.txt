@@ -232,7 +232,9 @@ coconutbattery
 code42
 codemeter
 coderunner
+codex
 colourcontrastanalyser
+conductor
 connectfonts
 container
 cormorant
@@ -427,6 +429,7 @@ gotomeeting
 gotowebinar
 gpgsuite
 gpgsync
+gram
 grammarly
 grandperspective
 granola
@@ -560,6 +563,7 @@ latexit
 launchbar
 launchcontrol
 lcadvancedvpnclient
+lens
 lexarrecoverytool
 lgcalibrationstudio
 libericajdk11ltsfull
@@ -656,6 +660,7 @@ microsoftoutlookdataremoval
 microsoftoutlookreset
 microsoftpowerpoint
 microsoftpowerpointreset
+microsoftpowershell
 microsoftremotedesktop
 microsoftremotehelp
 microsoftsharepointplugin
