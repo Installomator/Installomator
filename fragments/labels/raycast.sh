@@ -1,7 +1,7 @@
 raycast)
     name="Raycast"
     type="dmg"
-    downloadURL="https://www.raycast.com/download"
-    appNewVersion="$( curl -fsIL "https://www.raycast.com/download" | grep -i ^location | grep Raycast_ | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )"
+    downloadURL="https://releases.raycast.com/download?build=release"
+    appNewVersion=$(curl -fsIL -X GET "$downloadURL" | awk 'BEGIN{IGNORECASE=1}/^location:/{gsub("\r",""); print $2}' | tail -n 1 | sed -E 's|.*/Raycast_v?([0-9]+\.[0-9]+\.[0-9]+)_.*|\1|')
     expectedTeamID="SY64MV22J9"
     ;;
