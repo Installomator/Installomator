@@ -1,12 +1,12 @@
 apachenetbeans)
-    name="Apache NetBeans"
+name="Apache NetBeans"
     type="pkg"
-    if [[ $(arch) = "arm64" ]]; then
-        archiveName="Apache-NetBeans-[0-9]*-arm64.pkg"
+    if [[ "$arch" == "arm64" ]]; then
+        archiveName="arm64.pkg"
     else
-        archiveName="Apache-NetBeans-[0-9]*-x86_64.pkg"
+        archiveName="x86_64.pkg"
     fi
-    downloadURL="$(downloadURLFromGit Friends-of-Apache-NetBeans netbeans-installers)"
-    appNewVersion="$(versionFromGit Friends-of-Apache-NetBeans netbeans-installers)"
-    expectedTeamID="3KH8VFSK7Q"
+    downloadURL=$(downloadURLFromGit Friends-of-Apache-NetBeans netbeans-installers)
+    appNewVersion=$(versionFromGit Friends-of-Apache-NetBeans netbeans-installers | sed -E 's/^v?([0-9]+).*/\1/')
+    expectedTeamID="44YNN9Q525"
     ;;
