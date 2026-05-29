@@ -1,5 +1,5 @@
 apachenetbeans)
-name="Apache NetBeans"
+    name="Apache NetBeans"
     type="pkg"
     if [[ "$arch" == "arm64" ]]; then
         archiveName="arm64.pkg"
