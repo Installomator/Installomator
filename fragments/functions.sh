@@ -43,7 +43,7 @@ runAsUser() {
 reloadAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
-        su - $currentUser -c "${@}"
+        su - "$currentUser" -c "${@}"
     fi
 }
 
@@ -166,13 +166,13 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
     if [ -n "$archiveName" ]; then
         downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
-        if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName")" == "" ]]; then
+        if [[ "$(echo "$downloadURL" | grep -ioE "https.*$archiveName")" == "" ]]; then
             #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
             downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)"
         fi
     else
         downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
-        if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
+        if [[ "$(echo "$downloadURL" | grep -ioE "https.*.$filetype")" == "" ]]; then
             #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
             downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
         fi
@@ -471,7 +471,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
     printlog "App size: $(du -sh "$appPath")" DEBUG
     appVerify=$(spctl -a -vv "$appPath" 2>&1 )
     appVerifyStatus=$(echo $?)
-    teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
+    teamID=$(echo "$appVerify" | awk '/origin=/ {print $NF }' | tr -d '()' )
     deduplicatelogs "$appVerify"
 
     if [[ $appVerifyStatus -ne 0 ]] ; then
@@ -545,7 +545,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
             deleteAppOut=$(rm -Rfv "$targetDir/$appName" 2>&1)
             tempName="$targetDir/$appName"
             tempNameLength=$((${#tempName} + 10))
-            deleteAppOut=$(echo $deleteAppOut | cut -c 1-$tempNameLength)
+            deleteAppOut=$(echo "$deleteAppOut" | cut -c 1-$tempNameLength)
             deduplicatelogs "$deleteAppOut"
             printlog "Debugging enabled, App removing output was:\n$logoutput" DEBUG
         fi
@@ -598,7 +598,7 @@ mountDMG() {
     # always pipe 'Y\n' in case the dmg requires an agreement
     dmgmountOut=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly )
     dmgmountStatus=$(echo $?)
-    dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
+    dmgmount=$(echo "$dmgmountOut" | tail -n 1 | cut -c 54- )
     deduplicatelogs "$dmgmountOut"
 
     if [[ $dmgmountStatus -ne 0 ]] ; then
@@ -628,10 +628,10 @@ installFromPKG() {
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
 
-    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+    teamID=$(echo "$spctlOut" | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
-        teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
+        teamID=$(echo "$spctlOut" | awk -F '=' '/origin=/ {print $NF }')
     fi
 
     deduplicatelogs "$spctlOut"
