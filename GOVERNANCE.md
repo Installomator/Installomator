@@ -1,63 +1,63 @@
-# Governance
+## Governance
 
-This project is maintained by a small group of core maintainers, with support from community contributors and reviewers. The goal is to keep the project healthy, responsive, and welcoming while maintaining quality and stability.
+This project is maintained by a small group of **core maintainers**, with support from **community maintainers** and contributors. The goal is to keep the project healthy, responsive, and welcoming while maintaining quality and stability.
+
+---
 
 ## Roles
 
 ### Contributors
-
 Anyone can contribute by:
 
-* Opening issues
-* Submitting pull requests
-* Suggesting improvements
-* Reporting bugs
+- Opening issues  
+- Submitting pull requests  
+- Suggesting improvements  
+- Reporting bugs  
 
 No special permissions are required. Contributors participate through the standard GitHub workflow.
 
 ---
 
-### Community Reviewers
+### Community Maintainers
+Trusted contributors who help keep pull requests moving.
 
-Trusted contributors who help keep PRs moving.
+**Responsibilities:**
 
-Responsibilities:
+- Review and comment on pull requests  
+- Provide constructive feedback  
+- Approve pull requests  
+- Help contributors update their pull requests  
 
-* Review and comment on pull requests
-* Provide constructive feedback
-* Approve PRs
-* Help contributors update their PRs
-
-Community Reviewers have **Write access**, but cannot merge into protected branches.
+Community maintainers have **write access** to the repository but cannot merge into protected branches.
 
 ---
 
-### Maintainers
-
+### Core Maintainers
 Core team responsible for merging and publishing releases.
 
-Responsibilities:
+**Responsibilities:**
 
-* Merge approved PRs
-* Maintain release quality
-* Manage project infrastructure (CI, automation, etc.)
-* Make final decisions when needed
-
-Maintainers have **Admin or Maintain permissions**.
+- Merge approved pull requests  
+- Maintain release quality  
+- Manage project infrastructure (CI, automation, etc.)  
+- Make final decisions when needed  
 
 ---
 
 ## Pull Request Workflow
 
-1. Contributor submits a PR
-2. Community Reviewer or Maintainer reviews and provides feedback
-3. Once approved, a Maintainer merges the PR
-
-Branch protection ensures that only Maintainers can merge into protected branches.
+1. A contributor submits a pull request  
+2. Any **two maintainers** (core maintainer and/or community maintainer) review and approve the pull request  
+3. A core or community maintainer merges the pull request  
 
 ---
 
-## Becoming a Reviewer or Maintainer
+## Becoming a Community Maintainer or Core Maintainer
 
-* Reviewers: invited based on consistent contributions and helpful feedback
-* Maintainers: selected from Reviewers who demonstrate interest in long-term support of the project, deep familiarity with the project, and a history of contributions.
+**Community maintainers** are invited based on consistent contributions and helpful feedback.
+
+**Core maintainers** are selected from community maintainers who demonstrate:
+
+- Interest in long-term support of the project  
+- Deep familiarity with the project  
+- A strong history of contributions  
