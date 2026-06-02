@@ -1,5 +1,4 @@
 techsmithaudiate)
-    #
     name="TechSmith Audiate"
     type="dmg"
     downloadURL="https://cdn-audiate.cloud.techsmith.com/audiate/latest/Audiate.dmg"
