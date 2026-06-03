@@ -2,8 +2,11 @@ devin|\
 windsurf)
     name="Devin"
     type="dmg"
-    [[ $(arch) == "arm64" ]] && cpu_arch="arm64" || cpu_arch="x64"
-    downloadURL="$( curl -s https://docs.devin.ai/desktop/releases | tr '"\\' "\n" | grep -m1 "darwin-${cpu_arch}.*\.dmg" )"
-    appNewVersion="$( echo "$downloadURL" | awk -F '-' '{ print $NF }' | cut -d '.' -f 1-3 )"
+    if [[ "$(arch)" == "arm64" ]]; then
+        downloadURL="$(curl -fsL "https://docs.devin.ai/desktop/releases" | grep -Eo 'https://[^"\]*-darwin-arm64-[0-9.]+\.dmg' | head -n 1)"
+    else
+        downloadURL="$(curl -fsL "https://docs.devin.ai/desktop/releases" | grep -Eo 'https://[^"\]*-darwin-x64-[0-9.]+\.dmg' | head -n 1)"
+    fi
+    appNewVersion="$(basename "$downloadURL" .dmg | awk -F- '{print $NF}')"
     expectedTeamID="83Z2LHX6XW"
     ;;
