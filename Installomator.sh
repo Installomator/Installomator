@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-05-28"
+VERSIONDATE="2026-06-02"
 
 # MARK: Functions
 
@@ -7631,6 +7631,14 @@ microsoftexcelreset)
     downloadURL="https://office-reset.com"$(curl -fs https://office-reset.com/macadmins/ | grep -o -i "href.*\".*\"*Excel_Reset.*.pkg" | cut -d '"' -f2)
     expectedTeamID="QGS93ZLCU7"
     ;;
+microsoftglobalsecureaccessclient)
+    name="Global Secure Access Client"
+    type="pkg"
+    packageID="com.microsoft.globalsecureaccess"
+    downloadURL="https://aka.ms/GlobalSecureAccess-macOS"
+    expectedTeamID="UBF8T346G9"
+    appNewVersion=$(curl -sfL https://raw.githubusercontent.com/MicrosoftDocs/entra-docs/refs/heads/main/docs/global-secure-access/reference-macos-client-release-history.md | grep -m1 -E "##.*Version" | grep -E -o "[0-9.]+")
+    ;;
 microsoftlicenseremovaltool)
     # credit: Isaac Ordonez (@isaac) macadmins slack
     name="Microsoft License Removal Tool"
@@ -7960,7 +7968,7 @@ microsoftteamsnew)
     name="Microsoft Teams"
     type="pkg"
     MAUSource="https://res.public.onecdn.static.microsoft/mro1cdnstorage/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/0409TEAMS21.xml"
-    downloadURL=$(curl -fsL $MAUSource | xmllint --xpath '//array/dict[1]/key[text()="Location"]/following-sibling::string[1]/text()' - 2>/dev/null )
+    downloadURL=$(curl -fsL $MAUSource | xmllint --xpath '//array/dict[1]/key[text()="FullUpdaterLocation"]/following-sibling::string[1]/text()' - 2>/dev/null )
     appNewVersion=$(curl -fsL $MAUSource | xmllint --xpath '//array/dict[1]/key[text()="Update Version"]/following-sibling::string[1]/text()' - 2>/dev/null)
     expectedTeamID="UBF8T346G9"
     blockingProcesses=( MSTeams "Microsoft Teams" "Microsoft Teams WebView" "Microsoft Teams Launcher" "Microsoft Teams (work preview)")
@@ -9451,6 +9459,13 @@ r)
     expectedTeamID="VZLD955F6P"
     appCustomVersion() { defaults read /Applications/r.app/Contents/Info.plist CFBundleShortVersionString | awk '{print $2}' }
     ;;
+radiosilence)
+    name="Radio Silence"
+    type="pkg"
+    downloadURL=$(curl -fsSL -A "Mozilla/5.0" "https://radiosilenceapp.com/download" | grep -m1 'class="download-button"' | sed -nE 's#.*href="([^"]+)".*#https://radiosilenceapp.com\1#p')
+    appNewVersion=$(curl -fsSL -A "Mozilla/5.0" "https://radiosilenceapp.com/download" | sed -nE 's/.*<p class="guarantee">Version ([0-9.]+),.*/\1/p' | head -n1)
+    expectedTeamID="6JQLCT6DRB"
+    ;;
 raindropio)
     name="Raindrop.io"
     type="dmg"
@@ -9495,7 +9510,7 @@ raycast)
     name="Raycast"
     type="dmg"
     downloadURL="https://www.raycast.com/download"
-    appNewVersion="$( curl -fsIL "https://www.raycast.com/download" | grep -i ^location | grep Raycast_ | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )"
+    appNewVersion="$( curl -fsIL "https://www.raycast.com/download" | grep -i ^location | grep -m1 Raycast_ | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' )"
     expectedTeamID="SY64MV22J9"
     ;;
 realvncondemandassist)
@@ -9859,16 +9874,10 @@ santa)
 keyaccess)
     name="KeyAccess"
     type="pkg"
-    downloadStore="$(curl -sL "http://www.sassafras.com/client-download/" | tr '>' '\n')"
-    downloadURL="$(echo "$downloadStore" | grep "https.*ksp-client.*pkg" | cut -d '"' -f 2)"
-    appNewVersion="$(echo "$downloadStore" | grep "KeyAccess.*for Mac" | cut -d ' ' -f 2)"
+    downloadURL="https://download.sassafras.com/software/release/current/Installers/MacOS/Client/ksp-client.pkg"
+    appNewVersion="$(curl -s "https://solutions.teamdynamix.com/TDClient/1965/Portal/KB/ArticleDet?ID=169236" | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)+' | sort -V | tail -1)"
     expectedTeamID="7Z2KSDFMVY"
-    BLOCKING_PROCESS_ACTION=ignore
-    blockingProcesses=( NONE )
-    # Application is not installed in /Applications
     appName="Library/KeyAccess/KeyAccess.app"
-    # Don't forget to at least set the host, or nothing will happen.
-    # defaults write /Library/Preferences/com.sassafras.KeyAccess host -string "host.name"
     ;;
 sawgrassprintutility)
     name="Sawgrass Print Utility"
@@ -11389,8 +11398,13 @@ trex)
 trint)
     name="Trint"
     type="zip"
-    downloadURL="https://desktopapp.trint.com/latest/darwin/x64/Trint.zip"
-    appNewVersion=$(curl -fsL https://desktopapp.trint.com/updates/darwin/x64/RELEASES.json | jq -r .currentRelease)
+    if [[ $(arch) == arm64 ]]; then
+        downloadURL="https://desktopapp.trint.com/latest/darwin/arm64/Trint.zip"
+        appNewVersion=$(getJSONValue "$(curl -fsL https://desktopapp.trint.com/updates/darwin/arm64/RELEASES.json)" "currentRelease" )
+    else
+        downloadURL="https://desktopapp.trint.com/latest/darwin/x64/Trint.zip"
+        appNewVersion=$(getJSONValue "$(curl -fsL https://desktopapp.trint.com/updates/darwin/x64/RELEASES.json)" "currentRelease")
+    fi
     expectedTeamID="4SN3PJXHG2"
     ;;
 tropy)

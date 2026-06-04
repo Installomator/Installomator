@@ -639,6 +639,7 @@ microsoftedgeconsumerstable
 microsoftedgeenterprisestable
 microsoftexcel
 microsoftexcelreset
+microsoftglobalsecureaccessclient
 microsoftlicenseremovaltool
 microsoftlicensereset
 microsoftoffice365
@@ -848,6 +849,7 @@ python
 qgis-pr
 qlab
 r
+radiosilence
 raindropio
 rancherdesktop
 rapidapi
