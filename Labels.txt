@@ -48,6 +48,7 @@ amazoncorretto17jdk
 amazoncorretto21jdk
 amazoncorretto22jdk
 amazoncorretto23jdk
+amazoncorretto25jdk
 amazoncorretto8jdk
 amazonq
 amazonworkspaces
@@ -271,6 +272,7 @@ deskpad
 desktoppr
 detectxswift
 determinate
+devin
 devonthink
 dialog
 dialpad
@@ -598,6 +600,7 @@ lulu
 lunadisplay
 macadminspython
 maccyapp
+mace
 macfuse
 macoslaps
 macpass

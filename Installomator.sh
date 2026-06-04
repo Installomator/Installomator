@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-06-02"
+VERSIONDATE="2026-06-04"
 
 # MARK: Functions
 
@@ -1758,15 +1758,14 @@ adobecreativeclouddesktop)
     else
         downloadURL=$(curl -fs "https://helpx.adobe.com/in/download-install/apps/download-install-apps/creative-cloud-apps/download-creative-cloud-desktop-app-using-direct-links.html" | grep -o 'https.*osx10.*dmg' | head -1 | cut -d '"' -f1)
     fi
-    #appNewVersion=$(curl -fs "https://helpx.adobe.com/creative-cloud/release-note/cc-release-notes.html" | grep "mandatory" | head -1 | grep -o "Version *.* released" | cut -d " " -f2)
     appNewVersion=$(echo $downloadURL | grep -o '[^x]*$' | cut -d '.' -f 1 | sed 's/_/\./g')
+    appCustomVersion() { defaults read "/Library/Application Support/Adobe/Adobe Desktop Common/ADS/Adobe Desktop Service.app/Contents/Info.plist" CFBundleShortVersionString 2>/dev/null }
     targetDir="/Applications/Utilities/Adobe Creative Cloud/ACC/"
     installerTool="Install.app"
     CLIInstaller="Install.app/Contents/MacOS/Install"
     CLIArguments=(--mode=silent)
     expectedTeamID="JQ525L2MZD"
     blockingProcesses=( "Creative Cloud" )
-    Company="Adobe"
     ;;
 adobedigitaleditions)
     name="Adobe Digital Editions"
@@ -2082,6 +2081,18 @@ amazoncorretto23jdk)
     )"
     expectedTeamID="94KV3E626L"
     appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/amazon-corretto-23.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/amazon-corretto-23.jdk/Contents/Info.plist" "CFBundleVersion" ; fi }
+    ;;
+amazoncorretto25jdk)
+    name="Amazon Corretto 25 JDK"
+    type="pkg"
+    packageID="com.amazon.corretto.25"
+    if [[ "$arch" == "arm64" ]]; then
+        downloadURL="https://corretto.aws/downloads/latest/amazon-corretto-25-aarch64-macos-jdk.pkg"
+    else
+        downloadURL="https://corretto.aws/downloads/latest/amazon-corretto-25-x64-macos-jdk.pkg"
+    fi
+    appNewVersion="$(curl -Ls https://raw.githubusercontent.com/corretto/corretto-25/develop/CHANGELOG.md | grep "## Corretto version" | head -n 1 | awk '{ print $NF}')"
+    expectedTeamID="94KV3E626L"
     ;;
 amazoncorretto8jdk)
     name="Amazon Corretto 8 JDK"
@@ -4138,6 +4149,18 @@ determinate)
     downloadURL=$(curl -fsIL https://install.determinate.systems/determinate-pkg/stable/Universal | awk -F' ' '/^location:/ {print $2}')
     appNewVersion=$(echo "$downloadURL" | cut -d/ -f4)
     expectedTeamID="X3JQ4VPJZ6"
+    ;;
+devin|\
+windsurf)
+    name="Devin"
+    type="dmg"
+    if [[ "$(arch)" == "arm64" ]]; then
+        downloadURL="$(curl -fsL "https://docs.devin.ai/desktop/releases" | grep -Eo 'https://[^"\]*-darwin-arm64-[0-9.]+\.dmg' | head -n 1)"
+    else
+        downloadURL="$(curl -fsL "https://docs.devin.ai/desktop/releases" | grep -Eo 'https://[^"\]*-darwin-x64-[0-9.]+\.dmg' | head -n 1)"
+    fi
+    appNewVersion="$(basename "$downloadURL" .dmg | awk -F- '{print $NF}')"
+    expectedTeamID="83Z2LHX6XW"
     ;;
 devonthink)
     name="DEVONthink"
@@ -7233,6 +7256,13 @@ maccyapp)
     downloadURL="$(downloadURLFromGit p0deje Maccy)"
     appNewVersion="$(versionFromGit p0deje Maccy)"
     expectedTeamID="MN3X4648SC"
+    ;;
+mace)
+    name="MACE"
+    type="dmg"
+    downloadURL=$(downloadURLFromGit "MACE-App" "MACE")
+    appNewVersion=$(versionFromGit "MACE-App" "MACE")
+    expectedTeamID="7U624389H9"
     ;;
 macfuse)
     name="FUSE for macOS"
@@ -12001,17 +12031,6 @@ whiterabbit)
 	appNewVersion="$(curl -fs https://delivery.kadomaru.app/white-rabbit/appcast.xml | xpath 'string(//item[1]/sparkle:shortVersionString')"
 	expectedTeamID="TRLMQKJQ97"
 	;;
-windsurf)
-    name="Windsurf"
-    type="zip"
-    myARCH="$(/usr/bin/arch)"
-    if [ "$myARCH" != "arm64" ]; then
-        myARCH=x64
-    fi
-    downloadURL="$( curl -s https://windsurf.com/editor/releases | tr '"\' "\n" | grep -m1 "darwin-$myARCH" )"
-    appNewVersion="$( echo "$downloadURL" | awk -F '-' '{ print $NF }' | cut -d '.' -f 1-3 )"
-    expectedTeamID="83Z2LHX6XW"
-    ;;
 wireshark)
     name="Wireshark"
     type="dmg"
