@@ -1,7 +1,7 @@
 topazvideo|\
 topazvideoai)
     name="Topaz Video AI"
-    type="pkg"
+    type="dmg"
     downloadURL="https://topazlabs.com/d/tvai/latest/mac/full"
     archiveName=$(curl -fsIL $downloadURL | grep -i ^location | awk -F "/" '{print $NF}' | tr -d '\r\n')
     appNewVersion=$(grep -oi "[0-9].*[0-9]" <<< $archiveName)
