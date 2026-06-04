@@ -1,6 +1,5 @@
 redshift)
     name="redshift"
-    appName="Maxon Redshift Installer.app"
     blockingProcesses=( "Cinema 4D" )
     type="dmg"
     expectedTeamID="4ZY22YGXQG"
@@ -9,6 +8,5 @@ redshift)
     appCustomVersion() {/usr/bin/defaults read "/Applications/Maxon Redshift 2026/uninstall.app/Contents/Info.plist" CFBundleVersion }
     installerTool="Maxon Redshift Installer.app"
     CLIInstaller="Maxon Redshift Installer.app/Contents/MacOS/installbuilder.sh"
-    # Customize --enable-components for other DCC integrations (Maya, Vectorworks, ZBrush)
     CLIArguments=( --mode unattended --enable-components Cinema4DGroup,PluginC4D2023,PluginC4D2024,PluginC4D2025,PluginC4D2026 )
     ;;
