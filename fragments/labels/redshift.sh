@@ -1,6 +1,5 @@
 redshift)
     name="redshift"
-    appName="Maxon Redshift Installer.app"
     blockingProcesses=( "Cinema 4D" )
     type="dmg"
     expectedTeamID="4ZY22YGXQG"
