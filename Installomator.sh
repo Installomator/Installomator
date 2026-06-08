@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-06-04"
+VERSIONDATE="2026-06-08"
 
 # MARK: Functions
 
@@ -5054,6 +5054,16 @@ firecutforpremierepro)
     expectedTeamID="7ASRSVAEMS"
     blockingProcesses=( "Adobe Premiere Pro 2024" "Adobe Premiere Pro 2025" "Adobe Premiere Pro 2026" "Adobe Premiere Pro 2027" )
     ;;
+firefox)
+    name="Firefox"
+    type="dmg"
+    downloadURL="https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US"
+    firefoxVersions=$(curl -fs "https://product-details.mozilla.org/1.0/firefox_versions.json")
+    appNewVersion=$(getJSONValue "$firefoxVersions" "LATEST_FIREFOX_VERSION")
+    expectedTeamID="43AQ936H96"
+    blockingProcesses=( firefox )
+    printlog "WARNING for ERROR: Label firefox and firefox_intl should not be used. Instead use firefoxpkg and firefoxpkg_intl as per recommendations from Firefox. It's not fully certain that the app actually gets updated here. firefoxpkg and firefoxpkg_intl will have built in updates and make sure the client is updated in the future." REQ
+    ;;
 firefox_da)
     name="Firefox"
     type="dmg"
@@ -5085,16 +5095,6 @@ firefox_intl)
         printlog "Download not found for '$userLanguage', using default ('en-US')."
         downloadURL="https://download.mozilla.org/?product=firefox-latest-ssl&os=osx"
     fi
-    firefoxVersions=$(curl -fs "https://product-details.mozilla.org/1.0/firefox_versions.json")
-    appNewVersion=$(getJSONValue "$firefoxVersions" "LATEST_FIREFOX_VERSION")
-    expectedTeamID="43AQ936H96"
-    blockingProcesses=( firefox )
-    printlog "WARNING for ERROR: Label firefox and firefox_intl should not be used. Instead use firefoxpkg and firefoxpkg_intl as per recommendations from Firefox. It's not fully certain that the app actually gets updated here. firefoxpkg and firefoxpkg_intl will have built in updates and make sure the client is updated in the future." REQ
-    ;;
-firefox)
-    name="Firefox"
-    type="dmg"
-    downloadURL="https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US"
     firefoxVersions=$(curl -fs "https://product-details.mozilla.org/1.0/firefox_versions.json")
     appNewVersion=$(getJSONValue "$firefoxVersions" "LATEST_FIREFOX_VERSION")
     expectedTeamID="43AQ936H96"
@@ -5145,6 +5145,15 @@ firefoxesrpkgintl)
     appNewVersion=${appNewVersion:0:-3}
     expectedTeamID="43AQ936H96"
     ;;
+firefoxpkg)
+    name="Firefox"
+    type="pkg"
+    downloadURL="https://download.mozilla.org/?product=firefox-pkg-latest-ssl&os=osx&lang=en-US"
+    firefoxVersions=$(curl -fs "https://product-details.mozilla.org/1.0/firefox_versions.json")
+    appNewVersion=$(getJSONValue "$firefoxVersions" "LATEST_FIREFOX_VERSION")
+    expectedTeamID="43AQ936H96"
+    blockingProcesses=( firefox )
+    ;;
 firefoxpkg_intl)
     # This label will try to figure out the selected language of the user,
     # and install corrosponding version of Firefox ESR
@@ -5168,15 +5177,6 @@ firefoxpkg_intl)
         printlog "Download not found for that language. Using en-US" WARN
         downloadURL="https://download.mozilla.org/?product=firefox-pkg-latest-ssl&os=osx&lang=en-US"
     fi
-    firefoxVersions=$(curl -fs "https://product-details.mozilla.org/1.0/firefox_versions.json")
-    appNewVersion=$(getJSONValue "$firefoxVersions" "LATEST_FIREFOX_VERSION")
-    expectedTeamID="43AQ936H96"
-    blockingProcesses=( firefox )
-    ;;
-firefoxpkg)
-    name="Firefox"
-    type="pkg"
-    downloadURL="https://download.mozilla.org/?product=firefox-pkg-latest-ssl&os=osx&lang=en-US"
     firefoxVersions=$(curl -fs "https://product-details.mozilla.org/1.0/firefox_versions.json")
     appNewVersion=$(getJSONValue "$firefoxVersions" "LATEST_FIREFOX_VERSION")
     expectedTeamID="43AQ936H96"
@@ -5495,6 +5495,14 @@ gns3)
     downloadURL="$(downloadURLFromGit GNS3 gns3-gui)"
     appNewVersion="$(versionFromGit GNS3 gns3-gui)"
     expectedTeamID="5C3VHX9RG5"
+    ;;
+godot)
+    name="Godot"
+    type="zip"
+    appNewVersion=$(curl -fsSL https://godotengine.org/download/archive/ | tr '\302\240' ' ' | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?-stable' | head -n1 | sed 's/-stable$//')
+    downloadURL="https://downloads.godotengine.org/?version=$appNewVersion&flavor=stable&slug=macos.universal.zip&platform=macos.universal"
+    expectedTeamID="6K46PWY5DM"
+    versionKey="CFBundleVersion"
     ;;
 goland)
     name="GoLand"
@@ -7334,13 +7342,13 @@ macports)
     updateToolArguments="selfupdate"
     expectedTeamID="QTA3A3B7F3"
     ;;
-mactex)
-    # Big LaTeX distribution. Small alternative is basictex
-    # Includes these apps (maybe in older version): texshop (texshop-alternative), texliveutility, latexit, bibdesk
-    # You might want to run those labels after this one to update apps fully
-    name="MacTeX"
+mactexfull)
+    name="MacTeX Full"
+    appName="TeX Live Utility.app"
     type="pkg"
     downloadURL="https://mirror.ctan.org/systems/mac/mactex/MacTeX.pkg"
+    appNewVersion=$(curl -sf "https://www.tug.org/mactex/downloading.html" | grep -o 'MacTeX-[0-9]\{4\}' | head -1 | grep -o '[0-9]\{4\}')
+    appCustomVersion(){ find /usr/local/texlive -maxdepth 1 -type d -name '20[0-9][0-9]' 2>/dev/null | sed 's#.*/##' | sort -nr | head -n 1; }
     expectedTeamID="RBGCY5RJWM"
     ;;
 mactracker)
@@ -8991,9 +8999,8 @@ packages)
     name="Packages"
     type="pkgInDmg"
     pkgName="Install Packages.pkg"
-    pkgsDetails="$(curl -fs "http://s.sudre.free.fr/Software/documentation/RemoteVersion.plist")"
-    appNewVersion=$(echo "${pkgsDetails}"| xpath 'string(//dict/string[1])' 2>/dev/null)
-    downloadURL=$(echo "${pkgsDetails}"| xpath 'string(//dict/string[2])' 2>/dev/null)
+    appNewVersion=$(curl -fsL http://s.sudre.free.fr/Software/Packages/release_notes.html | grep "<b>Version</b>" | grep -oE "[0-9].*[0-9]")
+    downloadURL="http://s.sudre.free.fr/Software/files/Packages.dmg"
     expectedTeamID="NL5M9E394P"
    ;;
 pandoc)
@@ -9612,26 +9619,27 @@ redgiant)
     ;;
 redshift)
     name="redshift"
-    appName="Maxon Redshift Installer.app"
     blockingProcesses=( "Cinema 4D" )
     type="dmg"
-    packageID="com.redshift3d.redshift"
     expectedTeamID="4ZY22YGXQG"
     downloadURL=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*redshift[^"]*macos\.dmg' | head -1)
     appNewVersion=$(sed -n 's/.*redshift_\([^_]*\).*/\1/p' <<< "${downloadURL}")
+    appCustomVersion() {/usr/bin/defaults read "/Applications/Maxon Redshift 2026/uninstall.app/Contents/Info.plist" CFBundleVersion }
     installerTool="Maxon Redshift Installer.app"
     CLIInstaller="Maxon Redshift Installer.app/Contents/MacOS/installbuilder.sh"
-    # Customize --enable-components for other DCC integrations (Maya, Vectorworks, ZBrush)
     CLIArguments=( --mode unattended --enable-components Cinema4DGroup,PluginC4D2023,PluginC4D2024,PluginC4D2025,PluginC4D2026 )
     ;;
 redshiftlite)
     name="redshift"
     blockingProcesses=( "Cinema 4D" )
-    type="pkg"
-    packageID="com.redshift3d.redshift"
+    type="dmg"
     expectedTeamID="4ZY22YGXQG"
-    downloadURL=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*redshift[^"]*min\.pkg' | head -1)
+    downloadURL=$(curl -fsL https://www.maxon.net/en/downloads | grep -oE '[^"]*redshift[^"]*min\.dmg' | head -1)
     appNewVersion=$(sed -n 's/.*redshift_\([^_]*\).*/\1/p' <<< "${downloadURL}")
+    appCustomVersion() {/usr/bin/defaults read "/Applications/Maxon Redshift 2026/uninstall.app/Contents/Info.plist" CFBundleVersion }
+    installerTool="Maxon Redshift Installer.app"
+    CLIInstaller="Maxon Redshift Installer.app/Contents/MacOS/installbuilder.sh"
+    CLIArguments=( --mode unattended --enable-components Cinema4DGroup,PluginC4D2023,PluginC4D2024,PluginC4D2025,PluginC4D2026 )
     ;;
 reflector4)
     name="Reflector 4"
@@ -11156,6 +11164,14 @@ thoriumreader)
     appNewVersion=$(versionFromGit edrlab thorium-reader)
     expectedTeamID="327YA3JNGT"
     ;;
+thunderbird)
+    name="Thunderbird"
+    type="dmg"
+    versionKey="CFBundleShortVersionString"
+    appNewVersion=$(curl -s "https://www.thunderbird.net/en-US/thunderbird/releases/atom.xml" | xmllint --xpath "//*[local-name()='entry']/*[local-name()='title'][not(contains(text(), 'esr'))]/text()" - | head -1 | awk '{ print $2 }')
+    downloadURL="https://download.mozilla.org/?product=thunderbird-${appNewVersion}-SSL&os=osx&lang=en-US"
+    expectedTeamID="43AQ936H96"
+    ;;
 thunderbird_intl)
     # This label will try to figure out the selected language of the user,
     # and install corrosponding version of Thunderbird
@@ -11180,14 +11196,6 @@ thunderbird_intl)
     appNewVersion=$(curl -fsIL $downloadURL | awk -F releases/ '/Location:/ {split($2,a,"/"); print a[1]}')
     expectedTeamID="43AQ936H96"
     blockingProcesses=( thunderbird )
-    ;;
-thunderbird)
-    name="Thunderbird"
-    type="dmg"
-    versionKey="CFBundleShortVersionString"
-    appNewVersion=$(curl -s "https://www.thunderbird.net/en-US/thunderbird/releases/atom.xml" | xmllint --xpath "//*[local-name()='entry']/*[local-name()='title'][not(contains(text(), 'esr'))]/text()" - | head -1 | awk '{ print $2 }')
-    downloadURL="https://download.mozilla.org/?product=thunderbird-${appNewVersion}-SSL&os=osx&lang=en-US"
-    expectedTeamID="43AQ936H96"
     ;;
 thunderbirdesr)
     name="Thunderbird"
@@ -11311,18 +11319,18 @@ topazphoto|\
 topazphotoai)
     name="Topaz Photo AI"
     type="pkg"
-    appNewVersion=$(curl -fs https://www.topazlabs.com/downloads | grep  -o 'photoVersion = "v.*"' | grep -o ' "v.*"' | sed -E 's/[v|"| ]//g')
     downloadURL="https://topazlabs.com/d/photo/latest/mac/full"
-    archiveName="TopazPhotoAI-${appNewVersion}.pkg"
+    archiveName=$(curl -fsIL $downloadURL | grep -i ^location | awk -F "/" '{print $NF}' | tr -d '\r\n')
+    appNewVersion=$(grep -oi "[0-9].*[0-9]" <<< $archiveName)
     expectedTeamID="3G3JE37ZHF"
     ;;
 topazvideo|\
 topazvideoai)
     name="Topaz Video AI"
-    type="pkg"
-    appNewVersion=$(curl -fs https://www.topazlabs.com/downloads | grep  -o 'videoVersion = "v.*"' | grep -o ' "v.*"' | sed -E 's/[v|"| ]//g')
+    type="dmg"
     downloadURL="https://topazlabs.com/d/tvai/latest/mac/full"
-    archiveName="TopazVideoAI-${appNewVersion}.pkg"
+    archiveName=$(curl -fsIL $downloadURL | grep -i ^location | awk -F "/" '{print $NF}' | tr -d '\r\n')
+    appNewVersion=$(grep -oi "[0-9].*[0-9]" <<< $archiveName)
     expectedTeamID="3G3JE37ZHF"
     ;;
 tophat)

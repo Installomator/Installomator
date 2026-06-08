@@ -410,6 +410,7 @@ globusconnectpersonal
 glpiagent
 glyphs3
 gns3
+godot
 goland
 golang
 googleadseditor
@@ -605,7 +606,7 @@ macfuse
 macoslaps
 macpass
 macports
-mactex
+mactexfull
 mactracker
 macvector
 magicbullet
