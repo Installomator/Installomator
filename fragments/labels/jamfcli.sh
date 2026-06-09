@@ -1,3 +1,4 @@
+jamfcli|\
 jamf-cli)
     name="jamf-cli"
     type="pkg"
