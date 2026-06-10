@@ -1,5 +1,5 @@
 camtasia2024)
-    name="Camtasia"
+    name="Camtasia 2024"
     type="dmg"
     sparkleData=$(curl -fsL -H 'User-Agent: Camtasia/2024.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=camtasiamac&ver=2024.0.0&lang=enu&os=mac')
     appNewVersion=$(
