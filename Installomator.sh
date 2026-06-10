@@ -348,8 +348,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.9.23"
-VERSIONDATE="2026-06-08"
+VERSION="10.9.24"
+VERSIONDATE="2026-06-10"
 
 # MARK: Functions
 
@@ -9986,6 +9986,14 @@ sqlprostudio)
     type="zip"
     downloadURL="https://www.sqlprostudio.com/download.php"
     expectedTeamID="LKJB72232C"
+    ;;
+starface10x)
+    name="STARFACE"
+    # Downloads the latest 10.0.x version of the STARFACE Client. The client depends on the version of the PBX, so the correct version should be selected for installation
+    type="dmg"
+    downloadURL=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure ' | grep -i 'url=' | grep -m 1 "10.0" | cut -d '"' -f 10)
+    appNewVersion=$(curl -fs "https://www.starface-cdn.de/starface/clients/mac/appcast.xml" | grep -i 'enclosure ' | grep -i 'url=' | grep -m 1 "10.0" | cut -d '"' -f 4)
+    expectedTeamID="Q965D3UXEW"
     ;;
 starface72x)
     name="STARFACE"

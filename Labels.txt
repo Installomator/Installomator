@@ -918,6 +918,7 @@ sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
+starface10x
 starface72x
 starface73x
 starface81x
