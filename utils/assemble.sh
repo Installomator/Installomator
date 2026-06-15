@@ -120,6 +120,7 @@ chmod +x $destination_file
 # If Install Installomator zip scripts exist, then create that installer script
 if [[ -f "$fragments_dir/install Installomator zip 1.sh" && -f "$fragments_dir/install Installomator zip 2.sh" ]]; then
     destination_installer_file="$build_dir/Install Installomator ${version} ${versiondate}.sh"
+    echo "# creating install Installomator script: $destination_installer_file"
 
     # add the install Installomator zip 1.sh
     cat "$fragments_dir/install Installomator zip 1.sh" | sed -e 's/^# Installomator version$/# Installomator version '"${version} ${versiondate}"'/' > $destination_installer_file

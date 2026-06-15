@@ -1,8 +1,4 @@
-#!/bin/zsh --no-rcs
-# shellcheck shell=bash # zsh differences disabled
-# shellcheck disable=SC2086,SC2001,SC1111,SC1112 #,SC2143,SC2145,SC2089,SC2090
-# shellcheck disable=SC2206,SC2296,SC1058,SC1063,SC1072,SC1073,SC2068
-
+#!/bin/sh
 
 #########################################################################################
 # install Installomator zip direct
