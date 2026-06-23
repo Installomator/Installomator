@@ -276,6 +276,15 @@ NOTIFY_DIALOG=0
 #   When a workflow has no blocking processes, use
 #     blockingProcesses=( NONE )
 #
+# - forcefulQuit: (optional)
+#   Set to "YES" for apps that ignore a normal quit and keep running —
+#   typically menu-bar-resident Electron apps (e.g. 1Password 8) that
+#   trap both the AppleScript `quit` event and the SIGTERM that `pkill`
+#   sends, so the regular BLOCKING_PROCESS_ACTION handling can never
+#   clear them and Installomator aborts with exit 11. When set, each
+#   blocking process is told to quit, given a short grace period, then
+#   sent an uncatchable SIGKILL. Default is unset (normal behavior).
+#
 # - pkgName: (optional, only used for pkgInDmg, dmgInZip, and appInDmgInZip)
 #   File name or path to the pkg/dmg file _inside_ the dmg or zip.
 #   When not given the pkgName is derived from the $name

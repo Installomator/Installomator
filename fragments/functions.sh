@@ -324,6 +324,31 @@ checkRunningProcesses() {
                 printlog "found blocking process $x"
                 appClosed=1
 
+                # forcefulQuit (label opt-in): some apps — notably
+                # menu-bar-resident Electron apps like 1Password 8 — trap
+                # both the AppleScript `quit` event and the SIGTERM that
+                # `pkill` sends, and keep running. A normal quit only
+                # closes their window; the background process survives, so
+                # the actions below can never clear it and we abort with
+                # exit 11. When the label sets forcefulQuit=YES, try a
+                # polite quit once, give it a short grace period, then
+                # escalate to an uncatchable SIGKILL. Only counts as still
+                # blocking if it survives even that.
+                if [[ "$forcefulQuit" == "YES" ]]; then
+                    printlog "forcefulQuit=YES: telling $x to quit, then SIGKILL if it survives"
+                    runAsUser osascript -e "tell app \"$x\" to quit"
+                    sleep 5
+                    if pgrep -xq "$x"; then
+                        printlog "$x still running after quit; sending SIGKILL"
+                        pkill -9 "$x"
+                        sleep 2
+                    fi
+                    if pgrep -xq "$x"; then
+                        countedProcesses=$((countedProcesses + 1))
+                    fi
+                    continue
+                fi
+
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
                         printlog "telling app $x to quit"
