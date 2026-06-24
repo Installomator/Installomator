@@ -1,4 +1,4 @@
-mactexfull)
+mactexfull|mactex)
     name="MacTeX Full"
     appName="TeX Live Utility.app"
     type="pkg"
