@@ -10,4 +10,5 @@ vfx)
     CLIInstaller="VFX Suite Installer.app/Contents/Scripts/install.sh"
     CLIArguments=()
     expectedTeamID="4ZY22YGXQG"
+    ignoreInstallScriptExitCode=1
     ;;
