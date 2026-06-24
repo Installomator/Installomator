@@ -509,6 +509,11 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         printlog "Downloaded version of $name is $appNewVersion on versionKey $versionKey (replacing version $appversion)."
     fi
 
+  #The above notification is all we care about skipping for if $NOTIFY==all_if_available. Switching notify to "all" now so all logic doesn't need to be updated
+  if [[ $NOTIFY == "all_if_available" ]]; then
+    NOTIFY="all"
+  fi
+
     # macOS versioncheck
     minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion 2>/dev/null )
     if [[ -n $minimumOSversion && $minimumOSversion =~ '[0-9.]*' ]]; then
@@ -679,6 +684,11 @@ installFromPKG() {
             fi
         fi
     fi
+
+      #The above notification is all we care about skipping for if $NOTIFY==all_if_available. Switching notify to "all" now so all logic doesn't need to be updated
+      if [[ $NOTIFY == "all_if_available" ]]; then
+        NOTIFY="all"
+      fi
 
     # skip install for DEBUG 1
     if [ "$DEBUG" -eq 1 ]; then
