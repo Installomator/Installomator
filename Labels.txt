@@ -239,6 +239,7 @@ conductor
 connectfonts
 container
 cormorant
+coteditor
 craftmanagerforsketch
 crashplan
 crashplansmb
@@ -403,6 +404,7 @@ gfxcardstatus
 ghostty
 gimp
 gimpdev
+gitcredentialmanager
 githubcopilotforxcode
 githubdesktop
 gitkraken
@@ -410,6 +412,7 @@ globusconnectpersonal
 glpiagent
 glyphs3
 gns3
+godot
 goland
 golang
 googleadseditor
@@ -495,7 +498,9 @@ iterm2
 itsycal
 izotopeproductportal
 jabradirect
+jamf-cli
 jamfcheck
+jamfcli
 jamfconnect
 jamfconnectconfiguration
 jamfconnectlaunchagent
@@ -565,6 +570,7 @@ latexit
 launchbar
 launchcontrol
 lcadvancedvpnclient
+ledgerwallet
 lens
 lexarrecoverytool
 lgcalibrationstudio
@@ -735,6 +741,7 @@ nomadlogin
 nordlayer
 nordvpn
 notion
+notioncalendar
 nova
 nps-santa
 npssantafull
@@ -850,6 +857,7 @@ pycharmce
 pymol
 python
 qgis-pr
+qgisltr
 qlab
 r
 radiosilence
@@ -908,6 +916,7 @@ scaleft
 scapple
 scenebuilder
 scmenu
+scratch
 screamingfrogseospider
 screencloudplayer
 screenflick
@@ -981,6 +990,7 @@ sqlitebrowser
 sqlpropostgres
 sqlprostudio
 sshfs
+starface10x
 starface90x
 starface91x
 stats
@@ -1028,6 +1038,7 @@ teamviewerhostcustom
 teamviewerqs
 teamviewerqscustom
 teamwire
+techsmithaudiate
 techsmithcapture
 teladocproviderinstaller
 telegram
