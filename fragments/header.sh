@@ -348,3 +348,9 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
+
+# Optional GitHub API token
+GITHUB_API_TOKEN="${GITHUB_API_TOKEN:-}"
+
+# Enable GitHub debug logging (set to 1 to enable)
+GITHUB_API_DEBUG="${GITHUB_API_DEBUG:-0}"
