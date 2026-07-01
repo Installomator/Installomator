@@ -5,4 +5,3 @@ garminaviationdatabasemanager)
     appNewVersion="$(echo "${downloadURL}" | sed -E 's/.*garminAvnDbManagerSetup_([0-9]+(\.[0-9]+)*)\.pkg/\1/')"
     expectedTeamID="72ES32VZUA"
     ;;
-    
