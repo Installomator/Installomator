@@ -330,6 +330,7 @@ fastscripts
 favro
 fellow
 fierycommandworkstation
+fierysoftwaremanager
 figma
 filemakerpro
 filmlab
