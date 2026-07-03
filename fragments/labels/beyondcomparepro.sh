@@ -1,7 +1,9 @@
 beyondcomparepro)
     name="Beyond Compare"
     type="zip"
-    downloadURL="https://www.scootersoftware.com"$(curl -fsL 'https://www.scootersoftware.com/download' | sed -nE 's/.*"(.*OSX-[^"]*)".*/\1/p')
-    appNewVersion=$( grep -oE '(\d+\.){2}(\d+)' <<< $downloadURL )
+    updateFeed=$(curl -fsL "https://www.scootersoftware.com/checkupdates.php?product=bc5&minor=0&edition=pro&platform=osx&lang=silent")
+    rawVersion=$(echo "${updateFeed}" | xpath 'string(/Update/@latestversion)' 2>/dev/null)
+    appNewVersion=${rawVersion// build /.}
+    downloadURL=$(echo "${updateFeed}" | xpath 'string(/Update/@download)' 2>/dev/null)
     expectedTeamID="BS29TEJF86"
     ;;

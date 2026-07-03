@@ -2,6 +2,6 @@ anydesk)
     name="AnyDesk"
     type="dmg"
     downloadURL="https://download.anydesk.com/anydesk.dmg"
-    appNewVersion="$(curl -fs https://anydesk.com/en/downloads/mac-os | grep -i "d-block" | grep -E -o ">v[0-9.]* .*MB" | sed -E 's/.*v([0-9.]*) .*/\1/g')"
+    appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://download.anydesk.com/changelog.txt" | grep -m1 "(macOS)" | sed -E 's/.*- ([0-9.]+) \(macOS\).*/\1/')
     expectedTeamID="KHRWM533LU"
     ;;
