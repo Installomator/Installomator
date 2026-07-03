@@ -318,6 +318,8 @@ eclipsetemurin25
 eclipsetemurin8
 ecosiabrowser
 editshare-connect
+editshare-flowstory
+egnyte
 egnytecore
 egnytewebedit
 elan
@@ -1009,6 +1011,7 @@ suitestudio
 supercollider
 superhuman
 superwhisper
+supportapp
 surfdrive
 suspiciouspackage
 swiftdialog
