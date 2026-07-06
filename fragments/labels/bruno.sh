@@ -9,5 +9,5 @@ bruno)
     fi
     downloadURL="$(downloadURLFromGit usebruno bruno)"
     appNewVersion="$(versionFromGit usebruno bruno)"
-    expectedTeamID="W7LPPWA48L"
+    expectedTeamID="P3WTZH48ZB"
     ;;
