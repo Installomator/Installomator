@@ -12,4 +12,3 @@ snagit2025)
     )
     expectedTeamID="7TQL462TU8"
     ;;
-    
