@@ -819,7 +819,7 @@ snagit2021
 snagit2022
 snagit2023
 snagit2024
-snapgene
+snagit2025
 snapgeneviewer
 soapuiopensource
 sococo
