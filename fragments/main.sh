@@ -4,6 +4,7 @@
     cleanupAndExit 1 "unknown label $label" ERROR
     ;;
 esac
+yelp "Entering main.sh content, after label $label processed"
 
 # MARK: reading arguments again
 printlog "Reading arguments again: ${argumentsArray[*]}" INFO
@@ -166,6 +167,7 @@ if [ -z "$appName" ]; then
     # when not given derive from name
     appName="$name.app"
 fi
+printlog "appName: $appName" INFO
 
 if [ -z "$targetDir" ]; then
     case $type in
@@ -182,11 +184,13 @@ if [ -z "$targetDir" ]; then
             ;;
     esac
 fi
+printlog "targetDir: $targetDir" INFO
 
 if [[ -z $blockingProcesses ]]; then
     printlog "no blocking processes defined, using $name as default" INFO
     blockingProcesses=( $name )
 fi
+printlog "blockingProcesses: $blockingProcesses[*]" INFO
 
 # MARK: determine tmp dir
 if [ "$DEBUG" -eq 1 ]; then
@@ -204,6 +208,7 @@ if ! cd "$tmpDir"; then
 fi
 
 # MARK: get installed version
+yelp "Getting installed version of app, if any"
 getAppVersion
 printlog "appversion: $appversion"
 
@@ -351,6 +356,7 @@ if [ -n "$installerTool" ]; then
     appName="$installerTool"
 fi
 
+yelp "Installation type: $type"
 case $type in
     dmg)
         installFromDMG
@@ -378,6 +384,7 @@ case $type in
         ;;
 esac
 
+yelp "Installation of $name should be done, now finishing up."
 updateDialog "wait" "Finishing..."
 
 # MARK: Finishing — print installed application location and version
