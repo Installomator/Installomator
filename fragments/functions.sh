@@ -27,7 +27,7 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
 
     # if label is wrong and we wanted name of the label, then return ##################
     if [[ $RETURN_LABEL_NAME -eq 1 ]]; then
-        1=0 # If only label name should be returned we exit without any errors
+        # If only label name should be returned we exit without any errors
         echo "#"
     fi
     exit "$1"
@@ -36,7 +36,7 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
 runAsUser() {
     if [[ $currentUser != "loginwindow" ]]; then
         uid=$(id -u "$currentUser")
-        launchctl asuser $uid sudo -u $currentUser "$@"
+        launchctl asuser "$uid" sudo -u "$currentUser" "$@"
     fi
 }
 
@@ -85,7 +85,7 @@ printlog(){
 
     # Check to make sure that the log isn't the same as the last, if it is then don't log and increment a timer.
     if [[ ${log_message} == ${previous_log_message} ]]; then
-        let logrepeat=$logrepeat+1
+        ((logrepeat++))
         return
     fi
     previous_log_message=$log_message
@@ -137,7 +137,7 @@ deduplicatelogs() {
     # If it matches increment logrepeate then skip to the next line.
     while read log; do
         if [[ $log == $previous_log ]];then
-            let logrepeat=$logrepeat+1
+            ((logrepeat++))
             continue
         fi
 
@@ -730,7 +730,7 @@ installFromPKG() {
         installFromPKG
     fi
 
-    if [[ $pkginstallstatus -ne 0 ]] ; then
+    if [[ $pkgInstallStatus -ne 0 ]] ; then
     #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
         cleanupAndExit 9 "Error installing $archiveName error:\n$logoutput" ERROR
     fi
