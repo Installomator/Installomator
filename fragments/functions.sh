@@ -78,9 +78,9 @@ displaynotification() { # $1: message $2: title
 }
 
 printlog(){
-    [ -z "$2" ] && 2=INFO
+    log_priority=${2:-INFO}
     log_message=$1
-    log_priority=$2
+    # log_priority already set above with default
     timestamp=$(date +%F\ %T)
 
     # Check to make sure that the log isn't the same as the last, if it is then don't log and increment a timer.
@@ -470,7 +470,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
     updateDialog "wait" "Verifying..."
     printlog "App size: $(du -sh "$appPath")" DEBUG
     appVerify=$(spctl -a -vv "$appPath" 2>&1 )
-    appVerifyStatus=$(echo $?)
+    appVerifyStatus=$?
     teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
     deduplicatelogs "$appVerify"
 
@@ -557,7 +557,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         else
             copyAppOut=$(ditto -v "$appPath" "$targetDir/$appName" 2>&1)
         fi
-        copyAppStatus=$(echo $?)
+        copyAppStatus=$?
         deduplicatelogs "$copyAppOut"
         printlog "Debugging enabled, App copy output was:\n$logoutput" DEBUG
         if [[ $copyAppStatus -ne 0 ]] ; then
@@ -579,7 +579,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" INFO
 
         CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
-        CLIstatus=$(echo $?)
+        CLIstatus=$?
         deduplicatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
@@ -597,7 +597,7 @@ mountDMG() {
     printlog "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
     dmgmountOut=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly )
-    dmgmountStatus=$(echo $?)
+    dmgmountStatus=$?
     dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
     deduplicatelogs "$dmgmountOut"
 
@@ -625,7 +625,7 @@ installFromPKG() {
     printlog "File list: $(ls -lh "$archiveName")" DEBUG
     printlog "File type: $(file "$archiveName")" DEBUG
     spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 )
-    spctlStatus=$(echo $?)
+    spctlStatus=$?
     printlog "spctlOut is $spctlOut" DEBUG
 
     teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
@@ -637,13 +637,13 @@ installFromPKG() {
     deduplicatelogs "$spctlOut"
 
     if [[ $spctlStatus -ne 0 ]] ; then
-    #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
+    #if ! spctlOut=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
         cleanupAndExit 4 "Error verifying $archiveName error:\n$logoutput" ERROR
     fi
 
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
-        teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
+        teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
     fi
 
     printlog "Team ID: $teamID (expected: $expectedTeamID )"
@@ -711,7 +711,7 @@ installFromPKG() {
 
     else
         pkgInstall=$(installer -verbose -dumplog -pkg "$archiveName" -tgt "$targetDir" 2>&1)
-        pkgInstallStatus=$(echo $?)
+        pkgInstallStatus=$?
     fi
 
 
@@ -863,10 +863,10 @@ runUpdateTool() {
         printlog "running $updateTool $updateToolArguments"
         if [[ -n $updateToolRunAsCurrentUser ]]; then
             updateOutput=$(runAsUser $updateTool ${updateToolArguments} 2>&1)
-            updateStatus=$(echo $?)
+            updateStatus=$?
         else
             updateOutput=$($updateTool ${updateToolArguments} 2>&1)
-            updateStatus=$(echo $?)
+            updateStatus=$?
         fi
         sleep 1
         updateEndTime=$(date "+$updateToolLogDateFormat")
