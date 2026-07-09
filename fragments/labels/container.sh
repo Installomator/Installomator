@@ -1,7 +1,7 @@
 container)
     name="container"
     type="pkg"
-    archiveName="container-[0-9.]*-installer-signed"
+    archiveName="container-[0-9.]*-installer-signed.pkg"
     downloadURL="$(downloadURLFromGit apple container)"
     appNewVersion="$(versionFromGit apple container)"
     appCustomVersion(){
