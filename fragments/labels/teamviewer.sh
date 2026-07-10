@@ -1,7 +1,6 @@
 teamviewer)
     name="TeamViewer"
     type="pkgInDmg"
-    # packageID="com.teamviewer.teamviewer"
     versionKey="CFBundleShortVersionString"
     pkgName="Install TeamViewer.app/Contents/Resources/Install TeamViewer.pkg"
     downloadURL="https://download.teamviewer.com/download/TeamViewer.dmg"
