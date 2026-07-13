@@ -13,10 +13,10 @@ dev_keychain_label="notary-scriptingosx"
 
 # parse arguments
 
-zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -labels+:=label_args l+:=label_args
+zparseopts -D -E -a opts r -run s -script p -pkg n -notarize h -help -subset:=subset_arg -labels+:=label_args l+:=label_args
 
 if (( ${opts[(I)(-h|--help)]} )); then
-  echo "usage: assemble.sh [--script|--pkg|--notarize] [-labels path/to/labels ...] [arguments...]"
+  echo "usage: assemble.sh [--script|--pkg|--notarize] [--subset path/to/subsetList] [--labels path/to/labels ...] [arguments...]"
   echo
   echo "builds and runs the installomator script from the fragements."
   echo "additional arguments are passed into the Installomator script for testing."
@@ -49,6 +49,12 @@ if (( ${opts[(I)(-r|--run)]} )); then
     runScript=1
 fi
 
+# --subset option generates the script with a specified list 
+# of labels instead of all labels in the labels directory. 
+# The path to the list is passed as an argument to the option.
+if (( ${#subset_arg} )); then
+  subset_path=${subset_arg[-1]}
+fi
 
 
 label_flags=( -l --labels )
@@ -105,7 +111,18 @@ cat "$fragments_dir/arguments.sh" >> $destination_file
 # all the labels
 for lpath in $label_paths; do
     if [[ -d $lpath ]]; then
-        cat "$lpath"/*.sh >> $destination_file
+        if [[ -n $subset_path ]]; then
+            # read the subset list and filter the labels
+            while IFS= read -r label; do
+                label_file="$lpath/$label.sh"
+                if [[ -e $label_file ]]; then
+                    cat "$label_file" >> $destination_file
+                fi
+            done < "$subset_path"
+        else
+            # add all labels in the directory
+            cat "$lpath"/*.sh >> $destination_file
+        fi
     else
         echo "# $lpath not a directory, skipping..."
     fi
