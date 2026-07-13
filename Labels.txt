@@ -886,7 +886,6 @@ smartgit
 smartsheet
 smartsvn
 snagit
-snagit
 snagit2019
 snagit2020
 snagit2021
@@ -894,6 +893,7 @@ snagit2022
 snagit2023
 snagit2024
 snagit2025
+snagit2026
 snapgene
 snapgeneviewer
 soapuiopensource

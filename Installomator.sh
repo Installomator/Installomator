@@ -348,8 +348,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.9.28"
-VERSIONDATE="2026-07-09"
+VERSION="10.9.30"
+VERSIONDATE="2026-07-13"
 
 # MARK: Functions
 
@@ -9791,19 +9791,19 @@ snagit2023)
     appNewVersion=$(curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15" -fs "https://support.techsmith.com/hc/en-us/articles/360004908652-Desktop-Product-Download-Links"  | grep "Snagit (Mac) 2023" | sed -e 's/.*Snagit (Mac) //' -e 's/<\/td>.*//')
     expectedTeamID="7TQL462TU8"
     ;;
-snagit|\
 snagit2025)
+    name="Snagit 2025"
+    type="dmg"
+    appNewVersion="25.4.0"
+    downloadURL="https://download.techsmith.com/snagitmac/releases/2025.4.0/snagit.dmg"
+    expectedTeamID="7TQL462TU8"
+    ;;
+snagit2026)
     name="Snagit"
     type="dmg"
-    sparkleData=$(curl -fsL -H 'User-Agent: Snagit/2025.0.0' 'https://www.techsmith.com/redirect.asp?target=sparkleappcast&product=snagitmac&ver=2025.0.0&lang=enu&os=mac')
-    appNewVersion=$(
-        echo "$sparkleData" | \
-        xmllint -xpath 'string(//*[local-name()="item"][last()]/*[local-name()="shortVersionString"]/text())' -
-    )
-    downloadURL=$(
-        echo "$sparkleData" | \
-        xmllint -xpath 'string(//*[local-name()="item"][last()]/enclosure/@url)' -
-    )
+    sparkleData=$(curl -H 'user-agent: Snagit/2026.0.0 Sparkle/2.8.0' -fsL 'https://sparkle.cloud.techsmith.com/api/v1/AppcastManifest/?version=26.0.1&utm_source=product&utm_medium=snagit&utm_campaign=sm2026&ipc_item_name=snagit&ipc_platform=macos')
+    appNewVersion=$( <<<"$sparkleData" xpath '//*[local-name()="shortVersionString"] [starts-with(.,"2026.")] /text()' | tr ' ' '\n' | sort -V | tail -n1)
+    downloadURL=$( <<<"$sparkleData" xpath 'string( //*[local-name()="item"] [./*[local-name()="shortVersionString"] = "'"$appNewVersion"'"] /*[local-name()="enclosure"]/@url)')
     expectedTeamID="7TQL462TU8"
     ;;
 snapgene|\
