@@ -1951,7 +1951,7 @@ aftermath)
     packageID="com.jamf.aftermath"
     downloadURL="$(downloadURLFromGit jamf aftermath)"
     appNewVersion="$(versionFromGit jamf aftermath)"
-    expectedTeamID="C793NB2B2B"
+    expectedTeamID="483DWKW443"
     ;;
 aircall)
     name="Aircall"
