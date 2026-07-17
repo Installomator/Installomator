@@ -1,4 +1,4 @@
-tableauprep)
+tableauprepbuilder)
     name="Tableau Prep Builder"
     type="pkgInDmg"
     pkgName="Tableau Prep Builder.pkg"
