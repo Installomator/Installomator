@@ -1,7 +1,6 @@
 aircall)
     name="Aircall Workspace"
     type="pkg"
-    packageID="io.aircall.workspace"
     if [[ "$(arch)" == "arm64" ]]; then
         downloadURL=$(curl -fsL -r 0-0 -o /dev/null -w "%{url_effective}" "https://electron.aircall.io/download/osx?appType=aircall-workspace&arch=arm64&platform=macPkg")
     else
