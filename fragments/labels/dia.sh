@@ -8,5 +8,6 @@ dia)
         cleanupAndExit 95 "Dia requires Apple Silicon" ERROR
     fi
     appNewVersion=$(curl -sIL "$downloadURL" | sed -nE 's/.*Dia-([0-9]+([.][0-9]+)+)-[0-9]+[.]dmg.*/\1/p')
+    blockingProcesses=( "Dia" )
     expectedTeamID="S6N382Y83G"
     ;;
