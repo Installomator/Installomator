@@ -4,10 +4,10 @@ oraclesqldeveloper)
     # The name of the process that needs to be killed is 'java'. Killing that may have unintended consequences.
     name="SQLDeveloper"
     type="zip"
-    downloadURL=$(curl -fs https://www.oracle.com/database/sqldeveloper/technologies/download/ | grep -o 'https://download\.oracle\.com[^"]*macos-x64\.app\.zip')
-    if [[ "$(arch)" == "arm64" ]]; then
-        downloadURL=$(echo "$downloadURL" | sed 's/x64/aarch64/')
+    if [[ "$(arch)" == "i386" ]]; then
+        cleanupAndExit 33 "Oracle SQL Developer is not longer available for x64 architecture" ERROR
     fi
+    downloadURL=$(curl -fs https://www.oracle.com/database/sqldeveloper/technologies/download/ | grep -o 'https://download\.oracle\.com/otn_software/java/sqldeveloper/sqldeveloper-[0-9\.]*-macos-aarch64\.app\.zip')
     # CFBundleShortVersionString does not exist. CFBundleVersion gives 4 dot-separated numbers. The custom version gives 5 numbers and matches the version in downloadURL.
     appNewVersion=$(echo "$downloadURL" | awk -F - '{print $2}')
     versionKey="CFBundleVersion"
