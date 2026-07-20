@@ -348,7 +348,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.9.30"
+VERSION="10.9.31"
 VERSIONDATE="2026-07-20"
 
 # MARK: Functions
@@ -7714,8 +7714,8 @@ mist)
     name="Mist"
     type="pkg"
     packageID="com.ninxsoft.pkg.mist"
-    downloadURL=$(downloadURLFromGit "minxsoft" "mist")
-    appNewVersion=$(versionFromGit "minxsoft" "mist")
+    downloadURL=$(downloadURLFromGit "ninxsoft" "mist")
+    appNewVersion=$(versionFromGit "ninxsoft" "mist")
     expectedTeamID="7K3HVCLV7Z"
     blockingProcesses=( NONE )
     ;;
