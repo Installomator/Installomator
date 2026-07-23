@@ -3,9 +3,6 @@ codex)
     type="zip"
     appName="ChatGPT.app"
     targetDir="/Applications/ChatGPT.localized"
-    appCustomVersion() {
-        /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$targetDir/$appName/Contents/Info.plist" 2>/dev/null
-    }
     if [[ $(arch) == "arm64" ]]; then
         sparkleData=$(curl -fsL "https://persistent.oaistatic.com/codex-app-prod/appcast.xml")
         appNewVersion=$(echo "$sparkleData" | awk -F "[<>]" '/<sparkle:shortVersionString>/{print $3; exit}')
