@@ -11075,13 +11075,13 @@ tableaupublic)
 tableaureader)
     name="Tableau Reader"
     type="pkgInDmg"
-    packageID="com.tableausoftware.Reader.app"
     if [[ $(arch) == "arm64" ]]; then
         downloadURL="https://www.tableau.com/downloads/reader/mac-arm64"
     elif [[ $(arch) == "i386" ]]; then
         downloadURL="https://www.tableau.com/downloads/reader/mac"
     fi
-    appNewVersion=${$(curl -fsIL "$downloadURL" | sed -nE 's/.*TableauReader-([0-9]+-[0-9]+-[0-9]+).*/\1/p')//-/.}
+    appNewVersion=${$(curl -fsIL "$downloadURL" | sed -nE 's/.*Reader-([0-9-]*).*/\1/p')//-/.}
+    appNewVersion=$( echo "$appNewVersion" | sed -r 's/\.$//' )
     expectedTeamID="QJ4XPRK37C"
     ;;
 tableplus)
