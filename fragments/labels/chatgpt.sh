@@ -1,8 +1,9 @@
-chatgpt)
-    name="ChatGPT"
+chatgpt|\
+chatgptclassic)
+    name="ChatGPT Classic"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
-        downloadURL="https://persistent.oaistatic.com/sidekick/public/ChatGPT_Desktop_public_latest.dmg"
+        downloadURL="https://persistent.oaistatic.com/classic/public/ChatGPT_Classic.dmg"
     else
         cleanupandexit 2 "No Intel-compatible download URL found. $appLabel is not Intel-compatible. Could not install app." ERROR
     fi
