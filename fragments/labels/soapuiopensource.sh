@@ -1,11 +1,13 @@
 soapuiopensource)
-    appNewVersion="$(versionFromGit SmartBear soapui)"
+    soapuiJSON=$(curl -fsL "https://api.github.com/repos/SmartBear/soapui/releases/latest")
+    appNewVersion=$(getJSONValue "$soapuiJSON" "tag_name" | sed 's/^v//')
     name="SoapUI-$appNewVersion"
     type="dmg"
     if [[ "$(arch)" == "arm64" ]]; then
-        downloadURL="$(curl -fsL "https://github.com/SmartBear/soapui/releases/latest" | grep -m 1 -o 'href=".*arm64.*\.dmg".*' | cut -d '"' -f 2)"
+        platformName="arm64"
     else
-        downloadURL="$(curl -fsL "https://github.com/SmartBear/soapui/releases/latest" | grep -m 1 -o 'href=".*\.dmg".*' | cut -d '"' -f 2)"
+        platformName="x64"
     fi
+    downloadURL=$(getJSONValue "$soapuiJSON" "body" | grep -o "https://dl.eviware.com/soapuios/${appNewVersion}/SoapUI-${platformName}-${appNewVersion}.dmg" | head -n 1)
     expectedTeamID="HVA5GNL2LF"
     ;;
