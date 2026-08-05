@@ -13,4 +13,3 @@ logitechoptionsplusoffline)
     expectedTeamID="QED4VVPZWA"
     versionKey="CFBundleShortVersionString"
     ;;
-    
