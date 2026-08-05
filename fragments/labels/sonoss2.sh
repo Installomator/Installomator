@@ -1,8 +1,8 @@
 sonoss2)
     name="Sonos"
     type="dmg"
-    downloadURL="https://www.sonos.com/redir/controller_software_mac2"
-    appNewVersion=$(curl -LIs -o /dev/null -w "%{url_effective}\n" "$downloadURL" | grep -oE '[0-9]+\.[0-9]+-[0-9]+' | tr '-' '.')
+    downloadURL="https://update-software.sonos.com/software/rT0797IawE/Sonos_90.0-77070.dmg"
+    appNewVersion=$(echo "$downloadURL" | sed -E 's|.*/Sonos_([0-9]+)\.([0-9]+)-([0-9]+)\.dmg|\1.\2.\3|')
     versionKey="CFBundleVersion"
     expectedTeamID="2G4LW83Q3E"
     ;;
