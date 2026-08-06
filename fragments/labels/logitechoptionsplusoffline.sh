@@ -11,5 +11,5 @@ logitechoptionsplusoffline)
     CLIInstaller="logioptionsplus_installer_offline.app/Contents/MacOS/logioptionsplus_installer"
     CLIArguments=(--quiet)
     expectedTeamID="QED4VVPZWA"
-    versionKey="CFBundleShortVersionString"
+    versionKey="CFBundleVersion"
     ;;
