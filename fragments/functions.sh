@@ -471,7 +471,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
     printlog "App size: $(du -sh "$appPath")" DEBUG
     appVerify=$(spctl -a -vv "$appPath" 2>&1 )
     appVerifyStatus=$(echo $?)
-    teamID=$(echo $appVerify | awk '/origin=/ {print $NF }' | tr -d '()' )
+    teamID=$(echo $appVerify |  awk -F '[()]' '/origin=/ {print $(NF-1)}' )
     deduplicatelogs "$appVerify"
 
     if [[ $appVerifyStatus -ne 0 ]] ; then
@@ -628,7 +628,7 @@ installFromPKG() {
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
 
-    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
+    teamID=$(echo $spctlOut | awk -F '[()]' '/origin=/ {print $(NF-1)}' )
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
         teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
@@ -639,11 +639,6 @@ installFromPKG() {
     if [[ $spctlStatus -ne 0 ]] ; then
     #if ! spctlout=$(spctl -a -vv -t install "$archiveName" 2>&1 ); then
         cleanupAndExit 4 "Error verifying $archiveName error:\n$logoutput" ERROR
-    fi
-
-    # Apple signed software has no teamID, grab entire origin instead
-    if [[ -z $teamID ]]; then
-        teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
     fi
 
     printlog "Team ID: $teamID (expected: $expectedTeamID )"
