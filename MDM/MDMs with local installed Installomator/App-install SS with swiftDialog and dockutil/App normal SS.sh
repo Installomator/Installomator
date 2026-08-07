@@ -27,14 +27,18 @@ installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dial
 # Other installomatorOptions:
 #   LOGGING=REQ
 #   LOGGING=DEBUG
+#   LOGGING=INFO
 #   LOGGING=WARN
+#   LOGGING=ERROR
 #   BLOCKING_PROCESS_ACTION=ignore
+#   BLOCKING_PROCESS_ACTION=silent_fail
 #   BLOCKING_PROCESS_ACTION=tell_user
-#   BLOCKING_PROCESS_ACTION=tell_user_then_quit
+#   BLOCKING_PROCESS_ACTION=tell_user_then_kill
 #   BLOCKING_PROCESS_ACTION=prompt_user
 #   BLOCKING_PROCESS_ACTION=prompt_user_loop
 #   BLOCKING_PROCESS_ACTION=prompt_user_then_kill
 #   BLOCKING_PROCESS_ACTION=quit
+#   BLOCKING_PROCESS_ACTION=quit_kill
 #   BLOCKING_PROCESS_ACTION=kill
 #   IGNORE_APP_STORE_APPS=yes
 #   INSTALL=force
