@@ -4,17 +4,20 @@ label="" # if no label is sent to the script, this will be used
 # Installomator
 #
 # Downloads and installs Applications
-# 2020-2024 Installomator
+# 2020-2026 Installomator
 #
 # inspired by the download scripts from William Smith and Sander Schram
 #
-# Contributors:
+# Dev Team:
 #    Armin Briegel - @scriptingosx
 #    Isaac Ordonez - @issacatmann
 #    Søren Theilgaard - @Theile
 #    Adam Codega - @acodega
 #    Trevor Sysock - @BigMacAdmin
-#    Bart Reardon - @bartreardon
+#
+# Maintainers:
+#    Gil Burns - @gilburns
+#    Richard Glaser - @uurazzle
 #
 # with contributions from many others
 

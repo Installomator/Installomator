@@ -120,6 +120,7 @@ betterdisplay
 bettertouchtool
 betterzip
 beyondcomparepro
+bezel
 bibdesk
 bitrix24
 bitwarden
@@ -150,6 +151,7 @@ cakebrew
 calcservice
 calibre
 calibriteprofiler
+cameracontroller
 camostudio
 camtasia
 camtasia2019
@@ -239,6 +241,7 @@ conductor
 connectfonts
 container
 cormorant
+coteditor
 craftmanagerforsketch
 crashplan
 crashplansmb
@@ -274,6 +277,7 @@ detectxswift
 determinate
 devin
 devonthink
+dia
 dialog
 dialpad
 digiexam
@@ -317,6 +321,8 @@ eclipsetemurin25
 eclipsetemurin8
 ecosiabrowser
 editshare-connect
+editshare-flowstory
+egnyte
 egnytecore
 egnytewebedit
 elan
@@ -326,6 +332,7 @@ elevate24
 elgatocamerahub
 elgatostreamdeck
 emacs
+emdash
 enpass
 enteauth
 epicgameslauncher
@@ -343,6 +350,7 @@ everweb
 examplify
 exelbanstats
 exifrenamer
+exocharts
 expressvpn
 extensisconnect
 facebookmessenger
@@ -390,6 +398,7 @@ freeplane
 front
 fsmonitor
 fujifilmwebcam
+garminaviationdatabasemanager
 garminbasecamp
 garminexpress
 gary
@@ -403,6 +412,7 @@ gfxcardstatus
 ghostty
 gimp
 gimpdev
+gitcredentialmanager
 githubcopilotforxcode
 githubdesktop
 gitkraken
@@ -410,6 +420,7 @@ globusconnectpersonal
 glpiagent
 glyphs3
 gns3
+godot
 goland
 golang
 googleadseditor
@@ -447,6 +458,7 @@ handy
 harmonysase
 hazel
 hexfiend
+hiddenbar
 hmavpn
 homebrew
 homerow
@@ -495,7 +507,9 @@ iterm2
 itsycal
 izotopeproductportal
 jabradirect
+jamf-cli
 jamfcheck
+jamfcli
 jamfconnect
 jamfconnectconfiguration
 jamfconnectlaunchagent
@@ -565,6 +579,7 @@ latexit
 launchbar
 launchcontrol
 lcadvancedvpnclient
+ledgerwallet
 lens
 lexarrecoverytool
 lgcalibrationstudio
@@ -592,6 +607,7 @@ loom
 loopcloud
 losslesscut
 loupedeck
+lovable
 lowprofile
 lsagent
 lucidlink
@@ -638,7 +654,9 @@ microsoftcompanyportal
 microsoftdefender
 microsoftdefenderatp
 microsoftedge
+microsoftedgebeta
 microsoftedgeconsumerstable
+microsoftedgedev
 microsoftedgeenterprisestable
 microsoftexcel
 microsoftexcelreset
@@ -672,7 +690,6 @@ microsoftskypeforbusiness
 microsoftskypeforbusinessremovaltool
 microsoftteams
 microsoftteams-rollingout
-microsoftteamsclassic
 microsoftteamsnew
 microsoftteamsreset
 microsoftvisualstudiocode
@@ -735,6 +752,7 @@ nomadlogin
 nordlayer
 nordvpn
 notion
+notioncalendar
 nova
 nps-santa
 npssantafull
@@ -850,6 +868,7 @@ pycharmce
 pymol
 python
 qgis-pr
+qgisltr
 qlab
 r
 radiosilence
@@ -908,6 +927,7 @@ scaleft
 scapple
 scenebuilder
 scmenu
+scratch
 screamingfrogseospider
 screencloudplayer
 screenflick
@@ -936,11 +956,11 @@ sketch
 sketchup2024
 sketchup2025
 sketchup2026
-sketchupviewer
 skim
 skype
 slab
 slack
+slido
 sloth
 smartgit
 smartsheet
@@ -981,12 +1001,12 @@ sqlitebrowser
 sqlpropostgres
 sqlprostudio
 sshfs
+starface10x
 starface90x
 starface91x
 stats
 steelseriesengine
 steinbergactivationmanager
-steinbergcubaseelementsaile13
 steinbergcubaseproartist13
 steinberglibrarymanager
 steinbergmediabay
@@ -999,6 +1019,7 @@ suitestudio
 supercollider
 superhuman
 superwhisper
+supportapp
 surfdrive
 suspiciouspackage
 swiftdialog
@@ -1028,6 +1049,7 @@ teamviewerhostcustom
 teamviewerqs
 teamviewerqscustom
 teamwire
+techsmithaudiate
 techsmithcapture
 teladocproviderinstaller
 telegram
@@ -1040,6 +1062,7 @@ textexpander
 textmate
 theunarchiver
 things
+thinlincclient
 thonny
 thoriumreader
 thunderbird
@@ -1047,6 +1070,7 @@ thunderbird_intl
 thunderbirdesr
 ticktick
 tidal
+tigervnc
 todoist
 toggltrack
 tom4aconverter

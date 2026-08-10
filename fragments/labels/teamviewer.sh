@@ -1,10 +1,10 @@
 teamviewer)
     name="TeamViewer"
     type="pkgInDmg"
-    # packageID="com.teamviewer.teamviewer"
     versionKey="CFBundleShortVersionString"
     pkgName="Install TeamViewer.app/Contents/Resources/Install TeamViewer.pkg"
-    downloadURL="https://download.teamviewer.com/download/TeamViewer.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep 'data-json' | grep 'full' | awk -F '"' '{ print $4 }' | sed 's/&quot;/"/g' | plutil -extract "data.0.versionNumber" raw -o - -)
+    teamViewerDownloadData=$(curl -fsL "https://www.teamviewer.com/en/download/macos/" | tr "<" "\n<" | grep "cmp-smartdownloadbutton__wrapper" | grep "TeamViewer full client" | sed -E 's/.*data-json="([^"]*)".*/\1/;s/&quot;/"/g;s/&amp;/\&/g')
+    downloadURL=$(getJSONValue "$teamViewerDownloadData" "data[0].downloadLink")
+    appNewVersion=$(getJSONValue "$teamViewerDownloadData" "data[0].versionNumber")
     expectedTeamID="H7UGFBUGV6"
     ;;

@@ -1,5 +1,4 @@
 bruno)
-    # https://github.com/usebruno/bruno; https://www.usebruno.com/
     name="Bruno"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
@@ -9,5 +8,5 @@ bruno)
     fi
     downloadURL="$(downloadURLFromGit usebruno bruno)"
     appNewVersion="$(versionFromGit usebruno bruno)"
-    expectedTeamID="W7LPPWA48L"
+    expectedTeamID="P3WTZH48ZB"
     ;;
