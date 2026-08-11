@@ -370,8 +370,8 @@ case $type in
     pkgInZip)
         installPkgInZip
         ;;
-    *InDmgInZip)
-        installItemInDmgInZip
+    appInDmgInZip)
+        installAppInDmgInZip
         ;;
     *)
         cleanupAndExit 99 "Cannot handle type $type" ERROR

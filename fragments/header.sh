@@ -30,7 +30,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=0
+DEBUG=1
 
 # notify behavior
 NOTIFY=success
@@ -206,7 +206,6 @@ NOTIFY_DIALOG=0
 #     - pkgInDmg
 #     - pkgInZip
 #     - appInDmgInZip
-#     - pkgInDmgInZip
 #     - updateronly     This last one is for labels that should only run an updateTool (see below)
 #
 # - packageID: (optional)
