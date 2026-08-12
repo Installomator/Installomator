@@ -1,4 +1,3 @@
-chatgpt|\
 chatgptclassic)
     name="ChatGPT Classic"
     type="pkg"
