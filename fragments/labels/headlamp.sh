@@ -10,3 +10,4 @@ headlamp)
     appNewVersion=$(versionFromGit kubernetes-sigs headlamp)
     expectedTeamID="5N2JF58U87"
     ;;
+    
