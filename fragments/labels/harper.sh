@@ -1,5 +1,4 @@
 harper)
-    #credit: @k4id0
     name="Harper"
     type="dmg"
     downloadURL="https://writewithharper.com/desktop/download"
