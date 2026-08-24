@@ -9,5 +9,4 @@ chatgptclassic)
     fi
     appNewVersion=$(curl -fs "https://persistent.oaistatic.com/sidekick/public/sparkle_public_appcast.xml" | xpath 'string((//rss/channel/item/title)[1])' 2>/dev/null)
     expectedTeamID="2DC432GLL2"
-    blockingProcesses=( "ChatGPT Classic" )
     ;;
