@@ -48,6 +48,7 @@ amazoncorretto17jdk
 amazoncorretto21jdk
 amazoncorretto22jdk
 amazoncorretto23jdk
+amazoncorretto25jdk
 amazoncorretto8jdk
 amazonq
 amazonworkspaces
@@ -55,6 +56,7 @@ anaconda
 anastasiysextensionmanager
 androidfiletransfer
 androidstudio
+ankerwork
 anki
 anotherredisdesktopmanager
 antconc
@@ -63,6 +65,7 @@ apachedirectorystudio
 apachenetbeans
 ape
 apparency
+appautopatch
 appcleaner
 applenyfonts
 appleprovideoformats
@@ -119,7 +122,9 @@ betterdisplay
 bettertouchtool
 betterzip
 beyondcomparepro
+bezel
 bibdesk
+bitfocuscompanion
 bitrix24
 bitwarden
 bitwigstudio
@@ -149,6 +154,7 @@ cakebrew
 calcservice
 calibre
 calibriteprofiler
+cameracontroller
 camostudio
 camtasia
 camtasia2019
@@ -165,7 +171,7 @@ carboncopycloner
 cardpresso
 catoclient
 charles
-chatgpt
+chatgptclassic
 chatwork
 chemdoodle
 chemdoodle2d
@@ -214,7 +220,9 @@ cinema4d2025
 cinema4d2026
 cisdemdocumentreader
 citrixworkspace
+claricopilot
 claudedesktop
+cleanshotx
 cleartouchcollage
 clevershare2
 clickshare
@@ -237,7 +245,9 @@ colourcontrastanalyser
 conductor
 connectfonts
 container
+containermanager
 cormorant
+coteditor
 craftmanagerforsketch
 crashplan
 crashplansmb
@@ -246,6 +256,7 @@ creativeforcekelvin
 creativeforceluma
 creativeforcetriad
 cricutdesignspace
+crisp
 cryptomator
 crystalfetch
 cursorai
@@ -258,6 +269,7 @@ darktable
 daruma
 daylite
 dbeaverce
+dbeaverteam
 dbvisualizer
 debookee
 dedoose
@@ -271,7 +283,10 @@ deskpad
 desktoppr
 detectxswift
 determinate
+devin
 devonthink
+dfublasterpro
+dia
 dialog
 dialpad
 digiexam
@@ -295,6 +310,7 @@ dropboxenterprise
 droplr
 drracket
 druvainsync
+druvainsyncgov
 dstny
 duckduckgo
 duet
@@ -315,6 +331,8 @@ eclipsetemurin25
 eclipsetemurin8
 ecosiabrowser
 editshare-connect
+editshare-flowstory
+egnyte
 egnytecore
 egnytewebedit
 elan
@@ -324,6 +342,7 @@ elevate24
 elgatocamerahub
 elgatostreamdeck
 emacs
+emdash
 enpass
 enteauth
 epicgameslauncher
@@ -341,6 +360,7 @@ everweb
 examplify
 exelbanstats
 exifrenamer
+exocharts
 expressvpn
 extensisconnect
 facebookmessenger
@@ -349,6 +369,7 @@ fastscripts
 favro
 fellow
 ffmpegmartinriedl
+fiddlereverywhere
 fierycommandworkstation
 figma
 filemakerpro
@@ -378,6 +399,7 @@ flowjo
 flstudiomac
 flux
 flycut
+focusritecontrol2
 fontagent10
 fontbase
 fontexplorer
@@ -388,6 +410,7 @@ freeplane
 front
 fsmonitor
 fujifilmwebcam
+garminaviationdatabasemanager
 garminbasecamp
 garminexpress
 gary
@@ -401,13 +424,16 @@ gfxcardstatus
 ghostty
 gimp
 gimpdev
+gitcredentialmanager
 githubcopilotforxcode
 githubdesktop
 gitkraken
+glean
 globusconnectpersonal
 glpiagent
 glyphs3
 gns3
+godot
 goland
 golang
 googleadseditor
@@ -437,14 +463,17 @@ graphicconverter10
 grasshopper
 grooveomnidialerenterpriseedition
 guardianbrowser
+guardlydata
 gyazo
 gyazogif
 hancock
 handbrake
 handy
 harmonysase
+harper
 hazel
 hexfiend
+hiddenbar
 hmavpn
 homebrew
 homerow
@@ -463,6 +492,7 @@ hyper
 i1profiler
 ibarcoder
 ibmaspera
+ibmasperaconnect
 ibmnotifier
 ice
 icons
@@ -483,6 +513,8 @@ installomator_theile
 installomatormate
 instantview
 intellijideace
+intunelogwatch
+intunepppcutility
 ipswupdater
 ipvisionconnect
 iriunwebcam
@@ -493,7 +525,9 @@ iterm2
 itsycal
 izotopeproductportal
 jabradirect
+jamf-cli
 jamfcheck
+jamfcli
 jamfconnect
 jamfconnectconfiguration
 jamfconnectlaunchagent
@@ -552,6 +586,7 @@ kimplusclientmodul
 kiro
 kirocli
 klokki
+knime
 knockknock
 kommodo
 kommodoscreenrecorder
@@ -559,10 +594,12 @@ korgsoftwarepass
 krisp
 krita
 lastpass
+lastpassdesktop
 latexit
 launchbar
 launchcontrol
 lcadvancedvpnclient
+ledgerwallet
 lens
 lexarrecoverytool
 lgcalibrationstudio
@@ -590,6 +627,7 @@ loom
 loopcloud
 losslesscut
 loupedeck
+lovable
 lowprofile
 lsagent
 lucidlink
@@ -598,14 +636,15 @@ lulu
 lunadisplay
 macadminspython
 maccyapp
+mace
 macfuse
 macoslaps
 macpass
 macports
-mactex
 mactracker
 macvector
 magicbullet
+magnolia
 mailmate
 mailtooutlook
 malwarebytes
@@ -614,12 +653,14 @@ managedappschemabuilder
 marathon
 marathon2
 marathoninfinity
+markdownpreview
 masterfader
 masv
 mattermost
 maxcycling74
 maxonapp
 maxqda24
+maxqda26
 mdmwatchdog
 meetingbar
 meistertask
@@ -635,7 +676,9 @@ microsoftcompanyportal
 microsoftdefender
 microsoftdefenderatp
 microsoftedge
+microsoftedgebeta
 microsoftedgeconsumerstable
+microsoftedgedev
 microsoftedgeenterprisestable
 microsoftexcel
 microsoftexcelreset
@@ -669,7 +712,6 @@ microsoftskypeforbusiness
 microsoftskypeforbusinessremovaltool
 microsoftteams
 microsoftteams-rollingout
-microsoftteamsclassic
 microsoftteamsnew
 microsoftteamsreset
 microsoftvisualstudiocode
@@ -685,6 +727,7 @@ minisim
 miro
 mist
 mist-cli
+mixxx
 mkuser
 mmhmm
 mmhmm-desktop
@@ -701,6 +744,7 @@ mockoon
 moderncsv
 mongodbcompass
 monitorcontrol
+monotypeconnect
 montereyblocker
 morisawadesktopmanager
 motion
@@ -724,6 +768,7 @@ netspot
 networksharemounter
 nextcloud
 nextcloudtalk
+nexusshell
 nodejs
 nodejslts
 nomachine
@@ -732,6 +777,7 @@ nomadlogin
 nordlayer
 nordvpn
 notion
+notioncalendar
 nova
 nps-santa
 npssantafull
@@ -767,13 +813,14 @@ onionshare
 onlyofficedesktop
 onscreencontrol
 onyx
+opencode
+opencodedesktop
 openeid
 openlens
 openrefine
 openvpnconnect
 openvpnconnectv3
 opera
-oraclesqldeveloper
 orbstack
 orcaslicer
 origin
@@ -847,7 +894,9 @@ pycharmce
 pymol
 python
 qgis-pr
+qgisltr
 qlab
+quickbooksonline
 r
 radiosilence
 raindropio
@@ -905,12 +954,14 @@ scaleft
 scapple
 scenebuilder
 scmenu
+scratch
 screamingfrogseospider
 screencloudplayer
 screenflick
 scribus
 scrollreverser
 sdnotary
+sdnotary2
 secretive
 selfcontrol
 sequelace
@@ -933,11 +984,11 @@ sketch
 sketchup2024
 sketchup2025
 sketchup2026
-sketchupviewer
 skim
 skype
 slab
 slack
+slido
 sloth
 smartgit
 smartsheet
@@ -953,6 +1004,7 @@ snagit2025
 snagit2026
 snapgene
 snapgeneviewer
+snowflakeodbc
 soapuiopensource
 sococo
 softubecentral
@@ -973,18 +1025,17 @@ splashtopsos
 splashtopstreamer
 splice
 spotify
-sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
 sshfs
+stackfield
+starface10x
 starface90x
 starface91x
 stats
 steelseriesengine
 steinbergactivationmanager
-steinbergcubaseelementsaile13
-steinbergcubaseproartist13
 steinberglibrarymanager
 steinbergmediabay
 strongdm
@@ -996,6 +1047,7 @@ suitestudio
 supercollider
 superhuman
 superwhisper
+supportapp
 surfdrive
 suspiciouspackage
 swiftdialog
@@ -1012,6 +1064,7 @@ synologydriveclient
 sysexlibrarian
 tabby
 tableaudesktop
+tableauprepbuilder
 tableaupublic
 tableaureader
 tableplus
@@ -1025,11 +1078,13 @@ teamviewerhostcustom
 teamviewerqs
 teamviewerqscustom
 teamwire
+techsmithaudiate
 techsmithcapture
 teladocproviderinstaller
 telegram
 tembo
 tencentmeeting
+termius
 texliveutility
 texshop
 texshop-alternative
@@ -1037,6 +1092,8 @@ textexpander
 textmate
 theunarchiver
 things
+thinlincclient
+thirdpartypatcher
 thonny
 thoriumreader
 thunderbird
@@ -1044,6 +1101,8 @@ thunderbird_intl
 thunderbirdesr
 ticktick
 tidal
+tigervnc
+timelymemory
 todoist
 toggltrack
 tom4aconverter
@@ -1094,6 +1153,7 @@ uviportal
 uviworkstation
 vagrant
 vanilla
+vcvrack2free
 venturablocker
 veracrypt
 veracrypt-fuse-t
@@ -1174,6 +1234,7 @@ zeplin
 zerotier
 zettlr
 zipwhip
+zoapiclient
 zohoworkdrive
 zohoworkdrivegenie
 zohoworkdrivetruesync
