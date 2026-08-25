@@ -56,6 +56,7 @@ anaconda
 anastasiysextensionmanager
 androidfiletransfer
 androidstudio
+ankerwork
 anki
 anotherredisdesktopmanager
 antconc
@@ -64,6 +65,7 @@ apachedirectorystudio
 apachenetbeans
 ape
 apparency
+appautopatch
 appcleaner
 applenyfonts
 appleprovideoformats
@@ -122,6 +124,7 @@ betterzip
 beyondcomparepro
 bezel
 bibdesk
+bitfocuscompanion
 bitrix24
 bitwarden
 bitwigstudio
@@ -168,7 +171,7 @@ carboncopycloner
 cardpresso
 catoclient
 charles
-chatgpt
+chatgptclassic
 chatwork
 chemdoodle
 chemdoodle2d
@@ -217,7 +220,9 @@ cinema4d2025
 cinema4d2026
 cisdemdocumentreader
 citrixworkspace
+claricopilot
 claudedesktop
+cleanshotx
 cleartouchcollage
 clevershare2
 clickshare
@@ -240,6 +245,7 @@ colourcontrastanalyser
 conductor
 connectfonts
 container
+containermanager
 cormorant
 coteditor
 craftmanagerforsketch
@@ -250,6 +256,7 @@ creativeforcekelvin
 creativeforceluma
 creativeforcetriad
 cricutdesignspace
+crisp
 cryptomator
 crystalfetch
 cursorai
@@ -262,6 +269,7 @@ darktable
 daruma
 daylite
 dbeaverce
+dbeaverteam
 dbvisualizer
 debookee
 dedoose
@@ -277,6 +285,7 @@ detectxswift
 determinate
 devin
 devonthink
+dfublasterpro
 dia
 dialog
 dialpad
@@ -301,6 +310,7 @@ dropboxenterprise
 droplr
 drracket
 druvainsync
+druvainsyncgov
 dstny
 duckduckgo
 duet
@@ -359,6 +369,7 @@ fastscripts
 favro
 fellow
 ffmpegmartinriedl
+fiddlereverywhere
 fierycommandworkstation
 figma
 filemakerpro
@@ -388,6 +399,7 @@ flowjo
 flstudiomac
 flux
 flycut
+focusritecontrol2
 fontagent10
 fontbase
 fontexplorer
@@ -416,6 +428,7 @@ gitcredentialmanager
 githubcopilotforxcode
 githubdesktop
 gitkraken
+glean
 globusconnectpersonal
 glpiagent
 glyphs3
@@ -450,12 +463,14 @@ graphicconverter10
 grasshopper
 grooveomnidialerenterpriseedition
 guardianbrowser
+guardlydata
 gyazo
 gyazogif
 hancock
 handbrake
 handy
 harmonysase
+harper
 hazel
 hexfiend
 hiddenbar
@@ -477,6 +492,7 @@ hyper
 i1profiler
 ibarcoder
 ibmaspera
+ibmasperaconnect
 ibmnotifier
 ice
 icons
@@ -497,6 +513,8 @@ installomator_theile
 installomatormate
 instantview
 intellijideace
+intunelogwatch
+intunepppcutility
 ipswupdater
 ipvisionconnect
 iriunwebcam
@@ -568,6 +586,7 @@ kimplusclientmodul
 kiro
 kirocli
 klokki
+knime
 knockknock
 kommodo
 kommodoscreenrecorder
@@ -575,6 +594,7 @@ korgsoftwarepass
 krisp
 krita
 lastpass
+lastpassdesktop
 latexit
 launchbar
 launchcontrol
@@ -621,10 +641,10 @@ macfuse
 macoslaps
 macpass
 macports
-mactex
 mactracker
 macvector
 magicbullet
+magnolia
 mailmate
 mailtooutlook
 malwarebytes
@@ -633,12 +653,14 @@ managedappschemabuilder
 marathon
 marathon2
 marathoninfinity
+markdownpreview
 masterfader
 masv
 mattermost
 maxcycling74
 maxonapp
 maxqda24
+maxqda26
 mdmwatchdog
 meetingbar
 meistertask
@@ -705,6 +727,7 @@ minisim
 miro
 mist
 mist-cli
+mixxx
 mkuser
 mmhmm
 mmhmm-desktop
@@ -721,6 +744,7 @@ mockoon
 moderncsv
 mongodbcompass
 monitorcontrol
+monotypeconnect
 montereyblocker
 morisawadesktopmanager
 motion
@@ -744,6 +768,7 @@ netspot
 networksharemounter
 nextcloud
 nextcloudtalk
+nexusshell
 nodejs
 nodejslts
 nomachine
@@ -788,13 +813,14 @@ onionshare
 onlyofficedesktop
 onscreencontrol
 onyx
+opencode
+opencodedesktop
 openeid
 openlens
 openrefine
 openvpnconnect
 openvpnconnectv3
 opera
-oraclesqldeveloper
 orbstack
 orcaslicer
 origin
@@ -870,6 +896,7 @@ python
 qgis-pr
 qgisltr
 qlab
+quickbooksonline
 r
 radiosilence
 raindropio
@@ -934,6 +961,7 @@ screenflick
 scribus
 scrollreverser
 sdnotary
+sdnotary2
 secretive
 selfcontrol
 sequelace
@@ -976,6 +1004,7 @@ snagit2025
 snagit2026
 snapgene
 snapgeneviewer
+snowflakeodbc
 soapuiopensource
 sococo
 softubecentral
@@ -996,18 +1025,17 @@ splashtopsos
 splashtopstreamer
 splice
 spotify
-sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
 sshfs
+stackfield
 starface10x
 starface90x
 starface91x
 stats
 steelseriesengine
 steinbergactivationmanager
-steinbergcubaseproartist13
 steinberglibrarymanager
 steinbergmediabay
 strongdm
@@ -1036,6 +1064,7 @@ synologydriveclient
 sysexlibrarian
 tabby
 tableaudesktop
+tableauprepbuilder
 tableaupublic
 tableaureader
 tableplus
@@ -1055,6 +1084,7 @@ teladocproviderinstaller
 telegram
 tembo
 tencentmeeting
+termius
 texliveutility
 texshop
 texshop-alternative
@@ -1063,6 +1093,7 @@ textmate
 theunarchiver
 things
 thinlincclient
+thirdpartypatcher
 thonny
 thoriumreader
 thunderbird
@@ -1071,6 +1102,7 @@ thunderbirdesr
 ticktick
 tidal
 tigervnc
+timelymemory
 todoist
 toggltrack
 tom4aconverter
@@ -1121,6 +1153,7 @@ uviportal
 uviworkstation
 vagrant
 vanilla
+vcvrack2free
 venturablocker
 veracrypt
 veracrypt-fuse-t
@@ -1201,6 +1234,7 @@ zeplin
 zerotier
 zettlr
 zipwhip
+zoapiclient
 zohoworkdrive
 zohoworkdrivegenie
 zohoworkdrivetruesync
