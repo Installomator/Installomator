@@ -1,7 +1,10 @@
 warp)
     name="Warp"
     type="dmg"
-    downloadURL="https://app.warp.dev/download"
-    appNewVersion=$(curl -s https://releases.warp.dev/channel_versions.json | grep -A 3 '"stable"' | grep '"version"' | head -n 1 | sed -E 's/.*"version": *"v([^"]+)".*/\1/')
+    warpJSON=$(curl -fsL "https://releases.warp.dev/channel_versions.json")
+    appNewVersion=$(getJSONValue "$warpJSON" "stable.version")
+    downloadURL="https://releases.warp.dev/stable/${appNewVersion}/Warp.dmg"
+    appNewVersion="${appNewVersion#v}"
+    appNewVersion="${appNewVersion/.stable_/.}"
     expectedTeamID="2BBY89MBSN"
     ;;

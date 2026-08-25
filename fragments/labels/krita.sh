@@ -1,8 +1,8 @@
 krita)
-    # credit: Søren Theilgaard (@theilgaard)
     name="krita"
     type="dmg"
-    downloadURL=$( curl -fs "https://krita.org/en/download/krita-desktop/" | grep ".*https.*stable.*dmg.*" | head -1 | sed -E 's/.*(https.*dmg).*/\1/g' )
-    appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
-    expectedTeamID="5433B4KXM8"
+    kritaXML=$(curl -fsL "https://apps.kde.org/en-gb/krita/index.xml")
+    downloadURL=$(echo "$kritaXML" | xpath "string(//a[contains(@href, 'signed.dmg')]/@href")
+    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)-.*/\1/g')
+    expectedTeamID="DL93766A3G"
     ;;

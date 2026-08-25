@@ -1,7 +1,8 @@
 coconutbattery)
     name="coconutBattery"
     type="zip"
-    downloadURL="https://www.coconut-flavour.com/downloads/coconutBattery_4_latest.zip"
-    appNewVersion=$(curl -fs https://www.coconut-flavour.com/coconutbattery/ | grep "<body" | sed -E 's/.*Download v([0-9+\.?]+).*/\1/')
+    coconutXml=$(curl -sL "https://coconut-flavour.com/updates/coconutBattery_4.xml" | sed 's/ xmlns[^=]*="[^"]*"//g; s/sparkle://g')
+    downloadURL=$(echo "$coconutXml" | xpath "string(//channel/item[not(channel)][1]/enclosure/@url)")
+    appNewVersion=$(echo "$coconutXml" | xpath "string(//channel/item[not(channel)][1]/shortVersionString)")
     expectedTeamID="R5SC3K86L5"
     ;;
