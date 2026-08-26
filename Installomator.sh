@@ -352,7 +352,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-08-25"
+VERSIONDATE="2026-08-26"
 
 # MARK: Functions
 
@@ -1567,8 +1567,9 @@ valuesfromarguments)
 1password8)
     name="1Password"
     type="pkg"
-    downloadURL="https://downloads.1password.com/mac/1Password.pkg"
-    appNewVersion=$(curl -s https://releases.1password.com/mac/stable/index.xml | grep "<title>" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | tail -n1)
+    onepassDetails=$(curl -fs "https://app-updates.agilebits.com/check/2/14.6.1/arm64/OPM8/en/80000000/A1/N")
+    appNewVersion=$(getJSONValue "${onepassDetails}" "version")
+    downloadURL="https://cache.agilebits.com/dist/1P/mac8/1Password-${appNewVersion}.pkg"
     expectedTeamID="2BUA8C4S2C"
     blockingProcesses=( "1Password Extension Helper" "1Password 7" "1Password 8" "1Password" "1PasswordNativeMessageHost" "1PasswordSafariAppExtension" )
     ;;
@@ -2254,13 +2255,13 @@ apachedirectorystudio)
 apachenetbeans)
     name="Apache NetBeans"
     type="pkg"
-    if [[ $(arch) = "arm64" ]]; then
-        archiveName="Apache-NetBeans-[0-9]*-arm64.pkg"
+    if [[ "$arch" == "arm64" ]]; then
+        archiveName="arm64.pkg"
     else
-        archiveName="Apache-NetBeans-[0-9]*-x86_64.pkg"
+        archiveName="x86_64.pkg"
     fi
-    downloadURL="$(downloadURLFromGit Friends-of-Apache-NetBeans netbeans-installers)"
-    appNewVersion=$(curl -sLI "https://github.com/Friends-of-Apache-NetBeans/netbeans-installers/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed -E 's/v([0-9]+).*/\1/')
+    downloadURL=$(downloadURLFromGit Friends-of-Apache-NetBeans netbeans-installers)
+    appNewVersion=$(versionFromGit Friends-of-Apache-NetBeans netbeans-installers | sed -E 's/^v?([0-9]+).*/\1/')
     expectedTeamID="44YNN9Q525"
     ;;
 ape)
@@ -7304,9 +7305,17 @@ livereplayer)
 lmstudio)
     name="LM Studio"
     type="dmg"
-    appNewVersion=$(curl -fsL "https://versions-prod.lmstudio.ai/update/darwin/arm64/latest" | plutil -extract version raw -)
-    appBuild=$(curl -fsL "https://versions-prod.lmstudio.ai/update/darwin/arm64/${appNewVersion}" | plutil -extract build raw -)
-    downloadURL="https://installers.lmstudio.ai/darwin/arm64/${appNewVersion}-${appBuild}/LM-Studio-${appNewVersion}-${appBuild}-arm64.dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        versionData=$(curl -fsL "https://versions-prod.lmstudio.ai/update/darwin/arm64/latest")
+        appVersion=$(echo "$versionData" | sed -n 's/.*"version":"\([^"]*\)".*/\1/p')
+        appBuild=$(echo "$versionData" | sed -n 's/.*"build":"\([^"]*\)".*/\1/p')
+        downloadVersion="${appVersion}-${appBuild}"
+        downloadURL="https://installers.lmstudio.ai/darwin/arm64/${downloadVersion}/LM-Studio-${downloadVersion}-arm64.dmg"
+        appNewVersion="${appVersion}+${appBuild}"
+    else
+        printlog "LM Studio is only compatible with Apple Silicon (arm64) Macs." ERROR
+        cleanupAndExit 95 "LM Studio requires Apple Silicon" ERROR
+    fi
     expectedTeamID="D65G88RHWN"
     ;;
 logitechghub|\
@@ -12482,6 +12491,14 @@ weprint)
     appNewVersion=""
     expectedTeamID="2D42ACMA8R"
     versionKey="CFBundleVersion"
+    ;;
+whatcable)
+    name="WhatCable"
+    type="zip"
+    archiveName="WhatCable.zip"
+    downloadURL=$(downloadURLFromGit "darrylmorley" "whatcable")
+    appNewVersion=$(versionFromGit "darrylmorley" "whatcable" | sed 's/^v//')
+    expectedTeamID="M4RUJ7W6MP"
     ;;
 whatroute)
     name="WhatRoute"

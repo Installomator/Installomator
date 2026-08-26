@@ -1195,6 +1195,7 @@ webextoolsremoval
 webexvdiplugin
 wechat
 weprint
+whatcable
 whatroute
 whatsapp
 whimsical
