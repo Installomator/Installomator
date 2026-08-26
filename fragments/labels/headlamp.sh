@@ -1,7 +1,7 @@
 headlamp)
     name="Headlamp"
     type="dmg"
-    if [[ "$arch" == "arm64" ]]; then
+    if [[ "$(arch)" == "arm64" ]]; then
         archiveName="mac-arm64.dmg"
     else
         archiveName="mac-x64.dmg"
