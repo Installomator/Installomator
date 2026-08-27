@@ -1,8 +1,7 @@
 obsidian)
-    # credit: Søren Theilgaard (@theilgaard)
-    name="Obsidian"
+name="Obsidian"
     type="dmg"
-    downloadURL=$(curl -sfL --connect-timeout 10 --max-time 30 "https://api.github.com/repos/obsidianmd/obsidian-releases/releases?per_page=10" | awk -F '"' '/browser_download_url/ && /\.dmg"/ { print $4; exit }')
-    appNewVersion=$(echo "$downloadURL" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+    appNewVersion=$(curl -sfL --connect-timeout 10 --max-time 30 "https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/desktop-releases.json" | awk -F'"' '/"beta"/{exit} /"latestVersion"/{print $4; exit}')
+    downloadURL="https://github.com/obsidianmd/obsidian-releases/releases/download/v${appNewVersion}/Obsidian-${appNewVersion}.dmg"
     expectedTeamID="6JSW4SJWN9"
     ;;
