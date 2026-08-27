@@ -1,7 +1,8 @@
 prism11)
     name="Prism 11"
     type="dmg"
-    downloadURL="https://cdn.graphpad.com/downloads/prism/11/InstallPrism11.dmg"
-    appNewVersion=$(curl -fs "https://www.graphpad.com/updates" | grep -Eio 'The latest Prism version is.*' | cut -d "(" -f 1 | awk -F '<!-- --> <!-- -->' '{print $2}' | cut -d "<" -f 1)
+    sparkleData=$(curl -fsL "https://licenses.graphpad.com/updates?version=11.0.0&configuration=full&platform=Mac&osVersion=26.0.0&osBitVersion=arm&appLanguageCode=en-us")
+    downloadURL=$(echo "$sparkleData" | xmllint --xpath 'string(//*[local-name()="enclosure"]/@url)' -)
+    appNewVersion=$(echo "$downloadURL" | sed -E 's|.*/prism/11/([0-9]+(\.[0-9]+)+)/InstallPrism11\.dmg|\1|')
     expectedTeamID="YQ2D36NS9M"
     ;;
