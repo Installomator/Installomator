@@ -352,7 +352,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-08-26"
+VERSIONDATE="2026-08-28"
 
 # MARK: Functions
 
@@ -1277,8 +1277,8 @@ finishing() {
 # KeyNote, PowerPoint, Zoom, or Webex.
 # See: https://developer.apple.com/documentation/iokit/iopmlib_h/iopmassertiontypes
 hasDisplaySleepAssertion() {
-    # Get the names of all apps with active display sleep assertions
-    local apps="$(/usr/bin/pmset -g assertions | /usr/bin/awk '/NoDisplaySleepAssertion | PreventUserIdleDisplaySleep/ && match($0,/\(.+\)/) && ! /coreaudiod/ {gsub(/^.*\(/,"",$0); gsub(/\).*$/,"",$0); print};')"
+    # Get the names of all apps with active display sleep assertions (removing non-ASCII characters before awk)
+    local apps="$(/usr/bin/pmset -g assertions | iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE | /usr/bin/awk '/NoDisplaySleepAssertion | PreventUserIdleDisplaySleep/ && match($0,/\(.+\)/) && ! /coreaudiod/ {gsub(/^.*\(/,"",$0); gsub(/\).*$/,"",$0); print};')"
 
     if [[ ! "${apps}" ]]; then
         # No display sleep assertions detected
@@ -2554,6 +2554,18 @@ audacity)
     appNewVersion=$(versionFromGit audacity audacity)
     appCustomVersion(){ defaults read "/Applications/Audacity.app/Contents/Info.plist" CFBundleVersion | cut -d '.' -f 1-3 }
     expectedTeamID="AWEYX923UX"
+    ;;
+audiopen)
+    name="AudioPen"
+    type="dmg"
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=$(downloadURLFromGit louispereira23 AudioPen-Releases)
+        appNewVersion=$(versionFromGit louispereira23 AudioPen-Releases)
+    else
+        printlog "AudioPen is only compatible with Apple Silicon (arm64) Macs." ERROR
+        cleanupAndExit 95 "AudioPen requires Apple Silicon" ERROR
+    fi
+    expectedTeamID="WBFQ68C53U"
     ;;
 autodeskfusion360admininstall)
     name="Autodesk Fusion 360 Admin Install"
@@ -6036,6 +6048,18 @@ hazel)
     appNewVersion=$(curl -fsI https://www.noodlesoft.com/Products/Hazel/download | grep -i "^location" | awk '{print $2}' | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
     expectedTeamID="86Z3GCJ4MF"
     ;;
+headlamp)
+    name="Headlamp"
+    type="dmg"
+    if [[ "$(arch)" == "arm64" ]]; then
+        archiveName="mac-arm64.dmg"
+    else
+        archiveName="mac-x64.dmg"
+    fi
+    downloadURL=$(downloadURLFromGit kubernetes-sigs headlamp)
+    appNewVersion=$(versionFromGit kubernetes-sigs headlamp)
+    expectedTeamID="5N2JF58U87"
+    ;;
 hexfiend)
     name="Hex Fiend"
     type="dmg"
@@ -6540,6 +6564,14 @@ jamfreenroller)
     #appNewVersion=$(versionFromGit jamf ReEnroller)
     expectedTeamID="PS2F6S478M"
     ;;
+jamfsetupchecklist)
+    name="JAMF Setup Checklist"
+    type="pkg"
+    downloadURL=$(downloadURLFromGit Jamf-Concepts Setup-Checklist)
+    appNewVersion=$(versionFromGit Jamf-Concepts Setup-Checklist)
+    expectedTeamID="483DWKW443"
+    ;;
+  
 jamfsetupmanager)
     name="Setup Manager"
     type="pkg"
@@ -7219,13 +7251,13 @@ libericajdk8ltsfull)
 libreoffice)
     name="LibreOffice"
     type="dmg"
-    appNewVersion="$(curl -s https://download.documentfoundation.org/libreoffice/stable/ | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | tail -1)"
+    libreOfficeDownloadVersion=$(curl -fsL "https://download.documentfoundation.org/libreoffice/stable/" | grep -oE "[0-9]+[.][0-9]+[.][0-9]+/" | tr -d / | awk -F. 'max=="" || ($1+0)*1000000+($2+0)*1000+($3+0) > max { max=($1+0)*1000000+($2+0)*1000+($3+0); version=$0 } END { print version }')
+    appNewVersion=$(curl -fsL "https://download.documentfoundation.org/libreoffice/src/${libreOfficeDownloadVersion}/" | grep -oE "libreoffice-${libreOfficeDownloadVersion}[.][0-9]+[.]tar[.]xz" | sed -E "s/^libreoffice-//; s/[.]tar[.]xz$//" | head -1)
     if [[ $(arch) == "arm64" ]]; then
-    	downloadURL="https://download.documentfoundation.org/libreoffice/stable/${appNewVersion}/mac/aarch64/LibreOffice_${appNewVersion}_MacOS_aarch64.dmg"
+        downloadURL="https://download.documentfoundation.org/libreoffice/stable/${libreOfficeDownloadVersion}/mac/aarch64/LibreOffice_${libreOfficeDownloadVersion}_MacOS_aarch64.dmg"
     elif [[ $(arch) == "i386" ]]; then
-    	downloadURL="https://download.documentfoundation.org/libreoffice/stable/${appNewVersion}/mac/x86_64/LibreOffice_${appNewVersion}_MacOS_x86-64.dmg"
+        downloadURL="https://download.documentfoundation.org/libreoffice/stable/${libreOfficeDownloadVersion}/mac/x86_64/LibreOffice_${libreOfficeDownloadVersion}_MacOS_x86-64.dmg"
     fi
-    versionKey="CFBundleVersion"
     expectedTeamID="7P5S3ZLCN7"
     blockingProcesses=( soffice )
     ;;
@@ -9028,11 +9060,11 @@ obsbotwebcam)
     expectedTeamID="7GJANK3822"
     ;;
 obsidian)
-    # credit: Søren Theilgaard (@theilgaard)
     name="Obsidian"
     type="dmg"
-    downloadURL=$( downloadURLFromGit obsidianmd obsidian-releases )
-    appNewVersion=$(versionFromGit obsidianmd obsidian-releases)
+    obsidianData=$(curl -fsL "https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/desktop-releases.json")
+    appNewVersion=$(getJSONValue "$obsidianData" "latestVersion")
+    downloadURL="https://github.com/obsidianmd/obsidian-releases/releases/download/v${appNewVersion}/Obsidian-${appNewVersion}.dmg"
     expectedTeamID="6JSW4SJWN9"
     ;;
 obsioscamera)
@@ -9700,6 +9732,14 @@ prism10)
     type="dmg"
     downloadURL="https://cdn.graphpad.com/downloads/prism/10/InstallPrism10.dmg"
     appNewVersion=$(curl -fs "https://www.graphpad.com/updates" | grep -Eio 'The latest Prism version is.*' | cut -d "(" -f 1 | awk -F '<!-- --> <!-- -->' '{print $2}' | cut -d "<" -f 1)
+    expectedTeamID="YQ2D36NS9M"
+    ;;
+prism11)
+    name="Prism 11"
+    type="dmg"
+    sparkleData=$(curl -fsL "https://licenses.graphpad.com/updates?version=11.0.0&configuration=full&platform=Mac&osVersion=26.0.0&osBitVersion=arm&appLanguageCode=en-us")
+    downloadURL=$(echo "$sparkleData" | xmllint --xpath 'string(//*[local-name()="enclosure"]/@url)' -)
+    appNewVersion=$(echo "$downloadURL" | sed -E 's|.*/prism/11/([0-9]+(\.[0-9]+)+)/InstallPrism11\.dmg|\1|')
     expectedTeamID="YQ2D36NS9M"
     ;;
 prism9)
@@ -10987,6 +11027,12 @@ splice)
 spotify)
     name="Spotify"
     type="dmg"
+    tmpSpotifyDir=$(mktemp -d)
+    zipSpotifyPath="$tmpSpotifyDir/SpotifyInstaller.zip"
+    curl -fsSL "https://download.scdn.co/SpotifyInstaller.zip" -o "$zipSpotifyPath"
+    unzip -q "$zipSpotifyPath" -d "$tmpSpotifyDir"
+    appNewVersion=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$tmpSpotifyDir/Install Spotify.app/Contents/Info.plist")
+    rm -rf "$tmpSpotifyDir"
     if [[ $(arch) == arm64 ]]; then
         downloadURL="https://download.scdn.co/SpotifyARM64.dmg"
     elif [[ $(arch) == i386 ]]; then
