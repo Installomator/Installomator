@@ -1,12 +1,14 @@
-codex)
-    name="Codex"
-    type="dmg"
+chatgpt|codex)
+    name="ChatGPT"
+    type="zip"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://persistent.oaistatic.com/codex-app-prod/Codex.dmg"
+        sparkleData=$(curl -fsL "https://persistent.oaistatic.com/codex-app-prod/appcast.xml")
+        appNewVersion=$(echo "$sparkleData" | xpath 'string(//rss/channel/item[1]/sparkle:shortVersionString)')
+        downloadURL=$(echo "$sparkleData" | xpath 'string(//rss/channel/item[1]/enclosure/@url)')
     else
-        printlog "Codex is only compatible with Apple Silicon (arm64) Macs." ERROR
-        cleanupAndExit 95 "Codex requires Apple Silicon" ERROR
+        printlog "ChatGPT is only compatible with Apple Silicon (arm64) Macs." ERROR
+        cleanupAndExit 95 "ChatGPT requires Apple Silicon" ERROR
     fi
-    appNewVersion="$(curl -fs "https://persistent.oaistatic.com/codex-app-prod/appcast.xml" | grep -o '<sparkle:shortVersionString>[^<]*' | head -1 | cut -d '>' -f 2)"
+    blockingProcesses=( "ChatGPT" )
     expectedTeamID="2DC432GLL2"
     ;;
