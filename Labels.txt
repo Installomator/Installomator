@@ -94,6 +94,7 @@ atext
 atextlegacy
 atlassiancompanion
 audacity
+audiopen
 autodeskfusion360admininstall
 autodmg
 automounter
@@ -472,6 +473,7 @@ handy
 harmonysase
 harper
 hazel
+headlamp
 hexfiend
 hiddenbar
 hmavpn
@@ -537,6 +539,7 @@ jamfmigrator
 jamfpppcutility
 jamfprintermanager
 jamfreenroller
+jamfsetupchecklist
 jamfsetupmanager
 jamovi
 jasp
@@ -871,6 +874,7 @@ powermonitor
 pppcutility
 praat
 prism10
+prism11
 prism9
 pritunl
 privileges
