@@ -352,7 +352,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-08-28"
+VERSIONDATE="2026-08-29"
 
 # MARK: Functions
 
@@ -3266,6 +3266,20 @@ charles)
     downloadURL="https://www.charlesproxy.com/assets/release/$appNewVersion/charles-proxy-$appNewVersion.dmg"
     expectedTeamID="9A5PCU4FSD"
     ;;
+chatgpt|codex)
+    name="ChatGPT"
+    type="zip"
+    if [[ $(arch) == "arm64" ]]; then
+        sparkleData=$(curl -fsL "https://persistent.oaistatic.com/codex-app-prod/appcast.xml")
+        appNewVersion=$(echo "$sparkleData" | xpath 'string(//rss/channel/item[1]/sparkle:shortVersionString)')
+        downloadURL=$(echo "$sparkleData" | xpath 'string(//rss/channel/item[1]/enclosure/@url)')
+    else
+        printlog "ChatGPT is only compatible with Apple Silicon (arm64) Macs." ERROR
+        cleanupAndExit 95 "ChatGPT requires Apple Silicon" ERROR
+    fi
+    blockingProcesses=( "ChatGPT" )
+    expectedTeamID="2DC432GLL2"
+    ;;
 chatgptclassic)
     name="ChatGPT Classic"
     type="pkg"
@@ -3865,18 +3879,6 @@ coderunner)
     downloadURL="https://coderunnerapp.com/download"
     appNewVersion=$(curl -fsIL ${downloadURL} | grep -i "^location" | cut -d " " -f2 | sed -E 's/.*CodeRunner-([0-9.]*).zip/\1/')
     expectedTeamID="R4GD98AJF9"
-    ;;
-codex)
-    name="Codex"
-    type="dmg"
-    if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://persistent.oaistatic.com/codex-app-prod/Codex.dmg"
-    else
-        printlog "Codex is only compatible with Apple Silicon (arm64) Macs." ERROR
-        cleanupAndExit 95 "Codex requires Apple Silicon" ERROR
-    fi
-    appNewVersion="$(curl -fs "https://persistent.oaistatic.com/codex-app-prod/appcast.xml" | grep -o '<sparkle:shortVersionString>[^<]*' | head -1 | cut -d '>' -f 2)"
-    expectedTeamID="2DC432GLL2"
     ;;
 colourcontrastanalyser)
     name="Colour Contrast Analyser"
@@ -6554,6 +6556,13 @@ jamfprintermanager)
     type="zip"
     downloadURL="$(downloadURLFromGit jamf jamf-printer-manager)"
     appNewVersion="$(versionFromGit jamf jamf-printer-manager)"
+    expectedTeamID="483DWKW443"
+    ;;
+jamfpssoutility)
+    name="PSSO Utility"
+    type="pkg"
+    downloadURL=$(downloadURLFromGit jamf-concepts psso-utility)
+    appNewVersion=$(versionFromGit jamf-concepts psso-utility)
     expectedTeamID="483DWKW443"
     ;;
 jamfreenroller)

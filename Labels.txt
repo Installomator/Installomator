@@ -241,7 +241,6 @@ coconutbattery
 code42
 codemeter
 coderunner
-codex
 colourcontrastanalyser
 conductor
 connectfonts
@@ -538,6 +537,7 @@ jamfcpr
 jamfmigrator
 jamfpppcutility
 jamfprintermanager
+jamfpssoutility
 jamfreenroller
 jamfsetupchecklist
 jamfsetupmanager
