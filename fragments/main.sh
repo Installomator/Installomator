@@ -237,6 +237,11 @@ else
     printlog "Latest version not specified."
 fi
 
+#The above notification is all we care about skipping for if $NOTIFY==all_if_available. Switching notify to "all" now so all logic doesn't need to be updated
+if [[ $NOTIFY == "all_if_available" ]]; then
+    NOTIFY="all"
+fi
+
 # MARK: check if this is an Update and we can use updateTool
 if [[ (-n $appversion && -n "$updateTool") || "$type" == "updateronly" ]]; then
     printlog "App needs to be updated and uses $updateTool. Ignoring BLOCKING_PROCESS_ACTION and running updateTool now."
