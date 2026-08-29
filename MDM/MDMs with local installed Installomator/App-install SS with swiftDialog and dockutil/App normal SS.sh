@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh --no-rcs
 
 # Installation using Installomator with Dialog showing progress (and posibility of adding to the Dock)
 
@@ -6,6 +6,7 @@ LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewav
 
 item="" # enter the software to install
 # Examples: adobecreativeclouddesktop, canva, cyberduck, handbrake, inkscape, textmate, vlc
+# https://github.com/Installomator/Installomator/blob/main/Labels.txt
 
 # Dialog icon and overlay icon
 icon=""
@@ -21,6 +22,7 @@ dockutilAppPath="/Applications/Cyberduck.app"
 dialog_command_file="/var/tmp/dialog.log"
 dialogBinary="/usr/local/bin/dialog"
 dockutil="/usr/local/bin/dockutil"
+dialogPID=""
 
 installomatorOptions="BLOCKING_PROCESS_ACTION=prompt_user DIALOG_CMD_FILE=${dialog_command_file}" # Separated by space
 
@@ -59,6 +61,8 @@ scriptVersion="10.1"
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 echo "$(date +%F\ %T) [LOG-BEGIN] $item, v$scriptVersion"
+
+[[ -z "$item" ]] && echo "ERROR: No item specified. Please set the 'item' variable with the software to install." && exit 1
 
 dialogUpdate() {
     # $1: dialog command
@@ -110,13 +114,16 @@ fi
 caffeinatepid=$!
 caffexit () {
     kill "$caffeinatepid"
+    dialogUpdate "quit:"
+    # Kill dialog if it's still running
+    [[ -n "$dialogPID" ]] && kill -0 "$dialogPID" 2>/dev/null && kill "$dialogPID" 2>/dev/null || true
     exit $1
 }
 
 # Mark: Installation begins
-installomatorVersion="$(${destFile} version | cut -d "." -f1 || true)"
+installomatorVersion="$(${destFile} version | grep -Eo '[0-9]+\.[0-9]+' | head -1)"
 
-if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
+if [[ $(echo "$installomatorVersion < 10" | bc -l) -eq 1 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     echo "Skipping swiftDialog UI, using notifications."
     #echo "Installomator should be at least version 10 to support swiftDialog. Installed version $installomatorVersion."
     #echo "And macOS 11 Big Sur (build 20A) is required for swiftDialog. Installed build $(sw_vers -buildVersion)."
@@ -127,7 +134,7 @@ else
     if [[ ! -x $dialogBinary ]]; then
         echo "Cannot find dialog at $dialogBinary"
         # Install using Installlomator
-        cmdOutput="$(${destFile} dialog LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
+        cmdOutput="$(${destFile} dialog BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
         checkCmdOutput "${cmdOutput}"
     fi
 
@@ -245,15 +252,25 @@ else
     echo "dialogCMD: ${dialogCMD[*]}"
 
     "${dialogCMD[@]}" &
+    dialogPID=$!
 
-    echo "$(date +%F\ %T) : SwiftDialog started!"
+    echo "$(date +%F\ %T) : SwiftDialog started with PID $dialogPID!"
 
     # give everything a moment to catch up
     sleep 0.1
 fi
 
+# If $LOGO is set, include it in installomatorOptions
+[[ -n "$LOGO" ]] && installomatorOptions="LOGO=$LOGO ${installomatorOptions}"
+
 # Install software using Installomator
-cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installomatorNotify} || true)"
+# Run in subshell to prevent exit commands from terminating this script
+temp_dir=$(mktemp -d)
+(
+    exec "${destFile}" "${item}" ${installomatorOptions} ${installomatorNotify}
+) > "${temp_dir}/install_${item}_output.log" 2>&1
+installomatorExitCode=$?
+cmdOutput="$(cat ${temp_dir}/install_${item}_output.log; echo "exit code $installomatorExitCode")"
 checkCmdOutput "${cmdOutput}"
 
 # Mark: dockutil stuff
@@ -262,7 +279,7 @@ if [[ $addToDock -eq 1 ]]; then
     if [[ ! -x $dockutil ]]; then
         echo "Cannot find dockutil at $dockutil, trying installation"
         # Install using Installlomator
-        cmdOutput="$(${destFile} dockutil LOGO=$LOGO BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
+        cmdOutput="$(${destFile} dockutil BLOCKING_PROCESS_ACTION=ignore LOGGING=REQ NOTIFY=silent || true)"
         checkCmdOutput "${cmdOutput}"
     fi
     echo "Adding to Dock"
@@ -273,7 +290,7 @@ else
 fi
 
 # Mark: Ending
-if [[ $installomatorVersion -ge 10 && $(sw_vers -buildVersion | cut -c1-2) -ge 20 ]]; then
+if [[ $(echo "$installomatorVersion < 10" | bc -l) -eq 1 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     # close and quit dialog
     dialogUpdate "progress: complete"
     dialogUpdate "progresstext: Done"
