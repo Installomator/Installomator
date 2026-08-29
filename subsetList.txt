@@ -1,0 +1,13 @@
+# reference this file by running: assemble.sh --subest /path/to/subsetList.txt
+androidstudio
+apachenetbeans
+coconutbattery
+dialog
+dockutil
+jamfsetupmanager
+maxonapp
+microsoftdefender
+omnidisksweeper
+python
+splashtopbusiness
+splashtopstreamer
