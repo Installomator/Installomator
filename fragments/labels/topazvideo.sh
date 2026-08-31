@@ -3,7 +3,7 @@ topazvideoai)
     name="Topaz Video AI"
     type="dmg"
     downloadURL="https://topazlabs.com/d/tvai/latest/mac/full"
-    archiveName=$(curl -fsIL $downloadURL | grep -i ^location | awk -F "/" '{print $NF}' | tr -d '\r\n')
-    appNewVersion=$(grep -oi "[0-9].*[0-9]" <<< $archiveName)
+    appNewVersion=$(curl -fsIL "$downloadURL" | awk 'BEGIN{IGNORECASE=1}/^location:/{gsub("\r",""); print $2}' | tail -n 1 | sed -E 's#.*/TopazVideoAI-([0-9]+(\.[0-9]+)+)\.dmg$#\1#')
     expectedTeamID="3G3JE37ZHF"
     ;;
+    
