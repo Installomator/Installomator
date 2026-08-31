@@ -1,7 +1,9 @@
 rokokostudio)
-    name="Rokoko Studio"
-    type="dmg"
-    downloadURL="https://cdn.rokoko.com/software/studio2-autoupdater/RokokoStudio.dmg"
-    blockingProcesses=( "Studio2Updater" )
+    name="RokokoStudio"
+    type="pkg"
+    packageID="com.rokoko.pkg.rokokostudio"
+    downloadURL="https://downloads.rokoko.com/studio-mac"
+    appNewVersion=$(curl -fsL -o /dev/null -w "%{url_effective}" "$downloadURL" | grep -oE '[0-9]+(\.[0-9]+)+')
+    versionKey="CFBundleVersion"
     expectedTeamID="5K4RZM8SUS"
     ;;
