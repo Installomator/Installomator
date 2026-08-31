@@ -9926,7 +9926,9 @@ qgis-pr)
     name="QGIS"
     type="dmg"
     downloadURL="https://download.qgis.org/downloads/macos/qgis-macos-pr.dmg"
-    appNewVersion="$(curl -fs "https://www.qgis.org/da/_static/documentation_options.js" | grep -i version | cut -d "'" -f2)"
+    qgisJson=$(curl -fs "https://raw.githubusercontent.com/qgis/QGIS-Website/refs/heads/main/data/conf.json")
+    appNewVersion=$(getJSONValue "$qgisJson" "release")
+    appName="QGIS-final-${appNewVersion//./_}.app"
     expectedTeamID="4F7N4UDA22"
     ;;
 qgisltr)
