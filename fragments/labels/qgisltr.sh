@@ -4,5 +4,6 @@ qgisltr)
     qgisJson=$(curl -fs "https://raw.githubusercontent.com/qgis/QGIS-Website/refs/heads/main/data/conf.json")
     downloadURL=$(getJSONValue "$qgisJson" "ltr_dmg")
     appNewVersion=$(getJSONValue "$qgisJson" "ltrrelease")
+    appName="QGIS.app"
     expectedTeamID="4F7N4UDA22"
     ;;
