@@ -9938,6 +9938,7 @@ qgisltr)
     downloadURL=$(getJSONValue "$qgisJson" "ltr_dmg")
     appNewVersion=$(getJSONValue "$qgisJson" "ltrrelease")
     expectedTeamID="4F7N4UDA22"
+    appName="QGIS.app"
     ;;
 qlab)
     name="QLab"
