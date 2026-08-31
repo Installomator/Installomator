@@ -1400,12 +1400,7 @@ updateDialog() {
             echo "progress: $progress" >> $cmd_file
         fi
         if [[ $message != "" ]]; then
-            if [[ $appNewVersion != "" ]]; then
-                appVersionProgressText=${appNewVersion// /}
-                echo "progresstext: v$appVersionProgressText $message" >> $cmd_file
-            else
-                echo "progresstext: $message" >> $cmd_file
-            fi
+            echo "progresstext: $message" >> $cmd_file
         fi
     else
         # list item has a value, so we update the progress and text in the list
