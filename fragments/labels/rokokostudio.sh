@@ -1,7 +1,6 @@
 rokokostudio)
     name="RokokoStudio"
     type="pkg"
-    packageID="com.rokoko.pkg.rokokostudio"
     downloadURL="https://downloads.rokoko.com/studio-mac"
     appNewVersion=$(curl -fsL -o /dev/null -w "%{url_effective}" "$downloadURL" | grep -oE '[0-9]+(\.[0-9]+)+')
     versionKey="CFBundleVersion"
