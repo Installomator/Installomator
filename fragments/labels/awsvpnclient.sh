@@ -1,13 +1,13 @@
 awsvpnclient)
     name="AWS VPN Client"
     type="pkg"
-    baseURL="https://d20adtppz83p9s.cloudfront.net/OSX"
-    appNewVersion=$(curl -s "https://docs.aws.amazon.com/vpn/latest/clientvpn-user/client-vpn-user-guide.rss" | grep -o 'AWS provided client ([0-9]*\.[0-9]*\.[0-9]*) for macOS' | head -1 | grep -o '[0-9]*\.[0-9]*\.[0-9]*')
-    if [[ $(arch) == "arm64" ]]
-    then
-        downloadURL="${baseURL}_ARM64/${appNewVersion}/AWS_VPN_Client_ARM64.pkg"
+    packageID="com.amazon.awsvpnclient"
+    appNewVersion=$(curl -fsL "https://docs.aws.amazon.com/vpn/latest/clientvpn-user/client-vpn-connect-macos-release-notes.md" | grep -m 1 -E '^\|[[:space:]]*[0-9]+[.][0-9]+[.][0-9]+[[:space:]]*\|' | awk -F '|' '{gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2); print $2}')
+    if [[ "$(arch)" == "arm64" ]]; then
+        archName="ARM64"
     else
-        downloadURL="${baseURL}/${appNewVersion}/AWS_VPN_Client.pkg"
+        archName="x64"
     fi
+    downloadURL=$(curl -fsL "https://docs.aws.amazon.com/vpn/latest/clientvpn-user/client-vpn-connect-macos-release-notes.md" | grep -oE '\[Download macOS (ARM64|x64) version [0-9]+[.][0-9]+[.][0-9]+ ?\]\(https://[^)]*[.]pkg\)' | awk -v version="$appNewVersion" -v archName="$archName" '$0 ~ "Download macOS " archName " version " version {sub(/^.*\]\(/, ""); sub(/\)$/, ""); print; exit}')
     expectedTeamID="94KV3E626L"
     ;;
