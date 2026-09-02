@@ -6,3 +6,4 @@ rokokostudio)
     versionKey="CFBundleVersion"
     expectedTeamID="5K4RZM8SUS"
     ;;
+    
