@@ -1,7 +1,12 @@
 anki)
     name="Anki"
     type="dmg"
-    appNewVersion=$(curl -fs "https://apps.ankiweb.net" | grep -o '/download/[0-9.]\+/' | head -1 | sed 's|/download/||;s|/||')
-    downloadURL="https://github.com/ankitects/anki/releases/download/${appNewVersion}/anki-launcher-${appNewVersion}-mac.dmg"
-    expectedTeamID="7ZM8SLJM4P"
+    appNewVersion=$(versionFromGit ankitects anki | sed -E 's/\.0([0-9])/\.\1/g')
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="mac-apple.dmg"
+    else
+        archiveName="mac-intel.dmg"
+    fi
+    downloadURL=$(downloadURLFromGit ankitects anki)
+    expectedTeamID="ZL66D3NMZM"
     ;;
