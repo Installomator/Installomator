@@ -352,7 +352,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-08-29"
+VERSIONDATE="2026-09-03"
 
 # MARK: Functions
 
@@ -8500,6 +8500,13 @@ miro)
         downloadURL="https://desktop.miro.com/platforms/darwin/Install-Miro.dmg"
     fi
     expectedTeamID="M3GM7MFY7U"
+    ;;
+missive)
+    name="Missive"
+    type="dmg"
+    downloadURL="https://mail.missiveapp.com/download/mac"
+    appNewVersion=$(curl -fsLI -o /dev/null -w '%{url_effective}' "$downloadURL" | sed -E 's#.*/Missive-([0-9]+(\.[0-9]+)+)\.dmg#\1#')
+    expectedTeamID="PXGQRRXCJN"
     ;;
 mist-cli)
     name="Mist-CLI"
