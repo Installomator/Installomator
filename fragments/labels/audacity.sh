@@ -5,5 +5,5 @@ audacity)
     downloadURL=$(downloadURLFromGit audacity audacity)
     appNewVersion=$(versionFromGit audacity audacity)
     appCustomVersion(){ defaults read "/Applications/Audacity.app/Contents/Info.plist" CFBundleVersion | cut -d '.' -f 1-3 }
-    expectedTeamID="AWEYX923UX"
+    expectedTeamID="6EPAF2X3PR"
     ;;
