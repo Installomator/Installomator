@@ -60,9 +60,9 @@ All available Installomator labels can be found in the [Installomator repository
 
 ### 2. The dummy package
 
-A pre-built `intune_dummy_package.pkg` is included. It contains no payload and installs nothing.
+You will need a "dummy" package, one that has no payload and does not install anything.
 
-If you prefer to build your own (e.g. with a different bundle identifier):
+Build your own in Terminal:
 
 ```bash
 pkgbuild --nopayload --identifier my.fake.pkg intune_dummy_package.pkg
