@@ -257,7 +257,7 @@ cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installoma
 checkCmdOutput "${cmdOutput}"
 
 # Mark: dockutil stuff
-if [[ $addToDock -eq 1 ]]; then
+if [[ $addToDock -eq 1 && -d $dockutilAppPath ]]; then
     dialogUpdate "progresstext: Adding to Dock"
     if [[ ! -x $dockutil ]]; then
         echo "Cannot find dockutil at $dockutil, trying installation"
