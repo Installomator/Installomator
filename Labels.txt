@@ -604,6 +604,7 @@ launchcontrol
 lcadvancedvpnclient
 ledgerwallet
 lens
+levelscreenrecorder
 lexarrecoverytool
 lgcalibrationstudio
 libericajdk11ltsfull

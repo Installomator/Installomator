@@ -206,6 +206,7 @@ NOTIFY_DIALOG=0
 #     - pkgInDmg
 #     - pkgInZip
 #     - appInDmgInZip
+#     - pkgInDmgInZip
 #     - updateronly     This last one is for labels that should only run an updateTool (see below)
 #
 # - packageID: (optional)
@@ -352,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-09-03"
+VERSIONDATE="2026-09-04"
 
 # MARK: Functions
 
@@ -984,9 +985,9 @@ installFromPKG() {
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
 
-    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
-    # Apple signed software has no teamID, grab entire origin instead
-    if [[ -z $teamID ]]; then
+    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $NF }' | tr -d '()' )
+    # Apple signed software has no teamID, grab entire text after origin= instead
+    if [[ -z $teamID ]] || [[ $teamID == "origin="* ]]; then
         teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
     fi
 
@@ -1188,7 +1189,7 @@ installPkgInZip() {
     installFromPKG
 }
 
-installAppInDmgInZip() {
+installItemInDmgInZip() {
     # unzip the archive
     printlog "Unzipping $archiveName"
     tar -xf "$archiveName"
@@ -1209,9 +1210,21 @@ installAppInDmgInZip() {
         archiveName="$pkgName"
     fi
 
-    # installFromDMG, DMG expected to include an app (will not work with pkg)
-    installFromDMG
+    case $type in
+        appInDmgInZip)
+            # installFromDMG, DMG expected to include an app (will not work with pkg)
+            installFromDMG
+            ;;
+        pkgInDmgInZip)
+            # installPkgInDmg, DMG expected to include an pkg (will not work with app)
+            installPkgInDmg
+            ;;
+        *)
+            cleanupAndExit 99 "Cannot handle type $type" ERROR
+            ;;
+    esac
 }
+
 
 runUpdateTool() {
     printlog "Function called: runUpdateTool"
@@ -3708,10 +3721,12 @@ cisdemdocumentreader)
     ;;
 citrixworkspace)
     name="Citrix Workspace"
-    type="pkg"
-    parseURL=$(curl -fs "https://downloadplugins.citrix.com/ReceiverUpdates/Prod/catalog_macos.xml" | xmllint --xpath 'string(//Installer/DownloadURL)' -)
-    downloadURL=https://downloadplugins.citrix.com/ReceiverUpdates/Prod/$parseURL
-    appNewVersion=$(curl -fs "https://downloadplugins.citrix.com/ReceiverUpdates/Prod/catalog_macos.xml" | xmllint --xpath 'string(//Installer/Version)' -)
+    type="pkgInDmg"
+    pkgName="Install Citrix Workspace.pkg"
+    curlOptions=( --user-agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" )
+    citrixWorkspaceData=$(curl -fsL "https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html" "${curlOptions[@]}")
+    downloadURL="https:$(xmllint --html --xpath "string(//a[contains(@class, 'ctx-dl-link')]/@rel)" 2>/dev/null <(print "$citrixWorkspaceData"))"
+    appNewVersion=$(xmllint --html --xpath "string(//div[@class='ctx-dl-content']/p[starts-with(., 'Version')])" 2>/dev/null <(print "$citrixWorkspaceData") | sed -nE 's/.*Version[[:space:]]+([0-9.]+).*/\1/p')
     versionKey="CitrixVersionString"
     expectedTeamID="S272Y5R93J"
     ;;
@@ -7188,6 +7203,28 @@ lens)
     appNewVersion=$(printf '%s' "${xmlContent}" | xmllint --xpath '//key[text()="version"]/following-sibling::string[1]/text()' -)
     expectedTeamID="JJ22T2W355"
     ;;
+levelscreenrecorder)
+	name="Level Screen Recorder"
+	type="dmg"
+	if [[ "$(arch)" == "arm64" ]]; then platformKey="osx_arm64"; else platformKey="osx_64"; fi
+	levelScreenRecorderJSON=$(curl -fsL "https://sr-releases.thelevel.ai/versions/sorted?page=0")
+	i=0; appNewVersion=""
+	while channelName=$(getJSONValue "$levelScreenRecorderJSON" "items[$i].channel.name" 2>/dev/null); do
+		j=0
+		while assetPlatform=$(getJSONValue "$levelScreenRecorderJSON" "items[$i].assets[$j].platform" 2>/dev/null); do
+			if [[ "$channelName" == "stable" && "$assetPlatform" == "$platformKey" && "$(getJSONValue "$levelScreenRecorderJSON" "items[$i].assets[$j].filetype" 2>/dev/null)" == ".dmg" ]]; then
+				appNewVersion=$(getJSONValue "$levelScreenRecorderJSON" "items[$i].name")
+				break
+			fi
+			j=$((j + 1))
+		done
+		[[ -n "$appNewVersion" ]] && break
+		i=$((i + 1))
+	done
+	[[ -n "$appNewVersion" ]] || cleanupAndExit 95 "could not determine latest Level Screen Recorder macOS version" ERROR
+	downloadURL="https://sr-releases.thelevel.ai/download/flavor/default/${appNewVersion}/${platformKey}?filetype=.dmg"
+	expectedTeamID="2HBZBC3S5M"
+	;;
 lexarrecoverytool)
     name="Lexar Recovery Tool"
     type="appInDmgInZip"
@@ -13510,8 +13547,8 @@ case $type in
     pkgInZip)
         installPkgInZip
         ;;
-    appInDmgInZip)
-        installAppInDmgInZip
+    *InDmgInZip)
+        installItemInDmgInZip
         ;;
     *)
         cleanupAndExit 99 "Cannot handle type $type" ERROR
