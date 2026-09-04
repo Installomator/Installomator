@@ -326,6 +326,10 @@ checkRunningProcesses() {
 
                 case $BLOCKING_PROCESS_ACTION in
                     quit|quit_kill)
+                        if [[ $NOTIFY = *"_if_open" ]] ; then
+                          printlog "NOTIFY was ${NOTIFY}. setting to ${NOTIFY%_if_open}"
+                          NOTIFY="${NOTIFY%_if_open}"
+                        fi
                         printlog "telling app $x to quit"
                         runAsUser osascript -e "tell app \"$x\" to quit"
                         if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
@@ -338,11 +342,19 @@ checkRunningProcesses() {
                         fi
                         ;;
                     kill)
+                      if [[ $NOTIFY = *"_if_open" ]] ; then
+                        printlog "NOTIFY was ${NOTIFY}. setting to ${NOTIFY%_if_open}"
+                        NOTIFY="${NOTIFY%_if_open}"
+                      fi
                       printlog "killing process $x"
                       pkill $x
                       sleep 5
                       ;;
                     prompt_user|prompt_user_then_kill)
+                      if [[ $NOTIFY = *"_if_open" ]] ; then
+                        printlog "NOTIFY was ${NOTIFY}. setting to ${NOTIFY%_if_open}"
+                        NOTIFY="${NOTIFY%_if_open}"
+                      fi
                       button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Leave this dialogue if you want to activate this update later)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         appClosed=0
@@ -370,6 +382,10 @@ checkRunningProcesses() {
                       fi
                       ;;
                     prompt_user_loop)
+                      if [[ $NOTIFY = *"_if_open" ]] ; then
+                        printlog "NOTIFY was ${NOTIFY}. setting to ${NOTIFY%_if_open}"
+                        NOTIFY="${NOTIFY%_if_open}"
+                      fi
                       button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
                         if [[ $i < 2 ]]; then
@@ -388,6 +404,10 @@ checkRunningProcesses() {
                       fi
                       ;;
                     tell_user|tell_user_then_kill)
+                      if [[ $NOTIFY = *"_if_open" ]] ; then
+                        printlog "NOTIFY was ${NOTIFY}. setting to ${NOTIFY%_if_open}"
+                        NOTIFY="${NOTIFY%_if_open}"
+                      fi
                       button=$(displaydialogContinue "Quit “$x” to continue updating? (This is an important update). Wait for notification of update before launching app again." "The application “$x” needs to be updated.")
                       printlog "telling app $x to quit"
                       runAsUser osascript -e "tell app \"$x\" to quit"
@@ -400,12 +420,25 @@ checkRunningProcesses() {
                       fi
                       ;;
                     silent_fail)
+                      if [[ $NOTIFY = *"_if_open" ]] ; then
+                        printlog "NOTIFY was ${NOTIFY}. setting to silent"
+                        NOTIFY="silent"
+                      fi
                       appClosed=0
                       cleanupAndExit 12 "blocking process '$x' found, aborting" ERROR
                       ;;
                 esac
 
                 countedProcesses=$((countedProcesses + 1))
+            else
+                ## ONLY on the first time through
+                if [[ $i = 1 ]] ; then
+                  printlog "No blockingProcesses found"
+                  if [[ $NOTIFY = *"_if_open" ]] ; then
+                    printlog "NOTIFY was ${NOTIFY}. setting to silent"
+                    NOTIFY="silent"
+                  fi
+                fi
             fi
         done
 
