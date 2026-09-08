@@ -4,7 +4,7 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     if [ -n "$dmgmount" ]; then
         # unmount disk image
         printlog "Unmounting $dmgmount" DEBUG
-        unmountingOut=$(hdiutil detach "$dmgmount" 2>&1)
+        unmountingOut=$(diskutil eject "$dmgmount" 2>&1)
         printlog "Debugging enabled, Unmounting output was:\n$unmountingOut" DEBUG
     fi
     if [ "$DEBUG" -ne 1 ]; then
@@ -596,9 +596,11 @@ mountDMG() {
     # mount the dmg
     printlog "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
-    dmgmountOut=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly )
+    dmgmountOut=$(echo 'Y'$'\n' | diskutil image attach --mountOptions nobrowse --readOnly --plist "$tmpDir/$archiveName" )
     dmgmountStatus=$(echo $?)
-    dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
+    dmgmount=$(echo "$dmgmountOut" \
+    | awk '/<key>mount-point<\/key>/ {getline; print; exit}' \
+    | sed -E 's|.*<string>(.*)</string>.*|\1|')
     deduplicatelogs "$dmgmountOut"
 
     if [[ $dmgmountStatus -ne 0 ]] ; then
