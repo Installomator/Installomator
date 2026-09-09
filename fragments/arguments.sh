@@ -49,21 +49,6 @@ done
 printlog "Total items in argumentsArray: ${#argumentsArray[@]}" INFO
 printlog "argumentsArray: ${argumentsArray[*]}" INFO
 
-# NOTE: Use proxy for network access if defined
-if [[ -n $PROXY ]]; then
-    printlog "Proxy defined: $PROXY, testing access to it" REQ
-    proxyAddress=$(echo $PROXY | cut -d ":" -f1)
-    portNumber=$(echo $PROXY | cut -d ":" -f2)
-    printlog "Proxy: $proxyAddress, Port: $portNumber"
-    if cmdOutput=$(! nc -z -v -G 10 ${proxyAddress} ${portNumber} 2>&1) ; then
-        printlog "$cmdOutput" REQ
-        printlog "ERROR : No proxy connection, skipping this." REQ
-    else
-        printlog "Proxy access detected, so using that." REQ
-        export ALL_PROXY="$PROXY"
-    fi
-fi
-
 # MARK: Logging
 log_location="/private/var/log/Installomator.log"
 
@@ -119,6 +104,15 @@ if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR
 fi
+
+# MARK: proxy validation
+# Must run before the label case statement below. Labels resolve their download URLs
+# over the network, so an unvalidated proxy corrupts downloadURL and the resulting
+# failure presents as a broken label rather than a proxy fault.
+# It also has to run after the Logging section above, which sets log_location, LOGGING
+# and the levels array; called any earlier, the failure reason never reaches
+# /private/var/log/Installomator.log.
+setupProxy
 
 # check Swift Dialog presence and version
 DIALOG_CMD="/usr/local/bin/dialog"

@@ -157,14 +157,27 @@ IGNORE_DND_APPS=""
 
 
 # Use proxy for network access
-PROXY=""
-# Use this format for proxy: server.network.dns:port
-# Configure proxy settings so that curl can work through that if needed.
-# Port number is important for the check of access.
-# Please note that some proxy configurations allow text download, but block binary downloads.
-# So could be a situation where curl works for version, but not for download.
-# This error line is then shown: “curl output was: curl: (22) The requested URL returned error: 403”
-
+#
+# Proxy settings are read from the environment rather than set here, and are
+# deliberately not accepted as script arguments, because arguments are echoed to the
+# log before the proxy is validated. Set them in the environment of the process:
+#
+#   PROXY_HOST              hostname or IP, no scheme and no credentials
+#   PROXY_PORT              port, defaults to 3128
+#   PROXY_USER              username, raw and unencoded
+#   PROXY_PASS              password, raw and unencoded; the script encodes it
+#   PROXY_FALLBACK_DIRECT   "yes" permits a direct download if the proxy is unusable,
+#                           anything else fails closed
+#   PROXY_PROBE_HOST        host used for the CONNECT probe, defaults to github.com
+#
+# With PROXY_HOST unset there is no proxy handling at all. When it is set, the proxy
+# is validated with a real CONNECT before any download and a failure exits 80-84 by
+# cause. See docs/proxy-support.md
+#
+# This replaces the earlier PROXY variable, which could not express credentials.
+# Note that some proxy configurations allow text download, but block binary downloads,
+# so curl may work for a version check but not for the download itself. That shows up
+# as: “curl output was: curl: (22) The requested URL returned error: 403”
 
 # Swift Dialog integration
 
