@@ -30,12 +30,21 @@ sudo PROXY_HOST=192.0.2.10 \
 
 ### Why the environment and not arguments
 
-Installomator evaluates any `key=value` argument and then logs the full argument list.
-A password passed as an argument is therefore written to
+Installomator evaluates any `key=value` argument, so `PROXY_PASS=secret` on the command
+line does work. Prefer the environment anyway: arguments are visible in process
+listings, while environment variables of a root-owned process are not readable by other
+users on macOS.
+
+`PROXY_USER` and `PROXY_PASS` are masked as `<redacted>` wherever the argument list is
+logged, so passing them as arguments no longer writes them to
 `/private/var/log/Installomator.log` — which is readable by any admin user on the
-device — before the proxy has even been validated. Arguments are also visible in
-process listings. Environment variables of a root-owned process are not readable by
-other users on macOS.
+device. The masking covers all four places the argument list reaches the log: the
+per-argument line and the summary line during parsing, and the `Reading arguments
+again` and `argument:` lines after the label is resolved.
+
+The list of masked names lives in `redactedArguments` in `fragments/functions.sh` and
+matching is exact, so a name not listed there is never masked. Add to that list when
+introducing any other argument that carries a secret.
 
 ### Passwords with special characters
 
@@ -126,18 +135,26 @@ A local Squid with basic auth is enough to cover the behaviour:
 | 8 | Password containing `@ : / # ?` | Downloads through proxy, exit 0 |
 | 9 | Unreachable proxy, `PROXY_FALLBACK_DIRECT=yes` | Downloads direct, exit 0, fallback logged |
 | 10 | Any failing case above | Password does not appear in `/private/var/log/Installomator.log` |
+| 11 | Credentials passed as arguments rather than in the environment | Log shows `PROXY_USER=<redacted>` and `PROXY_PASS=<redacted>` at all four argument-logging sites, and the proxy still authenticates |
 
 Test 8 is the one most likely to be skipped and most likely to matter — enterprise proxy
-passwords routinely contain those characters. Test 10 guards the credential-logging
-regression.
+passwords routinely contain those characters. Tests 10 and 11 guard the
+credential-logging regression.
+
+When grepping the log for a password, use `grep -a`. Installomator's output can contain
+a NUL byte, which makes BSD `grep` treat the log as binary and report no matches at all
+— a silent false negative on exactly the check that matters.
 
 ## Maintenance
 
 The implementation is confined to three regions, and should stay that way:
 
 - `fragments/header.sh` — the documentation comment
-- `fragments/functions.sh` — `urlEncode`, `proxyProbe`, `setupProxy`
-- `fragments/arguments.sh` — the single `setupProxy` call
+- `fragments/functions.sh` — `urlEncode`, `proxyProbe`, `setupProxy`, and the
+  `redactArgument` / `redactArgumentList` helpers
+- `fragments/arguments.sh` — the single `setupProxy` call, and redaction at the two
+  argument-logging sites
+- `fragments/main.sh` — redaction at the two remaining argument-logging sites
 
 Do not scatter proxy handling into label definitions or the download routine. Labels are
 where churn concentrates, and a diff that reaches into them conflicts with everything.

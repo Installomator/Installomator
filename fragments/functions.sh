@@ -128,6 +128,38 @@ printlog(){
     fi
 }
 
+# MARK: argument redaction
+# Installomator evals any key=value argument and then logs the argument list, both
+# here and again after the label has been resolved. An argument carrying a credential
+# would therefore be written to /private/var/log/Installomator.log in the clear, and
+# that log is readable by any admin user on the device.
+#
+# Values of these argument names are masked wherever the argument list is logged.
+# The argument list itself is left intact, because it is re-evaluated after the label.
+# Matching is exact, so a name not listed here is never masked.
+redactedArguments=( PROXY_USER PROXY_PASS )
+
+redactArgument() {
+    # Echoes "key=<redacted>" when the key is credential-bearing, otherwise echoes the
+    # argument unchanged. An argument with no = is passed through untouched.
+    local argument="$1" key
+    key="${argument%%=*}"
+    if (( ${redactedArguments[(Ie)$key]} )); then
+        printf '%s=<redacted>' "$key"
+    else
+        printf '%s' "$argument"
+    fi
+}
+
+redactArgumentList() {
+    # Echoes a space-separated argument list with credential values masked.
+    local argument out=()
+    for argument in "$@"; do
+        out+=( "$(redactArgument "$argument")" )
+    done
+    printf '%s' "${out[*]}"
+}
+
 # MARK: Proxy support
 # Supersedes the PROXY variable, which could not express credentials, failed open
 # with exit code 0 when its check failed, and logged its value before validating it.

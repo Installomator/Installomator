@@ -39,7 +39,7 @@ argumentsArray=()
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" INFO
+        printlog "setting variable from argument $(redactArgument "$1")" INFO
         argumentsArray+=( $1 )
         eval $1
     fi
@@ -47,7 +47,7 @@ while [[ -n $1 ]]; do
     shift 1
 done
 printlog "Total items in argumentsArray: ${#argumentsArray[@]}" INFO
-printlog "argumentsArray: ${argumentsArray[*]}" INFO
+printlog "argumentsArray: $(redactArgumentList "${argumentsArray[@]}")" INFO
 
 # MARK: Logging
 log_location="/private/var/log/Installomator.log"
