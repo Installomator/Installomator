@@ -1,13 +1,12 @@
 dbvisualizer)
     name="DbVisualizer"
     type="dmg"
-    dbvisVersion=$(curl -fsL "https://www.dbvis.com/download/" | grep -oE 'Latest version [0-9]+(\.[0-9]+)+' | head -n 1 | awk '{print $3}')
-    appNewVersion=$(echo "$dbvisVersion" | awk -F. '{for (i = NF+1; i <= 3; i++) $i = 0; print $1"."$2"."$3}')
-    downloadVersion="${dbvisVersion//./_}"
+    downloadPage=$(curl -fsL "https://www.dbvis.com/download/")
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://www.dbvis.com/product_download/dbvis-${dbvisVersion}/media/dbvis_macos-aarch64_${downloadVersion}.dmg"
+        downloadURL="https://www.dbvis.com$(echo "$downloadPage" | grep -Eo '/product_download/dbvis-[0-9.]+/media/dbvis_macos-aarch64_[0-9_]+\.dmg' | head -1)"
     else
-        downloadURL="https://www.dbvis.com/product_download/dbvis-${dbvisVersion}/media/dbvis_macos-x64_${downloadVersion}.dmg"
+        downloadURL="https://www.dbvis.com$(echo "$downloadPage" | grep -Eo '/product_download/dbvis-[0-9.]+/media/dbvis_macos-x64_[0-9_]+\.dmg' | head -1)"
     fi
+    appNewVersion=$(echo "$downloadURL" | sed -nE 's#.*/dbvis-([0-9]+(\.[0-9]+)+)/media/dbvis_macos-(aarch64|x64)_[0-9_]+\.dmg#\1#p')
     expectedTeamID="U9TP5KYV49"
     ;;
