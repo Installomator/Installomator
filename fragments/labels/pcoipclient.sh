@@ -5,5 +5,4 @@ pcoipclient)
     appNewVersion=$(getJSONValue "$pcoipClientInfo" "[0].currentVersion")
     downloadURL="https://dl.anyware.hp.com/pcoip-client/raw/names/pcoip-client-dmg/versions/${appNewVersion}/pcoip-client_${appNewVersion}.dmg"
     expectedTeamID="RU4LW7W32C"
-    blockingProcesses=( "Teradici PCoIP Client" )
     ;;
