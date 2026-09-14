@@ -6,9 +6,9 @@
 esac
 
 # MARK: reading arguments again
-printlog "Reading arguments again: ${argumentsArray[*]}" INFO
+printlog "Reading arguments again: ${argumentsLog[*]}" INFO
 for argument in "${argumentsArray[@]}"; do
-    printlog "argument: $argument" DEBUG
+    printlog "argument: ${argument/#GITHUBAPI=*/GITHUBAPI=<redacted>}" DEBUG
     eval $argument
 done
 
