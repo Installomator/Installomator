@@ -2,8 +2,10 @@ perimeter81|\
 harmonysase)
     name="Harmony SASE"
     type="pkg"
-    pkgURL=$(curl -sL https://support.perimeter81.com/docs/downloading-the-agent | grep -o 'Harmony[^"]*.pkg' | head -1)
+    releaseNotesURL="https://sc1.checkpoint.com/documents/Infinity_Portal/WebAdminGuides/EN/SASE-Admin-Guide/Content/Topics-SASE-AG/Release-Notes/HS-Agent/MacOS.htm"
+    version=$(curl -fsSL "$releaseNotesURL" | sed -nE 's/.*<h2><a name="([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' | head -1)
+    pkgURL="Harmony_SASE_${version}.pkg"
     downloadURL="https://static.perimeter81.com/agents/mac/$pkgURL"
-    appNewVersion="$(curl -fsIL "${downloadURL}" | grep -i ^x-amz-meta-version | sed -E 's/x-amz-meta-version: //' | cut -d"." -f1-3)"
+    appNewVersion="$version"
     expectedTeamID="924635PD62"
     ;;
