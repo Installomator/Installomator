@@ -128,6 +128,144 @@ printlog(){
     fi
 }
 
+# MARK: argument redaction
+# Installomator evals any key=value argument and then logs the argument list, both
+# here and again after the label has been resolved. An argument carrying a credential
+# would therefore be written to /private/var/log/Installomator.log in the clear, and
+# that log is readable by any admin user on the device.
+#
+# Values of these argument names are masked wherever the argument list is logged.
+# The argument list itself is left intact, because it is re-evaluated after the label.
+# Matching is exact, so a name not listed here is never masked.
+redactedArguments=( PROXY_USER PROXY_PASS )
+
+redactArgument() {
+    # Echoes "key=<redacted>" when the key is credential-bearing, otherwise echoes the
+    # argument unchanged. An argument with no = is passed through untouched.
+    local argument="$1" key
+    key="${argument%%=*}"
+    if (( ${redactedArguments[(Ie)$key]} )); then
+        printf '%s=<redacted>' "$key"
+    else
+        printf '%s' "$argument"
+    fi
+}
+
+redactArgumentList() {
+    # Echoes a space-separated argument list with credential values masked.
+    local argument out=()
+    for argument in "$@"; do
+        out+=( "$(redactArgument "$argument")" )
+    done
+    printf '%s' "${out[*]}"
+}
+
+# MARK: Proxy support
+# Supersedes the PROXY variable, which could not express credentials, failed open
+# with exit code 0 when its check failed, and logged its value before validating it.
+#
+# Proxy configuration is read from the environment rather than from script arguments.
+# Arguments appear in process listings and are echoed by the argument logging above,
+# so a password passed as an argument is written to the log before any of this runs.
+
+proxyRedacted=""   # safe-to-log form of the proxy URL, populated by setupProxy
+
+urlEncode() {
+    # Percent-encodes everything outside the RFC 3986 unreserved set.
+    # ASCII only: multi-byte characters in credentials are not supported.
+    # ${raw[$i]} is zsh 1-based string indexing. Verified on zsh 5.9: yields
+    # P%40ss%3Aw%2Frd%231 for P@ss:w/rd#1, the form a proxy accepts. Passing such a
+    # password unencoded fails outright, since # truncates the URL.
+    local raw="$1" out="" i char
+    for (( i = 1; i <= ${#raw}; i++ )); do
+        char="${raw[$i]}"
+        case "$char" in
+            [a-zA-Z0-9._~-]) out+="$char" ;;
+            *)               out+=$(printf '%%%02X' "'$char") ;;
+        esac
+    done
+    printf '%s' "$out"
+}
+
+proxyProbe() {
+    # Issues a CONNECT through the proxy and reports the tunnel status.
+    # Echoes "<curl_exit_code>:<http_connect_code>".
+    # A bare TCP port check is not enough: it proves only that the port accepts a
+    # connection, so a proxy requiring authentication passes even with no credentials
+    # supplied, and the 407 then surfaces later as a failed download.
+    local proxyURL="$1" probeHost="$2" connectCode curlRC
+    connectCode=$(curl -x "$proxyURL" \
+                       -s -o /dev/null \
+                       -w '%{http_connect}' \
+                       --connect-timeout 10 \
+                       --max-time 20 \
+                       "https://${probeHost}" 2>/dev/null)
+    curlRC=$?
+    printf '%s:%s' "$curlRC" "${connectCode:-000}"
+}
+
+setupProxy() {
+    # No proxy configured: behave exactly as if this function did not exist.
+    [[ -z "$PROXY_HOST" ]] && return 0
+
+    local port="${PROXY_PORT:-3128}"
+    local probeHost="${PROXY_PROBE_HOST:-github.com}"
+    local userinfo="" proxyURL
+
+    if [[ "$PROXY_HOST" == *"://"* || "$PROXY_HOST" == *"@"* ]]; then
+        printlog "ERROR : PROXY_HOST must be a bare hostname or IP" REQ
+        cleanupAndExit 84 "Proxy misconfigured" ERROR
+    fi
+
+    # Credentials are supplied raw and encoded here, because a caller cannot
+    # distinguish an already-encoded value from a literal one containing %.
+    if [[ -n "$PROXY_USER" ]]; then
+        userinfo="$(urlEncode "$PROXY_USER"):$(urlEncode "$PROXY_PASS")@"
+    fi
+
+    proxyURL="http://${userinfo}${PROXY_HOST}:${port}"
+    proxyRedacted="http://${PROXY_USER:+<redacted>@}${PROXY_HOST}:${port}"
+
+    printlog "Proxy configured: ${proxyRedacted}, validating" REQ
+
+    local result curlRC connectCode
+    result=$(proxyProbe "$proxyURL" "$probeHost")
+    curlRC="${result%%:*}"
+    connectCode="${result##*:}"
+
+    if [[ "$connectCode" == "200" ]]; then
+        printlog "Proxy validated via CONNECT to ${probeHost}" REQ
+        export ALL_PROXY="$proxyURL"
+        return 0
+    fi
+
+    local reason code
+    case "$connectCode" in
+        407) reason="Proxy authentication failed";            code=82 ;;
+        000)
+            case "$curlRC" in
+                5)  reason="Proxy hostname could not be resolved"; code=84 ;;
+                7)  reason="Proxy refused the connection";         code=81 ;;
+                28) reason="Proxy unreachable at ${PROXY_HOST}:${port}"; code=80 ;;
+                *)  reason="Proxy unreachable at ${PROXY_HOST}:${port}"; code=80 ;;
+            esac
+            ;;
+        *)   reason="Proxy does not permit HTTPS tunnelling (${connectCode})"; code=83 ;;
+    esac
+
+    printlog "ERROR : ${reason}" REQ
+
+    # Falling back to a direct download when a proxy was explicitly configured hides a
+    # broken proxy and defeats the reason for configuring one, so it is opt-in.
+    if [[ "$PROXY_FALLBACK_DIRECT" == "yes" ]]; then
+        printlog "Fallback permitted, continuing without proxy" REQ
+        unset ALL_PROXY
+        return 0
+    fi
+
+    cleanupAndExit "$code" "$reason" ERROR
+}
+
 # Used to remove dupplicate lines in large log output,
 # for example from msupdate command after it finishes running.
 deduplicatelogs() {
