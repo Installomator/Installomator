@@ -1252,7 +1252,6 @@ zoomoutlookplugin
 zoomoutlookpluginremoval
 zoompresence
 zoomrooms
-zoomvdiplugin
 zotero
 zulip
 zulujdk11
