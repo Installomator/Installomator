@@ -263,10 +263,8 @@ getAppVersion() {
 #        fi
     else
         printlog "name: $name, appName: $appName"
-        # mdfind now handling if kind is either Application or App
-        applist=$(mdfind "kMDItemContentType:com.apple.application AND kMDItemFSName:\"$name.app\"" -0 2>/dev/null)
-#        applist=$(mdfind "kMDItemContentType:com.apple.application AND kMDItemFSName:\"$appName\"" -0 2>/dev/null)
-#        printlog "App(s) found: ${applist}" DEBUG
+        # uses the $appName defined in the label fragment, or derives as $name.app (done in main.sh)
+        applist=$(mdfind "kMDItemContentType:com.apple.application AND kMDItemFSName:\"$appName\"" -0 2>/dev/null)
     fi
     if [[ -z $applist ]]; then
         printlog "No previous app found" WARN
