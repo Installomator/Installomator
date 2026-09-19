@@ -8,7 +8,7 @@ tableaupublic)
         appName="Tableau Public.app"
         downloadURL=$(curl -fsIL -o /dev/null -w "%{url_effective}" "https://www.tableau.com/downloads/public/mac")
     fi
-    appNewVersion=$(echo "$downloadURL" | sed -E 's#.*TableauPublic-([0-9]+)-([0-9]+)-([0-9]+)(-arm64)?\.dmg#\1.\2.\3#')
+    appNewVersion=$(echo "$downloadURL" | sed -En 's#.*TableauPublic-([0-9]+)-([0-9]+)-([0-9]+)(-arm64)?\.dmg#\1.\2.\3#p')
     blockingProcesses=( "Tableau Public" )
     expectedTeamID="QJ4XPRK37C"
     ;;
