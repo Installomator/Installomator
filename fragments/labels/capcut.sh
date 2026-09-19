@@ -5,4 +5,9 @@ capcut)
     downloadURL=$(getJSONValue "$capcutDetails" "data.settings.update_reminder.lastest_stable_url")
     appNewVersion=$(echo "$downloadURL" | sed -E 's/.*CapCut_([0-9]+)_([0-9]+)_([0-9]+)_[0-9]+_capcutpc.*\.dmg/\1.\2.\3/')
     expectedTeamID="22MMUN2RN5"
+<<<<<<< Updated upstream
     ;;
+=======
+    ;;
+    
+>>>>>>> Stashed changes
