@@ -1,0 +1,36 @@
+name: Test a single label
+
+on:
+  workflow_dispatch:
+    inputs:
+      label:
+        description: "Label name to test (e.g. flameshot)"
+        required: true
+
+jobs:
+  test-label:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run assemble.sh against the label
+        run: |
+          set -o pipefail
+          ./utils/assemble.sh "${{ github.event.inputs.label }}" DEBUG=1 2>&1 | tee assemble-output.log
+        working-directory: ${{ github.workspace }}
+
+      - name: Write job summary
+        if: always()
+        run: |
+          {
+            echo '```'
+            cat assemble-output.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload log artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assemble-output-${{ github.event.inputs.label }}
+          path: assemble-output.log
