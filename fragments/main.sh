@@ -1,7 +1,42 @@
 *)
     # unknown label
     #printlog "unknown label $label"
-    cleanupAndExit 1 "unknown label $label" ERROR
+
+    # Before giving up, look for external local labels
+    managedLabelsDir="/usr/local/Installomator/managed-labels"
+    installomatorLabelsDir="/usr/local/Installomator/labels"
+
+    # Check for managed label first
+    if [[ -d "${managedLabelsDir}" && -f "${managedLabelsDir}/${label}.sh" ]]; then
+        # Found a matching label locally
+        printlog "Found a matching managed label locally: ${label}" INFO
+        # verify root:wheel ownership of the folder and file before loading the label
+        if [[ "$(/usr/bin/stat -f '%Su:%Sg' "${managedLabelsDir}")" == "root:wheel" && "$(/usr/bin/stat -f '%Su:%Sg' "${managedLabelsDir}/${label}.sh")" == "root:wheel" ]]; then
+            # Verified root:wheel ownership of the label
+            printlog "Verified root:wheel ownership of managed label: ${label}" INFO
+            labelFile=$(/bin/cat "${managedLabelsDir}/${label}.sh")
+            eval 'case "$label" in '"$labelFile"'; esac'
+        else
+            cleanupAndExit 1 "unable to verify root:wheel ownership for managed local label: $label" ERROR
+        fi
+    # Check for standard label second
+#
+# Next section commented out as a separate Installomator label pkg is not implemented yet.
+#     elif [[ -d "${installomatorLabelsDir}" && -f "${installomatorLabelsDir}/${label}.sh" ]]; then
+#         # Found a matching label locally
+#         printlog "Found a matching label locally: ${label}" INFO
+#         # verify root:wheel ownership of the folder and file before loading the label
+#        if [[ "$(/usr/bin/stat -f '%Su:%Sg' "${installomatorLabelsDir}")" == "root:wheel" && "$(/usr/bin/stat -f '%Su:%Sg' "${installomatorLabelsDir}/${label}.sh")" == "root:wheel" ]]; then
+#             # Verified root:wheel ownership of the label
+#             printlog "Verified root:wheel ownership of Installomator label: ${label}" INFO
+#             labelFile=$(/bin/cat "${installomatorLabelsDir}/${label}.sh")
+#             eval 'case "$label" in '"$labelFile"'; esac'
+#         else
+#             cleanupAndExit 1 "unable to verify root:wheel ownership for local label: $label" ERROR
+#         fi
+    else
+        cleanupAndExit 1 "unknown label $label" ERROR
+    fi
     ;;
 esac
 
