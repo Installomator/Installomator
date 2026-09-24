@@ -319,19 +319,6 @@ else
     fi
 fi
 
-# MARK: when user is logged in, and app is running, prompt user to quit app
-if [[ $BLOCKING_PROCESS_ACTION == "ignore" ]]; then
-    printlog "ignoring blocking processes"
-else
-    if [[ $currentUser != "loginwindow" ]]; then
-        if [[ ${#blockingProcesses} -gt 0 ]]; then
-            if [[ ${blockingProcesses[1]} != "NONE" ]]; then
-                checkRunningProcesses
-            fi
-        fi
-    fi
-fi
-
 # MARK: install the download
 printlog "Installing $name" REQ
 if [[ $currentUser != "loginwindow" && $NOTIFY == "all" ]]; then
