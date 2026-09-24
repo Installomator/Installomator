@@ -151,6 +151,11 @@ deduplicatelogs() {
     done <<< "$loginput"
 }
 
+xpathFromHTML() { # $1 XPath expression to extract from HTML passed via STDIN.
+    xmllint --html --xpath "$1" - 2> /dev/null
+    # NOTE: It's important to always redirect stderr to /dev/null because it's common for irrelevant "HTML parser" errors/warnings to be outputted on stderr.
+}
+
 # will get the latest release download from a github repo
 downloadURLFromGit() { # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
