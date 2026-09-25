@@ -1,11 +1,12 @@
 mysqlworkbenchce)
-    name="MySQLWorkbench"
+    name="MySQL Workbench"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://dev.mysql.com/get/Downloads/MySQLGUITools/$(curl -fsL "https://dev.mysql.com/downloads/workbench/?os=33" | grep -o "mysql-workbench-community-.*-macos-arm64.dmg" | head -1)"
-    elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://dev.mysql.com/get/Downloads/MySQLGUITools/$(curl -fsL "https://dev.mysql.com/downloads/workbench/?os=33" | grep -o "mysql-workbench-community-.*-macos-x86_64.dmg" | head -1)"
+        downloadURL="https://dev.mysql.com/get/Downloads/MySQLGUITools/$(curl -fsL "https://dev.mysql.com/downloads/workbench/?os=33" | grep -o "mysql-workbench-[0-9.]*-macos-arm64.dmg" | head -1)"
+    else
+        printlog "MySQL Workbench is only compatible with Apple Silicon (arm64) Macs." ERROR
+        cleanupAndExit 95 "MySQL Workbench requires Apple Silicon" ERROR
     fi
-    appNewVersion="$(curl -fsL 'https://workbench.mysql.com/current-release' | grep fullversion | cut -d\" -f4).CE"
+    appNewVersion="$(curl -fsL 'https://workbench.mysql.com/current-release' | grep fullversion | cut -d\" -f4)"
     expectedTeamID="VB5E2TV963"
     ;;
