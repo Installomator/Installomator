@@ -5,3 +5,4 @@ amadeuspro3)
     appNewVersion=$(curl -fsL "https://www.hairersoft.com/pro.html" | sed -nE '/Download Amadeus.*for macOS/{s/<[^>]*>/ /g;s/.*Pro +([0-9]+(\.[0-9]+)+) for macOS.*/\1/p;q;}')
     expectedTeamID="FWDH9W45C2"
     ;;
+    
