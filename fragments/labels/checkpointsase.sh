@@ -1,5 +1,5 @@
 perimeter81|checkpointsase|harmonysase)
-    name="Harmony SASE"
+    name="Checkpoint SASE"
     type="pkg"    
     releaseNotesURL="https://sc1.checkpoint.com/documents/Infinity_Portal/WebAdminGuides/EN/SASE-Admin-Guide/SASE_Security/Topics/macos/macos_agent_release_notes.html"
     versionFull=$(curl -fsSL "$releaseNotesURL" | sed -nE 's/.*<h2><a name="([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' | head -1)
