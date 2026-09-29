@@ -35,6 +35,10 @@ if [[ $label == "version" ]]; then
 fi
 
 # MARK: reading rest of the arguments
+# Arguments are evaluated here, before the GITHUBAPI token is checked below, and one can already call
+# downloadURLFromGit or versionFromGit (e.g. with valuesfromarguments). Unset, "${githubAUTH[@]}" becomes
+# an empty argument that curl rejects; empty, it expands to nothing and the request runs unauthenticated.
+githubAUTH=()
 argumentsArray=()
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
