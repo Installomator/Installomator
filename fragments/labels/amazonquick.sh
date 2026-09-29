@@ -8,6 +8,5 @@ amazonquick)
         printlog "Amazon Quick is only available from this vendor feed for Apple Silicon (arm64) Macs." ERROR
         cleanupAndExit 95 "Amazon Quick requires Apple Silicon" ERROR
     fi
-    packageID="com.amazon.QuickWork.mac"
     expectedTeamID="94KV3E626L"
     ;;
