@@ -1,13 +1,13 @@
 anotherredisdesktopmanager)
     name="Another Redis Desktop Manager"
+    type="dmg"
+    appNewVersion="$(versionFromGit qishibo AnotherRedisDesktopManager)"
     if [[ $(arch) == "arm64" ]]; then
-        archiveName="Another-Redis-Desktop-Manager-mac-1.7.1-arm64.dmg"
+        archiveName="Another-Redis-Desktop-Manager-mac-${appNewVersion}-arm64.dmg"
 
     elif [[ $(arch) == "i386" ]]; then
-        archiveName="Another-Redis-Desktop-Manager-win-1.7.1-x64.exe"
+        archiveName="Another-Redis-Desktop-Manager-mac-${appNewVersion}-x64.dmg"
     fi
-    type="dmg"
     downloadURL="$(downloadURLFromGit qishibo AnotherRedisDesktopManager)"
-    appNewVersion="$(versionFromGit qishibo AnotherRedisDesktopManager)"
     expectedTeamID="68JN8DV835"
     ;;

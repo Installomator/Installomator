@@ -39,14 +39,18 @@ Installomator was originally inspired by the download scripts from [William Smit
 
 - [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
 
-with help from [Erik Stam - @erikstam](https://github.com/erikstam)  
+with help from [Erik Stam - @erikstam](https://github.com/erikstam)
 
-The Installomator team:
+The Core Maintainer team:
 - [Armin Briegel - @scriptingosx](https://github.com/scriptingosx)
 - [Isaac Ordonez - @isaacatmann](https://github.com/isaacatmann)
 - [Søren Theilgaard - @Theile](https://github.com/Theile)
 - [Adam Codega - @acodega](https://github.com/acodega)
 - [Trevor Sysock - @BigMacAdmin](https://github.com/bigmacadmin)
 - [Bart Reardon - @bartreardon](https://github.com/bartreardon)
+
+The Community Maintainer team:
+- [Gil Burns - @gilburns](https://github.com/gilburns)
+- [Richard Glaser - @uurazzle](https://github.com/uurazzle)
 
  And with numerous contributions from many others. Thank you all, very much!
