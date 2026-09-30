@@ -238,7 +238,8 @@ getAppVersion() {
 
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
-        appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
+        appversion="$(pkgutil --pkg-info-plist "${packageID}" 2>/dev/null |\
+            xmllint --nonet --nowarning --nocatalogs --xpath '//key[.="pkg-version"]/following-sibling::*[1]/text()' - 2>/dev/null)"
         if [[ $appversion != "" ]]; then
             printlog "found packageID $packageID installed, version $appversion"
             updateDetected="YES"
