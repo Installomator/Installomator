@@ -6,5 +6,6 @@ googledrivefilestream)
     downloadURL="https://dl.google.com/drive-file-stream/GoogleDriveFileStream.dmg"
     blockingProcesses=( "Google Docs" "Google Drive" "Google Sheets" "Google Slides" )
     appName="Google Drive.app"
+    versionKey="CFBundleVersion"
     expectedTeamID="EQHXZ8M8AV"
     ;;
