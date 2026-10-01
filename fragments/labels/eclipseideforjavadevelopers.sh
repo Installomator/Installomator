@@ -1,11 +1,22 @@
 eclipseideforjavadevelopers)
     name="Eclipse"
     type="dmg"
-    appNewVersion=$(curl -fs "https://www.eclipse.org/downloads/packages/" | grep -o 'Eclipse IDE [0-9]\{4\}-[0-9]\{2\} [A-Z0-9]*' | head -1 | awk '{print $3"-"$4}')
+    eclipseRelease=$(curl -fsL "https://download.eclipse.org/technology/epp/downloads/release/release.xml" | xpath 'string(/packages/present)' 2>/dev/null)
+    eclipseReleaseMonth="${eclipseRelease%%/*}"
+    eclipseReleaseMetadata=$(curl -fsL "https://projects.eclipse.org/api/projects/technology.packaging/releases?pagesize=10&order_by=DESC")
+    for eclipseReleaseIndex in {0..9}; do
+        eclipseReleaseDate=$(getJSONValue "$eclipseReleaseMetadata" "releases[$eclipseReleaseIndex].date")
+        if [[ "${eclipseReleaseDate%-*}" == "$eclipseReleaseMonth" ]]; then
+            appNewVersion=$(getJSONValue "$eclipseReleaseMetadata" "releases[$eclipseReleaseIndex].name")
+            break
+        fi
+    done
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://download.eclipse.org/technology/epp/downloads/release/${appNewVersion%-*}/${appNewVersion##*-}/eclipse-java-$appNewVersion-macosx-cocoa-aarch64.dmg"
+        eclipseArchitecture="aarch64"
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://download.eclipse.org/technology/epp/downloads/release/${appNewVersion%-*}/${appNewVersion##*-}/eclipse-java-$appNewVersion-macosx-cocoa-x86_64.dmg"
+        eclipseArchitecture="x86_64"
     fi
+    downloadURL="https://download.eclipse.org/technology/epp/downloads/release/${eclipseRelease}/eclipse-java-${eclipseRelease/\//-}-macosx-cocoa-${eclipseArchitecture}.dmg"
     expectedTeamID="JCDTMS22B4"
+    blockingProcesses=( eclipse )
     ;;
