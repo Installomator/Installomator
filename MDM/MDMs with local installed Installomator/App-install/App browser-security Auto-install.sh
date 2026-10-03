@@ -7,19 +7,23 @@ LOGO="" # "mosyleb", "mosylem", "addigy", "microsoft", "ws1", "kandji", "filewav
 item="firefoxpkg" # enter the software to install
 # Examples: brave, duckduckgo, firefoxpkg, googlechromepkg, microsoftedge, opera
 
-installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user_then_quit" # Separated by space
+installomatorOptions="BLOCKING_PROCESS_ACTION=tell_user_then_kill" # Separated by space
 
 # Other installomatorOptions:
 #   LOGGING=REQ
 #   LOGGING=DEBUG
+#   LOGGING=INFO
 #   LOGGING=WARN
+#   LOGGING=ERROR
 #   BLOCKING_PROCESS_ACTION=ignore
+#   BLOCKING_PROCESS_ACTION=silent_fail
 #   BLOCKING_PROCESS_ACTION=tell_user
-#   BLOCKING_PROCESS_ACTION=tell_user_then_quit
+#   BLOCKING_PROCESS_ACTION=tell_user_then_kill
 #   BLOCKING_PROCESS_ACTION=prompt_user
 #   BLOCKING_PROCESS_ACTION=prompt_user_loop
 #   BLOCKING_PROCESS_ACTION=prompt_user_then_kill
 #   BLOCKING_PROCESS_ACTION=quit
+#   BLOCKING_PROCESS_ACTION=quit_kill
 #   BLOCKING_PROCESS_ACTION=kill
 #   NOTIFY=all
 #   NOTIFY=success
