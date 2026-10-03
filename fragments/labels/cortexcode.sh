@@ -8,5 +8,4 @@ cortexcode|snowflakecoco)
     fi
     appNewVersion=$(curl -fsL "https://sfc-repo.snowflakecomputing.com/coco-desktop/downloads/index.html" | grep -oE '>[0-9]+\.[0-9]+\.[0-9]+/<' | tr -d '></' | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
     expectedTeamID="W4NT6CRQ7U"
-    blockingProcesses=( "Cortex Code" )
     ;;
