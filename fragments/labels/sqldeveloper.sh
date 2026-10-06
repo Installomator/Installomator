@@ -1,4 +1,5 @@
-sqldeveloper|oraclesqldeveloper)
+sqldeveloper|\
+oraclesqldeveloper)
     name="SQLDeveloper"
     type="zip"
     if [[ "$(arch)" == "arm64" ]]; then
