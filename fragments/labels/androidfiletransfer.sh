@@ -6,4 +6,3 @@ androidfiletransfer)
     versionKey="CFBundleVersion"
     expectedTeamID="EQHXZ8M8AV"
     ;;
-    
