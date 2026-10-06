@@ -353,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-10-03"
+VERSIONDATE="2026-10-06"
 
 # MARK: Functions
 
@@ -1087,7 +1087,7 @@ installFromPKG() {
         installFromPKG
     fi
 
-    if [[ $pkginstallstatus -ne 0 ]] ; then
+    if [[ $pkgInstallStatus -ne 0 ]] ; then
     #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
         cleanupAndExit 9 "Error installing $archiveName error:\n$logoutput" ERROR
     fi
@@ -4044,6 +4044,17 @@ cormorant)
     downloadURL=$(curl -fs https://eclecticlight.co/downloads/ | grep -i $name | grep zip | sed -E 's/.*href=\"(https.*)\">.*/\1/g')
     appNewVersion=$(curl -fs https://eclecticlight.co/downloads/ | grep zip | grep -o -E "$name [0-9.]*" | awk '{print $2}')
     expectedTeamID="QWY4LRW926"
+    ;;
+cortexcode|snowflakecoco)
+    name="Cortex Code"
+    type="dmg"
+    if [[ $(arch) == arm64 ]]; then
+        downloadURL="https://sfc-repo.snowflakecomputing.com/coco-desktop/downloads/latest/Cortex-Code-darwin-arm64.dmg"
+    elif [[ $(arch) == i386 ]]; then
+        downloadURL="https://sfc-repo.snowflakecomputing.com/coco-desktop/downloads/latest/Cortex-Code-darwin-x64.dmg"
+    fi
+    appNewVersion=$(curl -fsL "https://sfc-repo.snowflakecomputing.com/coco-desktop/downloads/index.html" | grep -oE '>[0-9]+\.[0-9]+\.[0-9]+/<' | tr -d '></' | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+    expectedTeamID="W4NT6CRQ7U"
     ;;
 coteditor)
     name="CotEditor"
@@ -10890,7 +10901,7 @@ sidekick)
 sigil)
     name="Sigil"
     type="tbz"
-    if [[ "$arch" == "arm64" ]]; then
+    if [[ "$(arch)" == "arm64" ]]; then
         archiveName="Mac-arm64.txz"
     else
         archiveName="Mac-x86_64.txz"
@@ -12437,6 +12448,14 @@ uniconverter)
     type="dmg"
     downloadURL="http://download.wondershare.com/video-converter-ultimate-mac_full735.dmg"
     expectedTeamID="YZC2T44ZDX"
+    ;;
+unifiendpoint)
+    name="UniFi Endpoint"
+    type="pkg"
+    downloadURL="$(curl -fsL -r 0-0 -o /dev/null -w '%{url_effective}' "https://download.uid.ui.com/?app=DESKTOP-IDENTITY-STANDARD-MACOS")"
+    appNewVersion="$(printf '%s' "$downloadURL" | sed -nE 's|.*/[^/]+-macOS-([0-9]+(\.[0-9]+)+)-[^/]+\.pkg$|\1|p')"
+    expectedTeamID="4P645293E8"
+    blockingProcesses=( NONE )
     ;;
 unityhub)
     name="Unity Hub"

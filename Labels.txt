@@ -1172,6 +1172,7 @@ ultracompare
 ultraedit
 umbrellaroamingclient
 uniconverter
+unifiendpoint
 unityhub
 universaltypeclient
 unnaturalscrollwheels
