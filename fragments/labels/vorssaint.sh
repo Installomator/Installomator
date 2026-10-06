@@ -5,3 +5,4 @@ vorssaint)
     appNewVersion=$(versionFromGit vorssaint vorssaint-utils)
     expectedTeamID="3D485NHW29"
     ;;
+    
