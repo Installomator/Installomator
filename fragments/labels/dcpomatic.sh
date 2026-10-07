@@ -1,4 +1,7 @@
-dcp-o-matic|dcpomatic|dcp-o-matic2|dcpomatic2)
+dcp-o-matic|\
+dcpomatic|\
+dcp-o-matic2|\
+dcpomatic2)
     name="DCP-o-matic 2"
     type="dmg"
     appNewVersion=$(curl -fs https://dcpomatic.com/download | grep "Stable release: " | awk -F '</p>' '{print $1}' | grep -o -e "[0-9.]*")
