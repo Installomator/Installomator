@@ -6,10 +6,21 @@ microsoftremotedesktop)
     downloadURL=$(curl -fsL $MAUSource | xmllint --xpath '//array/dict[1]/key[text()="Location"]/following-sibling::string[1]/text()' - | sed 's/_updater/_installer/' 2>/dev/null)
     appNewVersion=$(curl -fsL $MAUSource | xmllint --xpath '//array/dict[1]/key[text()="Title"]/following-sibling::string[1]/text()' - | grep -oE '[\.0-9]*' 2>/dev/null)
     expectedTeamID="UBF8T346G9"
-    if [[ -x "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" && $INSTALL != "force" && $DEBUG -eq 0 ]]; then
-        printlog "Running msupdate --list"
-        "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" --list
+    MAUChannel=$(defaults read "/Library/Managed Preferences/com.microsoft.autoupdate2" ChannelName 2>/dev/null)
+    if [[ -z $MAUChannel && -n $currentUser && $currentUser != "loginwindow" ]]; then
+        MAUChannel=$(runAsUser defaults read com.microsoft.autoupdate2 ChannelName 2>/dev/null)
     fi
-    updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
-    updateToolArguments=( --install --apps MSRD10 )
+    if [[ -z $MAUChannel ]]; then
+        MAUChannel=$(defaults read "/Library/Preferences/com.microsoft.autoupdate2" ChannelName 2>/dev/null)
+    fi
+    if [[ $MAUChannel == (Preview|Beta|InsiderSlow|InsiderFast) ]]; then
+        printlog "MAU channel is $MAUChannel, which doesn't update Windows App, so not using msupdate"
+    else
+        if [[ -x "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" && $INSTALL != "force" && $DEBUG -eq 0 ]]; then
+            printlog "Running msupdate --list"
+            "/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate" --list
+        fi
+        updateTool="/Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app/Contents/MacOS/msupdate"
+        updateToolArguments=( --install --apps MSRD10 )
+    fi
     ;;
