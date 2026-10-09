@@ -151,11 +151,60 @@ deduplicatelogs() {
     done <<< "$loginput"
 }
 
+# --- Setup auth header ---
+setupAuthHeader() {
+    # credit github auth and debug: Stefan Kloepping (@northalpha)
+    if [[ -n "$GITHUB_API_TOKEN" ]]; then
+        auth_header=(-H "Authorization: Bearer $GITHUB_API_TOKEN")
+        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && printlog "GITHUB DEBUG: Using GitHub API token (length: ${#GITHUB_API_TOKEN})" >&2
+    else
+        auth_header=()
+        [[ "$GITHUB_API_DEBUG" -eq 1 ]] && printlog "GITHUB DEBUG: No GitHub API token set." >&2
+    fi
+}
+
+# --- GitHub API debug function ---
+githubApiDebug() {
+    # credit github auth and debug: Stefan Kloepping (@northalpha)
+    # $1 = git username, $2 = git repo name
+    [[ "$GITHUB_API_DEBUG" -eq 0 ]] && return 0
+
+    local gitusername=${1?:"no git user name"}
+    local gitreponame=${2?:"no git repo name"}
+
+    local api_debug
+    api_debug=$(curl -sSL -D - "${auth_header[@]}" \
+        -H "Accept: application/vnd.github+json" \
+        "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest")
+
+    local http_status rate_limit rate_remaining rate_used rate_reset
+    http_status=$(printf "%s" "$api_debug" | awk '/^HTTP/{code=$2} END{print code}')
+    rate_limit=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-limit:" {print $2}')
+    rate_remaining=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-remaining:" {print $2}')
+    rate_used=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-used:" {print $2}')
+    rate_reset=$(printf "%s" "$api_debug" | tr -d '\r' | awk 'tolower($1)=="x-ratelimit-reset:" {print $2}')
+
+    printlog "GITHUB DEBUG: HTTP Status: ${http_status}" >&2
+    printlog "GITHUB DEBUG: RateLimit-Limit: ${rate_limit:-unknown}" >&2
+    printlog "GITHUB DEBUG: RateLimit-Remaining: ${rate_remaining:-unknown}" >&2
+    printlog "GITHUB DEBUG: RateLimit-Used: ${rate_used:-unknown}" >&2
+    printlog "GITHUB DEBUG: RateLimit-Reset (epoch): ${rate_reset:-unknown}" >&2
+
+    if [[ "$http_status" == "401" ]]; then
+        printlog "GITHUB DEBUG: Authentication failed (401 Unauthorized)." >&2
+    elif [[ "$http_status" == "403" && "$rate_remaining" == "0" ]]; then
+        printlog "GITHUB DEBUG: Rate limit exceeded." >&2
+    fi
+}
+
 # will get the latest release download from a github repo
-downloadURLFromGit() { # $1 git user name, $2 git repo name
+downloadURLFromGit() {
+    # credit github auth and debug: Stefan Kloepping (@northalpha)
+    # $1 = git user name, $2 = git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
+    # Determine file type
     if [[ $type == "pkgInDmg" ]]; then
         filetype="dmg"
     elif [[ $type == "pkgInZip" ]]; then
@@ -164,19 +213,40 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
         filetype=$type
     fi
 
+    # Setup auth header and debug logging
+    setupAuthHeader
+    githubApiDebug "$gitusername" "$gitreponame"
+
+    # Download URL logic
     if [ -n "$archiveName" ]; then
-        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+        downloadURL=$(curl -sfL "${auth_header[@]}" \
+            "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
+            | awk -F '"' "/browser_download_url/ && /$archiveName\"/ { print \$4; exit }")
+
+        # Fallback if not found
         if [[ "$(echo $downloadURL | grep -ioE "https.*$archiveName")" == "" ]]; then
-            #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)
-            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1)"
+            downloadURL="https://github.com$(
+                curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" \
+                    | tr '"' "\n" | grep -i "expanded_assets" | head -1)" \
+                | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*$archiveName" | head -1
+            )"
         fi
     else
-        downloadURL=$(curl -sfL "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+        downloadURL=$(curl -sfL "${auth_header[@]}" \
+            "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" \
+            | awk -F '"' "/browser_download_url/ && /$filetype\"/ { print \$4; exit }")
+
+        # Fallback if not found
         if [[ "$(echo $downloadURL | grep -ioE "https.*.$filetype")" == "" ]]; then
-            #downloadURL=https://github.com$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)
-            downloadURL="https://github.com$(curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" | tr '"' "\n" | grep -i "expanded_assets" | head -1)" | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1)"
+            downloadURL="https://github.com$(
+                curl -sfL "$(curl -sfL "https://github.com/$gitusername/$gitreponame/releases/latest" \
+                    | tr '"' "\n" | grep -i "expanded_assets" | head -1)" \
+                | tr '"' "\n" | grep -i "^/.*\/releases\/download\/.*\.$filetype" | head -1
+            )"
         fi
     fi
+
+    # Check if URL exists
     if [ -z "$downloadURL" ]; then
         cleanupAndExit 14 "could not retrieve download URL for $gitusername/$gitreponame" ERROR
     else
@@ -187,12 +257,21 @@ downloadURLFromGit() { # $1 git user name, $2 git repo name
 
 versionFromGit() {
     # credit: Søren Theilgaard (@theilgaard)
+    # credit github auth and debug: Stefan Kloepping (@northalpha)
     # $1 git user name, $2 git repo name
     gitusername=${1?:"no git user name"}
     gitreponame=${2?:"no git repo name"}
 
-    #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
-    appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
+    # Setup auth header and debug logging
+    setupAuthHeader
+    githubApiDebug "$gitusername" "$gitreponame"
+
+    # Fetch latest release JSON
+    release_json=$(curl -sfL "${auth_header[@]}" "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest")
+
+    # Extract version (tag_name)
+    appNewVersion=$(echo "$release_json" | awk -F '"' '/"tag_name"/ {print $4; exit }')
+
     if [ -z "$appNewVersion" ]; then
         printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
         appNewVersion=""
@@ -201,7 +280,6 @@ versionFromGit() {
         return 0
     fi
 }
-
 
 # Handling of differences in xpath between Catalina and Big Sur
 xpath() {
