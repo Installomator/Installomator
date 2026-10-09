@@ -117,7 +117,6 @@ bartender
 basecamp3
 baseline
 baseline-nodaemon
-basictex
 bbedit
 bbeditpkg
 beamstudio
@@ -177,10 +176,13 @@ camtasia2026
 camunda
 canva
 capcut
+captureone
+captureonepro
 carboncopycloner
 cardpresso
 catoclient
 charles
+chatgpt
 chatgptclassic
 chatwork
 chemdoodle
@@ -251,12 +253,14 @@ coconutbattery
 code42
 codemeter
 coderunner
+codex
 colourcontrastanalyser
 conductor
 connectfonts
 container
 containermanager
 cormorant
+cortexcode
 coteditor
 craftmanagerforsketch
 crashplan
@@ -666,6 +670,8 @@ macfuse
 macoslaps
 macpass
 macports
+mactex
+mactexfull
 mactracker
 macvector
 magicbullet
@@ -835,7 +841,6 @@ omniplan3
 omniplan4
 omnipresence
 omnissahorizonclient
-omnissahorizonclient
 onionshare
 onlyofficedesktop
 onscreencontrol
@@ -848,6 +853,7 @@ openrefine
 openvpnconnect
 openvpnconnectv3
 opera
+oraclesqldeveloper
 orbstack
 orcaslicer
 origin
@@ -1032,6 +1038,7 @@ snagit2025
 snagit2026
 snapgene
 snapgeneviewer
+snowflakecoco
 snowflakeodbc
 soapuiopensource
 sococo
@@ -1053,6 +1060,7 @@ splashtopsos
 splashtopstreamer
 splice
 spotify
+sqldeveloper
 sqlitebrowser
 sqlpropostgres
 sqlprostudio
@@ -1085,6 +1093,8 @@ symhelper
 sync
 synergybaseball
 synergybasketball
+synergyeditor
+synergyeditorbasketball
 synergyvideoexpress
 synologyactivebackupforbusinessagent
 synologyactiveprotectagent

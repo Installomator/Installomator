@@ -353,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-10-06"
+VERSIONDATE="2026-10-09"
 
 # MARK: Functions
 
@@ -2662,14 +2662,14 @@ awscli2)
 awsvpnclient)
     name="AWS VPN Client"
     type="pkg"
-    baseURL="https://d20adtppz83p9s.cloudfront.net/OSX"
-    appNewVersion=$(curl -s "https://docs.aws.amazon.com/vpn/latest/clientvpn-user/client-vpn-user-guide.rss" | grep -o 'AWS provided client ([0-9]*\.[0-9]*\.[0-9]*) for macOS' | head -1 | grep -o '[0-9]*\.[0-9]*\.[0-9]*')
-    if [[ $(arch) == "arm64" ]]
-    then
-        downloadURL="${baseURL}_ARM64/${appNewVersion}/AWS_VPN_Client_ARM64.pkg"
+    if [[ $(arch) == "arm64" ]]; then
+        appcastURL="https://d3c4iklh14o4hj.cloudfront.net/OSX_ARM64/latest/appcast.xml"
     else
-        downloadURL="${baseURL}/${appNewVersion}/AWS_VPN_Client.pkg"
+        appcastURL="https://d3c4iklh14o4hj.cloudfront.net/OSX/latest/appcast.xml"
     fi
+    appcastXML="$(curl -fsL "$appcastURL")"
+    downloadURL="$(echo "$appcastXML" | xpath 'string(//rss/channel/item[1]/enclosure/@url)' 2>/dev/null)"
+    appNewVersion="$(echo "$appcastXML" | xpath 'string(//rss/channel/item[1]/enclosure/@sparkle:version)' 2>/dev/null)"
     expectedTeamID="94KV3E626L"
     ;;
 axurerp10)
@@ -2763,13 +2763,6 @@ baseline)
     archiveName="Baseline_v[0-9.]*.pkg"
     downloadURL=$(downloadURLFromGit secondsonconsulting Baseline )
     expectedTeamID="7Q6XP5698G"
-    ;;
-basictex)
-    # Small LaTeX alternative to mactex
-    name="BasicTeX"
-    type="pkg"
-    downloadURL="https://mirror.ctan.org/systems/mac/mactex/BasicTeX.pkg"
-    expectedTeamID="RBGCY5RJWM"
     ;;
 bbedit)
     name="BBEdit"
@@ -3331,7 +3324,8 @@ capcut)
     appNewVersion=$(echo "$downloadURL" | sed -E 's/.*CapCut_([0-9]+)_([0-9]+)_([0-9]+)_[0-9]+_capcutpc.*\.dmg/\1.\2.\3/')
     expectedTeamID="22MMUN2RN5"
     ;;
-captureone|captureonepro)
+captureone|\
+captureonepro)
     name="Capture One"
     type="dmg"
     captureoneSparkle=$(curl -fsL "https://www.captureone.com/update/capture-one-mac.xml")
@@ -3367,7 +3361,8 @@ charles)
     downloadURL="https://www.charlesproxy.com/assets/release/$appNewVersion/charles-proxy-$appNewVersion.dmg"
     expectedTeamID="9A5PCU4FSD"
     ;;
-chatgpt|codex)
+chatgpt|\
+codex)
     name="ChatGPT"
     type="zip"
     if [[ $(arch) == "arm64" ]]; then
@@ -4045,7 +4040,8 @@ cormorant)
     appNewVersion=$(curl -fs https://eclecticlight.co/downloads/ | grep zip | grep -o -E "$name [0-9.]*" | awk '{print $2}')
     expectedTeamID="QWY4LRW926"
     ;;
-cortexcode|snowflakecoco)
+cortexcode|\
+snowflakecoco)
     name="Cortex Code"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
@@ -7964,7 +7960,8 @@ mactexbasic|basictex)
     packageID="org.tug.mactex.basictex${appNewVersion}"
     expectedTeamID="RBGCY5RJWM"
     ;;
-mactexfull|mactex)
+mactexfull|\
+mactex)
     name="MacTeX Full"
     appName="TeX Live Utility.app"
     type="pkg"
@@ -9480,7 +9477,8 @@ omnipresence)
     appNewVersion=$( echo "${downloadURL}" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g' )
     expectedTeamID="34YW5XSRB7"
     ;;
-omnissahorizonclient)
+omnissahorizonclient|\
+vmwarehorizonclient)
     name="Omnissa Horizon Client"
     type="pkgInDmg"
     jsonData=$(curl -fsL 'https://customerconnect.omnissa.com/channel/public/api/v1.0/products/getRelatedDLGList?locale=en_US&category=virtual_desktop_and_apps&product=omnissa_horizon_clients&version=8&dlgType=PRODUCT_BINARY')
@@ -11372,7 +11370,8 @@ spotify)
     fi
     expectedTeamID="2FNC3A47ZF"
     ;;
-sqldeveloper|oraclesqldeveloper)
+sqldeveloper|\
+oraclesqldeveloper)
     name="SQLDeveloper"
     type="zip"
     if [[ "$(arch)" == "arm64" ]]; then
@@ -11656,7 +11655,8 @@ synergybasketball)
     appNewVersion=$(curl -fs https://www.synergysportstech.com/Apps/Basketball/production/macOS/default.htm | grep Version: | grep -o -e "[0-9.]*")
     expectedTeamID="BATB6XS52B"
     ;;
-synergyeditor|synergyeditorbasketball)
+synergyeditor|\
+synergyeditorbasketball)
     name="Synergy Editor"
     type="dmg"
     baseURL="https://www.synergysportstech.com/apps/editor/basketball/macos"
@@ -12720,18 +12720,6 @@ vmwarefusion)
     curlOptions=(-H "Accept: */*" -H "Accept-Encoding: gzip, deflate" -H "Connection: keep-alive" -H "Host: www.vmware.com" -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15")
     appNewVersion=$(curl -fsIL ${curlOptions} "https://www.vmware.com/go/getfusion" | grep -i "^location" | awk '{print $2}' | sed 's/.*-\(.*\)-.*/\1/')
     expectedTeamID="EG7KH642X6"
-    ;;
-vmwarehorizonclient|\
-omnissahorizonclient)
-    name="Omnissa Horizon Client"
-    type="pkgInDmg"
-    jsonData=$(curl -fsL 'https://customerconnect.omnissa.com/channel/public/api/v1.0/products/getRelatedDLGList?locale=en_US&category=desktop_end_user_computing&product=omnissa_horizon_clients&version=8&dlgType=PRODUCT_BINARY')
-    for var in code productId releasePackageId; do
-        local ${var}=$(<<< "$jsonData" sed -nE 's/.*Omnissa Horizon Client for macOS[^}]*"'$var'":"([^"]*).*/\1/p')
-    done
-    downloadURL=$(curl -fsL "https://customerconnect.omnissa.com/channel/public/api/v1.0/dlg/details?locale=en_US&downloadGroup=$code&productId=$productId&rPId=$releasePackageId" | grep -oE 'https://[^"]*' )
-    appNewVersion=$(<<< $downloadURL | grep -oE '\d+\.[0-9.]*\d')
-    expectedTeamID="S2ZMFGQM93"
     ;;
 vonagebusiness)
     # @BigMacAdmin (Second Son Consulting) with assists from @Isaac, @Bilal, and @Theilgaard
