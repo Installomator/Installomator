@@ -1,4 +1,5 @@
-cortexcode|snowflakecoco)
+cortexcode|\
+snowflakecoco)
     name="Cortex Code"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
