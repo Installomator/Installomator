@@ -1,4 +1,5 @@
-mactexbasic|basictex)
+mactexbasic|\
+basictex)
     name="MacTeX Basic"
     type="pkg"
     downloadURL="https://mirror.ctan.org/systems/mac/mactex/BasicTeX.pkg"
