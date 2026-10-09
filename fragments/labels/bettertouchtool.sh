@@ -3,6 +3,6 @@ bettertouchtool)
     name="BetterTouchTool"
     type="zip"
     downloadURL="https://folivora.ai/releases/BetterTouchTool.zip"
-    appNewVersion=$(curl -fs https://updates.folivora.ai/bettertouchtool_release_notes.html | grep BetterTouchTool | head -n 2 | tail -n 1 | sed -E 's/.* ([0-9\.]*) .*/\1/g')
+    appNewVersion=$(curl -fsL "https://folivora.ai/releases/" | grep 'Current stable build' | head -n 1 | sed -E 's/.*href="btt([0-9.]+)-[0-9]+\.zip".*/\1/')
     expectedTeamID="DAFVSXZ82P"
     ;;
