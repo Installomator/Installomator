@@ -1,4 +1,5 @@
-synergyeditor|synergyeditorbasketball)
+synergyeditor|\
+synergyeditorbasketball)
     name="Synergy Editor"
     type="dmg"
     baseURL="https://www.synergysportstech.com/apps/editor/basketball/macos"
