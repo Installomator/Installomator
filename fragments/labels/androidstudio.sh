@@ -9,6 +9,6 @@ androidstudio)
     androidXML="https://dl.google.com/android/studio/patches/updates.xml"
     appNewVersion=$(curl -fsSL "$androidXML" | xmllint --xpath 'string((//channel[@status="release"]/build)[1]/@number)' - 2>/dev/null)
     expectedTeamID="EQHXZ8M8AV"
-    blockingProcesses=( androidstudio )
+    blockingProcesses=( studio )
     versionKey="CFBundleVersion"
     ;;
