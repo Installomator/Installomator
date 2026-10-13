@@ -42,6 +42,7 @@ alfred
 altserver
 alttab
 amadeuspro2
+amadeuspro3
 amazonchime
 amazoncorretto11jdk
 amazoncorretto17jdk
@@ -49,9 +50,11 @@ amazoncorretto21jdk
 amazoncorretto22jdk
 amazoncorretto23jdk
 amazoncorretto25jdk
+amazoncorretto27jdk
 amazoncorretto8jdk
 amazonq
 amazonquick
+amazonredshiftodbcdriver
 amazonworkspaces
 anaconda
 anastasiysextensionmanager
@@ -61,12 +64,14 @@ ankerwork
 anki
 anotherredisdesktopmanager
 antconc
+antigravity
 anydesk
 apachedirectorystudio
 apachenetbeans
 ape
 apparency
 appautopatch
+appautopatch4
 appcleaner
 applenyfonts
 appleprovideoformats
@@ -117,6 +122,7 @@ bartender
 basecamp3
 baseline
 baseline-nodaemon
+basictex
 bbedit
 bbeditpkg
 beamstudio
@@ -138,7 +144,11 @@ blackhole64ch
 blackmagicatemswitchers
 blackmagiccameras
 blackmagicconverters
+blackmagicdavinciresolvestudio
+blackmagicdesktopvideo
 blackmagicultimatte
+blackmagicvideohub
+blackmagicwebpresenter
 blender
 blitzit
 boop
@@ -150,6 +160,7 @@ brave
 bravepkg
 brosix
 browserosaurus
+browserstacklocal
 bruno
 bugdom
 burpsuitecommunityedition
@@ -157,6 +168,7 @@ burpsuiteprofessional
 busycal
 busycontacts
 buttercup
+buzz
 caffeine
 cakebrew
 calcservice
@@ -241,6 +253,7 @@ clickshare
 clickup
 clipgrab
 clipy
+clop
 closeio
 cloudflarewarp
 cloudtalk
@@ -286,11 +299,17 @@ dbeaverce
 dbeaverteam
 dbgate
 dbvisualizer
+dcp-o-matic
+dcp-o-matic2
+dcpomatic
+dcpomatic2
 debookee
+decimatorucp
 dedoose
 deepl
 deezer
 defaultfolderx
+deon
 deon-cloud
 deon-onprem
 depnotify
@@ -338,6 +357,8 @@ eastwestinstallationcenter
 eastwestopus
 eastwestplay
 easyfind
+eclipseideforcppdevelopers
+eclipseideforenterprisejavaandwebdevelopers
 eclipseideforjavadevelopers
 eclipsetemurin11
 eclipsetemurin17
@@ -381,6 +402,7 @@ extensisconnect
 facebookmessenger
 fantastical
 fastscripts
+fathom
 favro
 fellow
 ffmpegmartinriedl
@@ -418,8 +440,10 @@ focusritecontrol2
 fontagent10
 fontbase
 fontexplorer
+forel
 fork
 foxitpdfeditor
+foxitpdfreader
 franz
 freeplane
 front
@@ -434,6 +458,7 @@ gather2
 gathertown
 gdevelop
 geneiousprime
+gentilhomme
 gephi
 gfxcardstatus
 ghostty
@@ -499,6 +524,7 @@ hoppscotch
 horos
 hot
 houdahspot
+hpclick
 hpeasyadmin
 hpeasystart
 hubstaff
@@ -519,6 +545,7 @@ idrivethin
 igv
 iina
 ikproductmanager
+ilok
 imageoptim
 imazing3
 imazingprofileeditor
@@ -621,6 +648,7 @@ kommodoscreenrecorder
 korgsoftwarepass
 krisp
 krita
+labchartreader8
 lastpass
 lastpassdesktop
 latexit
@@ -659,6 +687,7 @@ loupedeck
 lovable
 lowprofile
 lsagent
+ltspice
 lucidlink
 lucifer
 lulu
@@ -671,8 +700,10 @@ macoslaps
 macpass
 macports
 mactex
+mactexbasic
 mactexfull
 mactracker
+macusb
 macvector
 magicbullet
 magnolia
@@ -774,6 +805,7 @@ mochatn3812
 mochatn5250
 mockoon
 moderncsv
+mole
 mongodbcompass
 monitorcontrol
 monotypeconnect
@@ -795,6 +827,7 @@ nanosaur
 nativeaccess
 nditools
 nessusagent
+netbird
 netiquette
 netnewswire
 netspot
@@ -852,6 +885,7 @@ openlens
 openrefine
 openvpnconnect
 openvpnconnectv3
+openworkenterprise
 opera
 oraclesqldeveloper
 orbstack
@@ -860,6 +894,7 @@ origin
 orion
 orkadesktop
 osquery
+otter
 ottomatic
 outputarcade
 outputhub
@@ -896,6 +931,7 @@ podmandesktop
 podmandesktopairgap
 polleverywhere
 polylens
+pop
 popsql
 portingkit
 postgresapp
@@ -931,9 +967,12 @@ python
 qgis-pr
 qgisltr
 qlab
+qualified
+quarto
 quickbooksonline
 r
 radiosilence
+radix
 raindropio
 rancherdesktop
 rapidapi
@@ -958,6 +997,7 @@ remotixagent
 renew
 renew-noagent
 resiliosynchome
+resolumearena
 retrobatch
 rhino7
 rhino8
@@ -977,7 +1017,9 @@ rogueamoebaaudiohijack4
 rogueamoebafission2
 rogueamoebaloopback2
 rogueamoebasoundsource5
+rokokostudio
 rokokostudiopreview
+rolle
 royaltsx
 rstudio
 rustdesk
@@ -1087,6 +1129,8 @@ supportapp
 surfdrive
 suspiciouspackage
 swiftdialog
+swiftpkgcli
+swiftpkgcombined
 swiftruntimeforcommandlinetools
 symantecvipaccess
 symhelper
@@ -1124,11 +1168,15 @@ telegram
 tembo
 tencentmeeting
 termius
+tesseraremote
+testnav
 texliveutility
 texshop
 texshop-alternative
 textexpander
 textmate
+textream
+thaw
 theunarchiver
 things
 thinlincclient
@@ -1216,7 +1264,9 @@ vlc
 vmwarefusion
 vmwarehorizonclient
 vncconnect
+vocevistavideopro
 vonagebusiness
+vorssaint
 vpntracker365
 vscodium
 vuescanintel
@@ -1268,6 +1318,7 @@ yubikeymanager
 yubikeymanagerqt
 zappy
 zbrush2025
+zbrush2026
 zed
 zen
 zenbrowser
