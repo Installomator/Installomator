@@ -1,4 +1,5 @@
-missive)
+missive|\
+missiveapp)
     name="Missive"
     type="dmg"
     downloadURL="https://mail.missiveapp.com/download/mac"
