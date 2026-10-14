@@ -238,7 +238,7 @@ getAppVersion() {
 
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
-        appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
+        appversion="$(pkgutil --pkg-info-plist "${packageID}" 2>/dev/null | plutil -extract pkg-version raw -o - -)"
         if [[ $appversion != "" ]]; then
             printlog "found packageID $packageID installed, version $appversion"
             updateDetected="YES"
@@ -628,9 +628,9 @@ installFromPKG() {
     spctlStatus=$(echo $?)
     printlog "spctlOut is $spctlOut" DEBUG
 
-    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $2 }' | tr -d '()' )
-    # Apple signed software has no teamID, grab entire origin instead
-    if [[ -z $teamID ]]; then
+    teamID=$(echo $spctlOut | awk -F '(' '/origin=/ {print $NF }' | tr -d '()' )
+    # Apple signed software has no teamID, grab entire text after origin= instead
+    if [[ -z $teamID ]] || [[ $teamID == "origin="* ]]; then
         teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
     fi
 
@@ -730,7 +730,7 @@ installFromPKG() {
         installFromPKG
     fi
 
-    if [[ $pkginstallstatus -ne 0 ]] ; then
+    if [[ $pkgInstallStatus -ne 0 ]] ; then
     #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
         cleanupAndExit 9 "Error installing $archiveName error:\n$logoutput" ERROR
     fi
@@ -832,7 +832,7 @@ installPkgInZip() {
     installFromPKG
 }
 
-installAppInDmgInZip() {
+installItemInDmgInZip() {
     # unzip the archive
     printlog "Unzipping $archiveName"
     tar -xf "$archiveName"
@@ -853,9 +853,21 @@ installAppInDmgInZip() {
         archiveName="$pkgName"
     fi
 
-    # installFromDMG, DMG expected to include an app (will not work with pkg)
-    installFromDMG
+    case $type in
+        appInDmgInZip)
+            # installFromDMG, DMG expected to include an app (will not work with pkg)
+            installFromDMG
+            ;;
+        pkgInDmgInZip)
+            # installPkgInDmg, DMG expected to include an pkg (will not work with app)
+            installPkgInDmg
+            ;;
+        *)
+            cleanupAndExit 99 "Cannot handle type $type" ERROR
+            ;;
+    esac
 }
+
 
 runUpdateTool() {
     printlog "Function called: runUpdateTool"
@@ -1055,4 +1067,3 @@ updateDialog() {
         fi
     fi
 }
-

@@ -1,7 +1,8 @@
 parsec)
     name="Parsec"
     type="pkg"
-    downloadURL="https://builds.parsecgaming.com/package/parsec-macos.pkg"
-    appNewVersion=$(curl -fsL https://parsec.app/changelog.xml | xmllint -xpath '//*[local-name()="build"]/text()' - | grep -oE '\d+-\d+$' | head -1 | sed -r 's/([0-9]+)-([0-9]+)/\1.\2.0/')
+    downloadURL="https://builds.parsec.app/package/parsec-macos.pkg"
+    appNewVersion=$(parsecTmpDir=$(mktemp -d); trap 'rm -rf "$parsecTmpDir"' EXIT; curl -fsL "$downloadURL" -o "$parsecTmpDir/parsec.pkg" && xar -xf "$parsecTmpDir/parsec.pkg" -C "$parsecTmpDir" PackageInfo && sed -nE 's/.*CFBundleShortVersionString="([^"]+)".*/\1/p' "$parsecTmpDir/PackageInfo" | head -1)
     expectedTeamID="Y9MY52XZDB"
+    blockingProcesses=( NONE )
     ;;

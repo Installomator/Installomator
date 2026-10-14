@@ -1,4 +1,5 @@
-chatgpt|codex)
+chatgpt|\
+codex)
     name="ChatGPT"
     type="zip"
     if [[ $(arch) == "arm64" ]]; then
