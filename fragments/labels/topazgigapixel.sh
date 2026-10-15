@@ -4,7 +4,7 @@ topazgigapixelai)
     type="pkg"
     versionKey="CFBundleShortVersionString"
     downloadURL="https://topazlabs.com/d/gigapixel/latest/mac/full"
-    archiveName=$(curl -fsIL $downloadURL | grep -i ^location | awk -F "/" '{print $NF}')
+    archiveName=$(curl -fsIL $downloadURL | grep -i ^location | awk -F "/" '{print $NF}' | tr -d '\r')
     appNewVersion=$(grep -oi "[0-9].*[0-9]" <<< $archiveName)
     expectedTeamID="3G3JE37ZHF"
     ;;
