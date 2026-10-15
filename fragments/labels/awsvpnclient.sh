@@ -11,4 +11,3 @@ awsvpnclient)
     appNewVersion="$(echo "$appcastXML" | xpath 'string(//rss/channel/item[1]/enclosure/@sparkle:version)' 2>/dev/null)"
     expectedTeamID="94KV3E626L"
     ;;
-
