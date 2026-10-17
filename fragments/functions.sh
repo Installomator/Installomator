@@ -4,7 +4,11 @@ cleanupAndExit() { # $1 = exit code, $2 message, $3 level
     if [ -n "$dmgmount" ]; then
         # unmount disk image
         printlog "Unmounting $dmgmount" DEBUG
-        unmountingOut=$(diskutil eject "$dmgmount" 2>&1)
+        if is-at-least 26 "$installedOSversion"; then
+            unmountingOut=$(diskutil eject "$dmgmount" 2>&1)
+        else
+            unmountingOut=$(hdiutil detach "$dmgmount" 2>&1)
+        fi
         printlog "Debugging enabled, Unmounting output was:\n$unmountingOut" DEBUG
     fi
     if [ "$DEBUG" -ne 1 ]; then
@@ -596,11 +600,17 @@ mountDMG() {
     # mount the dmg
     printlog "Mounting $tmpDir/$archiveName"
     # always pipe 'Y\n' in case the dmg requires an agreement
-    dmgmountOut=$(echo 'Y'$'\n' | diskutil image attach --mountOptions nobrowse --readOnly --plist "$tmpDir/$archiveName" )
-    dmgmountStatus=$(echo $?)
-    dmgmount=$(echo "$dmgmountOut" \
-    | awk '/<key>mount-point<\/key>/ {getline; print; exit}' \
-    | sed -E 's|.*<string>(.*)</string>.*|\1|')
+    if is-at-least 26 "$installedOSversion"; then
+        dmgmountOut=$(echo 'Y'$'\n' | diskutil image attach --mountOptions nobrowse --readOnly --plist "$tmpDir/$archiveName" )
+        dmgmountStatus=$(echo $?)
+        dmgmount=$(echo "$dmgmountOut" \
+        | awk '/<key>mount-point<\/key>/ {getline; print; exit}' \
+        | sed -E 's|.*<string>(.*)</string>.*|\1|')
+    else
+        dmgmountOut=$(echo 'Y'$'\n' | hdiutil attach "$tmpDir/$archiveName" -nobrowse -readonly )
+        dmgmountStatus=$(echo $?)
+        dmgmount=$(echo $dmgmountOut | tail -n 1 | cut -c 54- )
+    fi
     deduplicatelogs "$dmgmountOut"
 
     if [[ $dmgmountStatus -ne 0 ]] ; then
