@@ -1,4 +1,4 @@
-jetbrainsgoland|
+jetbrainsgoland|\
 goland)
     name="GoLand"
     type="dmg"
