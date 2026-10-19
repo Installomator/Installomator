@@ -1,5 +1,4 @@
 bettertouchtool)
-    # credit: Søren Theilgaard (@theilgaard)
     name="BetterTouchTool"
     type="zip"
     sparkleData=$(curl -fsL "https://updates.folivora.ai/appcast.xml")
