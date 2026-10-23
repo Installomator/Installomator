@@ -1,14 +1,10 @@
 snowflakeodbc)
-	name="Snowflake ODBC Driver"
-	type="pkgInDmg"
-	pkgName="snowflakeODBC.pkg"
-	packageID="net.snowflake.odbc"
-	expectedTeamID="W4NT6CRQ7U"
-	odbcYear=$(date +%Y)
-	appNewVersion=$(curl -fsL "https://docs.snowflake.com/en/release-notes/clients-drivers/odbc-${odbcYear}" | grep -oE "Version [0-9]+\.[0-9]+\.[0-9]+" | head -1 | awk '{print $2}')
-	if [[ -z "$appNewVersion" ]]; then
-		odbcYear=$((odbcYear - 1))
-		appNewVersion=$(curl -fsL "https://docs.snowflake.com/en/release-notes/clients-drivers/odbc-${odbcYear}" | grep -oE "Version [0-9]+\.[0-9]+\.[0-9]+" | head -1 | awk '{print $2}')
-	fi
-	downloadURL="https://sfc-repo.snowflakecomputing.com/odbc/macuniversal/${appNewVersion}/snowflake_odbc_mac_64universal-${appNewVersion}.dmg"
-	;;
+    name="Snowflake ODBC Driver"
+    type="pkgInDmg"
+    packageID="net.snowflake.odbc"
+    expectedTeamID="W4NT6CRQ7U"
+    odbcRepo="https://sfc-repo.snowflakecomputing.com/odbc/macuniversal"
+    appNewVersion=$(curl -fsL "$odbcRepo/" | grep -oE 'href="[0-9]+\.[0-9]+\.[0-9]+/index\.html"' | sed -E 's#href="([0-9]+\.[0-9]+\.[0-9]+)/index\.html"#\1#' | sort -t. -k1,1nr -k2,2nr -k3,3nr | head -n 1)
+    pkgName="snowflake-odbc-$appNewVersion.universal.pkg"
+    downloadURL="$odbcRepo/$appNewVersion/snowflake-odbc-$appNewVersion.universal.dmg"
+    ;;

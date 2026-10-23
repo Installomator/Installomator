@@ -1,5 +1,5 @@
-exelbanstats)
-    # credit: Søren Theilgaard (@theilgaard)
+exelbanstats|\
+stats)
     name="Stats"
     type="dmg"
     downloadURL=$(downloadURLFromGit exelban stats)

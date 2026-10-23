@@ -1,8 +1,8 @@
 bettertouchtool)
-    # credit: Søren Theilgaard (@theilgaard)
     name="BetterTouchTool"
     type="zip"
-    downloadURL="https://folivora.ai/releases/BetterTouchTool.zip"
-    appNewVersion=$(curl -fs https://updates.folivora.ai/bettertouchtool_release_notes.html | grep BetterTouchTool | head -n 2 | tail -n 1 | sed -E 's/.* ([0-9\.]*) .*/\1/g')
+    sparkleData=$(curl -fsL "https://updates.folivora.ai/appcast.xml")
+    appNewVersion=$(echo "$sparkleData" | xpath 'string((//*[local-name()="item"])[1]/enclosure/@*[local-name()="shortVersionString"])')
+    downloadURL=$(echo "$sparkleData" | xpath 'string((//*[local-name()="item"])[1]/enclosure/@url)')
     expectedTeamID="DAFVSXZ82P"
     ;;

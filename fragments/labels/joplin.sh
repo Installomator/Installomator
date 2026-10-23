@@ -1,9 +1,9 @@
 joplin)
     name="Joplin"
     type="dmg"
-    if [[ "$arch" == "arm64" ]]; then
+    if [[ "$(arch)" == "arm64" ]]; then
         archiveName="arm64.DMG"
-    elif [[ "$arch" == "i386" ]]; then
+    elif [[ "$(arch)" == "i386" ]]; then
         archiveName=".dmg"
     fi
     downloadURL=$(downloadURLFromGit laurent22 joplin)
