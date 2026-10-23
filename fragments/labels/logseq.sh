@@ -9,5 +9,5 @@ logseq)
         downloadURL=$(downloadURLFromGit logseq logseq)
     fi
     appNewVersion=$(versionFromGit logseq logseq)
-    expectedTeamID="3K44EUN829"
+    expectedTeamID="K378MFWK59"
     ;;

@@ -6,4 +6,3 @@ superwhisper)
     appNewVersion=$(echo $sparkleFeed | xpath 'string(//rss/channel/item[1]/sparkle:version)' 2>/dev/null)
     expectedTeamID="XDP69BYUP9"
     ;;
-    

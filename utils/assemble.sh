@@ -133,7 +133,7 @@ if [[ $buildScript -eq 1 ]]; then
 fi
 
 # build a pkg when flag is set
-if [[ buildPkg -eq 1 ]]; then
+if [[ $buildPkg -eq 1 ]]; then
     echo "# building installer package"
 
     tmpfolder=$(mktemp -d)

@@ -2,12 +2,12 @@ zulujdk17)
     name="Zulu JDK 17"
     type="pkgInDmg"
     packageID="com.azulsystems.zulu.17"
-    if [[ $(arch) == i386 ]]; then
-        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu17.*ca-jdk17.*x64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
-    elif [[ $(arch) == arm64 ]]; then
-        downloadURL=https://cdn.azul.com/zulu/bin/$(curl -fs "https://cdn.azul.com/zulu/bin/" | grep -Eio '">zulu17.*ca-jdk17.*aarch64.dmg(.*)' | cut -c3- | sed 's/<\/a>//' | sed -E 's/([0-9.]*)M//' | awk '{print $2 $1}' | sort | cut -c11- | tail -1)
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL=$(curl -fsL "https://api.azul.com/metadata/v1/zulu/packages/?java_version=17&os=macos&arch=arm&archive_type=dmg&java_package_type=jdk&javafx_bundled=false&release_status=ga&availability_type=CA&page_size=1" | plutil -extract 0.download_url raw -)
+    else
+        downloadURL=$(curl -fsL "https://api.azul.com/metadata/v1/zulu/packages/?java_version=17&os=macos&arch=x86&archive_type=dmg&java_package_type=jdk&javafx_bundled=false&release_status=ga&availability_type=CA&page_size=1" | plutil -extract 0.download_url raw -)
     fi
+    appNewVersion=$(echo "$downloadURL" | sed -E 's|.*/zulu([0-9]+\.[0-9]+)\.([0-9]+)-ca-jdk17.*|\1+\2|')
     expectedTeamID="TDTHCUPYFR"
-    appCustomVersion(){ java -version 2>&1 | grep Runtime | awk '{print $4}' | sed -e "s/.*Zulu//" | cut -d '-' -f 1 | sed -e "s/+/\./" }
-    appNewVersion=$(echo "$downloadURL" | cut -d "-" -f 1 | sed -e "s/.*zulu//") # Cannot be compared to anything
+    blockingProcesses=( NONE )
     ;;
