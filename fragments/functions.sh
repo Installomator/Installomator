@@ -435,13 +435,15 @@ reopenClosedProcess() {
     fi
 
     if [[ $appClosed == 1 ]]; then
-        printlog "Telling app $appName to open"
+        # an install error can exit before main.sh puts appName back after using installerTool
+        local reopenAppName="${originalAppName:-$appName}"
+        printlog "Telling app $reopenAppName to open"
         #runAsUser osascript -e "tell app \"$appName\" to open"
         #runAsUser open -a "${appName}"
-        reloadAsUser "open -a \"${appName}\""
+        reloadAsUser "open -a \"${reopenAppName}\""
         #reloadAsUser "open \"${(0)applist}\""
-        processuser=$(ps aux | grep -i "${appName}" | grep -vi "grep" | awk '{print $1}')
-        printlog "Reopened ${appName} as $processuser"
+        processuser=$(ps aux | grep -i "${reopenAppName}" | grep -vi "grep" | awk '{print $1}')
+        printlog "Reopened ${reopenAppName} as $processuser"
     else
         printlog "Installomator did not close any apps, so no need to reopen any apps." INFO
     fi
