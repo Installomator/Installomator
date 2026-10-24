@@ -1,0 +1,25 @@
+name: Label approved pull requests
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  label-approved:
+    # Only label a PR when a review is explicitly submitted as approved.
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add approved label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              labels: ['first-approval']
+            });
