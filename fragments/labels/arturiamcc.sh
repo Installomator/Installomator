@@ -1,19 +1,8 @@
 arturiamcc)
     name="MIDI Control Center"
     type="pkg"
-    arturiaDetails="$(curl -fsL 'https://www.arturia.com/api/resources?slugs=mccu&types=soft')"
-    arturiaCount=0
-    maxEntries=$(getJSONValue "$arturiaDetails" "length" 2>/dev/null)
-    downloadURL=""
-    appNewVersion=""
-    while [[ $arturiaCount -lt $maxEntries ]]; do
-        arturiaPlatform=$(getJSONValue "$arturiaDetails" "[$arturiaCount].platform_type" 2>/dev/null)
-        if [[ $arturiaPlatform == "mac" ]]; then
-            downloadURL=$(getJSONValue "$arturiaDetails" "[$arturiaCount].permalink")
-            appNewVersion=$(getJSONValue "$arturiaDetails" "[$arturiaCount].version")
-            break
-        fi
-        arturiaCount=$((arturiaCount + 1))
-    done
+    pkgName=$(curl -fsL "https://www.arturia.com/support/downloads-manuals/product/mccu" | grep -oE 'MIDI_Control_Center__[0-9_]+\.pkg' | sort -u -t_ -k5,5n -k6,6n -k7,7n -k8,8n | tail -1)
+    downloadURL="https://www.arturia.com/api/download/products/mccu/soft/${pkgName}"
+    appNewVersion=$(echo "$pkgName" | sed -E 's/.*__([0-9_]+)\.pkg/\1/; s/_/./g')
     expectedTeamID="T53ZHSF36C"
-;;
+    ;;
