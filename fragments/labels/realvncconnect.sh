@@ -1,4 +1,5 @@
-realvncconnect)
+realvncconnect|\
+realvncconnect8)
     name="RealVNC Connect"
     type="pkg"
     downloadURL="https://downloads.realvnc.com/download/file/realvnc-connect/RealVNC-Connect-Latest-MacOSX-universal.pkg"
