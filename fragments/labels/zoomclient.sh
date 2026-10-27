@@ -8,6 +8,5 @@ zoomclient)
     fi
     expectedTeamID="BJ4HAAB9B3"
     appNewVersion=$(curl -fsIL "$downloadURL" | cut -d "/" -f5)
-    blockingProcesses=( zoom.us )
     versionKey="CFBundleVersion"
     ;;
