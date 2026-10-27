@@ -1,3 +1,4 @@
+npssanta|\
 nps-santa|\
 npssantafull)
     name="Santa"
