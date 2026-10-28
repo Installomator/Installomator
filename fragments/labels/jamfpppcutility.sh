@@ -1,8 +1,7 @@
-jamfpppcutility)
-    # credit: Mischa van der Bent
+jamfpppcutility|pppcutility)
     name="PPPC Utility"
     type="zip"
-    downloadURL=$(downloadURLFromGit jamf PPPC-Utility)
-    appNewVersion=$(versionFromGit jamf PPPC-Utility)
+    downloadURL="$(downloadURLFromGit jamf PPPC-Utility)"
+    appNewVersion="$(versionFromGit jamf PPPC-Utility)"
     expectedTeamID="483DWKW443"
     ;;
