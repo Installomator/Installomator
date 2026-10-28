@@ -194,7 +194,8 @@ versionFromGit() {
     #appNewVersion=$(curl -L --silent --fail "https://api.github.com/repos/$gitusername/$gitreponame/releases/latest" | grep tag_name | cut -d '"' -f 4 | sed 's/[^0-9\.]//g')
     appNewVersion=$(curl -sLI "https://github.com/$gitusername/$gitreponame/releases/latest" | grep -i "^location" | tr "/" "\n" | tail -1 | sed 's/[^0-9\.]//g')
     if [ -z "$appNewVersion" ]; then
-        printlog "could not retrieve version number for $gitusername/$gitreponame" WARN
+        # to stderr, so a label's appNewVersion=$(versionFromGit ...) stays empty
+        printlog "could not retrieve version number for $gitusername/$gitreponame" WARN >&2
         appNewVersion=""
     else
         echo "$appNewVersion"
