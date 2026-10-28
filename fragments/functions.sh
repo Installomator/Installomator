@@ -578,8 +578,16 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         mountname=$(dirname $appPath)
         printlog "CLIInstaller exists, running installer command $mountname/$CLIInstaller $CLIArguments" INFO
 
-        CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
-        CLIstatus=$(echo $?)
+        if [[ -n $updateToolRunAsCurrentUser ]]; then
+            UserTemp=$(runAsUser mktemp -d /tmp/installomator_cli_install.XXXXXX)
+            mv "$mountname/$installerTool" "$UserTemp"
+            CLIoutput=$(runAsUser "$UserTemp/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
+            CLIstatus=$(echo $?)
+            rm -r "$UserTemp"
+        else
+            CLIoutput=$("$mountname/$CLIInstaller" "${CLIArguments[@]}" 2>&1)
+            CLIstatus=$(echo $?)
+        fi
         deduplicatelogs "$CLIoutput"
 
         if [ $CLIstatus -ne 0 ] ; then
