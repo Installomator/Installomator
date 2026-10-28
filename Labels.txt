@@ -197,6 +197,7 @@ charles
 chatgpt
 chatgptclassic
 chatwork
+checkpointsase
 chemdoodle
 chemdoodle2d
 chemdoodle3d
@@ -513,6 +514,7 @@ gyazogif
 hancock
 handbrake
 handy
+harmonysase
 harper
 hazel
 headlamp
@@ -573,7 +575,6 @@ ipvisionconnect
 iriunwebcam
 isadora
 isixdicomviewer
-island
 istatmenus
 iterm2
 itspaint
@@ -922,6 +923,7 @@ patchomator
 pcoipclient
 pdfexpert
 pdfsam
+perimeter81
 pgadmin4
 phoenixcode
 pika
@@ -1060,7 +1062,6 @@ sidekick
 sigil
 signal
 signiantapp
-silentknight
 silentknight3
 silnite
 sipgateclinq
