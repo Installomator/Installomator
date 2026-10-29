@@ -6,8 +6,13 @@ jre8)
     appNewVersion=$(echo "$sparkleData" | xmllint --xpath 'string((//*[local-name()="enclosure"]/@*[local-name()="version"])[last()])' -)
     appBuildVersion=$(echo "$appNewVersion" | cut -d. -f3)
     downloadURL=$(echo "$sparkleData" | xmllint --xpath 'string((//*[local-name()="enclosure"]/@url)[last()])' -)
+    if [[ $(arch) == "arm64" ]]; then
+        downloadURL="${downloadURL/macosx-x64/macosx-aarch64}"
+    else
+        downloadURL="${downloadURL/macosx-x64/macosx-x64}"
+    fi
     pkgName="Java 8 Update ${appBuildVersion}.app/Contents/Resources/JavaAppletPlugin.pkg"
-    appCustomVersion(){ defaults read "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Info.plist" "${versionKey}" 2>/dev/null }
+    appCustomVersion(){ defaults read "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Info.plist" "${versionKey}" 2>/dev/null; }
     expectedTeamID="VB5E2TV963"
     blockingProcesses=( NONE )
     ;;
