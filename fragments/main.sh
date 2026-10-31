@@ -348,6 +348,8 @@ fi
 if [ -n "$installerTool" ]; then
     # installerTool defined, and we use that for installation
     printlog "installerTool used: $installerTool" REQ
+    # keep the app's own name for finishing and reopenClosedProcess
+    originalAppName="$appName"
     appName="$installerTool"
 fi
 
@@ -377,6 +379,11 @@ case $type in
         cleanupAndExit 99 "Cannot handle type $type" ERROR
         ;;
 esac
+
+if [ -n "$installerTool" ]; then
+    # look for the installed app, not the installer
+    appName="$originalAppName"
+fi
 
 updateDialog "wait" "Finishing..."
 
