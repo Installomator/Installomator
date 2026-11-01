@@ -1,8 +1,8 @@
 amadeuspro3)
     name="Amadeus Pro 3"
     type="zip"
-    downloadURL="https://s3.amazonaws.com/HairerSoftPublic/AmadeusPro3/AmadeusPro.zip"
-    appNewVersion=$(curl -fsL "https://www.hairersoft.com/pro.html" | sed -nE '/Download Amadeus.*for macOS/{s/<[^>]*>/ /g;s/.*Pro +([0-9]+(\.[0-9]+)+) for macOS.*/\1/p;q;}')
+    amadeuspro3Feed=$(curl -fsL "https://s3.amazonaws.com/HairerSoftPublic/AmadeusPro3/AmadeusPro3.plist")
+    downloadURL=$(echo "$amadeuspro3Feed" | plutil -extract 'productURL'  raw -o - -)
+    appNewVersion=$(echo "$amadeuspro3Feed" | plutil -extract 'productVersion'  raw -o - -)
     expectedTeamID="FWDH9W45C2"
     ;;
-    
