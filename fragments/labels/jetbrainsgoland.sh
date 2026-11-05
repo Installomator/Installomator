@@ -1,4 +1,5 @@
-jetbrainsgoland)
+jetbrainsgoland|\
+goland)
     name="GoLand"
     type="dmg"
     jetbrainscode="GO"
