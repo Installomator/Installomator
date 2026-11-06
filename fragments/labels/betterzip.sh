@@ -1,8 +1,8 @@
 betterzip)
     name="BetterZip"
     type="zip"
-    downloadURL="https://macitbetter.com/BetterZip.zip"
-    appNewVersion=$(curl -Ls https://macitbetter.com/version-history/ | awk 'match($0,/Version[[:space:]]+[0-9]+(\.[0-9]+)+/){print substr($0,RSTART,RLENGTH)}' | head -n1 | awk '{print $2}')
-    versionKey="CFBundleShortVersionString"
+    sparkleData=$(curl -fsL "https://macitbetter.com/BetterZip6.rss")
+    appNewVersion=$(echo "$sparkleData" | xpath 'string((//*[local-name()="item"])[1]/*[local-name()="enclosure"]/@*[local-name()="shortVersionString"])' 2>/dev/null)
+    downloadURL=$(echo "$sparkleData" | xpath 'string((//*[local-name()="item"])[1]/*[local-name()="enclosure"]/@url)' 2>/dev/null)
     expectedTeamID="79RR9LPM2N"
     ;;
