@@ -4,5 +4,5 @@ macshot)
     archiveName="MacShot.dmg[0-9.]*"
     downloadURL="$(downloadURLFromGit sw33tLie macshot)"
     appNewVersion="$(versionFromGit sw33tLie macshot)"
-    expectedTeamID="BR52ZWX528"
+    expectedTeamID="J4XGH8RFS8"
     ;;
