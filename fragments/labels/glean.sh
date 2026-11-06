@@ -1,7 +1,7 @@
 glean)
     name="Glean"
-    type="dmg"
-    appNewVersion=$(curl -sL "https://storage.googleapis.com/glean-downloads/glean-desktop-app/latest-mac.yml" | grep "^version:" | sed 's/^version:[[:space:]]*\([0-9.]*\).*/\1/')
-    downloadURL="https://storage.googleapis.com/glean-downloads/glean-desktop-app/Glean-${appNewVersion}-universal.dmg"
+    type="pkg"
+    appNewVersion=$(curl -fsL "https://storage.googleapis.com/glean-downloads/glean-desktop-app/latest-mac.yml" | awk -F': ' '/^version:/{print $2; exit}')
+    downloadURL="https://storage.googleapis.com/glean-downloads/glean-desktop-app/Glean-${appNewVersion}-universal.pkg"
     expectedTeamID="877XN49FUQ"
     ;;

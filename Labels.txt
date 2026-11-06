@@ -33,6 +33,7 @@ aftermath
 aircall
 airflow
 airserver
+airstats
 airtable
 airtame
 airtamepkg
@@ -118,7 +119,6 @@ backgrounds
 balenaetcher
 balsamiqwireframes
 bambustudio
-bartender
 basecamp3
 baseline
 baseline-nodaemon
@@ -127,6 +127,7 @@ bbedit
 bbeditpkg
 beamstudio
 beekeeperstudio
+beeperdesktop
 betterdisplay
 bettershot
 bettertouchtool
@@ -197,6 +198,7 @@ charles
 chatgpt
 chatgptclassic
 chatwork
+checkpointsase
 chemdoodle
 chemdoodle2d
 chemdoodle3d
@@ -382,10 +384,10 @@ emdash
 enpass
 enteauth
 epicgameslauncher
+epidemicsound
 eposconnect
 epsonprintlayout
 escrowbuddy
-eshareosx
 espanso
 etrecheck
 etssecurebrowser
@@ -406,6 +408,7 @@ fathom
 favro
 fellow
 ffmpegmartinriedl
+ffprobemartinriedl
 fiddlereverywhere
 fierycommandworkstation
 figma
@@ -413,6 +416,7 @@ filemakerpro
 filemakerpro20
 filemakerpro21
 filemakerpro22
+filemakerpro26
 filmlab
 finalcutprocontent
 finaldraft11
@@ -481,6 +485,7 @@ goland
 golang
 googleadseditor
 googlechrome
+googlechromecanary
 googlechromeenterprise
 googlechromepkg
 googledrive
@@ -509,9 +514,11 @@ guardianbrowser
 guardlydata
 gyazo
 gyazogif
+hammerspoon
 hancock
 handbrake
 handy
+harmonysase
 harper
 hazel
 headlamp
@@ -549,6 +556,7 @@ ilok
 imageoptim
 imazing3
 imazingprofileeditor
+incidentio
 inetclearreportsdesigner
 infinitealgebra1
 infinitealgebra2
@@ -571,9 +579,10 @@ ipswupdater
 ipvisionconnect
 iriunwebcam
 isadora
-island
+isixdicomviewer
 istatmenus
 iterm2
+itspaint
 itsycal
 izotopeproductportal
 jabradirect
@@ -637,6 +646,7 @@ keyshot12
 keyshot2024
 keystoreexplorer
 kicad
+kilobat
 kimplusclientmodul
 kiro
 kirocli
@@ -699,6 +709,7 @@ macfuse
 macoslaps
 macpass
 macports
+macshot
 mactex
 mactexbasic
 mactexfull
@@ -737,6 +748,7 @@ microsoftazurestorageexplorer
 microsoftcompanyportal
 microsoftdefender
 microsoftdefenderatp
+microsoftdotnetsdk10
 microsoftedge
 microsoftedgebeta
 microsoftedgeconsumerstable
@@ -778,6 +790,7 @@ microsoftteamsnew
 microsoftteamsreset
 microsoftvisualstudiocode
 microsoftwindowsapp
+microsoftwindowsappbeta
 microsoftword
 microsoftwordreset
 midimonitor
@@ -788,6 +801,7 @@ miniconda
 minisim
 miro
 missive
+missiveapp
 mist
 mist-cli
 mixxx
@@ -839,13 +853,13 @@ nodejs
 nodejslts
 nomachine
 nomad
-nomadlogin
 nordlayer
 nordvpn
 notion
 notioncalendar
 nova
 nps-santa
+npssanta
 npssantafull
 nudge
 nudgesuite
@@ -866,6 +880,7 @@ ollama
 omnidisksweeper
 omnifocus3
 omnifocus4
+omnigent
 omnigraffle6
 omnigraffle7
 omnioutliner5
@@ -887,6 +902,7 @@ openvpnconnect
 openvpnconnectv3
 openworkenterprise
 opera
+operagx
 oraclesqldeveloper
 orbstack
 orcaslicer
@@ -899,6 +915,7 @@ ottomatic
 outputarcade
 outputhub
 outset
+outsystemsservicestudio
 overflow
 overlord
 owncloud
@@ -915,6 +932,7 @@ patchomator
 pcoipclient
 pdfexpert
 pdfsam
+perimeter81
 pgadmin4
 phoenixcode
 pika
@@ -947,6 +965,7 @@ privileges
 privileges2
 processing3
 processing4
+proclaim
 proctortrack
 projectplace
 promiseutility
@@ -954,6 +973,7 @@ promiseutilityr
 proofpointautoupdater
 propresenter7
 protondrive
+protonmail
 protonpass
 protonvpn
 proxyman
@@ -978,13 +998,16 @@ rancherdesktop
 rapidapi
 rawtherapee
 raycast
+realvncconnect
+realvncconnect8
 realvncondemandassist
 realvncserver
-realvncviewer
 reaper
+recordist
 rectangle
 redcanarymacmonitor
 redgiant
+redisinsight
 redshift
 redshiftlite
 reflector4
@@ -1052,7 +1075,7 @@ sidekick
 sigil
 signal
 signiantapp
-silentknight
+silentknight3
 silnite
 sipgateclinq
 sirimote
@@ -1112,6 +1135,7 @@ starface10x
 starface90x
 starface91x
 stats
+stats
 steelseriesengine
 steinbergactivationmanager
 steinberglibrarymanager
@@ -1122,6 +1146,7 @@ subethaedit
 sublimemerge
 sublimetext
 suitestudio
+sunsama
 supercollider
 superhuman
 superwhisper
@@ -1162,7 +1187,6 @@ teamviewerqs
 teamviewerqscustom
 teamwire
 techsmithaudiate
-techsmithcapture
 teladocproviderinstaller
 telegram
 tembo
@@ -1247,7 +1271,6 @@ veracrypt
 veracrypt-fuse-t
 veracrypt-macfuse
 vernierspectralanalysis
-vfx
 viennaassistant
 vimcal
 virtualbox

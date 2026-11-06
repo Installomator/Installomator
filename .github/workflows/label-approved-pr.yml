@@ -1,0 +1,17 @@
+name: Label approved pull requests
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  label-approved:
+    # Only label a PR when a review is explicitly submitted as approved.
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record approved review
+        run: echo "Approved review received."
