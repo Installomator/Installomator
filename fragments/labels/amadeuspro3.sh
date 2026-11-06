@@ -1,8 +1,9 @@
-amadeuspro3)
-    name="Amadeus Pro 3"
-    type="zip"
-    downloadURL="https://s3.amazonaws.com/HairerSoftPublic/AmadeusPro3/AmadeusPro.zip"
-    appNewVersion=$(curl -fsL "https://www.hairersoft.com/pro.html" | sed -nE '/Download Amadeus.*for macOS/{s/<[^>]*>/ /g;s/.*Pro +([0-9]+(\.[0-9]+)+) for macOS.*/\1/p;q;}')
-    expectedTeamID="FWDH9W45C2"
+audacity|\
+audacity3)
+    name="Audacity"
+    type="dmg"
+    releaseData=$(curl -fsL "https://api.github.com/repos/audacity/audacity/releases?per_page=100")
+    downloadURL=$(printf '%s\n' "$releaseData" | awk -F '"' '/"browser_download_url":/ && /audacity-macOS-3\.[0-9]+\.[0-9]+-universal\.dmg/ && url == "" { url=$4 } END { print url }')
+    appNewVersion=$(printf '%s\n' "$downloadURL" | sed -E 's|.*/audacity-macOS-([0-9]+(\.[0-9]+)+)-universal\.dmg$|\1.0|')
+    expectedTeamID="6EPAF2X3PR"
     ;;
-    
