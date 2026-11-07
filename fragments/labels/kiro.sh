@@ -1,11 +1,12 @@
 kiro)
     name="Kiro"
-    type="dmg"
+    type="zip"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL=$(curl -fsL "https://kiro.dev/downloads" | grep -Eo 'https://prod\.download\.desktop\.kiro\.dev/releases/stable/darwin-arm64/signed/[0-9]+\.[0-9]+\.[0-9]+/kiro-ide-[0-9]+\.[0-9]+\.[0-9]+-stable-darwin-arm64\.dmg' | head -1)
+        kiroFeed=$(curl -fsL "https://prod.download.desktop.kiro.dev/stable/metadata-darwin-arm64-stable.json")
     elif [[ $(arch) == "i386" ]]; then
-        downloadURL=$(curl -fsL "https://kiro.dev/downloads" | grep -Eo 'https://prod\.download\.desktop\.kiro\.dev/releases/stable/darwin-x64/signed/[0-9]+\.[0-9]+\.[0-9]+/kiro-ide-[0-9]+\.[0-9]+\.[0-9]+-stable-darwin-x64\.dmg' | head -1)
+        kiroFeed=$(curl -fsL "https://prod.download.desktop.kiro.dev/stable/metadata-darwin-x64-stable.json")
     fi
-    appNewVersion=$(echo "$downloadURL" | sed -E 's|.*/signed/([0-9]+\.[0-9]+\.[0-9]+)/.*|\1|')
+    downloadURL=$(getJSONValue "$kiroFeed" "releases[0].updateTo.url")
+    appNewVersion=$(getJSONValue "$kiroFeed" "releases[0].updateTo.version")
     expectedTeamID="94KV3E626L"
     ;;
