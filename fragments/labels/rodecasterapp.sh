@@ -1,7 +1,8 @@
 rodecasterapp)
     name="RODECaster App"
     type="pkgInZip"
-    downloadURL="https://update.rode.com/rc-app/RODECaster_App_MACOS.zip"
-    appNewVersion=$(curl -fLs https://rode.com/en/release-notes/rodecaster-app | grep -oE "Version [0-9]+\.[0-9]+\.[0-9.]*" | awk '{print $2}' | sort --version-sort | tail -1)
+    rodecasterJSON=$(curl -fsL "https://update.rode.com/rode-devices-manifest.json")
+    downloadURL="https://$(getJSONValue "$rodecasterJSON" '["rc-app-manifest"].macos["main-version"]["download-URL"]' | sed -E 's|^https?://||')"
+    appNewVersion=$(getJSONValue "$rodecasterJSON" '["rc-app-manifest"].macos["main-version"]["update-version"]')
     expectedTeamID="Z9T72PWTJA"
     ;;
