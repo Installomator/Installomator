@@ -1,8 +1,8 @@
 mestrenova)
     name="MestReNova"
     type="dmg"
-    mestrenovaDownloadVersion=$(curl -fs "https://mestrelab.com/download" | grep -Ei '([0-9]+.){2}[0-9]-[0-9]{5}' | head -n 1 | sed -E 's/.*-([0-9]+.[0-9]+.[0-9]+-[0-9]{5}).*/\1/g')
-    downloadURL="https://mestrelab.com/downloads/mnova/mac/MestReNova-$mestrenovaDownloadVersion.dmg"
-    appNewVersion=$(echo "$mestrenovaDownloadVersion" | cut -d '-' -f1)
+    mestrenovaFeed=$(curl -fsL "http://mestrelab.com/mnova-auto-upgrade-service")
+    downloadURL=$(echo "$mestrenovaFeed" | xpath '(//Products/Product[Platform="Mac"]/URL)[1]/text()' 2>/dev/null | sed 's|^http://|https://|')
+    appNewVersion=$(echo "$mestrenovaFeed" | xpath '(//Products/Product[Platform="Mac"]/Version)[1]/text()' 2>/dev/null)
     expectedTeamID="DH5EKRR34H"
     ;;
