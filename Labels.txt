@@ -332,6 +332,7 @@ diskdrill
 diskspace
 displaylinkmanager
 docker
+dockersbx
 dockutil
 doctolib
 domzilla-caffeine
@@ -709,6 +710,7 @@ macfuse
 macoslaps
 macpass
 macports
+macsfancontrol
 macshot
 mactex
 mactexbasic
