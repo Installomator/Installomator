@@ -1,13 +1,13 @@
 toonboomstoryboardpro2025)
     name="Storyboard Pro 25"
     type="dmg"
-    version=$(curl -s "https://fileshare.toonboom.com/wl/?id=gXDIzUJu4BznZHs9e15WxLJdooDPu6ii" | grep -oE '25\.[0-9]+\.[0-9]+' | sort -V | tail -1)
-    build=$(curl -s "https://docs.toonboom.com/help/storyboard-pro-25/storyboard/release-notes/storyboard-pro-25-release-notes.html" | grep -iEo 'build[^0-9]*([0-9]{4,6})' | grep -oE '[0-9]{4,6}')
-    appNewVersion=(${version}.${build})
-    downloadURL="https://fileshare.toonboom.com/wl/?id=gXDIzUJu4BznZHs9e15WxLJdooDPu6ii&path=${version}%2FSBP25-mac-${build}.dmg&mode=list&download=1"
-    folderName="Toon Boom Storyboard Pro 25"
-    appName="${folderName}/Storyboard Pro 25.app"
+    downloadURL=$(curl -s "https://updates.toonboom.com/updates.php?p=sboardPro&v=25.0.0&b=00000" | sed -n 's/.*<package platform="macos" open_in_browser="false">\([^<]*\).*/\1/p')
+    version=$(curl -s "https://updates.toonboom.com/updates.php?p=sboardPro&v=25.0.0&b=00000" | xmllint --xpath 'string(//update/@version)' -)
+    major_minor=${version:0:4}
+    folderName="Toon Boom Storyboard Pro ${major_minor}"
+    appName="${folderName}/Storyboard Pro ${major_minor}.app"
+    appNewVersion=$(curl -s "https://updates.toonboom.com/updates.php?p=sboardPro&v=25.0.0&b=00000" | xmllint --xpath 'string(//update/@version)' -)
     versionKey="CFBundleVersion"
     expectedTeamID="U5LPYJSPQ3"
     ;;
-
+    
