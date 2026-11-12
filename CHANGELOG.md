@@ -19,7 +19,7 @@
 
 ## v10.10
 
-## New Labels
+### New Labels
 
   - airstats
   - amadeuspro3
@@ -113,6 +113,7 @@
   - labchartreader8
   - lastpassdesktop
   - levelscreenrecorder
+  - littlekeebo
   - lovable
   - ltspice
   - macsfancontrol
@@ -186,19 +187,28 @@
   - zoapi
   - zoomvdiplugin
 
-## Removed Labels
+### Deleted Labels
 
   - audacity
   - bartender
   - basictex
+  - code42
   - codex
+  - debookee
   - eshareosx
+  - facebookmessenger
+  - goland
   - harmonysase
+  - horos
   - island
   - mactex
+  - magicbullet
+  - maxcycling74
   - microsoftteams
+  - nomad
   - nomadlogin
   - nps-santa
+  - origin
   - realvncviewer
   - sketchupviewer
   - skype
@@ -207,6 +217,163 @@
   - techsmithcapture
   - vfx
   - vmwarehorizonclient
+  - vuescanintel
+
+### Updated Labels
+
+  - 1password8
+  - 4kvideodownloader
+  - 4kvideodownloaderplus
+  - 8x8
+  - adobecreativeclouddesktop
+  - aircall
+  - amadeuspro2
+  - amazoncorretto25jdk
+  - anaconda
+  - anastasiysextensionmanager
+  - androidfiletransfer
+  - androidstudio
+  - anki
+  - anotherredisdesktopmanager
+  - antcon
+  - apachenetbeans
+  - appsanywhere
+  - arcbrowser
+  - arturiamcc
+  - arturiasoftwarecenter
+  - asperaconnect
+  - awsvpnclient
+  - bettertouchtool
+  - betterzip
+  - beyondcomparepro
+  - bitwarden
+  - blackhole16ch
+  - blackhole2ch
+  - blackhole64
+  - boxsync
+  - bruno
+  - camtasia2024
+  - camunda
+  - canva
+  - captureone
+  - carboncopycloner
+  - catoclient
+  - chatgpt
+  - citrixworkspace
+  - claudedesktop
+  - cmake
+  - colourcontrastanalyser
+  - cricutdesignspace
+  - cycling74max
+  - dbvisualizer
+  - dcpomatic
+  - devin
+  - dialpad
+  - digiexam
+  - diskdrill
+  - displaylinkmanager
+  - docker
+  - eclipseideforjavadevelopers
+  - eclipsetemurin25
+  - elevate24
+  - elgatocamerahub
+  - espanso
+  - exelbanstats
+  - ffmpegmartinriedl
+  - firefoxesr
+  - flstudiomac
+  - fork
+  - foxitpdfeditor
+  - gitkraken
+  - googlechrome
+  - googlechromeenterprise
+  - googledrive
+  - goose
+  - grammarly
+  - jamfreenroller
+  - jamovi
+  - jetbrainsgoland
+  - jetbrainspycharm
+  - jetbrainsrider
+  - jetbrainsrubymine
+  - joplin
+  - jre8
+  - kiro
+  - korgsoftwarepass
+  - launchcontrol
+  - lexarrecoverytool
+  - libreoffice
+  - lmstudio
+  - logitechoptionsplus
+  - logseq
+  - macadminspython
+  - macports
+  - mactracker
+  - mailtooutlook
+  - microsoftazuredatastudio
+  - microsoftonedrivesuprod
+  - microsoftteamsnew
+  - microsoftvisualstudiocode
+  - mysqlworkbenchce
+  - nditools
+  - nodejs
+  - notion
+  - nudge
+  - nudgesuite
+  - obsidian
+  - oktaverify
+  - omnissahorizonclient
+  - onyx
+  - openvpnconnectv3
+  - outputhub
+  - parsec
+  - patchomator
+  - pcoipclient
+  - pique
+  - plantronicshub
+  - podman
+  - polylens
+  - processing4
+  - prusaslicer
+  - python
+  - raycast
+  - redgiant
+  - royaltsx
+  - rstudio
+  - sequelace
+  - shottr
+  - sigil
+  - silentknight
+  - smartgit
+  - soapuiopensource
+  - solstice
+  - sonoss2
+  - spotify
+  - sqldeveloper
+  - starface10x
+  - starface90x
+  - starface91x
+  - synergyeditorbasketball
+  - tableaureader
+  - teamviewer
+  - teamviewerhost
+  - tencentmeeting
+  - things
+  - topazgigapixel
+  - topazvideo
+  - tropy
+  - vuescanuni
+  - wacomdrivers
+  - wrikeformac
+  - xcreds
+  - yubikeymanagerqt
+  - zbrush2025
+  - zoomclient
+  - zulujdk17
+
+### Renamed Label Files
+
+- npssantafull.sh -> npssanta.sh
 
 ## Updated Labels
 
