@@ -1,8 +1,9 @@
 arq7)
-    name="Arq7"
+    name="Arq"
     type="pkg"
     packageID="com.haystacksoftware.Arq"
-    downloadURL="https://arqbackup.com/download/arqbackup/Arq7.pkg"
-    appNewVersion="$(curl -fs "https://arqbackup.com" | grep -io "version .*[0-9.]*.* for macOS" | cut -d ">" -f2 | cut -d "<" -f1)"
+    downloadURL="https://www.arqbackup.com/download/arqbackup/Arq7.pkg"
+    appNewVersion=$(curl -fsSL "https://www.arqbackup.com/download/arqbackup/arq7_release_notes.html" | sed -nE 's|<h1>Release Notes for Arq Backup Version ([0-9]+(\.[0-9]+)+)</h1>|\1|p' | head -n 1)
     expectedTeamID="48ZCSDVL96"
+    blockingProcesses=( "Arq" "ArqAgent" "ArqMonitor" )
     ;;
