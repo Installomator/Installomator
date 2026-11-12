@@ -35,11 +35,15 @@ if [[ $label == "version" ]]; then
 fi
 
 # MARK: reading rest of the arguments
+# Arguments are evaluated here, before the GITHUBAPI token is checked below, and one can already call
+# downloadURLFromGit or versionFromGit (e.g. with valuesfromarguments). Unset, "${githubAUTH[@]}" becomes
+# an empty argument that curl rejects; empty, it expands to nothing and the request runs unauthenticated.
+githubAUTH=()
 argumentsArray=()
 while [[ -n $1 ]]; do
     if [[ $1 =~ ".*\=.*" ]]; then
         # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" INFO
+        printlog "setting variable from argument ${1/#GITHUBAPI=*/GITHUBAPI=<redacted>}" INFO
         argumentsArray+=( $1 )
         eval $1
     fi
@@ -47,7 +51,9 @@ while [[ -n $1 ]]; do
     shift 1
 done
 printlog "Total items in argumentsArray: ${#argumentsArray[@]}" INFO
-printlog "argumentsArray: ${argumentsArray[*]}" INFO
+# copy of argumentsArray that is safe to write to logs
+argumentsLog=( ${argumentsArray[@]/#GITHUBAPI=*/GITHUBAPI=<redacted>} )
+printlog "argumentsArray: ${argumentsLog[*]}" INFO
 
 # NOTE: Use proxy for network access if defined
 if [[ -n $PROXY ]]; then
@@ -104,6 +110,22 @@ printlog "################## $label" INFO
 # Check for DEBUG mode
 if [[ $DEBUG -gt 0 ]]; then
     printlog "DEBUG mode $DEBUG enabled." DEBUG
+fi
+
+# NOTE: Use GitHub API token for api.github.com requests if defined
+githubAUTH=()
+if [[ -n $GITHUBAPI ]]; then
+    githubAUTH=( -H "Authorization: Bearer $GITHUBAPI" )
+    # requests to the rate_limit endpoint do not count against the rate limit
+    githubHeaders=$(curl -s -D - -o /dev/null "${githubAUTH[@]}" "https://api.github.com/rate_limit" | tr -d '\r')
+    if [[ $(echo "$githubHeaders" | head -1) != *" 200"* ]]; then
+        printlog "GITHUBAPI token could not be verified ($(echo "$githubHeaders" | head -1)), continuing without it" WARN
+        githubAUTH=()
+    else
+        # only log the limit, the remaining count from rate_limit did not go down in testing
+        githubLimit=$(echo "$githubHeaders" | awk -F ': ' 'tolower($1) == "x-ratelimit-limit" { print $2 }')
+        printlog "Using GITHUBAPI token, GitHub API rate limit is $githubLimit requests per hour" INFO
+    fi
 fi
 
 # How we get version number from app
