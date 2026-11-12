@@ -1,7 +1,8 @@
 launchcontrol)
     name="LaunchControl"
     type="tbz"
-    appNewVersion="$(curl -fsL https://www.soma-zone.com/download | grep -oE 'files/LaunchControl-[0-9]+\.[0-9]+(\.[0-9]+)?\.tar\.xz' | sed -E 's/files\/LaunchControl-([0-9.]+)\.tar\.xz/\1/' | head -n 1)"
-    downloadURL="https://www.soma-zone.com/download/files/LaunchControl-${appNewVersion}.tar.xz"
+    launchcontrolFeed="$(curl -fsL "https://www.soma-zone.com/LaunchControl/a/appcast-update-2.xml")"
+    downloadURL="$(echo "${launchcontrolFeed}" | xpath 'string((//rss/channel/item)[1]/enclosure/@url)' 2>/dev/null)"
+    appNewVersion="$(echo "${launchcontrolFeed}" | xpath 'string((//rss/channel/item)[1]/enclosure/@sparkle:shortVersionString)' 2>/dev/null)"
     expectedTeamID="H665B6EEXC"
     ;;
