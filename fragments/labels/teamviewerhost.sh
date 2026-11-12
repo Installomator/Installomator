@@ -1,10 +1,8 @@
 teamviewerhost)
     name="TeamViewerHost"
-    type="pkgInDmg"
-    packageID="com.teamviewer.teamviewerhost"
-    pkgName="Install TeamViewerHost.app/Contents/Resources/Install TeamViewerHost.pkg"
-    downloadURL="https://download.teamviewer.com/download/TeamViewerHost.dmg"
-    appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
+    type="pkg"
+    teamViewerHostFeed=$(curl -fsL "https://download.teamviewer.com/download/update/macupdates.xml?lang=en&version=15.00.0&os=macos&osversion=27.0&type=1&channel=1")
+    downloadURL=$(echo "$teamViewerHostFeed" | xpath 'string((//rss/channel/item/enclosure[@teamviewer:module="host"][@teamviewer:kind="pkg"])[1]/@url)' 2>/dev/null)
+    appNewVersion=$(echo "$teamViewerHostFeed" | xpath 'string((//rss/channel/item/enclosure[@teamviewer:module="host"][@teamviewer:kind="pkg"])[1]/@sparkle:version)' 2>/dev/null)
     expectedTeamID="H7UGFBUGV6"
-    #blockingProcessesMaxCPU="5" # Future feature
     ;;
