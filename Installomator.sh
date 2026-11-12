@@ -352,8 +352,8 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
         rosetta2=no
     fi
 fi
-VERSION="10.10beta"
-VERSIONDATE="2026-11-09"
+VERSION="10.10"
+VERSIONDATE="2026-11-12"
 
 # MARK: Functions
 
@@ -2696,6 +2696,15 @@ aviatrix)
     type="pkg"
     downloadURL="https://s3-us-west-2.amazonaws.com/aviatrix-download/AviatrixVPNClient/AVPNC_mac.pkg"
     expectedTeamID="32953Z7NBN"
+    ;;
+awdlguard)
+    name="AWDL Guard"
+    type="pkg"
+    archiveName="AWDLGuard-[0-9.]*.pkg"
+    downloadURL=$(downloadURLFromGit moragabriele awdl-guard)
+    appNewVersion=$(versionFromGit moragabriele awdl-guard)
+    expectedTeamID="9WCXJSYTFT"
+    blockingProcesses=( NONE )
     ;;
 awscli2)
     # credit: Bilal Habib (@Pro4TLZZ)
@@ -8343,7 +8352,7 @@ macshot)
     archiveName="MacShot.dmg[0-9.]*"
     downloadURL="$(downloadURLFromGit sw33tLie macshot)"
     appNewVersion="$(versionFromGit sw33tLie macshot)"
-    expectedTeamID="BR52ZWX528"
+    expectedTeamID="J4XGH8RFS8"
     ;;
 mactexbasic|\
 basictex)
@@ -11429,6 +11438,14 @@ sdnotary2)
     downloadURL=$(curl -fsL "https://latenightsw.com/sd-notary-2-released/" | grep -Eo 'https://s3.amazonaws.com/latenightsw.com/SDNotary2-[^"<[:space:]]+\.zip' | head -n 1)
     appNewVersion=$(echo "$downloadURL" | sed -E 's|.*/SDNotary2-([0-9.]+)-[0-9]+\.zip|\1|')
     expectedTeamID="Z7S6X96M3X"
+    ;;
+seconddisplay)
+    name="Second Display"
+    type="dmg"
+    sparkleData=$(curl -fsL "https://seconddisplay.app/updates/appcast.xml")
+    appNewVersion=$(echo "$sparkleData" | xpath 'string(//rss/channel/item[1]/*[local-name()="shortVersionString"])')
+    downloadURL=$(echo "$sparkleData" | xpath 'string(//rss/channel/item[1]/enclosure/@url)')
+    expectedTeamID="Z26LH56G3H"
     ;;
 secretive)
     name="Secretive"

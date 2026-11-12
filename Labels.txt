@@ -110,6 +110,7 @@ automounter
 autopkgr
 avertouch
 aviatrix
+awdlguard
 awscli2
 awsvpnclient
 axurerp10
@@ -1064,6 +1065,7 @@ scribus
 scrollreverser
 sdnotary
 sdnotary2
+seconddisplay
 secretive
 selfcontrol
 sequelace
