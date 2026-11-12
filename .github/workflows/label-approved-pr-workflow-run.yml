@@ -1,0 +1,65 @@
+name: Label approved pull requests (write)
+
+on:
+  workflow_run:
+    workflows: ["Label approved pull requests"]
+    types: [completed]
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  label-approved:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add approved label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowRun = context.payload.workflow_run;
+            if (workflowRun.event !== 'pull_request_review' || workflowRun.conclusion !== 'success') {
+              return;
+            }
+
+            const headRepository = workflowRun.head_repository;
+            const reviewer = workflowRun.actor?.login;
+            if (!headRepository?.owner?.login || !reviewer) {
+              core.info('The workflow run is missing its head repository or reviewer.');
+              return;
+            }
+
+            const pullRequests = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${headRepository.owner.login}:${workflowRun.head_branch}`,
+              per_page: 100
+            });
+            const pullRequest = pullRequests.find(pr => pr.head.sha === workflowRun.head_sha);
+            if (!pullRequest) {
+              core.info('No open pull request matches the workflow run.');
+              return;
+            }
+
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pullRequest.number,
+              per_page: 100
+            });
+            const reviewerReviews = reviews
+              .filter(review => review.user?.login === reviewer && review.submitted_at)
+              .sort((a, b) => Date.parse(a.submitted_at) - Date.parse(b.submitted_at));
+            const latestReview = reviewerReviews[reviewerReviews.length - 1];
+            if (latestReview?.state !== 'APPROVED') {
+              core.info('The reviewer’s latest review is not an approval.');
+              return;
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pullRequest.number,
+              labels: ['first-approval']
+            });

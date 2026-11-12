@@ -1,5 +1,4 @@
 bruno)
-    # https://github.com/usebruno/bruno; https://www.usebruno.com/
     name="Bruno"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then

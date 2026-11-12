@@ -1,8 +1,9 @@
 nodejs)
     name="nodejs"
     type="pkg"
-    appNewVersion=$(curl -s -L https://nodejs.org/dist/latest/ | sed -nE 's|.*>node-(.*)\.pkg</a>.*|\1|p')
-    appCustomVersion(){/usr/local/bin/node -v}
-    downloadURL="https://nodejs.org/dist/latest/node-$(curl -s -L https://nodejs.org/dist/latest/ | sed -nE 's|.*>node-(.*)\.pkg</a>.*|\1|p').pkg"
+    packageID="org.nodejs.node.pkg"
+    appNewVersion=$(getJSONValue "$(curl -fsL https://nodejs.org/dist/index.json)" "[0].version")
+    downloadURL="https://nodejs.org/dist/${appNewVersion}/node-${appNewVersion}.pkg"
     expectedTeamID="HX7739G8FX"
+    blockingProcesses=( NONE )
     ;;

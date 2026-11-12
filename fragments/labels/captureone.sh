@@ -1,4 +1,5 @@
-captureone|captureonepro)
+captureone|\
+captureonepro)
     name="Capture One"
     type="dmg"
     captureoneSparkle=$(curl -fsL "https://www.captureone.com/update/capture-one-mac.xml")

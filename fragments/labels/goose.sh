@@ -1,8 +1,12 @@
 goose)
     name="Goose"
     type="zip"
-    downloadURL="$(downloadURLFromGit block goose)"
-    appNewVersion="$(versionFromGit block goose)"
-    expectedTeamID="W2L75AE9HQ"
-    blockingProcesses=( "Goose" )
+    appNewVersion=$(versionFromGit aaif-goose goose)
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="Goose.zip"
+    else
+        archiveName="Goose_intel_mac.zip"
+    fi
+    downloadURL=$(downloadURLFromGit aaif-goose goose)
+    expectedTeamID="5N2JF58U87"
     ;;

@@ -1,7 +1,13 @@
 outputhub)
     name="Output Hub"
     type="dmg"
-    downloadURL="$(curl -fsL "https://output.com/hub"| grep "Mac Download" | cut -d\" -f4)"
-    appNewVersion=$( curl -fsL "https://output-hub-builds.s3.amazonaws.com/latest-mac.yml" | grep "^version:" | cut -d" " -f2 )
+    ymlContent=$(curl -fsL "https://release-builds.outputaudio.com/output-hub/latest-mac.yml" | tr -d '\r')
+    dmgName=$(echo "$ymlContent" | sed -n 's/^[[:space:]]*-[[:space:]]*url:[[:space:]]*\(.*\.dmg\)[[:space:]]*$/\1/p' | head -n 1)
+    if [[ $dmgName =~ -([0-9.]+)-mac ]]; then
+        appNewVersion=$match[1]
+    fi
+    dmgNameEncoded=${dmgName// /%20}
+    downloadURL="https://release-builds.outputaudio.com/output-hub/${dmgNameEncoded}"
+    versionKey="CFBundleVersion"
     expectedTeamID="M4BQRFQ23V"
     ;;

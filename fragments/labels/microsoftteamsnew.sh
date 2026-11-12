@@ -1,3 +1,4 @@
+microsoftteams|\
 microsoftteamsnew)
     name="Microsoft Teams"
     type="pkg"

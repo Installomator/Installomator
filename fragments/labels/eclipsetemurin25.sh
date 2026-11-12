@@ -8,7 +8,7 @@ eclipsetemurin25)
     fi
     downloadURL=$(getJSONValue "$(curl -fsSL "https://api.adoptium.net/v3/assets/latest/25/hotspot?os=mac&image_type=jdk&vendor=eclipse&architecture=${cpu_arch}")" '[0].binary.installer.link')
     archiveName="$(basename "$downloadURL")"
-    appNewVersion="$(echo "$downloadURL" | grep -oE 'jdk-21(\.0\.)?([0-9]+)?(\.[0-9]+)?%2B[0-9]+(\.[0-9]+)?' | sed 's/jdk-//; s/%2B/+/g')"
+    appNewVersion="$(echo "$downloadURL" | grep -oE 'jdk-25(\.0\.)?([0-9]+)?(\.[0-9]+)?%2B[0-9]+(\.[0-9]+)?' | sed 's/jdk-//; s/%2B/+/g')"
     expectedTeamID="JCDTMS22B4"
     appCustomVersion(){ if [ -f "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Info.plist" ]; then /usr/bin/defaults read "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Info.plist" "CFBundleGetInfoString" | sed 's/OpenJDK //; s/-LTS//'; fi }
     ;;

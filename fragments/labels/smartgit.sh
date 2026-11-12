@@ -2,10 +2,11 @@ smartgit)
     name="SmartGit"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-    downloadURL="https://www.syntevo.com$(curl -fs "https://www.syntevo.com/smartgit/download/" | grep -i -o -E "/downloads/.*/smartgit.*\.dmg" | tail -1)"
-    elif [[ $(arch) == "i386" ]]; then
-    downloadURL="https://www.syntevo.com$(curl -fs "https://www.syntevo.com/smartgit/download/" | grep -i -o -E "/downloads/.*/smartgit.*\.dmg" | head -1)"
+        smartgitArch="arm64"
+    else
+        smartgitArch="x86_64"
     fi
-    appNewVersion="$(curl -fs "https://www.syntevo.com/smartgit/changelog.txt" | grep -i -E "SmartGit *[0-9.]* *.*" | head -1 | awk '{print $2}')"
+    downloadURL=$(curl -fs "https://www.smartgit.dev/download/" | grep -o -E "https://download\.smartgit\.dev/smartgit/smartgit-[0-9_]+-macos-${smartgitArch}\.dmg" | sort -V | tail -1)
+    appNewVersion=$(echo "$downloadURL" | sed -E 's/.*smartgit-([0-9_]+)-macos.*/\1/; s/_/./g')
     expectedTeamID="PHMY45PTNW"
     ;;
