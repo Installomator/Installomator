@@ -9,5 +9,6 @@ toonboomstoryboardpro2027)
     appName="${folderName}/Storyboard Pro ${majorMinor}.app"
     versionKey="CFBundleVersion"
     expectedTeamID="U5LPYJSPQ3"
+    blockingProcesses=( "Storyboard Pro" )
     ;;
 
