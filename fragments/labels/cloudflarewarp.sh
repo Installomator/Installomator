@@ -1,5 +1,6 @@
 cloudflarewarp)
     name="Cloudflare_WARP"
+    appName="Cloudflare WARP.app"
     type="pkg"
     packageID="com.cloudflare.1dot1dot1dot1.macos"
     downloadURL="https://1111-releases.cloudflareclient.com/mac/latest"
