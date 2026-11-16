@@ -8,7 +8,11 @@ logitechoptionsplus)
         printlog "Logi Options+ download could not be safely verified for this macOS version." ERROR
         cleanupAndExit 95 "Logi Options+ requires a verified macOS 11 or later download" ERROR
     fi
-    appNewVersion="$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-${osVersion}" | sed $'s/},{"id"/}\\\n{"id"/g' | awk -F '"body":"' 'index($0, "\"title\":\"Logi Options+\"") {print $2; exit}' | sed 's/\\n/ /g;s/<[^>]*>//g;s/\\"/"/g' | grep -oE 'Software Version: *[0-9]+([.][0-9]+)+' | head -1 | grep -oE '[0-9]+([.][0-9]+)+')"
+    appNewVersion=""
+    for logiOS in "${osVersion}" 26.0 15.0; do
+        appNewVersion="$(curl -fs "https://support.logi.com/api/v2/help_center/en-us/articles.json?label_names=webcontent=productdownload,webos=mac-macos-x-${logiOS}" | sed $'s/},{"id"/}\\\n{"id"/g' | awk -F '"body":"' 'index($0, "\"title\":\"Logi Options+\"") {print $2; exit}' | sed 's/\\n/ /g;s/<[^>]*>//g;s/\\"/"/g' | grep -oE 'Software Version: *[0-9]+([.][0-9]+)+' | head -1 | grep -oE '[0-9]+([.][0-9]+)+')"
+        [[ -n "$appNewVersion" || "$osMajorVersion" -lt 14 ]] && break
+    done
     if [[ "$osMajorVersion" -ge 14 ]]; then
         downloadURL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer.zip"
     else
