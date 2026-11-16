@@ -1,7 +1,8 @@
 rive)
 name="Rive"
 type="dmg"
-downloadURL="https://releases.rive.app/macos/latest/Rive.dmg"
-appNewVersion=$(curl -fs "https://releases.rive.app/release.xml" | sed -nE 's/.*sparkle:shortVersionString="([^"]+)".*/\1/p' | head -1)
-expectedTeamID="XXXXXXXXXX"
+riveFeed=$(curl -fsL "https://releases.rive.app/release.xml")
+downloadURL=$(echo "$riveFeed" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | cut -d '"' -f2)
+appNewVersion=$(echo "$riveFeed" | xpath '(//rss/channel/item/enclosure/@sparkle:shortVersionString)[1]' 2>/dev/null | cut -d '"' -f2)
+expectedTeamID="NJ3JMFUNS9"
 ;;
