@@ -62,6 +62,7 @@ Pull requests against the `Installomator.sh` script in the root of the repo will
 - If you haven't already, create a fork of the Installomator repo. Clone the fork to your local Mac.
 - Create a new branch in your local Installomator (fork) repo.
 - Copy the new or modified label file to `fragments/labels`. (replacing the original, when necessary)
+- Lint the label with `utils/lint_label.sh fragments/labels/<label>.sh` and fix any `ERROR` lines. Pull requests run the same checks, and the PR check fails on any `ERROR`. Please also fix `WARN` lines in labels you modify, including ones that were already there.
 - Test (push the change to your fork on GitHub. You can check that out on testing devices or vms.)
 - Create a pull request against the Installomator `main` branch.
 - Don't use this branch for _any_ other modifications, unless you need to update this particular PR. (Pull Requests are against a _branch_, not a particular commit.)
