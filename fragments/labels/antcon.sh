@@ -2,9 +2,9 @@ antconc)
     name="AntConc"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        antConcPage=$(curl -fsL "https://www.laurenceanthony.net/software/antconc/")
-        downloadURL="https://www.laurenceanthony.net/$(echo "$antConcPage" | grep -oE 'software/antconc/releases/AntConc[0-9]+/macos/silicon/AntConc-[0-9.]+-macos-apple-silicon\.dmg' | head -n 1)"
-        appNewVersion=$(echo "$downloadURL" | sed -E 's|.*/AntConc-([0-9]+(\.[0-9]+)+)-macos-apple-silicon\.dmg|\1|')
+        antConcData=$(curl -fsL "https://www.laurenceanthony.net/software/antconc/releases/latest_version.json")
+        downloadURL=$(getJSONValue "$antConcData" "platforms.macos_silicon.url")
+        appNewVersion=$(getJSONValue "$antConcData" "version")
     else
         printlog "AntConc is only compatible with Apple Silicon (arm64) Macs." ERROR
         cleanupAndExit 95 "AntConc requires Apple Silicon" ERROR
