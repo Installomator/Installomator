@@ -3,8 +3,8 @@ microsoftonedrivesuprod)
     # Microsoft OneDrive StandaloneUpdater Production
     name="OneDrive"
     type="pkg"
-    onedriveFeed="https://g.live.com/0USSDMC_W5T/MacODSUProduction"
-    downloadURL="$(curl -fsL "${onedriveFeed}" | grep -A1 "UniversalPkgBinaryURL" | tail -1 | cut -d'>' -f2 | cut -d'<' -f1)"
-    appNewVersion="$(curl -fsL "${onedriveFeed}" | grep -A1 "CFBundleShortVersionString" | tail -1 | cut -d'>' -f2 | cut -d'<' -f1)"
+    onedriveFeedData=$(curl -fsL "https://g.live.com/0USSDMC_W5T/StandaloneProductManifest" )
+    downloadURL=$(echo "$onedriveFeedData" | xmllint --xpath "string(/plist/dict/key[.='ManifestArray']/following-sibling::array[1]/dict[1]//string[contains(text(),'universal/OneDrive.pkg')])" -)
+    appNewVersion=$(echo "$onedriveFeedData" | xmllint --xpath "string(/plist/dict/key[.='ManifestArray']/following-sibling::array[1]/dict[1]/key[.='CFBundleShortVersionString']/following-sibling::string[1])" -)
     expectedTeamID="UBF8T346G9"
     ;;

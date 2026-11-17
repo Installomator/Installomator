@@ -1,32 +1,16 @@
 macports)
     name="MacPorts"
     type="pkg"
-    #buildVersion=$(uname -r | cut -d '.' -f 1)
-    case $(uname -r | cut -d '.' -f 1) in
-        25)
-            archiveName="Tahoe.pkg"
-            ;;
-	    24)
-	        archiveName="Sequoia.pkg"
-	        ;;
-        23)
-            archiveName="Sonoma.pkg"
-            ;;
-        22)
-            archiveName="Ventura.pkg"
-            ;;
-        21)
-            archiveName="Monterey.pkg"
-            ;;
-        20)
-            archiveName="BigSur.pkg"
-            ;;
-        19)
-            archiveName="Catalina.pkg"
-            ;;
-        *)
-            cleanupAndExit 98 "Mac Ports label does not support this version of darwin."
-            ;;
+    case "$installedOSversion" in
+        27.*) archiveName="GoldenGate.pkg" ;;
+        26.*) archiveName="Tahoe.pkg" ;;
+        15.*) archiveName="Sequoia.pkg" ;;
+        14.*) archiveName="Sonoma.pkg" ;;
+        13.*) archiveName="Ventura.pkg" ;;
+        12.*) archiveName="Monterey.pkg" ;;
+        11.*) archiveName="BigSur.pkg" ;;
+        10.15.*) archiveName="Catalina.pkg" ;;
+        *) cleanupAndExit 98 "MacPorts does not support macOS $installedOSversion." ERROR ;;
     esac
     downloadURL=$(downloadURLFromGit macports macports-base)
     appNewVersion=$(versionFromGit macports macports-base)
@@ -34,4 +18,5 @@ macports)
     updateTool="/opt/local/bin/port"
     updateToolArguments="selfupdate"
     expectedTeamID="QTA3A3B7F3"
+    blockingProcesses=( NONE )
     ;;

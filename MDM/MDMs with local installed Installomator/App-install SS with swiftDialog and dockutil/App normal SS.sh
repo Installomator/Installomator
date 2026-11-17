@@ -114,7 +114,7 @@ caffexit () {
 }
 
 # Mark: Installation begins
-installomatorVersion="$(${destFile} version | cut -d "." -f1 || true)"
+installomatorVersion="$(${destFile} version | grep -Eo '[0-9]+\.[0-9]+' | head -1 | cut -d '.' -f1)"
 
 if [[ $installomatorVersion -lt 10 ]] || [[ $(sw_vers -buildVersion | cut -c1-2) -lt 20 ]]; then
     echo "Skipping swiftDialog UI, using notifications."
@@ -257,7 +257,7 @@ cmdOutput="$(${destFile} ${item} LOGO=$LOGO ${installomatorOptions} ${installoma
 checkCmdOutput "${cmdOutput}"
 
 # Mark: dockutil stuff
-if [[ $addToDock -eq 1 ]]; then
+if [[ $addToDock -eq 1 && -d $dockutilAppPath ]]; then
     dialogUpdate "progresstext: Adding to Dock"
     if [[ ! -x $dockutil ]]; then
         echo "Cannot find dockutil at $dockutil, trying installation"

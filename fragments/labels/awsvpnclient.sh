@@ -1,13 +1,13 @@
 awsvpnclient)
     name="AWS VPN Client"
     type="pkg"
-    baseURL="https://d20adtppz83p9s.cloudfront.net/OSX"
-    appNewVersion=$(curl -s "https://docs.aws.amazon.com/vpn/latest/clientvpn-user/client-vpn-user-guide.rss" | grep -o 'AWS provided client ([0-9]*\.[0-9]*\.[0-9]*) for macOS' | head -1 | grep -o '[0-9]*\.[0-9]*\.[0-9]*')
-    if [[ $(arch) == "arm64" ]]
-    then
-        downloadURL="${baseURL}_ARM64/${appNewVersion}/AWS_VPN_Client_ARM64.pkg"
+    if [[ $(arch) == "arm64" ]]; then
+        appcastURL="https://d3c4iklh14o4hj.cloudfront.net/OSX_ARM64/latest/appcast.xml"
     else
-        downloadURL="${baseURL}/${appNewVersion}/AWS_VPN_Client.pkg"
+        appcastURL="https://d3c4iklh14o4hj.cloudfront.net/OSX/latest/appcast.xml"
     fi
+    appcastXML="$(curl -fsL "$appcastURL")"
+    downloadURL="$(echo "$appcastXML" | xpath 'string(//rss/channel/item[1]/enclosure/@url)' 2>/dev/null)"
+    appNewVersion="$(echo "$appcastXML" | xpath 'string(//rss/channel/item[1]/enclosure/@sparkle:version)' 2>/dev/null)"
     expectedTeamID="94KV3E626L"
     ;;

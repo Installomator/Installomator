@@ -1,11 +1,8 @@
 blackhole64ch)
-    name="BlackHole"
-    appName="BlackHole64ch.driver"
+    name="BlackHole 64 Channel"
     type="pkg"
     packageID="audio.existential.BlackHole64ch"
-    targetDir="/Library/Audio/Plug-Ins/HAL"
-    downloadURL=$(getJSONValue "$(curl -fsL https://formulae.brew.sh/api/cask/blackhole-64ch.json)" "url")
-    appNewVersion=$($(getJSONValue "$(curl -fsL https://formulae.brew.sh/api/cask/blackhole-64ch.json)" "version"))
+    appNewVersion=$(versionFromGit 'ExistentialAudio' 'BlackHole')
+    downloadURL="https://existential.audio/downloads/BlackHole64ch-${appNewVersion}.pkg"
     expectedTeamID="Q5C99V536K"
-    blockingProcesses=( "coreaudiod" )
     ;;

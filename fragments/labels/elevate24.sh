@@ -3,6 +3,6 @@ elevate24)
     type="pkg"
     downloadURL="$(downloadURLFromGit Jigsaw24 Elevate24)"
     appNewVersion="$(versionFromGit Jigsaw24 Elevate24)"
-    expectedTeamID="BVDW99KYDU"
+    expectedTeamID="563MYW3H73"
     ;;
-    
+

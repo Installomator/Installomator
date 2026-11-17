@@ -1,7 +1,7 @@
 bitwarden)
     name="Bitwarden"
     type="dmg"
-    appNewVersion=$(curl -s "https://github.com/bitwarden/clients/releases?q\=desktop" | xmllint --html --xpath 'substring-after(string(//h2[starts-with(text(),"Desktop v")]), " v")' - 2>/dev/null)
-    downloadURL="https://github.com/bitwarden/clients/releases/download/desktop-v${appNewVersion}/Bitwarden-${appNewVersion}-universal.dmg"
+    downloadURL="https://vault.bitwarden.com/download/?app=desktop&platform=macos"
+    appNewVersion=$(curl -fsIL "$downloadURL" -o /dev/null -D - | awk 'BEGIN{IGNORECASE=1}/^location:/{gsub("\r",""); print $2}' | grep '/bitwarden/clients/releases/download/desktop-v' | head -n 1 | sed -E 's|.*/desktop-v([0-9]+(\.[0-9]+)+)/.*|\1|')
     expectedTeamID="LTZ2PFU5D6"
     ;;

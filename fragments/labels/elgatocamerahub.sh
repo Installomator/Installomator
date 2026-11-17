@@ -1,9 +1,10 @@
 elgatocamerahub)
     name="Elgato Camera Hub"
     type="pkg"
-    # packageID="com.elgato.CameraHub.Installer"
-    downloadURL="https://gc-updates.elgato.com/mac/echm-update/final/download-website.php"
-    appNewVersion=$(curl -fsI "https://gc-updates.elgato.com/mac/echm-update/final/download-website.php" | grep -i ^location | sed -E 's/.*Camera_Hub_([0-9.]*).pkg/\1/g' | sed 's/\.[^.]*//3')
+    elgatoJSON=$(curl -fsSL "https://gc-updates.elgato.com/mac/echm-update/final/app-version-check.json")
+    appNewVersion=$(getJSONValue "$elgatoJSON" "Automatic.Version")
+    downloadURL=$(getJSONValue "$elgatoJSON" "Automatic.fileURL")
+    appCustomVersion() { local plist="/Applications/${name}.app/Contents/Info.plist"; [[ -f "$plist" ]] || return; local version build; version=$(defaults read "$plist" CFBundleShortVersionString 2>/dev/null); build=$(defaults read "$plist" CFBundleVersion 2>/dev/null); [[ -n "$version" ]] && echo "${version}.${build}"}
     expectedTeamID="Y93VXCB8Q5"
     blockingProcesses=( "Camera Hub" )
     ;;

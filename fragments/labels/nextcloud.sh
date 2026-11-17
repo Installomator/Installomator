@@ -1,7 +1,7 @@
 nextcloud)
-    name="nextcloud"
+    name="Nextcloud"
     type="pkg"
-    archiveName="Nextcloud-[0-9.]*-macOS-vfs.pkg"
+    archiveName="Nextcloud-[0-9.]+\.pkg"
     downloadURL=$(downloadURLFromGit nextcloud-releases desktop)
     appNewVersion=$(versionFromGit nextcloud-releases desktop)
     expectedTeamID="NKUJUXUJ3B"

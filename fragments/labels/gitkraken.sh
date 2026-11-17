@@ -1,12 +1,13 @@
 gitkraken)
-    name="gitkraken"
-    type="dmg"
-    appNewVersion=$( curl -sfL https://www.gitkraken.com/download | grep -o 'Latest release: [0-9.]*' | grep -o '[0-9.]*' )
+    name="GitKraken"
+    type="zip"
     if [[ $(arch) == "arm64" ]]; then
-        downloadURL="https://release.gitkraken.com/darwin-arm64/installGitKraken.dmg"
-    elif [[ $(arch) == "i386" ]]; then
-        downloadURL="https://release.gitkraken.com/darwin/installGitKraken.dmg"
+        gitkrakenFeed="https://release.gitkraken.com/darwin-arm64/RELEASES?v=12.0.0&darwin=27.0.0"
+    else
+        gitkrakenFeed="https://release.gitkraken.com/darwin/RELEASES?v=12.0.0&darwin=27.0.0"
     fi
+    gitkrakenJSON=$(curl -fsL "$gitkrakenFeed")
+    appNewVersion=$(getJSONValue "$gitkrakenJSON" "name")
+    downloadURL=$(getJSONValue "$gitkrakenJSON" "url")
     expectedTeamID="T7QVVUTZQ8"
-    blockingProcesses=( "GitKraken" )
     ;;

@@ -1,7 +1,7 @@
 sketch)
     name="Sketch"
     type="zip"
-    downloadURL=$(curl -sf https://www.sketch.com/downloads/mac/ | grep -m 1 'href="https://download.sketch.com' | tr '"' "\n" | grep -E "https.*.zip")
-    appNewVersion=$(echo "$downloadURL" | awk -F'-' '{ print $2 }')
+    downloadURL=$(curl -sfL https://www.sketch.com/downloads/mac/ | grep -o 'https://download.sketch.com[^"]*\.zip' | head -1)
+    appNewVersion=$(curl -sfL https://www.sketch.com/downloads/mac/ | grep -o 'sketch-[0-9.-]*\.zip' | head -1 | sed 's/sketch-//;s/\.zip//;s/-[0-9]*$//')
     expectedTeamID="WUGMZZ5K46"
     ;;

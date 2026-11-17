@@ -1,4 +1,5 @@
-jetbrainsgoland)
+jetbrainsgoland|\
+goland)
     name="GoLand"
     type="dmg"
     jetbrainscode="GO"
@@ -8,6 +9,6 @@ jetbrainsgoland)
         jetbrainsdistribution="macM1"
     fi
     downloadURL="https://download.jetbrains.com/product?code=${jetbrainscode}&latest&distribution=${jetbrainsdistribution}"
-    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "location" | tail -1 | sed -E 's/.*-([0-9.]+)[-.].*/\1/g' )
+    appNewVersion=$( curl -fsIL "${downloadURL}" | grep -i "^location" | tail -1 | sed -E 's/\?.*//;s/.*-([0-9.]+)[-.].*/\1/' )
     expectedTeamID="2ZEFAR8TH3"
     ;;

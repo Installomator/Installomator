@@ -1,12 +1,12 @@
 tropy)
     name="Tropy"
     type="dmg"
-    if [[ $(arch) == arm64 ]]; then
-        archiveName="tropy-[0-9.]*-arm64.dmg"
-    elif [[ $(arch) == i386 ]]; then
-        archiveName="tropy-[0-9.]*.dmg"
+    appNewVersion=$(versionFromGit tropy tropy)
+    if [[ $(arch) == "arm64" ]]; then
+        archiveName="${appNewVersion}-arm64.dmg"
+    else
+        archiveName="${appNewVersion}.dmg"
     fi
-    appNewVersion="$(versionFromGit tropy tropy)"
-    downloadURL="$(downloadURLFromGit tropy tropy)"
+    downloadURL=$(downloadURLFromGit tropy tropy)
     expectedTeamID="8LAYR367YV"
     ;;

@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -20,11 +20,11 @@ jobs:
 
     - name: Determine base branch
       id: determine-base
-      run: echo "::set-output name=BASE_BRANCH::$(git merge-base --fork-point origin/main HEAD || git merge-base origin/main HEAD)"
+      run: echo "BASE_BRANCH=$(git merge-base --fork-point origin/main HEAD || git merge-base origin/main HEAD)" >> $GITHUB_ENV
 
     - name: Check if PR ends with line feed
       run: |
-        files=$(git diff --name-only ${{ steps.determine-base.outputs.BASE_BRANCH }} HEAD)
+        files=$(git diff --name-only ${{ env.BASE_BRANCH }} HEAD)
         for file in $files; do
           if [ -f "$file" ]; then
             last_char=$(tail -c 1 "$file" | od -An -t uC | tr -d '[:space:]')
