@@ -1,0 +1,14 @@
+.DS_Store
+build/
+SamplePkgs/
+scratch/
+*.pkg
+*.mpkg
+*.dmg
+*.zip
+*.app
+*.tbz
+
+# do include Installomator .pkg files
+#!Installomator-*.pkg
+checkLabelCurrent.sh
