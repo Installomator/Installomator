@@ -166,6 +166,18 @@ PROXY=""
 # This error line is then shown: “curl output was: curl: (22) The requested URL returned error: 403”
 
 
+# GitHub API token
+GITHUBAPI=""
+# Optional. When set, requests to api.github.com made by downloadURLFromGit and
+# versionFromGit are authenticated, raising the GitHub rate limit from 60 to 5000
+# requests per hour. Useful when many Macs share one public IP address, like computer
+# labs behind NAT.
+# The token only needs to read public repositories: a fine-grained token with
+# "Public repositories (read-only)" access, or a classic token with no scopes selected.
+# Can also be passed as an argument: GITHUBAPI=github_pat_xxxx
+# If GitHub rejects the token, a warning is logged and Installomator continues without it.
+
+
 # Swift Dialog integration
 
 # These variables will allow Installomator to communicate progress with Swift Dialog
