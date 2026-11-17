@@ -1,11 +1,13 @@
 tidal)
     name="TIDAL"
-    type="dmg"
-    if [[ $(arch) == i386 ]]; then
-        downloadURL=https://download.tidal.com/desktop/TIDAL.x64.dmg
-    elif [[ $(arch) == arm64 ]]; then
-        downloadURL=https://download.tidal.com/desktop/TIDAL.arm64.dmg
+    type="zip"
+    if [[ $(arch) == "arm64" ]]; then
+        tidalFeed="https://download.tidal.com/desktop/mac/update-arm64.json"
+    elif [[ $(arch) == "i386" ]]; then
+        tidalFeed="https://download.tidal.com/desktop/mac/update-x64.json"
     fi
-    appNewVersion=$(curl -fs https://support.datajar.co.uk/hc/en-us/articles/360010333638-Jamf-Auto-Update-Application-Catalog | grep -ozpEi ">TIDAL<\/td>\n<td>(.*)<" | grep -oE "((?:[0-9]+\.?)+)" | head -1)
+    tidalJSON=$(curl -fsL "$tidalFeed")
+    downloadURL=$(getJSONValue "$tidalJSON" "releases[0].updateTo.url")
+    appNewVersion=$(getJSONValue "$tidalJSON" "releases[0].updateTo.version")
     expectedTeamID="GK2243L7KB"
     ;;
