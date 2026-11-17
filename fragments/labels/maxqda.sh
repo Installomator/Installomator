@@ -1,4 +1,4 @@
-maxqda26)
+maxqda|maxqda26)
     name="MAXQDA"
     type="dmg"
     downloadURL="https://updates.maxqda.de/MAXQDA/MAXQDA.dmg"
