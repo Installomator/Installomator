@@ -11,4 +11,3 @@ toonboomstoryboardpro2027)
     expectedTeamID="U5LPYJSPQ3"
     blockingProcesses=( "Storyboard Pro" )
     ;;
-
