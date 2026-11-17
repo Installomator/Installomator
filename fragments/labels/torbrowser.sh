@@ -1,8 +1,8 @@
 torbrowser)
-    # credit: Søren Theilgaard (@theilgaard)
     name="Tor Browser"
     type="dmg"
-    downloadURL=https://www.torproject.org$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | head -1 | cut -d '"' -f 4)
-    appNewVersion=$(curl -fs https://www.torproject.org/download/ | grep "downloadLink" | grep dmg | head -1 | cut -d '"' -f 4 | cut -d / -f 4)
+    torbrowserJSON=$(curl -fsL "https://aus1.torproject.org/torbrowser/update_3/release/download-macos.json")
+    downloadURL=$(getJSONValue "$torbrowserJSON" "binary")
+    appNewVersion=$(getJSONValue "$torbrowserJSON" "version")
     expectedTeamID="MADPSAYN6T"
     ;;
