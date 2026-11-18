@@ -1,9 +1,15 @@
 virtualbox)
-    # credit: AP Orlebeke (@apizz)
     name="VirtualBox"
     type="pkgInDmg"
     pkgName="VirtualBox.pkg"
-    downloadURL="https:$(curl -fsL "https://www.oracle.com/virtualization/technologies/vm/downloads/virtualbox-downloads.html" | grep "OSX.dmg" | xmllint --html --xpath 'string(//a/@href)' -)"
-    appNewVersion=$(echo "${downloadURL}" | awk -F '/' '{print $5}')
+    if [[ $(arch) == "arm64" ]]; then
+        virtualboxPlatform="DARWIN_ARM64_GENERIC"
+    elif [[ $(arch) == "i386" ]]; then
+        virtualboxPlatform="DARWIN_64BITS_GENERIC"
+    fi
+    virtualboxFeed=$(curl -fsL "https://update.virtualbox.org/query.php/?platform=${virtualboxPlatform}&version=7.0.00_000000&branch=stable")
+    downloadURL=$(echo "$virtualboxFeed" | awk '{print $2}')
+    appNewVersion=$(echo "$virtualboxFeed" | awk '{print $1}')
     expectedTeamID="VB5E2TV963"
+    blockingProcesses=( VirtualBox VirtualBoxVM VBoxHeadless )
     ;;
