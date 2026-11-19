@@ -2,7 +2,7 @@ thunderbird)
     name="Thunderbird"
     type="dmg"
     versionKey="CFBundleShortVersionString"
-    appNewVersion=$(curl -s "https://www.thunderbird.net/en-US/thunderbird/releases/atom.xml" | xmllint --xpath "//*[local-name()='entry']/*[local-name()='title'][not(contains(text(), 'esr'))]/text()" - | head -1 | awk '{ print $2 }')
-    downloadURL="https://download.mozilla.org/?product=thunderbird-${appNewVersion}-SSL&os=osx&lang=en-US"
+    downloadURL=$(curl -fsL https://www.thunderbird.net/notes/ | sed -n "/'release':/,/'beta':/p" | grep -o "https://[^']*os=osx[^']*")
+    appNewVersion=$(echo $downloadURL | grep -oE '[0-9]+(\.[0-9]+)+')
     expectedTeamID="43AQ936H96"
     ;;
