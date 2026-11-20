@@ -7,7 +7,7 @@ brave)
         archiveName="Brave-Browser-x64.dmg"
     fi
     downloadURL=$(downloadURLFromGit brave brave-browser)
-    appNewVersion=$(versionFromGit brave brave-browser | sed 's/\.//')
-    versionKey="CFBundleVersion"
+    appNewVersion=$(versionFromGit brave brave-browser)
+    appCustomVersion() { defaults read "/Applications/Brave Browser.app/Contents/Info.plist" CFBundleShortVersionString 2>/dev/null | cut -d. -f2- }
     expectedTeamID="KL8N8XSYF4"
     ;;
