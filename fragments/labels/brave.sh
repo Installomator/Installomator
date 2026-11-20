@@ -7,7 +7,7 @@ brave)
         archiveName="Brave-Browser-x64.dmg"
     fi
     downloadURL=$(downloadURLFromGit brave brave-browser)
-    appNewVersion=$(versionFromGit brave brave-browser | sed 's/\.//')
+    appNewVersion=$(versionFromGit brave brave-browser | awk -F. '{ print $1*100+$2 "." $3 }')
     versionKey="CFBundleVersion"
     expectedTeamID="KL8N8XSYF4"
     ;;
