@@ -2,12 +2,13 @@ brave)
     name="Brave Browser"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
-        archiveName="Brave-Browser-arm64.dmg"
+        sparkleFeed="https://updates.bravesoftware.com/sparkle/Brave-Browser/stable-arm64/appcast.xml"
     else
-        archiveName="Brave-Browser-x64.dmg"
+        sparkleFeed="https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml"
     fi
-    downloadURL=$(downloadURLFromGit brave brave-browser)
-    appNewVersion=$(versionFromGit brave brave-browser)
+    sparkleData=$(curl -fsL "$sparkleFeed")
+    downloadURL=$(xmllint --xpath 'string((//*[local-name()="item"])[1]/enclosure/@url)' - <<< "$sparkleData")
+    appNewVersion=$(xmllint --xpath 'string((//*[local-name()="item"])[1]/enclosure/@*[local-name()="shortVersionString"])' - <<< "$sparkleData" | cut -d. -f1-3)
     appCustomVersion() { defaults read "/Applications/Brave Browser.app/Contents/Info.plist" CFBundleShortVersionString 2>/dev/null | cut -d. -f2- }
     expectedTeamID="KL8N8XSYF4"
     ;;
