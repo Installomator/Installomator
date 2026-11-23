@@ -1,12 +1,12 @@
 dymoconnectdesktop)
     name="DYMO Connect"
     type="pkg"
-    appNewVersion=$(curl -s https://formulae.brew.sh/cask/dymo-connect | grep -o 'Current version:.*[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | head -1)
     if [[ $(arch) == "arm64" ]]; then
-        archiveName="DCDMac${appNewVersion}-Arm64.pkg"
+        downloadURL=$(curl -s https://www.dymo.com/support\?cfid\=user-guide | grep -o "https://.*-Arm64.pkg" | head -1)
     elif [[ $(arch) == "i386" ]]; then
-        archiveName="DCDMac${appNewVersion}-X64.pkg"
+        downloadURL=$(curl -s https://www.dymo.com/support\?cfid\=user-guide | grep -o "https://.*-X64.pkg" | head -1)
     fi
-    downloadURL="https://dymoreleasecontent.blob.core.windows.net/dymo-release/DCDMAC/${archiveName}"
+    archiveName="$(basename ${downloadURL})"
+    appNewVersion="$(echo ${archiveName} | grep -o "[0-9].*\.[0-9]\+")"
     expectedTeamID="N3S6676K3E"
     ;;
