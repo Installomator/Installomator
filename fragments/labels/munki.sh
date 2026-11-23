@@ -1,7 +1,7 @@
 munki)
     name="Munki"
     type="pkg"
-    packageID="com.googlecode.munki.core"
+    packageID="com.googlecode.munki.app"
     downloadURL=$(downloadURLFromGit "macadmins" "munki-builds")
     appNewVersion=$(versionFromGit "macadmins" "munki-builds")
     expectedTeamID="T4SK8ZXCXG"
