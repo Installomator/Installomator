@@ -1,8 +1,8 @@
 osaurus)
     name="Osaurus"
     type="dmg"
-    appNewVersion=$(versionFromGit osaurus-ai osaurus)
     if [[ $(arch) == "arm64" ]]; then
+        appNewVersion=$(versionFromGit osaurus-ai osaurus)
         archiveName="Osaurus-${appNewVersion}.dmg"
         downloadURL=$(downloadURLFromGit osaurus-ai osaurus)
     else
