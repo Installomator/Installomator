@@ -128,13 +128,13 @@ printlog(){
     fi
 }
 
-# Used to remove dupplicate lines in large log output,
+# Used to remove duplicate lines in large log output,
 # for example from msupdate command after it finishes running.
 deduplicatelogs() {
     loginput=${1:-"Log"}
     logoutput=""
     # Read each line of the incoming log individually, match it with the previous.
-    # If it matches increment logrepeate then skip to the next line.
+    # If it matches increment logrepeat then skip to the next line.
     while read log; do
         if [[ $log == $previous_log ]];then
             let logrepeat=$logrepeat+1
@@ -585,7 +585,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
         if [ $CLIstatus -ne 0 ] ; then
             cleanupAndExit 16 "Error installing $mountname/$CLIInstaller $CLIArguments error:\n$logoutput" ERROR
         else
-            printlog "Succesfully ran $mountname/$CLIInstaller $CLIArguments" INFO
+            printlog "Successfully ran $mountname/$CLIInstaller $CLIArguments" INFO
         fi
         printlog "Debugging enabled, update tool output was:\n$logoutput" DEBUG
     fi
@@ -643,7 +643,7 @@ installFromPKG() {
 
     # Apple signed software has no teamID, grab entire origin instead
     if [[ -z $teamID ]]; then
-        teamID=$(echo $spctlout | awk -F '=' '/origin=/ {print $NF }')
+        teamID=$(echo $spctlOut | awk -F '=' '/origin=/ {print $NF }')
     fi
 
     printlog "Team ID: $teamID (expected: $expectedTeamID )"
@@ -882,7 +882,7 @@ runUpdateTool() {
         fi
         sleep 1
         updateEndTime=$(date "+$updateToolLogDateFormat")
-        deduplicatelogs $updateOutput
+        deduplicatelogs "$updateOutput"
         if [[ -n $updateToolLog ]]; then
             updateOutput+=$(echo "Output of Installer log of $updateToolLog below this line.\n")
             updateOutput+=$(echo "----------------------------------------------------------\n")
@@ -890,7 +890,7 @@ runUpdateTool() {
         fi
 
         if [[ $updateStatus -ne 0 ]]; then
-            printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updateStatus Error:\n$logoutput" WARN
+            printlog "Error running $updateTool, Proceeding with normal installation. Exit Status: $updateStatus Error:\n$logoutput" WARN
             return 1
             if [[ $type == updateronly ]]; then
                 cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" ERROR

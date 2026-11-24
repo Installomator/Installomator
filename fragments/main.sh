@@ -309,8 +309,8 @@ else
             fi
         fi
         if [[ $archiveType == *ASCII* ]]; then
-            firstLines=$(head -c 51170 $archiveName)
-            deduplicatelogs $firstLines
+            firstLines=$(head -c 5120 "$archiveName")
+            deduplicatelogs "$firstLines"
             cleanupAndExit 2 "File Downloaded is ASCII, we’re probably being blocked by a proxy or filter.  First 5k of file is:\n$logoutput" ERROR
         else
             deduplicatelogs "$curlDownload"
