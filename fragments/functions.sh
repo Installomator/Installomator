@@ -66,7 +66,7 @@ displaynotification() { # $1: message $2: title
     hubcli="/usr/local/bin/hubcli"
     swiftdialog="/usr/local/bin/dialog"
 
-    if [[ "$($swiftdialog --version | cut -d "." -f1)" -ge 2 && "$NOTIFY_DIALOG" -eq 1 ]]; then
+    if [[ "$NOTIFY_DIALOG" -eq 1 && -x "$swiftdialog" && "$("$swiftdialog" --version | cut -d "." -f1)" -ge 2 ]]; then
         "$swiftdialog" --notification --title "$title" --message "$message"
     elif [[ -x "$manageaction" ]]; then
          "$manageaction" -message "$message" -title "$title" &
