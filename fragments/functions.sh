@@ -238,7 +238,7 @@ getAppVersion() {
 
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
-        appversion="$(pkgutil --pkg-info-plist "${packageID}" 2>/dev/null | plutil -extract pkg-version raw -o - -)"
+        appversion="$(pkgutil --pkg-info-plist "${packageID}" 2>/dev/null | plutil -extract pkg-version raw -o - - 2>/dev/null)"
         if [[ $appversion != "" ]]; then
             printlog "found packageID $packageID installed, version $appversion"
             updateDetected="YES"
@@ -316,7 +316,7 @@ checkRunningProcesses() {
         return
     fi
 
-    # try at most 3 times
+    # try at most 4 times
     for i in {1..4}; do
         countedProcesses=0
         for x in ${blockingProcesses}; do
@@ -328,7 +328,7 @@ checkRunningProcesses() {
                     quit|quit_kill)
                         printlog "telling app $x to quit"
                         runAsUser osascript -e "tell app \"$x\" to quit"
-                        if [[ $i > 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
+                        if [[ $i -gt 2 && $BLOCKING_PROCESS_ACTION = "quit_kill" ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
                         else
@@ -372,7 +372,7 @@ checkRunningProcesses() {
                     prompt_user_loop)
                       button=$(displaydialog "Quit “$x” to continue updating? $([[ -n $appNewVersion ]] && echo "Version $appversion is installed, but version $appNewVersion is available.") (Click “Not Now” to be asked in 1 hour, or leave this open until you are ready)." "The application “$x” needs to be updated.")
                       if [[ $button = "Not Now" ]]; then
-                        if [[ $i < 2 ]]; then
+                        if [[ $i -lt 2 ]]; then
                           printlog "user wants to wait an hour"
                           sleep 3600 # 3600 seconds is an hour
                         else
@@ -394,7 +394,7 @@ checkRunningProcesses() {
                       # give the user a bit of time to quit apps
                       printlog "waiting 30 seconds for processes to quit"
                       sleep 30
-                      if [[ $i > 1 && $BLOCKING_PROCESS_ACTION = tell_user_then_kill ]]; then
+                      if [[ $i -gt 1 && $BLOCKING_PROCESS_ACTION = tell_user_then_kill ]]; then
                           printlog "Changing BLOCKING_PROCESS_ACTION to kill"
                           BLOCKING_PROCESS_ACTION=kill
                       fi
@@ -511,7 +511,7 @@ installAppWithPath() { # $1: path to app to install in $targetDir $2: path to fo
 
     # macOS versioncheck
     minimumOSversion=$(defaults read $appPath/Contents/Info.plist LSMinimumSystemVersion 2>/dev/null )
-    if [[ -n $minimumOSversion && $minimumOSversion =~ '[0-9.]*' ]]; then
+    if [[ -n $minimumOSversion && $minimumOSversion =~ '^[0-9.]+$' ]]; then
         printlog "App has LSMinimumSystemVersion: $minimumOSversion"
         if ! is-at-least $minimumOSversion $installedOSversion; then
             printlog "App requires higher System Version than installed: $installedOSversion"
@@ -718,8 +718,8 @@ installFromPKG() {
 
     sleep 1
     pkgEndTime=$(date "+$LogDateFormat")
-    pkgInstall+=$(echo "\nOutput of /var/log/install.log below this line.\n")
-    pkgInstall+=$(echo "----------------------------------------------------------\n")
+    pkgInstall+=$'\nOutput of /var/log/install.log below this line.\n'
+    pkgInstall+=$'----------------------------------------------------------\n'
     pkgInstall+=$(awk -v "b=$starttime" -v "e=$pkgEndTime" -F ',' '$1 >= b && $1 <= e' /var/log/install.log)
     deduplicatelogs "$pkgInstall"
 
@@ -873,6 +873,7 @@ runUpdateTool() {
     printlog "Function called: runUpdateTool"
     if [[ -x $updateTool ]]; then
         printlog "running $updateTool $updateToolArguments"
+        updatestarttime=$(date "+$updateToolLogDateFormat")
         if [[ -n $updateToolRunAsCurrentUser ]]; then
             updateOutput=$(runAsUser $updateTool ${updateToolArguments} 2>&1)
             updateStatus=$(echo $?)
@@ -884,17 +885,17 @@ runUpdateTool() {
         updateEndTime=$(date "+$updateToolLogDateFormat")
         deduplicatelogs $updateOutput
         if [[ -n $updateToolLog ]]; then
-            updateOutput+=$(echo "Output of Installer log of $updateToolLog below this line.\n")
-            updateOutput+=$(echo "----------------------------------------------------------\n")
+            updateOutput+=$'Output of Installer log of '"$updateToolLog"$' below this line.\n'
+            updateOutput+=$'----------------------------------------------------------\n'
             updateOutput+=$(awk -v "b=$updatestarttime" -v "e=$updateEndTime" -F ',' '$1 >= b && $1 <= e' $updateToolLog)
         fi
 
         if [[ $updateStatus -ne 0 ]]; then
             printlog "Error running $updateTool, Procceding with normal installation. Exit Status: $updateStatus Error:\n$logoutput" WARN
-            return 1
             if [[ $type == updateronly ]]; then
                 cleanupAndExit 77 "No Download URL Set, this is an update only application and the updater failed" ERROR
             fi
+            return 1
         elif [[ $updateStatus -eq 0 ]]; then
             printlog "Debugging enabled, update tool output was:\n$logoutput" DEBUG
         fi
@@ -985,6 +986,7 @@ readDownloadPipe() {
     # output from curl with --progress-bar. % downloaded is read in and then sent to the specified log file
     local pipe=$1
     local log=${2:-$DIALOG_CMD_FILE}
+    local keep=0
     # set up read from pipe
     while IFS= read -k 1 -u 0 char; do
         if [[ $char =~ [0-9] ]]; then
@@ -1009,6 +1011,7 @@ readPKGInstallPipe() {
     local pipe=$1
     local log=${2:-$DIALOG_CMD_FILE}
     local appname=${3:-$name}
+    local keep=0
 
     while read -k 1 -u 0 char; do
         if [[ $char == % ]]; then
@@ -1045,7 +1048,7 @@ updateDialog() {
         progress=$state
     fi
 
-    # when to cmdfile is set, do nothing
+    # when no cmdfile is set, do nothing
     if [[ $cmd_file == "" ]]; then
         return
     fi
