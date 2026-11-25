@@ -1,8 +1,8 @@
 foolcat)
     name="FoolCat"
     type="zip"
-    downloadURL=$(curl -fsL "https://updates.hedge.video/foolcat/macos/appcast/foolcat-prod.xml" | grep -oE 'url="https://[^"]+\.zip"' | head -1 | cut -d'"' -f2)
-    appNewVersion=$(curl -fsL "https://updates.hedge.video/foolcat/macos/appcast/foolcat-prod.xml" | grep -oE 'sparkle:shortVersionString="[^"]+"' | head -1 | cut -d'"' -f2)
+    foolcatFeed=$(curl -fsL "https://updates.hedge.video/foolcat/macos/appcast/foolcat-prod.xml")
+    downloadURL=$(echo "$foolcatFeed" | xpath 'string((//rss/channel/item)[1]/enclosure/@url)' 2>/dev/null)
+    appNewVersion=$(echo "$foolcatFeed" | xpath 'string((//rss/channel/item)[1]/enclosure/@sparkle:shortVersionString)' 2>/dev/null)
     expectedTeamID="A43D9X8EYU"
-    blockingProcesses=( "FoolCat" )
     ;;
