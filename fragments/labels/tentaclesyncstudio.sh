@@ -5,5 +5,4 @@ tentaclesyncstudio)
     downloadURL="https://cms.tentaclesync.com/assets/downloads/download-files/${tentacleFile}"
     appNewVersion=$(echo "${tentacleFile}" | sed -E 's/ttsyncstudio-v([0-9]+)_([0-9]+)\.dmg/\1.\2/')
     expectedTeamID="N3J7Y6A64Z"
-    blockingProcesses=( "Tentacle Sync Studio" )
     ;;
