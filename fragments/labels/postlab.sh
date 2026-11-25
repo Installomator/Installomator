@@ -1,9 +1,9 @@
 postlab)
     name="PostLab"
     type="pkgInDmg"
-    downloadURL=$(curl -fsL "https://updates.hedge.video/postlab/macos/appcast/postlab-prod.xml" | grep -oE 'url="https://[^"]+\.dmg"' | head -1 | cut -d'"' -f2)
-    appNewVersion=$(curl -fsL "https://updates.hedge.video/postlab/macos/appcast/postlab-prod.xml" | grep -oE 'sparkle:shortVersionString="[^"]+"' | head -1 | cut -d'"' -f2)
+    postlabFeed=$(curl -fsL "https://updates.hedge.video/postlab/macos/appcast/postlab-prod.xml")
+    downloadURL=$(echo "$postlabFeed" | xpath 'string((//rss/channel/item)[1]/enclosure/@url)' 2>/dev/null)
+    appNewVersion=$(echo "$postlabFeed" | xpath 'string((//rss/channel/item)[1]/enclosure/@sparkle:shortVersionString)' 2>/dev/null)
     packageID="video.hedge.PostLab.Mac"
     expectedTeamID="A43D9X8EYU"
-    blockingProcesses=( "PostLab" )
     ;;
