@@ -1,8 +1,8 @@
 editready)
     name="EditReady"
     type="zip"
-    downloadURL=$(curl -fsL "https://updates.hedge.video/editready/macos/appcast/editready-prod.xml" | grep -oE 'url="https://[^"]+\.zip"' | head -1 | cut -d'"' -f2)
-    appNewVersion=$(curl -fsL "https://updates.hedge.video/editready/macos/appcast/editready-prod.xml" | grep -oE 'sparkle:shortVersionString="[^"]+"' | head -1 | cut -d'"' -f2)
+    editreadyFeed=$(curl -fsL "https://updates.hedge.video/editready/macos/appcast/editready-prod.xml")
+    downloadURL=$(echo "$editreadyFeed" | xpath 'string((//rss/channel/item)[1]/enclosure/@url)' 2>/dev/null)
+    appNewVersion=$(echo "$editreadyFeed" | xpath 'string((//rss/channel/item)[1]/enclosure/@sparkle:shortVersionString)' 2>/dev/null)
     expectedTeamID="A43D9X8EYU"
-    blockingProcesses=( "EditReady" )
     ;;
