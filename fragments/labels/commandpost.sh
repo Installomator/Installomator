@@ -1,8 +1,8 @@
 commandpost)
     name="CommandPost"
     type="dmg"
-    downloadURL=$(curl -fsL https://api.github.com/repos/CommandPost/CommandPost/releases/latest | grep -oE '"browser_download_url": *"[^"]+CommandPost_[0-9.]+\.dmg"' | head -1 | cut -d'"' -f4)
-    appNewVersion=$(echo "${downloadURL}" | sed -E 's/.*CommandPost_([0-9.]+)\.dmg/\1/')
+    commandpostFeed=$(curl -fsL "https://raw.githubusercontent.com/CommandPost/CommandPost/develop/appcast/appcast.xml")
+    downloadURL=$(echo "$commandpostFeed" | xpath 'string((//rss/channel/item)[1]/enclosure/@url)' 2>/dev/null)
+    appNewVersion=$(echo "$commandpostFeed" | xpath 'string((//rss/channel/item)[1]/enclosure/@sparkle:shortVersionString)' 2>/dev/null)
     expectedTeamID="A5HDJTY9X5"
-    blockingProcesses=( "CommandPost" )
     ;;
