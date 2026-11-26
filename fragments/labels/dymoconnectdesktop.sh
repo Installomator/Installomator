@@ -1,12 +1,17 @@
 dymoconnectdesktop)
     name="DYMO Connect"
     type="pkg"
-    appNewVersion=$(curl -s https://formulae.brew.sh/cask/dymo-connect | grep -o 'Current version:.*[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | head -1)
+    dymoCurlOptions=(--http1.1 --compressed -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" -H "Accept-Language: en-US,en;q=0.9" -H "Cache-Control: no-cache" -H "Upgrade-Insecure-Requests: 1")
+    dymoData=$(curl -fsL "${dymoCurlOptions[@]}" "https://www.dymo.com/support?cfid=online-support") || cleanupAndExit 14 "Could not retrieve DYMO Connect release information." ERROR
     if [[ $(arch) == "arm64" ]]; then
-        archiveName="DCDMac${appNewVersion}-Arm64.pkg"
+        dymoArchitecture="Arm64"
     elif [[ $(arch) == "i386" ]]; then
-        archiveName="DCDMac${appNewVersion}-X64.pkg"
+        dymoArchitecture="X64"
+    else
+        cleanupAndExit 95 "Unsupported architecture for DYMO Connect." ERROR
     fi
-    downloadURL="https://dymoreleasecontent.blob.core.windows.net/dymo-release/DCDMAC/${archiveName}"
+    downloadURL=$(printf '%s\n' "$dymoData" | grep -Eo "https://dymoreleasecontent\\.blob\\.core\\.windows\\.net/dymo-release/DCDMAC/DCDMac[0-9]+(\\.[0-9]+)+-${dymoArchitecture}\\.pkg" | head -1)
+    appNewVersion=$(printf '%s\n' "$downloadURL" | sed -E "s#.*/DCDMac([0-9]+(\\.[0-9]+)+)-${dymoArchitecture}\\.pkg#\\1#")
+    [[ -n "$downloadURL" && "$appNewVersion" =~ ^[0-9]+(\.[0-9]+)+$ ]] || cleanupAndExit 14 "Could not determine the DYMO Connect download." ERROR
     expectedTeamID="N3S6676K3E"
     ;;
