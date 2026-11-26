@@ -212,7 +212,7 @@ NOTIFY_DIALOG=0
 # - packageID: (optional)
 #   The package ID of a pkg
 #   If given, will be used to find the version of installed software, instead of searching for an app.
-#   Usefull if a pkg does not install an app.
+#   Useful if a pkg does not install an app.
 #   See label installomator_st
 #
 # - downloadURL: (required)
@@ -239,7 +239,7 @@ NOTIFY_DIALOG=0
 #
 # - appCustomVersion(){}: (optional function)
 #   This function can be added to your label, if a specific custom
-#   mechanism hs to be used for getting the installed version.
+#   mechanism has to be used for getting the installed version.
 #   See labels zulujdk11, zulujdk13, zulujdk15
 #
 # - expectedTeamID: (required)
@@ -340,7 +340,7 @@ datadogAPI=""
 
 # Log Date format used when parsing logs for debugging, this is the default used by
 # install.log, override this in the case statements if you need something custom per
-# application (See adobeillustrator).  Using stadard GNU Date formatting.
+# application (See adobeillustrator).  Using standard GNU Date formatting.
 LogDateFormat="%Y-%m-%d %H:%M:%S"
 
 # Get the start time for parsing install.log if we fail.
