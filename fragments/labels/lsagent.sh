@@ -32,9 +32,14 @@ lsagent)
     #                                              Default: 
     type="dmg"
     downloadURL="https://content.lansweeper.com/lsagent-mac/"
-    appNewVersion="$(curl -fsIL "$downloadURL" | grep -i "location" | cut -w -f2 | cut -d "/" -f5-6 | tr "/" ".")"
-    installerTool="LsAgent-osx.app"
-    CLIInstaller="LsAgent-osx.app/Contents/MacOS/installbuilder.sh"
+    appNewVersion="$(curl -fsIL "$downloadURL" | grep -i "^location:" | tail -n 1 | tr -d '\r' | cut -w -f2 | sed -nE 's/.*_([0-9]+(\.[0-9]+)+)\.dmg.*/\1/p')"
+    appCustomVersion() {
+        if [[ -f "/Applications/LansweeperAgent/LsAgent.ini" ]]; then
+            awk -F'=' '/^[[:space:]]*Version[[:space:]]*=/{gsub(/\r|[[:space:]]/, "", $2); print $2; exit}' "/Applications/LansweeperAgent/LsAgent.ini"
+        fi
+    }
+    installerTool="LsAgent-osx-x64.app"
+    CLIInstaller="LsAgent-osx-x64.app/Contents/MacOS/installbuilder.sh"
     if [[ -z $lsagentPort ]]; then
         lsagentPort=9524
     fi
@@ -45,7 +50,7 @@ lsagent)
         lsagentLanguage="en"
     fi
     if [[ -z $lsagentServer && -z $lsagentKey ]]; then
-        cleanupAndExit 89 "This label requires more parameters: lsagentServer and/or lsagentKey is required. Optional parameters include: lsagentPort, lsagentMode, and lsagentLanguage\nSee /Volumes/LsAgent/LsAgent-osx.app/Contents/MacOS/installbuilder.sh --help" ERROR
+        cleanupAndExit 89 "This label requires more parameters: lsagentServer and/or lsagentKey is required. Optional parameters include: lsagentPort, lsagentMode, and lsagentLanguage\nSee /Volumes/LsAgent/LsAgent-osx-x64.app/Contents/MacOS/installbuilder.sh --help" ERROR
     fi
     CLIArguments=( --mode $lsagentMode --installer-language $lsagentLanguage )
     if [[ -n $lsagentServer ]]; then
