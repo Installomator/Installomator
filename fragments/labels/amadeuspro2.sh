@@ -1,8 +1,7 @@
 amadeuspro2)
     name="Amadeus Pro"
     type="zip"
-    osVersion=$(sw_vers -productVersion | cut -d '.' -f 1)
-    if (( osVersion >= 13 )); then
+    if is-at-least 13 "$installedOSversion"; then
         printlog "Amadeus Pro 2 supports macOS 12 and earlier; use a separate Amadeus Pro 3 label on macOS 13 or later." ERROR
         cleanupAndExit 95 "Amadeus Pro 2 is not supported on this macOS version" ERROR
     fi
