@@ -4,6 +4,7 @@
 4kvideodownloader
 4kvideodownloaderplus
 8x8
+aapconfigurationhelper
 abetterfinderattributes7
 abetterfinderrename11
 abetterfinderrename12
@@ -25,6 +26,7 @@ adobedigitaleditions
 adobereaderdc
 adobereaderdc-install
 adobereaderdc-update
+aegisub
 affinityapp
 affinitydesigner2
 affinityphoto2
@@ -89,6 +91,7 @@ archaeology
 archimate
 archiwareb2go
 archiwarepst
+arctic
 arduinoide
 arq7
 arturiamcc
@@ -270,6 +273,8 @@ codemeter
 coderunner
 codex
 colourcontrastanalyser
+comfyui
+commandpost
 conductor
 connectfonts
 container
@@ -330,8 +335,10 @@ discordcanary
 diskdrill
 diskspace
 displaylinkmanager
+displaynote
 docker
 dockersbx
+dockside
 dockutil
 doctolib
 domzilla-caffeine
@@ -368,6 +375,7 @@ eclipsetemurin21
 eclipsetemurin25
 eclipsetemurin8
 ecosiabrowser
+editready
 editshare-connect
 editshare-flowstory
 egnyte
@@ -443,6 +451,7 @@ focusritecontrol2
 fontagent10
 fontbase
 fontexplorer
+foolcat
 forel
 fork
 foxitpdfeditor
@@ -452,6 +461,7 @@ freeplane
 front
 fsmonitor
 fujifilmwebcam
+fxfactory
 garminaviationdatabasemanager
 garminbasecamp
 garminexpress
@@ -508,6 +518,7 @@ grandperspective
 granola
 graphicconverter10
 grasshopper
+grokbot
 grooveomnidialerenterpriseedition
 guardianbrowser
 guardlydata
@@ -542,6 +553,7 @@ i1profiler
 ibarcoder
 ibmaspera
 ibmasperaconnect
+ibmdatashift
 ibmnotifier
 ice
 icons
@@ -566,6 +578,7 @@ infiniteprecalculus
 inkscape
 inmusicsoftwarecenter
 insomnia
+insta360studio
 installomator
 installomator_theile
 installomatormate
@@ -629,6 +642,7 @@ jumpdesktop
 jumper
 jupyterlab
 kaleidoscope
+kalturacapture
 kap
 karabinerelements
 kdrive
@@ -717,6 +731,7 @@ mactracker
 macusb
 macvector
 magicbullet
+magictoolbox
 magnolia
 mailmate
 mailtooutlook
@@ -734,6 +749,7 @@ maxcycling74
 maxonapp
 maxqda24
 maxqda26
+mdmreportingtool
 mdmwatchdog
 meetingbar
 meistertask
@@ -874,6 +890,7 @@ obsbotwebcam
 obsidian
 obsioscamera
 odrive
+offshoot
 oktaverify
 ollama
 omnidisksweeper
@@ -951,6 +968,7 @@ pop
 popsql
 portingkit
 postgresapp
+postlab
 postman
 powermonitor
 pppcutility
@@ -982,6 +1000,7 @@ pulsar
 pycharmce
 pymol
 python
+qfinderpro
 qgis-pr
 qgisltr
 qlab
@@ -1004,6 +1023,7 @@ reaper
 recordist
 rectangle
 redcanarymacmonitor
+redcinexpro
 redgiant
 redisinsight
 redshift
@@ -1024,10 +1044,12 @@ rhino7
 rhino8
 ricohpsprinters
 ricohtheta
+rightfont
 ringcentralapp
 ringcentralclassicapp
 ringcentralmeetings
 ringcentralphone
+rive
 riversidestudio
 rocket
 rocketchat
@@ -1062,6 +1084,7 @@ sdnotary
 sdnotary2
 seconddisplay
 secretive
+securecrt
 selfcontrol
 sequelace
 sequelpro
@@ -1131,6 +1154,7 @@ sqlprostudio
 sshfs
 stackfield
 starface10x
+starface11x
 starface90x
 starface91x
 stats
@@ -1145,6 +1169,7 @@ subethaedit
 sublimemerge
 sublimetext
 suitestudio
+sumb
 sunsama
 supercollider
 superhuman
@@ -1190,6 +1215,7 @@ teladocproviderinstaller
 telegram
 tembo
 tencentmeeting
+tentaclesyncstudio
 termius
 tesseraremote
 testnav
@@ -1220,6 +1246,7 @@ toonboomharmonypremium2024
 toonboomharmonypremium2025
 toonboomstoryboardpro2024
 toonboomstoryboardpro2025
+toonboomstoryboardpro2027
 topazgigapixel
 topazgigapixelai
 topazphoto
@@ -1286,6 +1313,7 @@ vlc
 vmwarefusion
 vmwarehorizonclient
 vncconnect
+vocevistapro
 vocevistavideopro
 vonagebusiness
 vorssaint
