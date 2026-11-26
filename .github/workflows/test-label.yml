@@ -1,0 +1,87 @@
+name: Test a single label
+
+on:
+  workflow_dispatch:
+    inputs:
+      label:
+        description: "Label name to test (e.g. flameshot)"
+        required: true
+
+jobs:
+  test-label:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Diagnose GitHub API rate limiting / response integrity
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          case "${{ github.event.inputs.label }}" in
+            flameshot) repo="flameshot-org/flameshot" ;;
+            anytype) repo="anyproto/anytype-ts" ;;
+            *) repo="" ;;
+          esac
+
+          echo "== Unauthenticated rate limit =="
+          curl -s https://api.github.com/rate_limit | tee ratelimit-unauth.json
+
+          if [ -n "$repo" ]; then
+            echo "== Unauthenticated fetch: $repo =="
+            curl -s -D headers-unauth.txt -o unauth.json "https://api.github.com/repos/$repo/releases"
+            echo "--- response headers ---"; cat headers-unauth.txt
+            echo "--- byte count ---"; wc -c unauth.json
+            echo "--- control character check ---"
+            grep -cP '[\x00-\x08\x0B\x0C\x0E-\x1F]' unauth.json || echo "0 control characters found"
+            echo "--- jq parse (unauth) ---"
+            jq . unauth.json > /dev/null && echo "unauth JSON: valid" || echo "unauth JSON: INVALID"
+
+            echo "== Authenticated fetch: $repo =="
+            curl -s -D headers-auth.txt -H "Authorization: token $GH_TOKEN" -o auth.json "https://api.github.com/repos/$repo/releases"
+            echo "--- response headers ---"; cat headers-auth.txt
+            echo "--- byte count ---"; wc -c auth.json
+            echo "--- control character check ---"
+            grep -cP '[\x00-\x08\x0B\x0C\x0E-\x1F]' auth.json || echo "0 control characters found"
+            echo "--- jq parse (auth) ---"
+            jq . auth.json > /dev/null && echo "auth JSON: valid" || echo "auth JSON: INVALID"
+
+            echo "== Diff (auth vs unauth, normalized) =="
+            diff <(jq -S . unauth.json 2>/dev/null) <(jq -S . auth.json 2>/dev/null) && echo "no diff" || echo "responses differ (see above)"
+          fi
+          set -e
+        working-directory: ${{ github.workspace }}
+
+      - name: Upload diagnostic artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnostics-${{ github.event.inputs.label }}
+          path: |
+            ratelimit-unauth.json
+            headers-unauth.txt
+            unauth.json
+            headers-auth.txt
+            auth.json
+
+      - name: Run assemble.sh against the label
+        run: |
+          set -o pipefail
+          ./utils/assemble.sh "${{ github.event.inputs.label }}" DEBUG=1 2>&1 | tee assemble-output.log
+        working-directory: ${{ github.workspace }}
+
+      - name: Write job summary
+        if: always()
+        run: |
+          {
+            echo '```'
+            cat assemble-output.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload log artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assemble-output-${{ github.event.inputs.label }}
+          path: assemble-output.log
