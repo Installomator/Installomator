@@ -1,5 +1,6 @@
 qgisltr)
     name="QGIS-LTR"
+    appName="QGIS.app"
     type="dmg"
     qgisJson=$(curl -fs "https://raw.githubusercontent.com/qgis/QGIS-Website/refs/heads/main/data/conf.json")
     downloadURL=$(getJSONValue "$qgisJson" "ltr_dmg")
